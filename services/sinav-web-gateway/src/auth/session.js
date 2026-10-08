@@ -96,6 +96,7 @@ const rotateSession = async ({ refreshToken }) => {
     throw err;
   }
 
+  const REFRESH_TTL_SECONDS = refreshTtlFor(session.clientType || 'web');
   const nowSec = Math.floor(Date.now() / 1000);
   // Süpersede edilecek (geçersiz kılınan) hash. Normalde === oldHash. Ancak
   // eşzamanlı refresh'te oldHash, grace penceresi içinde yeni rotate edilmiş

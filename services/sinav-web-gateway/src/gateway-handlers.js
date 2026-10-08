@@ -82,7 +82,19 @@ const refreshHandler = async (req, res) => {
     return fail(res, 401, 'REFRESH_MISSING');
   }
   try {
-    const { jwt, refreshToken: newRt } = await rotateSession({ refreshToken });
+    const rotated = await rotateSession({ refreshToken });
+    const { jwt, refreshToken: newRt } = rotated;
+    if (bearerMode) {
+      return ok(res, {
+        ok: true,
+        auth: {
+          accessToken: jwt,
+          accessTokenExpiresAt: rotated.exp * 1000,
+          refreshToken: newRt,
+          refreshTokenExpiresAt: Date.now() + refreshTtlFor('mobile') * 1000,
+        },
+      });
+    }
     setAuthCookies(res, { jwt, refreshToken: newRt });
     // CSRF self-heal: her refresh'te { overwrite: true } ile TAZE, senkron bir
     // sinav_csrf + sinav_xsrf çifti üret. Böylece client'ta herhangi bir

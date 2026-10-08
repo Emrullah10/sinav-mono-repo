@@ -162,27 +162,30 @@ function proxy(url) {
               !payload?.error
             ) {
               try {
-                const { jwt, refreshToken } = await createSession({
+                const info = clientInfo(request);
+                const { jwt, refreshToken, exp } = await createSession({
                   user,
                   perms,
                   ip: request.ip,
                   userAgent: request.headers['user-agent'],
+                  ...info,
                 });
-                setAuthCookies(response, { jwt, refreshToken });
-                // CSRF: `generateCsrfToken` signed `sinav_csrf` cookie set
-                // eder (httpOnly) ve raw token döner. Frontend axios
-                // `xsrfCookieName: 'sinav_xsrf'` non-httpOnly cookie'yi
-                // okuyup `X-XSRF-TOKEN` header'ına koyabilsin diye raw
-                // token'ı paralel cookie'de tutuyoruz. İkisi olmadan login
-                // sonrası tüm POST 403 EBADCSRFTOKEN.
-                try {
-                  const xsrfToken = generateCsrfToken(request, response);
-                  if (xsrfToken) setXsrfCookie(response, xsrfToken);
-                } catch (csrfErr) {
-                  console.error(
-                    'CSRF token generate failed (login):',
-                    csrfErr.message,
-                  );
+                if (wantsBearerTransport(request)) {
+                  // Mobil: çerez yok; token'lar gövdede (docs/PLAN-P0.md §5).
+                  payload.auth = {
+                    accessToken: jwt,
+                    accessTokenExpiresAt: exp * 1000,
+                    refreshToken,
+                    refreshTokenExpiresAt: Date.now() + refreshTtlFor(info.clientType) * 1000,
+                  };
+                } else {
+                  setAuthCookies(response, { jwt, refreshToken });
+                  try {
+                    const xsrfToken = generateCsrfToken(request, response);
+                    if (xsrfToken) setXsrfCookie(response, xsrfToken);
+                  } catch (csrfErr) {
+                    console.error('CSRF token generate failed (login):', csrfErr.message);
+                  }
                 }
                 payload.user.permissions = perms;
                 delete payload.rolePermissionList;
