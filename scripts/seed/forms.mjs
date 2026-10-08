@@ -25,7 +25,7 @@ export const seedForms = async (ctx) => {
            q.question_passage_item_id pid, q.question_group_position gp, q.question_blank_no bn, p.passage_passage_kind pk
     FROM content.item qi
     JOIN content.question q ON q.question_item_revision_id = qi.item_published_revision_id
-    JOIN content.question_type t ON t.question_type_id = q.question_type_id
+    JOIN content.question_type t ON t.question_type_id = q.question_question_type_id
     LEFT JOIN content.item pi ON pi.item_id = q.question_passage_item_id AND pi.item_status='published'
     LEFT JOIN content.passage p ON p.passage_item_revision_id = pi.item_published_revision_id
     WHERE qi.item_tenant_code=$1 AND qi.item_kind='question' AND qi.item_status='published'
@@ -84,6 +84,7 @@ export const seedForms = async (ctx) => {
       await publishItem(ctx, it, []);
     });
     bump(rep, spec.formType, true);
+    rep.notes.push(`${ref}: ${qs.length} soru, ${duration} sn`);
   };
 
   await tx(ctx, async () => {

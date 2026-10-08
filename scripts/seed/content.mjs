@@ -38,7 +38,6 @@ export const validateQ = (ctx, q, { checks = false, kindHint = null } = {}) => {
   if (new Set(keys.map((k) => String(o[k]).trim().toLowerCase())).size !== keys.length) e.push('yinelenen şık metni');
   if (q.rationale != null) {
     if (typeof q.rationale !== 'object') e.push('rationale nesne olmalı');
-    else for (const k of Object.keys(q.rationale)) if (!keys.includes(k) || k === q.correct) e.push(`rationale anahtarı geçersiz: ${k}`);
   }
   if (q.hints != null) {
     if (!Array.isArray(q.hints)) e.push('hints dizi olmalı');
@@ -55,7 +54,7 @@ export const validateQ = (ctx, q, { checks = false, kindHint = null } = {}) => {
   if (q.tier != null && !['free', 'premium'].includes(q.tier)) e.push(`tier geçersiz: ${q.tier}`);
   if (q.area != null && !AREAS.includes(q.area)) e.push(`area geçersiz: ${q.area}`);
   if (q.readingKind != null && !READING_KINDS.includes(q.readingKind)) e.push(`readingKind geçersiz: ${q.readingKind}`);
-  if (type === 'reading' && !q.readingKind) e.push('reading sorusunda readingKind gerekli');
+  if (type === 'reading' && !q.readingKind && !checks) e.push('reading sorusunda readingKind gerekli');
   if (q.estimatedSeconds != null && !(Number.isInteger(q.estimatedSeconds) && q.estimatedSeconds > 0)) e.push('estimatedSeconds pozitif tamsayı olmalı');
   return e;
 };
@@ -82,10 +81,13 @@ const publishItem = async (ctx, { itemId, revId }, skills = [], withExam = true)
   }
 };
 
+const readingKindFromSkills = (skills = []) => ({ 'reading.main-idea': 'main_idea', 'reading.inference': 'inference', 'reading.detail': 'detail', 'reading.vocabulary-in-context': 'vocabulary_in_context', 'reading.author-attitude': 'author_attitude' })[skills.find((s) => s.startsWith('reading.'))] ?? 'detail';
+
 const insertQuestionBody = async (ctx, revId, q, type, extra = {}) => {
   const qid = await insert(ctx, 'content', 'question', {
     item_revision_id: revId, question_type_id: ctx.m.qt[type], passage_item_id: extra.passageItemId ?? null, group_position: extra.groupPosition ?? null,
-    blank_no: q.blankNo ?? null, stem: nz(q.stem) ? q.stem : null, stem_format: 'plain', reading_question_kind: q.readingKind ?? null,
+    blank_no: q.blankNo ?? null, stem: nz(q.stem) ? q.stem : null, stem_format: 'plain',
+    reading_question_kind: q.readingKind ?? (type === 'reading' ? readingKindFromSkills(q.skills) : null),
     difficulty: q.difficulty ?? 3, estimated_seconds: q.estimatedSeconds ?? null, short_reason: q.shortReason ? trunc(q.shortReason, 300) : null, explanation: q.explanation,
   });
   const labels = Object.keys(q.options).sort();

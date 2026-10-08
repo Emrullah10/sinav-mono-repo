@@ -71,6 +71,8 @@ for (const [name, entries] of Object.entries(PLAN)) {
     }
   }
 }
+// vendor kopyaları ESM: node ile (test, betik) import edilince tür belirsizliği uyarısı çıkmasın.
+writeFileSync(path.join(VENDOR, 'package.json'), `${JSON.stringify({ type: 'module', private: true }, null, 2)}\n`);
 const manifest = {
   generatedBy: 'scripts/sync-mobile.mjs',
   monorepo: { sha: git('rev-parse', 'HEAD'), dirty: git('status', '--porcelain', 'packages').length > 0 },
