@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AUTH-04 · Şifre Sıfırlama | YDS Platformu</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#F4F6F5',
+            surface: '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            outline: '#77868A',
+            'outline-variant': '#DAE1E0',
+            primary: '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            secondary: '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            tertiary: '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            error: '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+            'chart-1': '#0F9485',
+            'chart-2': '#505AC8',
+            'chart-3': '#BA7F14',
+            'chart-4': '#9E427B',
+          },
+          borderRadius: {
+            xs: '4px',
+            sm: '8px',
+            DEFAULT: '12px',
+            md: '12px',
+            lg: '16px',
+            xl: '24px',
+            full: '9999px'
+          },
+          fontFamily: {
+            headline: ['Figtree', 'sans-serif'],
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            body: ['Figtree', 'sans-serif'],
+            label: ['Figtree', 'sans-serif'],
+            reading: ['Literata', 'serif'],
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+    input:focus {
+      outline: none;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col justify-between selection:bg-primary-container selection:text-on-primary-container">
+<!-- Screen Outer Wrapper: Mobile Form Factor 390px locked -->
+<div class="w-full max-w-[390px] mx-auto min-h-screen bg-background flex flex-col relative shadow-sm border-x border-outline-variant">
+<!-- Top Navigation Anchor (Shared Component: TopAppBar) -->
+<header class="w-full h-14 max-w-[390px] mx-auto px-4 flex items-center justify-between bg-surface z-40 sticky top-0 border-b border-outline-variant">
+<button aria-label="Geri" class="min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-95 -ml-2 rounded-full" type="button">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h1 class="font-headline font-semibold text-[17px] text-on-surface tracking-tight">
+        Şifre Sıfırlama
+      </h1>
+<a class="min-h-[44px] min-w-[44px] flex items-center justify-end font-label font-medium text-[14px] text-primary hover:underline active:scale-95" href="#giris">
+        Giriş Yap
+      </a>
+</header>
+<!-- Main Content Container -->
+<main class="flex-1 px-4 pt-4 pb-12 space-y-6">
+<!-- Header & Context Banner -->
+<section class="space-y-2">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-outline-variant text-[11px] font-bold tracking-wider text-on-surface-variant uppercase">
+<span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>
+          AUTH-04 · ŞİFRE YENİLEME
+        </div>
+<h2 class="font-display text-[26px] font-bold text-on-surface leading-tight pt-1">
+          Şifrenizi Sıfırlayın
+        </h2>
+<p class="font-body text-[14px] leading-relaxed text-on-surface-variant">
+          Hesabınıza kayıtlı e-posta adresinize tek kullanımlık 6 haneli güvenlik doğrulama kodu iletilecektir. Kod doğrulamasının ardından yeni şifrenizi belirleyebilirsiniz.
+        </p>
+</section>
+<!-- 3-Step Academic Process Tracker (Stepper) -->
+<section aria-label="İşlem Adımları" class="bg-surface rounded-lg p-3.5 border border-outline-variant">
+<div class="grid grid-cols-3 relative">
+<!-- Step 1 (Completed) -->
+<div class="flex flex-col items-center text-center relative z-10">
+<div class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-[13px] font-semibold mb-1 shadow-xs">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-[11px] font-semibold text-primary">1. E-posta</span>
+<span class="text-[10px] text-on-surface-variant font-medium">Doğrulandı</span>
+</div>
+<!-- Step 2 (Active) -->
+<div class="flex flex-col items-center text-center relative z-10">
+<div class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-[13px] font-bold ring-2 ring-primary ring-offset-2 ring-offset-surface mb-1">
+              2
+            </div>
+<span class="text-[11px] font-bold text-on-surface">2. Güvenlik</span>
+<span class="text-[10px] text-primary font-semibold">Kod Girişi</span>
+</div>
+<!-- Step 3 (Pending) -->
+<div class="flex flex-col items-center text-center relative z-10">
+<div class="w-7 h-7 rounded-full bg-background border border-outline text-on-surface-variant flex items-center justify-center text-[13px] font-medium mb-1">
+              3
+            </div>
+<span class="text-[11px] font-medium text-on-surface-variant">3. Yeni Şifre</span>
+<span class="text-[10px] text-on-surface-variant">Belirleme</span>
+</div>
+<!-- Connecting Divider Line -->
+<div class="absolute top-3.5 left-[16%] right-[16%] h-[2px] bg-outline-variant -z-0"></div>
+<div class="absolute top-3.5 left-[16%] w-[34%] h-[2px] bg-primary -z-0"></div>
+</div>
+</section>
+<!-- Main Form Sheet -->
+<form class="space-y-5" onsubmit="event.preventDefault();">
+<!-- Input Block: Email Address -->
+<div class="space-y-1.5">
+<label class="block font-label text-[13px] font-semibold text-on-surface" for="email">
+            Kayıtlı E-posta Adresi
+          </label>
+<div class="relative flex items-center">
+<input class="w-full min-h-[48px] px-3.5 pr-24 rounded-md border border-outline-variant bg-surface text-on-surface text-[15px] focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body" id="email" name="email" placeholder="ornek@universite.edu.tr" readonly="" type="email" value="selin.kaya@hacettepe.edu.tr"/>
+<div class="absolute right-2 flex items-center gap-1">
+<span class="w-6 h-6 rounded-full bg-tertiary-container text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</span>
+<button class="text-xs font-semibold text-primary hover:underline px-2 py-1 min-h-[44px] flex items-center" type="button">
+                Değiştir
+              </button>
+</div>
+</div>
+<p class="text-[11px] text-tertiary flex items-center gap-1 font-medium pt-0.5">
+<span class="material-symbols-outlined text-[13px]">mark_email_read</span>
+            Kod bu adrese başarıyla gönderildi (12:41)
+          </p>
+</div>
+<!-- 6-Digit Optical Verification Code Box -->
+<div class="bg-surface rounded-lg p-4 border border-outline-variant space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label text-[13px] font-semibold text-on-surface">
+              6 Haneli Güvenlik Kodu
+            </span>
+<!-- Countdown badge with Secondary / saffron fill -->
+<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-on-surface bg-secondary-container px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[13px] text-on-surface">timer</span>
+              02:45 içinde geçerli
+            </span>
+</div>
+<!-- ÖSYM Optical OMR inspired Code Boxes (6 items) -->
+<div class="flex justify-between items-center gap-2">
+<!-- Box 1 (Filled) -->
+<div class="w-12 h-13 min-h-[48px] rounded-md border-2 border-primary bg-primary-container/20 flex flex-col items-center justify-center">
+<span class="font-headline text-[20px] font-bold text-on-surface">5</span>
+</div>
+<!-- Box 2 (Filled) -->
+<div class="w-12 h-13 min-h-[48px] rounded-md border-2 border-primary bg-primary-container/20 flex flex-col items-center justify-center">
+<span class="font-headline text-[20px] font-bold text-on-surface">8</span>
+</div>
+<!-- Box 3 (Filled) -->
+<div class="w-12 h-13 min-h-[48px] rounded-md border-2 border-primary bg-primary-container/20 flex flex-col items-center justify-center">
+<span class="font-headline text-[20px] font-bold text-on-surface">1</span>
+</div>
+<!-- Box 4 (Active Caret) -->
+<div class="w-12 h-13 min-h-[48px] rounded-md border-2 border-primary bg-surface flex flex-col items-center justify-center relative">
+<span class="inline-block w-0.5 h-6 bg-primary animate-pulse"></span>
+</div>
+<!-- Box 5 (Empty) -->
+<div class="w-12 h-13 min-h-[48px] rounded-md border border-outline-variant bg-background flex flex-col items-center justify-center">
+<span class="w-2.5 h-2.5 rounded-full border border-outline"></span>
+</div>
+<!-- Box 6 (Empty) -->
+<div class="w-12 h-13 min-h-[48px] rounded-md border border-outline-variant bg-background flex flex-col items-center justify-center">
+<span class="w-2.5 h-2.5 rounded-full border border-outline"></span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="text-[12px] text-on-surface-variant">Kodu alamadınız mı?</span>
+<button class="min-h-[44px] text-[12px] font-semibold text-primary hover:underline flex items-center" type="button">
+              Kodu Tekrar Gönder
+            </button>
+</div>
+</div>
+<!-- Input Block: New Password -->
+<div class="space-y-1.5">
+<label class="block font-label text-[13px] font-semibold text-on-surface" for="new-pass">
+            Yeni Şifre
+          </label>
+<div class="relative flex items-center">
+<input class="w-full min-h-[48px] px-3.5 pr-12 rounded-md border border-outline-variant bg-surface text-on-surface text-[15px] focus:border-primary focus:ring-1 focus:ring-primary font-body tracking-wider" id="new-pass" name="new-pass" placeholder="Yeni şifrenizi girin" type="text" value="Akademik.2025!"/>
+<button aria-label="Şifreyi gizle" class="absolute right-0 min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface-variant hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Password Strength Meter Bar (Flat Color System) -->
+<div class="bg-surface rounded-lg p-3.5 border border-outline-variant space-y-2">
+<div class="flex justify-between items-center text-[12px]">
+<span class="text-on-surface-variant font-medium">Şifre Gücü Analizi:</span>
+<!-- Text status must accompany color -->
+<span class="font-bold text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+              Güçlü Şifre
+            </span>
+</div>
+<!-- 3-Segment Strength Bar (Level 3 Active) -->
+<div class="grid grid-cols-3 gap-1.5 h-2">
+<div class="h-full rounded-full bg-tertiary"></div>
+<div class="h-full rounded-full bg-tertiary"></div>
+<div class="h-full rounded-full bg-tertiary"></div>
+</div>
+<!-- Criteria Checklist (Dual-coded: Icon + Text) -->
+<div class="grid grid-cols-2 gap-y-1.5 gap-x-2 pt-2 text-[12px]">
+<div class="flex items-center gap-1.5 text-tertiary font-medium">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">check</span>
+<span>En az 8 karakter</span>
+</div>
+<div class="flex items-center gap-1.5 text-tertiary font-medium">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">check</span>
+<span>En az bir büyük harf</span>
+</div>
+<div class="flex items-center gap-1.5 text-tertiary font-medium">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">check</span>
+<span>En az bir rakam</span>
+</div>
+<div class="flex items-center gap-1.5 text-tertiary font-medium">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">check</span>
+<span>Özel karakter</span>
+</div>
+</div>
+</div>
+<!-- Input Block: Confirm New Password -->
+<div class="space-y-1.5">
+<label class="block font-label text-[13px] font-semibold text-on-surface" for="confirm-pass">
+            Yeni Şifre (Tekrar)
+          </label>
+<div class="relative flex items-center">
+<input class="w-full min-h-[48px] px-3.5 pr-12 rounded-md border border-outline-variant bg-surface text-on-surface text-[15px] focus:border-primary focus:ring-1 focus:ring-primary font-body tracking-wider" id="confirm-pass" name="confirm-pass" placeholder="Yeni şifrenizi tekrar girin" type="password" value="Akademik.2025!"/>
+<button aria-label="Şifreyi göster" class="absolute right-0 min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface-variant hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+<p class="text-[11px] text-tertiary flex items-center gap-1 font-medium pt-0.5">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+            Şifreler birbiriyle tam olarak eşleşiyor
+          </p>
+</div>
+<!-- Primary Action Button (Verb Led CTA) -->
+<button class="w-full min-h-[52px] px-6 rounded-md bg-primary text-on-primary font-label text-[16px] font-bold flex items-center justify-center gap-2 hover:bg-primary/95 active:scale-[0.99] transition-all shadow-sm focus:ring-2 focus:ring-primary focus:ring-offset-2" type="submit">
+<span>Şifreyi Güncelle ve Giriş Yap</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</form>
+<!-- Institutional System Status Notice Strip (Bento-style Error & Warning Scenarios) -->
+<section aria-label="Bilgilendirme ve Durum Bildirimleri" class="space-y-2.5 pt-2">
+<div class="text-[11px] font-bold text-on-surface-variant tracking-wider uppercase">
+          Sistem Durum Bildirimleri
+        </div>
+<!-- Notification 1: Error Scenario (Tuğla / Brick Red) -->
+<div class="p-3 bg-error-container/60 border border-error/20 rounded-md flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[18px] text-error shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">cancel</span>
+<div class="text-[12px] leading-tight">
+<span class="font-bold text-error">Hata: E-posta Bulunamadı.</span>
+<span class="text-on-surface-variant"> Bu e-posta adresiyle eşleşen kayıtlı bir YDS adayı hesabı bulunamadı.</span>
+</div>
+</div>
+<!-- Notification 2: Warning Timeout Scenario (Safran fill / Dark text) -->
+<div class="p-3 bg-secondary-container/70 border border-secondary/30 rounded-md flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[18px] text-on-surface shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div class="text-[12px] leading-tight text-on-surface">
+<span class="font-bold">Kodun Süresi Doldu.</span>
+<span class="text-on-surface-variant"> Güvenlik amacıyla 3 dakikalık kodun süresi tükenmiştir. Lütfen yeni kod talep ediniz.</span>
+</div>
+</div>
+<!-- Notification 3: Password Mismatch Notice (Error Border) -->
+<div class="p-3 bg-surface border border-outline-variant rounded-md flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[18px] text-outline shrink-0 mt-0.5">info</span>
+<div class="text-[12px] leading-tight text-on-surface-variant">
+<span class="font-semibold text-on-surface">Güvenlik Hatırlatması:</span> Şifreniz son 3 sınav döneminde kullandığınız şifrelerle aynı olamaz.
+          </div>
+</div>
+</section>
+<!-- Security / KVKK Compliance Footer Badge -->
+<footer class="pt-4 pb-2 text-center border-t border-outline-variant space-y-1.5">
+<div class="flex items-center justify-center gap-1.5 text-[11px] font-semibold text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] text-primary">verified_user</span>
+<span>256-Bit SSL Koruma · KVKK Uyumlu Güvenli Altyapı</span>
+</div>
+<p class="text-[10px] text-outline font-normal">
+          T.C. Ölçme, Seçme ve Yerleştirme Merkezi (ÖSYM) YDS standartlarına uyumlu aday doğrulama protokolü.
+        </p>
+</footer>
+</main>
+<!-- Bottom Navigation Bar (Shared Component: BottomNavBar) -->
+<!-- Destination count: 5 (Bugün, Çalış, Deneme, Öğretmen, Ben) -->
+<nav class="fixed bottom-0 left-0 right-0 w-full max-w-[390px] mx-auto h-16 z-50 flex items-center justify-around px-2 bg-surface border-t border-outline-variant">
+<!-- 1. Bugün -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 min-h-[44px] min-w-[44px] active:scale-95 transition-transform duration-100 hover:text-primary" href="#bugun">
+<span class="material-symbols-outlined text-[22px]">calendar_today</span>
+<span class="font-label text-[11px] tracking-tight">Bugün</span>
+</a>
+<!-- 2. Çalış -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 min-h-[44px] min-w-[44px] active:scale-95 transition-transform duration-100 hover:text-primary" href="#calis">
+<span class="material-symbols-outlined text-[22px]">menu_book</span>
+<span class="font-label text-[11px] tracking-tight">Çalış</span>
+</a>
+<!-- 3. Deneme -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 min-h-[44px] min-w-[44px] active:scale-95 transition-transform duration-100 hover:text-primary" href="#deneme">
+<span class="material-symbols-outlined text-[22px]">assignment</span>
+<span class="font-label text-[11px] tracking-tight">Deneme</span>
+</a>
+<!-- 4. Öğretmen -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 min-h-[44px] min-w-[44px] active:scale-95 transition-transform duration-100 hover:text-primary" href="#ogretmen">
+<span class="material-symbols-outlined text-[22px]">school</span>
+<span class="font-label text-[11px] tracking-tight">Öğretmen</span>
+</a>
+<!-- 5. Ben (Active Tab for Profile / Authentication Context) -->
+<a class="flex flex-col items-center justify-center text-primary font-semibold py-1 min-h-[44px] min-w-[44px] active:scale-95 transition-transform duration-100" href="#ben">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label text-[11px] tracking-tight font-semibold text-primary">Ben</span>
+</a>
+</nav>
+<!-- Safe area spacer so bottom fixed nav doesn't conceal content -->
+<div class="h-16 shrink-0"></div>
+</div>
+</body></html>

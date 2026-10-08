@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIAG-02 · Seviye Tespit Sınavı Ara Durak (Açık Masaüstü 1440px)</title>
+  <!-- Google Fonts: Figtree (Arayüz Sans) & Literata (Sınav Serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // YDS Platformu Açık Tema Paleti
+            'yds-petrol': '#0E6A6E',
+            'yds-petrol-hover': '#094B4E',
+            'yds-petrol-soft': '#E6F3F3',
+            'yds-safran': '#E9A514',
+            'yds-safran-soft': '#FDF5E6',
+            'yds-green': '#1F7A45',
+            'yds-green-soft': '#EDF7F1',
+            'yds-brick': '#A33D27',
+            'yds-brick-soft': '#FBF0EE',
+            'yds-bg': '#F4F6F5',
+            'yds-surface': '#FFFFFF',
+            'yds-text-main': '#13232A',
+            'yds-text-muted': '#46565C',
+            'yds-border': '#DAE1E0',
+            'yds-border-light': '#E8EDED'
+          },
+          fontFamily: {
+            sans: ['Figtree', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Literata', 'Georgia', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Kesin kurallar: Gradyan, blur/cam, parlak gölgeler yok; net 1px sınırlar ve sakin kurumsal duruş */
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Figtree', sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .exam-serif {
+      font-family: 'Literata', Georgia, serif;
+    }
+    .min-touch {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    .border-standard {
+      border: 1px solid #DAE1E0;
+    }
+    .border-subtle {
+      border: 1px solid #E8EDED;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#E6F3F3] selection:text-[#0E6A6E]">
+
+  <!-- ÜST GEZİNME VE SINAV DURUM ÇUBUĞU (1440px masaüstü kurgusu) -->
+  <header class="w-full bg-[#FFFFFF] border-b border-[#DAE1E0] sticky top-0 z-30">
+    <div class="max-w-[1440px] mx-auto px-8 h-16 flex items-center justify-between">
+      
+      <!-- Sol: Güvenli Çıkış & Sınav Kimliği -->
+      <div class="flex items-center gap-6">
+        <button type="button" class="min-touch inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#DAE1E0] bg-[#FFFFFF] text-[#46565C] hover:text-[#13232A] hover:bg-[#F4F6F5] transition-colors text-sm font-semibold">
+          <svg class="w-4 h-4 text-[#46565C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          <span>Sınavdan Çık</span>
+        </button>
+
+        <div class="h-6 w-px bg-[#DAE1E0]"></div>
+
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center justify-center w-2.5 h-2.5 rounded-full bg-[#0E6A6E]"></span>
+          <span class="text-xs uppercase font-bold tracking-wider text-[#0E6A6E]">Seviye Tespiti</span>
+          <span class="text-xs text-[#DAE1E0] font-light">|</span>
+          <span class="text-sm font-medium text-[#46565C]">Akademik Zorluk Kalibrasyonu</span>
+        </div>
+      </div>
+
+      <!-- Orta: Sınav İlerleme Göstergesi -->
+      <div class="flex items-center gap-4 w-80">
+        <div class="flex-1 bg-[#E8EDED] rounded-full h-2 overflow-hidden">
+          <div class="bg-[#0E6A6E] h-2 rounded-full transition-all duration-300" style="width: 50%;"></div>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <span class="text-sm font-bold text-[#13232A]">%50 Tamamlandı</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-[#E6F3F3] text-[#0E6A6E]">10 / 20 Soru</span>
+        </div>
+      </div>
+
+      <!-- Sağ: Sistem Durumu & Otomatik Kayıt Bilgisi -->
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0] text-xs font-medium text-[#46565C]">
+          <svg class="w-4 h-4 text-[#1F7A45]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <polyline points="9 11 12 14 22 4"></polyline>
+          </svg>
+          <span>Otomatik Kayıt Devrede</span>
+        </div>
+        <div class="text-xs text-[#46565C] font-mono">
+          Kalan Tahmini Süre: <strong class="text-[#13232A] font-semibold">10 dk</strong>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ANA İÇERİK ALANI -->
+  <main class="max-w-[1440px] mx-auto px-8 py-10 w-full flex-1 flex flex-col gap-10">
+
+    <!-- ÜST BİLGİ BANDI -->
+    <div class="flex items-center justify-between border-b border-[#DAE1E0] pb-4">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-[#E6F3F3] text-[#0E6A6E] text-xs font-bold tracking-wide uppercase">
+          Aşama 2 / 2 Geçişi
+        </span>
+        <span class="text-sm text-[#46565C]">
+          Bilişsel Odak ve Dinlenme Protokolü · DIAG-02
+        </span>
+      </div>
+      <div class="flex items-center gap-6 text-xs text-[#46565C]">
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#1F7A45]"></span>
+          İlk 10 Soru Kaydedildi
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#E9A514]"></span>
+          Süre Baskısı Bulunmuyor
+        </span>
+      </div>
+    </div>
+
+    <!-- MERKEZİ ODAK ALANI: ARA DURAK KARTI VE ÖZET TABLOSU (2 Kolonlu Düzen) -->
+    <div class="grid grid-cols-12 gap-8 items-start">
+
+      <!-- SOL KOLON (7 Kolon): Ana Karar ve Ara Durak Kartı -->
+      <section class="col-span-12 lg:col-span-7 bg-[#FFFFFF] border border-[#DAE1E0] rounded-xl p-8 shadow-none flex flex-col justify-between">
+        
+        <!-- Üst Vurgu Rozeti -->
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E6F3F3] border border-[#DAE1E0] mb-6">
+            <svg class="w-4 h-4 text-[#0E6A6E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 14 14"></polyline>
+            </svg>
+            <span class="text-xs font-bold text-[#0E6A6E] uppercase tracking-wider">Planlı Dinlenme Noktası</span>
+          </div>
+
+          <!-- Ana Başlık ve Açıklama -->
+          <h1 class="text-3xl font-bold tracking-tight text-[#13232A] mb-3">
+            Yarıyı geçtin. Kısa bir mola ister misin?
+          </h1>
+          <p class="text-base text-[#46565C] leading-relaxed mb-6">
+            Seviye tespitinin ilk 10 sorusunu başarıyla tamamladın. Yetişkin odak ritmine göre sınavın ortasında verilen 2-3 dakikalık kısa bir nefes molası, ikinci yarıdaki okuma ve çıkarım odaklanmasını %35 oranında artırır. Dilersen hemen devam edebilir ya da kaldığın yeri koruyarak panodan dilediğin an dönebilirsin.
+          </p>
+
+          <!-- İlerleme Özeti Mini Kutuları -->
+          <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="p-4 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-xs text-[#46565C] block mb-1">Çözülen Soru</span>
+              <div class="flex items-baseline gap-1">
+                <span class="text-2xl font-bold text-[#13232A]">10</span>
+                <span class="text-xs font-semibold text-[#46565C]">/ 20</span>
+              </div>
+              <span class="text-xs text-[#1F7A45] font-semibold mt-1 inline-flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Eksiksiz Kayıtlı
+              </span>
+            </div>
+
+            <div class="p-4 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-xs text-[#46565C] block mb-1">Geçen Süre</span>
+              <div class="flex items-baseline gap-1">
+                <span class="text-2xl font-bold text-[#13232A]">09:42</span>
+                <span class="text-xs text-[#46565C]">dakika</span>
+              </div>
+              <span class="text-xs text-[#0E6A6E] font-medium mt-1 block">Dengeli ve Sakin Tempo</span>
+            </div>
+
+            <div class="p-4 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-xs text-[#46565C] block mb-1">Sıradaki Bölüm</span>
+              <div class="text-sm font-bold text-[#13232A] truncate">Akademik Paragraf</div>
+              <span class="text-xs text-[#46565C] mt-1 block">10 Çıkarım & Bağlaç Sorusu</span>
+            </div>
+          </div>
+
+          <!-- Hatırlatma ve Güvence Notu -->
+          <div class="flex items-start gap-3 p-4 rounded-lg bg-[#FDF5E6] border border-[#E9A514]/40 mb-8">
+            <div class="w-5 h-5 rounded-full bg-[#E9A514] text-[#FFFFFF] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+              i
+            </div>
+            <p class="text-xs text-[#13232A] leading-relaxed">
+              <strong>Süre Kaybı Yoktur:</strong> Seviye tespit sınavında geriye doğru işleyen stresli bir sayaç bulunmaz. &ldquo;Sonra devam ederim&rdquo; seçeneğiyle çıkış yaptığında işaretlediğin tüm cevaplar ve soru geçmişin bulutta güvenle saklanır.
+            </p>
+          </div>
+        </div>
+
+        <!-- Ana Karar Eylemleri (44px dokunma standardı, açık etiketler) -->
+        <div class="pt-6 border-t border-[#DAE1E0] flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <!-- Birincil Aksiyon: Devam et -->
+            <button type="button" class="min-touch px-6 py-3 rounded-lg bg-[#0E6A6E] hover:bg-[#094B4E] text-[#FFFFFF] text-base font-semibold inline-flex items-center gap-2.5 transition-colors focus:outline-none focus:ring-2 focus:ring-[#0E6A6E] focus:ring-offset-2">
+              <span>Devam et</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+
+            <!-- İkincil Aksiyon: Sonra devam ederim -->
+            <button type="button" class="min-touch px-5 py-3 rounded-lg bg-[#FFFFFF] border border-[#DAE1E0] hover:bg-[#F4F6F5] text-[#13232A] text-base font-semibold inline-flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-[#DAE1E0]">
+              <svg class="w-4 h-4 text-[#46565C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <span>Sonra devam ederim</span>
+            </button>
+          </div>
+
+          <!-- Yardımcı Bilgi -->
+          <span class="text-xs text-[#46565C]">
+            Kaldığın soru: <strong>11. Soru (Akademik Okuma)</strong>
+          </span>
+        </div>
+
+      </section>
+
+      <!-- SAĞ KOLON (5 Kolon): İlk Yarı Analiz Özeti ve İkinci Yarı Önizlemesi -->
+      <section class="col-span-12 lg:col-span-5 flex flex-col gap-6">
+
+        <!-- Kart 1: İlk 10 Sorunun Konu ve Soru Durumu Dağılımı -->
+        <div class="bg-[#FFFFFF] border border-[#DAE1E0] rounded-xl p-6 shadow-none">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E8EDED] mb-4">
+            <h2 class="text-sm font-bold text-[#13232A] uppercase tracking-wide">
+              İlk Yarı Soru Haritası
+            </h2>
+            <span class="text-xs font-medium text-[#46565C]">10 Soru İşaretlendi</span>
+          </div>
+
+          <!-- 1-10 Soru Matrisi (Optik Baloncuk Analojisi) -->
+          <div class="grid grid-cols-5 gap-3 mb-6">
+            <!-- 1 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">01</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">A</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+            <!-- 2 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">02</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">D</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+            <!-- 3 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">03</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">B</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+            <!-- 4 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">04</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">C</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+            <!-- 5 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">05</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">E</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+            <!-- 6 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">06</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">B</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+            <!-- 7 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">07</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">A</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+            <!-- 8 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">08</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">C</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+            <!-- 9 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">09</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">D</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+            <!-- 10 -->
+            <div class="flex flex-col items-center p-2 rounded-lg bg-[#F4F6F5] border border-[#DAE1E0]">
+              <span class="text-[11px] font-semibold text-[#46565C] mb-1">10</span>
+              <span class="w-7 h-7 rounded-full bg-[#0E6A6E] text-[#FFFFFF] text-xs font-bold flex items-center justify-center">A</span>
+              <span class="text-[10px] text-[#1F7A45] font-semibold mt-1">Cevaplı</span>
+            </div>
+          </div>
+
+          <!-- Konu Dağılım İlerlemesi -->
+          <div class="space-y-3 pt-3 border-t border-[#E8EDED]">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-[#13232A]">Kelime & Edat Öbekleri</span>
+                <span class="text-[#0E6A6E] font-bold">4 / 4 Tamam</span>
+              </div>
+              <div class="h-1.5 w-full bg-[#E8EDED] rounded-full overflow-hidden">
+                <div class="h-full bg-[#0E6A6E] w-full"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-[#13232A]">Gramer, Zamanlar & Bağlaçlar</span>
+                <span class="text-[#0E6A6E] font-bold">6 / 6 Tamam</span>
+              </div>
+              <div class="h-1.5 w-full bg-[#E8EDED] rounded-full overflow-hidden">
+                <div class="h-full bg-[#0E6A6E] w-full"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-[#46565C]">Cümle & Paragraf Tamamlama</span>
+                <span class="text-[#46565C] font-semibold">0 / 10 Bekliyor</span>
+              </div>
+              <div class="h-1.5 w-full bg-[#E8EDED] rounded-full overflow-hidden">
+                <div class="h-full bg-[#0E6A6E]" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kart 2: İkinci Yarıda Seni Ne Bekliyor? (Pedagojik Bilgilendirme) -->
+        <div class="bg-[#FFFFFF] border border-[#DAE1E0] rounded-xl p-6 shadow-none">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2 h-2 rounded-full bg-[#0E6A6E]"></span>
+            <h2 class="text-sm font-bold text-[#13232A] uppercase tracking-wide">
+              Kalan Bölümün İçeriği
+            </h2>
+          </div>
+          <p class="text-xs text-[#46565C] leading-relaxed mb-4">
+            Geriye kalan 10 soru, ÖSYM formatındaki akademik okuma parçaları ve zıtlık bağlaçlarını analiz eden adaptif sorulardan oluşur:
+          </p>
+
+          <ul class="space-y-2.5 text-xs text-[#13232A]">
+            <li class="flex items-start gap-2">
+              <span class="text-[#0E6A6E] font-bold">―</span>
+              <span><strong>5 Soru:</strong> Cümle tamamlama ve zıtlık bağlaçları kurgusu</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-[#0E6A6E] font-bold">―</span>
+              <span><strong>5 Soru:</strong> 120-150 sözcüklü akademik okuma parçası ve ana fikir çıkarımı</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-[#1F7A45] font-bold">✓</span>
+              <span>Test bittiğinde anında <strong>A1 &ndash; C1 Seviye Karnesi</strong> ve kişisel eksik haritası sunulacaktır</span>
+            </li>
+          </ul>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- SİSTEM DAVRANIŞI & TÜM DURUMLAR MATRİSİ (Ekran Durumları Şartnamesi) -->
+    <section class="mt-4 pt-8 border-t border-[#DAE1E0]">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+        <div>
+          <span class="text-xs font-bold text-[#0E6A6E] uppercase tracking-wider block mb-1">
+            Sistem Mimarisi & Karar Protokolü
+          </span>
+          <h3 class="text-lg font-bold text-[#13232A]">
+            DIAG-02 Arayüz Durumları ve Karar Senaryoları
+          </h3>
+        </div>
+        <div class="flex items-center gap-4 text-xs text-[#46565C]">
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#0E6A6E]"></span> Çift Belirteç Kuralı
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#E9A514]"></span> Mola Güvencesi
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#1F7A45]"></span> 44px Dokunma Hedefi
+          </span>
+        </div>
+      </div>
+
+      <!-- 4 Temel Senaryo Kartı -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Durum 1: Hemen Devam Etme (Normal Akış) -->
+        <div class="bg-[#FFFFFF] border border-[#DAE1E0] rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-[#46565C]">Durum 01 · Kesintisiz Akış</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-[#EDF7F1] text-[#1F7A45]">
+                Aktif
+              </span>
+            </div>
+            <h4 class="text-sm font-bold text-[#13232A] mb-2">&ldquo;Devam et&rdquo; Seçimi</h4>
+            <p class="text-xs text-[#46565C] leading-relaxed">
+              Kullanıcı mola vermek istemediğinde doğrudan 11. soruya geçer. Sınav akışı gecikmesiz devam eder, süre ritmi kesintiye uğramaz.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-[#E8EDED] text-[11px] font-mono text-[#0E6A6E]">
+            Hedef: 11. Soru Yüklenir
+          </div>
+        </div>
+
+        <!-- Durum 2: Molaya Ayrılma (Sonra Devam Etme) -->
+        <div class="bg-[#FFFFFF] border border-[#DAE1E0] rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-[#46565C]">Durum 02 · Güvenli Ayrılma</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-[#FDF5E6] text-[#E9A514]">
+                Kalıcı Kayıt
+              </span>
+            </div>
+            <h4 class="text-sm font-bold text-[#13232A] mb-2">&ldquo;Sonra devam ederim&rdquo;</h4>
+            <p class="text-xs text-[#46565C] leading-relaxed">
+              Oturum buluta kaydedilir. Kullanıcı ana panoya yönlendirilir ve üst gezinme çubuğunda &ldquo;Yarım Kalan Seviye Testi: %50&rdquo; rozeti açılır.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-[#E8EDED] text-[11px] font-mono text-[#1F7A45]">
+            İlerleme: %50 Kaydedildi
+          </div>
+        </div>
+
+        <!-- Durum 3: Sekme / Tarayıcı Kapanması -->
+        <div class="bg-[#FFFFFF] border border-[#DAE1E0] rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-[#46565C]">Durum 03 · Beklenmedik Kapanma</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-[#F4F6F5] text-[#46565C]">
+                Otomatik Bellek
+              </span>
+            </div>
+            <h4 class="text-sm font-bold text-[#13232A] mb-2">Pencere Kapanma Koruması</h4>
+            <p class="text-xs text-[#46565C] leading-relaxed">
+              Kullanıcı karar vermeden sekmeyi kapatsa dahi son durum ara durak olarak saklanır. Sisteme tekrar girdiğinde doğrudan bu ara ekranla karşılaşır.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-[#E8EDED] text-[11px] font-mono text-[#46565C]">
+            Protokol: DIAG-STATE-RECOVERY
+          </div>
+        </div>
+
+        <!-- Durum 4: Çevrimdışı ve Bağlantı Dalgalanması -->
+        <div class="bg-[#FFFFFF] border border-[#DAE1E0] rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-[#46565C]">Durum 04 · Ağ Kesintisi</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-[#EDF7F1] text-[#1F7A45]">
+                Yerel Yedek
+              </span>
+            </div>
+            <h4 class="text-sm font-bold text-[#13232A] mb-2">Çevrimdışı Bellek</h4>
+            <p class="text-xs text-[#46565C] leading-relaxed">
+              İnternet kopsa dahi ilk 10 yanıt cihazın yerel depolama alanında muhafaza edilir; ağ geri geldiğinde arka planda sunucuyla eşitlenir.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-[#E8EDED] text-[11px] font-mono text-[#1F7A45]">
+            Veri Güvenliği: Tam Koruma
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ALT BİLGİ VE STANDARTLAR KILAVUZU -->
+  <footer class="w-full bg-[#FFFFFF] border-t border-[#DAE1E0] mt-12 py-5">
+    <div class="max-w-[1440px] mx-auto px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#46565C]">
+      <div class="flex items-center gap-3">
+        <strong class="font-bold text-[#13232A]">ODAK YDS</strong>
+        <span>•</span>
+        <span>Akademik Seviye Tespit Sistemi v2.4</span>
+        <span>•</span>
+        <span>ÖSYM optik form disiplinine tam uyumlu arayüz</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <span>Erişilebilirlik Standardı: <strong class="text-[#13232A]">WCAG 2.1 AAA</strong></span>
+        <span>Asgari Dokunma Alanı: <strong class="text-[#13232A]">44 × 44 piksel</strong></span>
+        <span>© 2025 ODAK YDS</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

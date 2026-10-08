@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AUTH-05 · E-posta Doğrulama · ODAK</title>
+<!-- Google Fonts: Figtree (Arayüz), Literata (Okuma & Soru Parçaları), Bricolage Grotesque (Ekran Ana Başlığı) -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:ital,wght@0,300..800;1,300..800&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#0E171B',
+            surface: '#142127',
+            'surface-container': '#1B2B32',
+            'surface-container-high': '#16363A',
+            'on-surface': '#E4ECEC',
+            'on-surface-variant': '#A9B8BA',
+            outline: '#71838A',
+            'outline-variant': '#24343A',
+            primary: '#4DB6B0',
+            'on-primary': '#0E171B',
+            'primary-container': '#16363A',
+            'on-primary-container': '#87CDC8',
+            secondary: '#F0B43A',
+            'on-secondary': '#0E171B',
+            'secondary-container': '#3A2E12',
+            tertiary: '#4CC27D',
+            'tertiary-container': '#163524',
+            error: '#EE8A6E',
+            'error-container': '#3D211A',
+            'inverse-surface': '#E4ECEC',
+            'chart-1': '#04A19B',
+            'chart-2': '#7483E0',
+            'chart-3': '#C0851F',
+            'chart-4': '#C06099'
+          },
+          borderRadius: {
+            'xs': '4px',
+            'sm': '8px',
+            DEFAULT: '12px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '24px',
+            'full': '9999px'
+          },
+          fontFamily: {
+            "headline": ["Bricolage Grotesque"],
+            "display": ["Bricolage Grotesque"],
+            body: ['Figtree', 'sans-serif'],
+            reading: ['Literata', 'serif'],
+            label: ['Figtree', 'sans-serif']
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Tablo rakamları ve okunaklı optik aralıklar */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Sade odak halkası (2px petrol + 2px boşluk mantığı) */
+    .focus-ring:focus-within, .focus-ring:focus {
+      outline: 2px solid #4DB6B0;
+      outline-offset: 2px;
+    }
+    /* Scrollbar tasarımı */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0E171B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #24343A;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #33474E;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.left-0{left:0px}.right-0{right:0px}.top-0{top:0px}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-10{margin-bottom:2.5rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:0.5rem}.mb-2\.5{margin-bottom:0.625rem}.mb-6{margin-bottom:1.5rem}.ml-0{margin-left:0px}.mt-0\.5{margin-top:0.125rem}.mt-2{margin-top:0.5rem}.mt-auto{margin-top:auto}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-14{height:3.5rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-7{height:1.75rem}.h-8{height:2rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-2{width:0.5rem}.w-2\.5{width:0.625rem}.w-6{width:1.5rem}.w-7{width:1.75rem}.w-8{width:2rem}.w-full{width:100%}.w-px{width:1px}.max-w-4xl{max-width:56rem}.max-w-\[1440px\]{max-width:1440px}.max-w-lg{max-width:32rem}.shrink-0{flex-shrink:0}.flex-grow{flex-grow:1}.cursor-not-allowed{cursor:not-allowed}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.grid-cols-6{grid-template-columns:repeat(6, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.self-start{align-self:flex-start}.overflow-hidden{overflow:hidden}.rounded{border-radius:12px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:16px}.rounded-md{border-radius:12px}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-outline{--tw-border-opacity:1;border-color:rgb(113 131 138 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(36 52 58 / var(--tw-border-opacity, 1))}.border-primary{--tw-border-opacity:1;border-color:rgb(77 182 176 / var(--tw-border-opacity, 1))}.border-primary\/40{border-color:rgb(77 182 176 / 0.4)}.border-tertiary{--tw-border-opacity:1;border-color:rgb(76 194 125 / var(--tw-border-opacity, 1))}.bg-background{--tw-bg-opacity:1;background-color:rgb(14 23 27 / var(--tw-bg-opacity, 1))}.bg-error-container{--tw-bg-opacity:1;background-color:rgb(61 33 26 / var(--tw-bg-opacity, 1))}.bg-outline-variant{--tw-bg-opacity:1;background-color:rgb(36 52 58 / var(--tw-bg-opacity, 1))}.bg-primary{--tw-bg-opacity:1;background-color:rgb(77 182 176 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.bg-primary-container\/40{background-color:rgb(22 54 58 / 0.4)}.bg-secondary{--tw-bg-opacity:1;background-color:rgb(240 180 58 / var(--tw-bg-opacity, 1))}.bg-secondary-container{--tw-bg-opacity:1;background-color:rgb(58 46 18 / var(--tw-bg-opacity, 1))}.bg-surface{--tw-bg-opacity:1;background-color:rgb(20 33 39 / var(--tw-bg-opacity, 1))}.bg-surface-container{--tw-bg-opacity:1;background-color:rgb(27 43 50 / var(--tw-bg-opacity, 1))}.bg-surface-container-high{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.bg-surface-container\/40{background-color:rgb(27 43 50 / 0.4)}.bg-surface-container\/60{background-color:rgb(27 43 50 / 0.6)}.bg-tertiary-container{--tw-bg-opacity:1;background-color:rgb(22 53 36 / var(--tw-bg-opacity, 1))}.p-2\.5{padding:0.625rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pb-1{padding-bottom:0.25rem}.pb-16{padding-bottom:4rem}.pb-6{padding-bottom:1.5rem}.pt-10{padding-top:2.5rem}.pt-2{padding-top:0.5rem}.pt-24{padding-top:6rem}.pt-3{padding-top:0.75rem}.text-left{text-align:left}.text-center{text-align:center}.font-body{font-family:Figtree, sans-serif}.font-display{font-family:Bricolage Grotesque}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-reading{font-family:Literata, serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[15px\]{font-size:15px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.italic{font-style:italic}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.leading-none{line-height:1}.leading-relaxed{line-height:1.625}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-error{--tw-text-opacity:1;color:rgb(238 138 110 / var(--tw-text-opacity, 1))}.text-on-primary{--tw-text-opacity:1;color:rgb(14 23 27 / var(--tw-text-opacity, 1))}.text-on-primary-container{--tw-text-opacity:1;color:rgb(135 205 200 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(228 236 236 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(169 184 186 / var(--tw-text-opacity, 1))}.text-on-surface-variant\/50{color:rgb(169 184 186 / 0.5)}.text-outline-variant{--tw-text-opacity:1;color:rgb(36 52 58 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(77 182 176 / var(--tw-text-opacity, 1))}.text-secondary{--tw-text-opacity:1;color:rgb(240 180 58 / var(--tw-text-opacity, 1))}.text-tertiary{--tw-text-opacity:1;color:rgb(76 194 125 / var(--tw-text-opacity, 1))}.underline-offset-4{text-underline-offset:4px}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.opacity-60{opacity:0.6}.shadow-none{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-primary-container *::selection{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary-container *::selection{--tw-text-opacity:1;color:rgb(135 205 200 / var(--tw-text-opacity, 1))}.selection\:bg-primary-container::selection{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary-container::selection{--tw-text-opacity:1;color:rgb(135 205 200 / var(--tw-text-opacity, 1))}.placeholder\:text-outline::placeholder{--tw-text-opacity:1;color:rgb(113 131 138 / var(--tw-text-opacity, 1))}.hover\:border-error\/50:hover{border-color:rgb(238 138 110 / 0.5)}.hover\:border-outline:hover{--tw-border-opacity:1;border-color:rgb(113 131 138 / var(--tw-border-opacity, 1))}.hover\:border-secondary\/50:hover{border-color:rgb(240 180 58 / 0.5)}.hover\:border-tertiary\/50:hover{border-color:rgb(76 194 125 / 0.5)}.hover\:bg-\[\#5fc5be\]:hover{--tw-bg-opacity:1;background-color:rgb(95 197 190 / var(--tw-bg-opacity, 1))}.hover\:bg-surface-container-high:hover{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(77 182 176 / var(--tw-text-opacity, 1))}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}.focus\:border-primary:focus{--tw-border-opacity:1;border-color:rgb(77 182 176 / var(--tw-border-opacity, 1))}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-primary\/20:focus{--tw-ring-color:rgb(77 182 176 / 0.2)}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-\[0\.99\]:active{--tw-scale-x:0.99;--tw-scale-y:0.99;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:text-primary{--tw-text-opacity:1;color:rgb(77 182 176 / var(--tw-text-opacity, 1))}.group:active .group-active\:scale-95{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width: 640px){.sm\:flex{display:flex}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}}@media (min-width: 768px){.md\:ml-1{margin-left:0.25rem}.md\:inline-block{display:inline-block}.md\:inline{display:inline}.md\:h-14{height:3.5rem}.md\:h-16{height:4rem}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:gap-2{gap:0.5rem}.md\:gap-4{gap:1rem}.md\:self-auto{align-self:auto}.md\:p-10{padding:2.5rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:py-5{padding-top:1.25rem;padding-bottom:1.25rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-base{font-size:1rem;line-height:1.5rem}.md\:text-sm{font-size:0.875rem;line-height:1.25rem}.md\:before\:absolute::before{content:var(--tw-content);position:absolute}.md\:before\:-left-4::before{content:var(--tw-content);left:-1rem}.md\:before\:top-1\/2::before{content:var(--tw-content);top:50%}.md\:before\:h-px::before{content:var(--tw-content);height:1px}.md\:before\:w-2::before{content:var(--tw-content);width:0.5rem}.md\:before\:-translate-y-1\/2::before{content:var(--tw-content);--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.md\:before\:bg-outline-variant::before{content:var(--tw-content);--tw-bg-opacity:1;background-color:rgb(36 52 58 / var(--tw-bg-opacity, 1))}.md\:before\:content-\[\'\'\]::before{--tw-content:'';content:var(--tw-content)}}@media (min-width: 1024px){.lg\:col-span-5{grid-column:span 5 / span 5}.lg\:col-span-7{grid-column:span 7 / span 7}.lg\:flex{display:flex}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:gap-6{gap:1.5rem}.lg\:px-12{padding-left:3rem;padding-right:3rem}}</style></head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- ========================================== -->
+<!-- 1. ÜST GEZİNME ÇUBUĞU (TOP BAR - 64px)     -->
+<!-- ========================================== -->
+<header class="w-full h-16 bg-surface border-b border-outline-variant fixed top-0 left-0 z-50 flex items-center justify-between px-6 lg:px-12">
+<!-- Sol Logo ve Sınav Seçici -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-2.5 text-on-surface group" href="#">
+<!-- Optik Form Tam Daire Cevap Motifi -->
+<span class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold text-sm leading-none transition-transform group-active:scale-95">
+<span class="w-2.5 h-2.5 rounded-full bg-background"></span>
+</span>
+<span class="font-display text-2xl font-bold tracking-tight text-on-surface">ODAK</span>
+</a>
+<!-- Dikey Ayırıcı -->
+<span class="hidden md:inline-block w-px h-5 bg-outline-variant"></span>
+<!-- Sınav Takvim Çipi & Seçici Menüsü -->
+<div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant hover:border-outline transition-colors cursor-pointer group">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-xs font-medium text-on-surface">2026-YDS/2 · 22 Kasım 2026 · 52 Gün Kaldı</span>
+<span class="text-[11px] text-on-surface-variant font-normal">| Başvuru Dönemi (30 Eyl - 8 Eki)</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant group-hover:text-primary transition-colors">expand_more</span>
+</div>
+</div>
+<!-- Sağ Eylemler ve Destek Bağlantıları -->
+<div class="flex items-center gap-4 lg:gap-6">
+<nav class="hidden lg:flex items-center gap-6 text-sm text-on-surface-variant">
+<a class="hover:text-primary transition-colors flex items-center gap-1.5" href="#rehber">
+<span class="material-symbols-outlined text-base">description</span>
+<span>Sınav Kılavuzu</span>
+</a>
+<a class="hover:text-primary transition-colors flex items-center gap-1.5" href="#yardim">
+<span class="material-symbols-outlined text-base">help_outline</span>
+<span>Yardım ve Destek</span>
+</a>
+</nav>
+<!-- İkincil Buton: Giriş Yap -->
+<a class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-on-surface hover:text-primary bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-md transition-colors active:scale-95" href="#giris">
+        Giriş Yap
+      </a>
+</div>
+</header>
+<!-- ========================================== -->
+<!-- ANA İÇERİK ALANI                          -->
+<!-- ========================================== -->
+<main class="flex-grow pt-24 pb-16 px-4 md:px-8 max-w-[1440px] mx-auto w-full">
+<!-- ========================================== -->
+<!-- 2. SÜREÇ ADIMLARI (STEPPER / PROGRESS)     -->
+<!-- ========================================== -->
+<section class="max-w-4xl mx-auto mb-10">
+<div class="bg-surface border border-outline-variant rounded-lg p-4 md:px-8 md:py-5">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-2 items-center">
+<!-- Adım 1: Tamamlandı -->
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-container border border-tertiary flex items-center justify-center text-tertiary shrink-0">
+<span class="material-symbols-outlined text-lg font-bold">check</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[11px] font-semibold tracking-wider text-tertiary uppercase">Adım 1 · Tamamlandı</span>
+<span class="text-sm font-medium text-on-surface">E-posta Adresi</span>
+</div>
+</div>
+<!-- Adım 2: Aktif (Şu Anki Ekran) -->
+<div class="flex items-center gap-3 relative md:before:content-[''] md:before:absolute md:before:-left-4 md:before:top-1/2 md:before:-translate-y-1/2 md:before:w-2 md:before:h-px md:before:bg-outline-variant">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center text-sm font-bold shrink-0">
+              2
+            </div>
+<div class="flex flex-col">
+<span class="text-[11px] font-semibold tracking-wider text-primary uppercase">Adım 2 · Aktif Doğrulama</span>
+<span class="text-sm font-semibold text-on-surface">Güvenlik Kodu Girişi</span>
+</div>
+</div>
+<!-- Adım 3: Sırada -->
+<div class="flex items-center gap-3 opacity-60">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center text-sm font-medium text-on-surface-variant shrink-0">
+              3
+            </div>
+<div class="flex flex-col">
+<span class="text-[11px] font-medium tracking-wider text-on-surface-variant uppercase">Adım 3 · Sırada</span>
+<span class="text-sm font-normal text-on-surface-variant">Çalışma Planı &amp; Seviye Tespiti</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================== -->
+<!-- 3. ANA İÇERİK GRID (2 KOLONLU DÜZEN)       -->
+<!-- ========================================== -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
+<!-- ========================================== -->
+<!-- SOL KOLON: DOĞRULAMA KARTI (7 Kolon)       -->
+<!-- ========================================== -->
+<section class="lg:col-span-7 bg-surface border border-outline-variant rounded-lg p-6 md:p-10 space-y-8">
+<!-- Kart Başlığı ve Bilgilendirme -->
+<div class="space-y-3">
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant text-xs text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>Aday Güvenlik Doğrulaması</span>
+</div>
+<h1 class="font-display text-3xl md:text-4xl font-bold tracking-tight text-on-surface">
+            Doğrulama Kodunu Girin
+          </h1>
+<p class="text-sm md:text-base text-on-surface-variant leading-relaxed">
+            Hesabınızı güvenle etkinleştirmek ve 2026-YDS/2 hazırlık programınızı başlatmak için e-posta adresinize tek kullanımlık 6 haneli güvenlik kodu iletilmiştir.
+          </p>
+</div>
+<!-- E-posta Bilgi Şeridi -->
+<div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-surface-container rounded-md border border-outline-variant">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-xl">mark_email_read</span>
+<div class="text-xs md:text-sm">
+<span class="text-on-surface-variant block md:inline">Kodun gönderildiği adres:</span>
+<span class="font-semibold text-on-surface ml-0 md:ml-1 font-mono">selin.kaya@hacettepe.edu.tr</span>
+</div>
+</div>
+<button class="text-xs font-semibold text-primary hover:underline underline-offset-4 flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-sm">edit</span>
+<span>E-postayı Değiştir</span>
+</button>
+</div>
+<!-- 6 Haneli Kod Giriş Alanları -->
+<form class="space-y-6" onsubmit="event.preventDefault();">
+<div>
+<div class="flex items-center justify-between mb-2.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">
+                6 Haneli Güvenlik Kodu
+              </label>
+<button class="text-xs text-primary hover:underline flex items-center gap-1" title="Panodaki kodu yapıştır" type="button">
+<span class="material-symbols-outlined text-sm">content_paste</span>
+<span>Panodan Yapıştır</span>
+</button>
+</div>
+<!-- Giriş Kutucukları (Optik Form Temalı, Geniş Dokunma Hedefli) -->
+<div class="grid grid-cols-6 gap-2.5 md:gap-4 max-w-lg">
+<!-- Kutu 1 (Dolu) -->
+<input class="w-full h-14 md:h-16 text-center text-2xl font-bold font-mono bg-surface-container border border-outline-variant rounded-md text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" maxlength="1" type="text" value="4">
+<!-- Kutu 2 (Dolu) -->
+<input class="w-full h-14 md:h-16 text-center text-2xl font-bold font-mono bg-surface-container border border-outline-variant rounded-md text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" maxlength="1" type="text" value="8">
+<!-- Kutu 3 (Dolu) -->
+<input class="w-full h-14 md:h-16 text-center text-2xl font-bold font-mono bg-surface-container border border-outline-variant rounded-md text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" maxlength="1" type="text" value="2">
+<!-- Kutu 4 (Dolu) -->
+<input class="w-full h-14 md:h-16 text-center text-2xl font-bold font-mono bg-surface-container border border-outline-variant rounded-md text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" maxlength="1" type="text" value="1">
+<!-- Kutu 5 (Aktif / Bekleyen Odak) -->
+<input autofocus="" class="w-full h-14 md:h-16 text-center text-2xl font-bold font-mono bg-surface-container-high border-2 border-primary rounded-md text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-outline" maxlength="1" placeholder="•" type="text">
+<!-- Kutu 6 (Boş) -->
+<input class="w-full h-14 md:h-16 text-center text-2xl font-bold font-mono bg-surface-container border border-outline-variant rounded-md text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-outline" maxlength="1" placeholder="•" type="text">
+</div>
+<p class="text-xs text-on-surface-variant mt-2">
+              Klavyenizden sayıları sırayla girebilir veya e-postanızdaki kodu doğrudan yapıştırabilirsiniz.
+            </p>
+</div>
+<!-- Sayaç & Alternatif Yeniden Gönderim -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 pb-1 border-t border-outline-variant">
+<div class="flex items-center gap-2 text-xs md:text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-base">timer</span>
+<span>Kalan geçerlilik süresi:</span>
+<span class="font-mono font-bold text-on-surface bg-surface-container px-2 py-0.5 rounded border border-outline-variant tabular-nums">00:48</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="text-xs font-semibold text-on-surface-variant/50 cursor-not-allowed flex items-center gap-1" disabled="" type="button">
+<span class="material-symbols-outlined text-sm">refresh</span>
+<span>Kodu Yeniden Gönder (48s)</span>
+</button>
+<span class="text-outline-variant">·</span>
+<button class="text-xs font-semibold text-primary hover:underline flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-sm">smartphone</span>
+<span>SMS ile Al</span>
+</button>
+</div>
+</div>
+<!-- Birincil Eylem Düğmesi -->
+<div class="pt-2">
+<button class="w-full h-13 md:h-14 bg-primary hover:bg-[#5fc5be] text-on-primary font-bold text-base rounded-md transition-all flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer shadow-none" type="submit">
+<span>Kodu Doğrula ve Devam Et</span>
+<span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Akademik Güven & Sade Bilgilendirme -->
+<div class="p-4 rounded-md bg-surface-container/60 border border-outline-variant flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant text-xl shrink-0 mt-0.5">info</span>
+<div class="space-y-1 text-xs text-on-surface-variant leading-relaxed">
+<span class="font-medium text-on-surface block">E-posta kutunuzda kodu bulamadınız mı?</span>
+<p>
+              Kodunuz birkaç saniye içinde ulaşmazsa lütfen gereksiz (spam/tanıtım) klasörünüzü kontrol ediniz veya 48 saniyelik güvenlik süresi dolduğunda yeni kod talep ediniz.
+            </p>
+</div>
+</div>
+</section>
+<!-- ========================================================= -->
+<!-- SAĞ KOLON: PEDAGOJİK ÖNİZLEME & GÜVENCE (5 Kolon)         -->
+<!-- ========================================================= -->
+<section class="lg:col-span-5 space-y-6">
+<!-- Örnek Soru & Optik Form Önizleme Kartı -->
+<div class="bg-surface border border-outline-variant rounded-lg p-6 space-y-5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<span class="text-xs font-bold tracking-wider uppercase text-on-surface">Örnek Soru Önizlemesi</span>
+</div>
+<span class="text-[11px] px-2 py-0.5 rounded bg-surface-container border border-outline-variant text-on-surface-variant font-mono">
+              2026-YDS/2 · Soru 18
+            </span>
+</div>
+<!-- Soru Gövdesi (Literata Serif ile Akademik Okuma Deneyimi) -->
+<div class="space-y-3">
+<p class="font-reading text-[15px] leading-relaxed text-on-surface text-left">
+              Although marine protected areas have proven remarkably effective in restoring depleted fish populations, ------- until commercial exploitation along coastal borders is systematically regulated.
+            </p>
+<span class="text-xs text-on-surface-variant italic block">
+              (Cümle Tamamlama Sorusu · Doğru Cevap: 1,25 Puan)
+            </span>
+</div>
+<!-- Seçenekler ve Optik Form Baloncukları -->
+<div class="space-y-2">
+<!-- Seçenek A -->
+<div class="flex items-center gap-3 p-2.5 rounded-md bg-surface-container/40 border border-outline-variant hover:border-outline transition-colors text-xs text-on-surface">
+<span class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-bold text-[11px] shrink-0 text-on-surface-variant">A</span>
+<span class="font-reading">local biodiversity will continue to face irreversible habitat collapse</span>
+</div>
+<!-- Seçenek B (Vurgulu Örnek Seçim) -->
+<div class="flex items-center gap-3 p-2.5 rounded-md bg-primary-container/40 border border-primary text-xs text-on-surface">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-[11px] shrink-0">B</span>
+<span class="font-reading font-medium text-on-surface">they will remain insufficient to ensure long-term oceanic equilibrium</span>
+</div>
+<!-- Seçenek C -->
+<div class="flex items-center gap-3 p-2.5 rounded-md bg-surface-container/40 border border-outline-variant hover:border-outline transition-colors text-xs text-on-surface">
+<span class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-bold text-[11px] shrink-0 text-on-surface-variant">C</span>
+<span class="font-reading">conservationists had already achieved consensus regarding continental waters</span>
+</div>
+</div>
+<!-- İpucu Merdiveni Tanıtım Çubuğu -->
+<div class="pt-3 border-t border-outline-variant">
+<div class="flex items-center justify-between text-xs text-on-surface-variant mb-2">
+<span class="font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-sm">stairs</span>
+                4 Aşamalı Öğretmen İpucu Merdiveni
+              </span>
+<span class="text-[11px] text-primary">Sistem Hazır</span>
+</div>
+<div class="grid grid-cols-4 gap-1.5 text-center text-[10px] font-semibold">
+<div class="py-1 px-1 rounded bg-surface-container border border-outline-variant text-on-surface">1. Odak</div>
+<div class="py-1 px-1 rounded bg-surface-container border border-outline-variant text-on-surface">2. Kural</div>
+<div class="py-1 px-1 rounded bg-surface-container border border-outline-variant text-on-surface">3. Eleme</div>
+<div class="py-1 px-1 rounded bg-primary text-on-primary">4. Çözüm</div>
+</div>
+</div>
+</div>
+<!-- Yetişkin Aday Güvence Kartı (Sakin & Güvenilir Ortam) -->
+<div class="bg-surface border border-outline-variant rounded-lg p-6 space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">verified_user</span>
+<h3 class="text-sm font-bold text-on-surface uppercase tracking-wider">ODAK Hazırlık Güvenceleri</h3>
+</div>
+<div class="space-y-3 text-xs text-on-surface-variant">
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-tertiary text-base shrink-0 mt-0.5">check_circle</span>
+<p><strong class="text-on-surface font-semibold">Reklamsız ve Sakin Çalışma Alanı:</strong> Zamanınızı çalan bildirimler, dikkat dağıtan animasyonlar ve yanıltıcı sayaçlar yer almaz.</p>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-tertiary text-base shrink-0 mt-0.5">check_circle</span>
+<p><strong class="text-on-surface font-semibold">ÖSYM Değerlendirme Standardı:</strong> Platformda 'net' kavramı bulunmaz; her doğru cevap 1,25 puan olarak hesaplanır (80 soru = 100 tam puan).</p>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-tertiary text-base shrink-0 mt-0.5">check_circle</span>
+<p><strong class="text-on-surface font-semibold">Kişiselleştirilmiş İlerleme:</strong> Doğrulama tamamlandığında 15 dakikalık seviye tespit sınavınız ile size özel eksik tamamlama takvimi oluşturulur.</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- ========================================================================= -->
+<!-- 4. ALT KISIM - ARAYÜZ DURUMLARI & BİLDİRİM SENARYOLARI (4 Temel Durum Matrisi) -->
+<!-- ========================================================================= -->
+<section class="border-t border-outline-variant pt-10 pb-6">
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-2">
+<div>
+<h2 class="text-base font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">schema</span>
+            Arayüz Durumları ve Bildirim Senaryoları Rehberi
+          </h2>
+<p class="text-xs text-on-surface-variant mt-0.5">
+            Doğrulama akışı boyunca adayın karşılaşabileceği 4 temel durum ve görsel geri bildirim dili.
+          </p>
+</div>
+<span class="text-xs font-mono text-on-surface-variant px-2.5 py-1 rounded bg-surface border border-outline-variant self-start md:self-auto">
+          Protokol Kodu: AUTH-05-ST
+        </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Durum 1: Kod Gönderildi / Bekleniyor (Mevcut Durum) -->
+<div class="bg-surface border border-primary/40 rounded-lg p-4 space-y-2.5 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-2 h-full bg-primary"></div>
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-semibold tracking-wider text-primary uppercase">Durum 01</span>
+<span class="text-[10px] px-1.5 py-0.5 rounded bg-primary-container text-on-primary-container font-mono">Aktif Ekran</span>
+</div>
+<div class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-base">outgoing_mail</span>
+            Kod Gönderildi (Doğrulama Bekleniyor)
+          </div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Güvenlik kodu selin.kaya@hacettepe.edu.tr adresine iletildi. 60 saniyelik geri sayım sayacı devrede.
+          </p>
+</div>
+<!-- Durum 2: Hatalı Kod Girişi -->
+<div class="bg-surface border border-outline-variant hover:border-error/50 rounded-lg p-4 space-y-2.5 relative overflow-hidden transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-semibold tracking-wider text-error uppercase">Durum 02</span>
+<span class="text-[10px] px-1.5 py-0.5 rounded bg-error-container text-error font-mono">Hata İkazı</span>
+</div>
+<div class="text-xs font-bold text-error flex items-center gap-1.5">
+<span class="material-symbols-outlined text-error text-base">error_outline</span>
+            Hatalı Kod Girişi
+          </div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Girdiğiniz 6 haneli kod eşleşmedi. Güvenliğiniz için kalan deneme hakkı: 3. Lütfen kontrol edip tekrar deneyiniz.
+          </p>
+</div>
+<!-- Durum 3: Kod Süresi Doldu -->
+<div class="bg-surface border border-outline-variant hover:border-secondary/50 rounded-lg p-4 space-y-2.5 relative overflow-hidden transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-semibold tracking-wider text-secondary uppercase">Durum 03</span>
+<span class="text-[10px] px-1.5 py-0.5 rounded bg-secondary-container text-secondary font-mono">Süre Aşımı</span>
+</div>
+<div class="text-xs font-bold text-secondary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-base">hourglass_disabled</span>
+            Kodun Süresi Tamamlandı
+          </div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Güvenliğiniz gereği tek kullanımlık kodun süresi doldu. "Kodu Yeniden Gönder" butonuna tıklayarak yeni kod alabilirsiniz.
+          </p>
+</div>
+<!-- Durum 4: Doğrulama Başarılı -->
+<div class="bg-surface border border-outline-variant hover:border-tertiary/50 rounded-lg p-4 space-y-2.5 relative overflow-hidden transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-semibold tracking-wider text-tertiary uppercase">Durum 04</span>
+<span class="text-[10px] px-1.5 py-0.5 rounded bg-tertiary-container text-tertiary font-mono">Onaylandı</span>
+</div>
+<div class="text-xs font-bold text-tertiary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-tertiary text-base">check_circle</span>
+            E-posta Adresi Doğrulandı
+          </div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Kimliğiniz başarıyla doğrulandı. Kişiselleştirilmiş 2026-YDS/2 Seviye Tespit Sınavına aktarılıyorsunuz...
+          </p>
+</div>
+</div>
+</section>
+</main>
+<!-- ========================================== -->
+<!-- 5. KURUMSAL SADE ALTBİLGİ (FOOTER)         -->
+<!-- ========================================== -->
+<footer class="w-full bg-background border-t border-outline-variant mt-auto">
+<div class="max-w-[1440px] mx-auto py-6 px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-on-surface-variant">
+<!-- Telif ve Sınav Uyumluluk Metni -->
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>
+<p>
+          © 2026 ODAK Akademik Hazırlık Platformu. ÖSYM YDS standartlarına uygun değerlendirme altyapısı.
+        </p>
+</div>
+<!-- Bağlantılar -->
+<div class="flex flex-wrap items-center gap-5">
+<a class="hover:text-primary transition-colors" href="#takvim">Sınav Takvimi (2026-YDS/2)</a>
+<span class="text-outline-variant">·</span>
+<a class="hover:text-primary transition-colors" href="#kullanim">Kullanım Koşulları</a>
+<span class="text-outline-variant">·</span>
+<a class="hover:text-primary transition-colors" href="#kvkk">Kişisel Verilerin Korunması</a>
+<span class="text-outline-variant">·</span>
+<a class="hover:text-primary transition-colors" href="#iletisim">İletişim &amp; Destek</a>
+</div>
+</div>
+</footer>
+</body></html>

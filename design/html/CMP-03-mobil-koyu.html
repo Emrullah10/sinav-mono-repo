@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>CMP-03 · Navigasyon ve Yönlendirme Bileşenleri</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#0E171B',
+            surface: '#142127',
+            'surface-container': '#1B2B32',
+            'surface-container-high': '#16363A',
+            'on-surface': '#E4ECEC',
+            'on-surface-variant': '#A9B8BA',
+            outline: '#71838A',
+            'outline-variant': '#24343A',
+            primary: '#4DB6B0',
+            'on-primary': '#0E171B',
+            'primary-container': '#16363A',
+            'on-primary-container': '#87CDC8',
+            secondary: '#F0B43A',
+            'on-secondary': '#0E171B',
+            'secondary-container': '#3A2E12',
+            tertiary: '#4CC27D',
+            'tertiary-container': '#163524',
+            error: '#EE8A6E',
+            'error-container': '#3D211A',
+            'inverse-surface': '#E4ECEC',
+            'chart-1': '#04A19B',
+            'chart-2': '#7483E0',
+            'chart-3': '#C0851F',
+            'chart-4': '#C06099'
+          },
+          borderRadius: {
+            xs: '4px',
+            sm: '8px',
+            DEFAULT: '12px',
+            md: '12px',
+            lg: '16px',
+            xl: '24px',
+            full: '9999px'
+          },
+          fontFamily: {
+            "headline": ["Bricolage Grotesque"],
+            "display": ["Bricolage Grotesque"],
+            body: ['Figtree', 'sans-serif'],
+            label: ['Figtree', 'sans-serif'],
+            reading: ['Literata', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Touch target guarantee */
+    .touch-target-44 {
+      min-width: 44px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Hide scrollbars for neat spec panels */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  <style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.-bottom-1{bottom:-0.25rem}.-right-1{right:-0.25rem}.-top-1{top:-0.25rem}.bottom-0{bottom:0px}.left-0{left:0px}.right-0{right:0px}.right-3\.5{right:0.875rem}.top-0{top:0px}.top-1\.5{top:0.375rem}.z-40{z-index:40}.z-50{z-index:50}.col-span-4{grid-column:span 4 / span 4}.col-span-8{grid-column:span 8 / span 8}.-mx-2{margin-left:-0.5rem;margin-right:-0.5rem}.mx-1{margin-left:0.25rem;margin-right:0.25rem}.mx-auto{margin-left:auto;margin-right:auto}.-mr-2{margin-right:-0.5rem}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-0\.5{height:0.125rem}.h-10{height:2.5rem}.h-12{height:3rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-7{height:1.75rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.min-h-\[170px\]{min-height:170px}.min-h-\[44px\]{min-height:44px}.min-h-screen{min-height:100vh}.w-12{width:3rem}.w-16{width:4rem}.w-2{width:0.5rem}.w-2\.5{width:0.625rem}.w-5{width:1.25rem}.w-7{width:1.75rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-full{width:100%}.min-w-\[56px\]{min-width:56px}.max-w-\[390px\]{max-width:390px}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}.-rotate-90{--tw-rotate:-90deg;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.justify-around{justify-content:space-around}.justify-items-center{justify-items:center}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-outline-variant\/60 > :not([hidden]) ~ :not([hidden]){border-color:rgb(36 52 58 / 0.6)}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:12px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:16px}.rounded-md{border-radius:12px}.border{border-width:1px}.border-0{border-width:0px}.border-2{border-width:2px}.border-x{border-left-width:1px;border-right-width:1px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-t{border-top-width:1px}.border-error\/40{border-color:rgb(238 138 110 / 0.4)}.border-outline{--tw-border-opacity:1;border-color:rgb(113 131 138 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(36 52 58 / var(--tw-border-opacity, 1))}.border-outline-variant\/60{border-color:rgb(36 52 58 / 0.6)}.border-primary{--tw-border-opacity:1;border-color:rgb(77 182 176 / var(--tw-border-opacity, 1))}.border-surface{--tw-border-opacity:1;border-color:rgb(20 33 39 / var(--tw-border-opacity, 1))}.border-surface-container{--tw-border-opacity:1;border-color:rgb(27 43 50 / var(--tw-border-opacity, 1))}.border-tertiary{--tw-border-opacity:1;border-color:rgb(76 194 125 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.bg-background{--tw-bg-opacity:1;background-color:rgb(14 23 27 / var(--tw-bg-opacity, 1))}.bg-error-container{--tw-bg-opacity:1;background-color:rgb(61 33 26 / var(--tw-bg-opacity, 1))}.bg-outline-variant{--tw-bg-opacity:1;background-color:rgb(36 52 58 / var(--tw-bg-opacity, 1))}.bg-primary{--tw-bg-opacity:1;background-color:rgb(77 182 176 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.bg-secondary{--tw-bg-opacity:1;background-color:rgb(240 180 58 / var(--tw-bg-opacity, 1))}.bg-secondary-container{--tw-bg-opacity:1;background-color:rgb(58 46 18 / var(--tw-bg-opacity, 1))}.bg-surface{--tw-bg-opacity:1;background-color:rgb(20 33 39 / var(--tw-bg-opacity, 1))}.bg-surface-container{--tw-bg-opacity:1;background-color:rgb(27 43 50 / var(--tw-bg-opacity, 1))}.bg-surface-container-high{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.bg-surface-container-high\/40{background-color:rgb(22 54 58 / 0.4)}.bg-surface-container\/60{background-color:rgb(27 43 50 / 0.6)}.bg-tertiary{--tw-bg-opacity:1;background-color:rgb(76 194 125 / var(--tw-bg-opacity, 1))}.bg-tertiary-container{--tw-bg-opacity:1;background-color:rgb(22 53 36 / var(--tw-bg-opacity, 1))}.bg-transparent{background-color:transparent}.p-0{padding:0px}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pb-1\.5{padding-bottom:0.375rem}.pb-2{padding-bottom:0.5rem}.pb-24{padding-bottom:6rem}.pt-1{padding-top:0.25rem}.pt-1\.5{padding-top:0.375rem}.pt-2{padding-top:0.5rem}.text-left{text-align:left}.text-center{text-align:center}.font-body{font-family:Figtree, sans-serif}.font-display{font-family:Bricolage Grotesque}.font-headline{font-family:Bricolage Grotesque}.font-label{font-family:Figtree, sans-serif}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-reading{font-family:Literata, serif}.font-sans{font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[13px\]{font-size:13px}.text-\[14px\]{font-size:14px}.text-\[16px\]{font-size:16px}.text-\[18px\]{font-size:18px}.text-\[20px\]{font-size:20px}.text-\[22px\]{font-size:22px}.text-\[24px\]{font-size:24px}.text-\[8px\]{font-size:8px}.text-\[9px\]{font-size:9px}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-none{line-height:1}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.text-error{--tw-text-opacity:1;color:rgb(238 138 110 / var(--tw-text-opacity, 1))}.text-on-primary{--tw-text-opacity:1;color:rgb(14 23 27 / var(--tw-text-opacity, 1))}.text-on-primary-container{--tw-text-opacity:1;color:rgb(135 205 200 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(228 236 236 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(169 184 186 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(77 182 176 / var(--tw-text-opacity, 1))}.text-secondary{--tw-text-opacity:1;color:rgb(240 180 58 / var(--tw-text-opacity, 1))}.text-tertiary{--tw-text-opacity:1;color:rgb(76 194 125 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.ring-4{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-primary-container{--tw-ring-opacity:1;--tw-ring-color:rgb(22 54 58 / var(--tw-ring-opacity, 1))}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-100{transition-duration:100ms}.duration-300{transition-duration:300ms}.selection\:bg-primary-container *::selection{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary-container *::selection{--tw-text-opacity:1;color:rgb(135 205 200 / var(--tw-text-opacity, 1))}.selection\:bg-primary-container::selection{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary-container::selection{--tw-text-opacity:1;color:rgb(135 205 200 / var(--tw-text-opacity, 1))}.placeholder\:text-on-surface-variant::placeholder{--tw-text-opacity:1;color:rgb(169 184 186 / var(--tw-text-opacity, 1))}.focus-within\:border-primary:focus-within{--tw-border-opacity:1;border-color:rgb(77 182 176 / var(--tw-border-opacity, 1))}.hover\:bg-primary-container\/40:hover{background-color:rgb(22 54 58 / 0.4)}.hover\:bg-surface-container-high:hover{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.hover\:text-on-surface:hover{--tw-text-opacity:1;color:rgb(228 236 236 / var(--tw-text-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(77 182 176 / var(--tw-text-opacity, 1))}.focus\:ring-0:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}</style></head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mobile Viewport Container: 390px Canonical Base with Max-W constraint for high-end preview -->
+<div class="relative w-full max-w-[390px] mx-auto min-h-screen bg-background border-x border-outline-variant shadow-2xl flex flex-col pb-24">
+<!-- TOP APP BAR (Shared Component JSON Source) -->
+<header class="bg-surface text-on-surface flex justify-between items-center h-16 w-full max-w-[390px] mx-auto px-4 sticky top-0 z-40 border-b border-outline-variant">
+<button aria-label="Geri Dön" class="touch-target-44 rounded-md text-on-surface-variant hover:bg-primary-container/40 transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex flex-col items-center">
+<span class="font-headline text-title font-semibold text-primary">YDS Sınav Sistemi</span>
+<h1 class="font-headline text-body-sm font-semibold text-on-surface">Navigasyon Mimarisi</h1>
+</div>
+<button aria-label="Ayarlar" class="touch-target-44 rounded-md text-on-surface-variant hover:bg-primary-container/40 transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+</header>
+<!-- CONTENT WRAPPER -->
+<main class="flex-1 px-4 py-6 space-y-8">
+<!-- SECTION 0: HEADER & SPEC META -->
+<section class="space-y-4">
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-caption font-semibold tracking-wide text-primary uppercase">Bileşen Kılavuzu 03</span>
+</div>
+<div>
+<h2 class="font-display text-headline-md tracking-tight text-on-surface font-bold">
+            Navigasyon ve Yönlendirme
+          </h2>
+<p class="font-reading text-body-sm text-on-surface-variant mt-2 leading-relaxed">
+            YDS yetişkin sınav adaylarının bilişsel odağını dağıtmayan, arayüz içi yön bulmayı kolaylaştıran standart navigasyon mimarisi ve bileşen spesifikasyonları.
+          </p>
+</div>
+<!-- Meta Tags Grid -->
+<div class="grid grid-cols-2 gap-2 pt-1">
+<div class="p-2.5 rounded-md bg-surface border border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="smartphone">smartphone</span>
+<div>
+<div class="text-[11px] text-on-surface-variant font-medium">Hedef Ekran</div>
+<div class="text-body-sm font-bold text-on-surface">390 Genişlik</div>
+</div>
+</div>
+<div class="p-2.5 rounded-md bg-surface border border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="dark_mode">dark_mode</span>
+<div>
+<div class="text-[11px] text-on-surface-variant font-medium">Tema Standardı</div>
+<div class="text-body-sm font-bold text-on-surface">Koyu Renk Arayüz</div>
+</div>
+</div>
+<div class="p-2.5 rounded-md bg-surface border border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[20px]" data-icon="touch_app">touch_app</span>
+<div>
+<div class="text-[11px] text-on-surface-variant font-medium">Minimum Dokunma</div>
+<div class="text-body-sm font-bold text-on-surface">44 Piksel Garantisi</div>
+</div>
+</div>
+<div class="p-2.5 rounded-md bg-surface border border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="verified_user">verified_user</span>
+<div>
+<div class="text-[11px] text-on-surface-variant font-medium">Erişilebilirlik</div>
+<div class="text-body-sm font-bold text-on-surface">Yüksek Kontrast</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 1: BOTTOM NAVIGATION BAR (DETAILED SPEC & DEMO) -->
+<section class="space-y-4">
+<div class="border-b border-outline-variant pb-2">
+<div class="flex items-center justify-between">
+<h3 class="font-headline text-headline-sm font-bold text-on-surface">1. Alt Sekme Çubuğu</h3>
+<span class="text-caption font-semibold px-2 py-0.5 rounded bg-surface-container text-on-surface-variant border border-outline-variant">Sabit 64 Piksel</span>
+</div>
+<p class="text-caption text-on-surface-variant mt-1 font-reading">
+            ÖSYM sınav adayının başparmak erişim haritasına uygun, beş eşit istasyonlu alt bar.
+          </p>
+</div>
+<!-- Live Interactive Mockup Card -->
+<div class="p-3 rounded-lg bg-surface border border-outline-variant space-y-3">
+<div class="flex items-center justify-between text-caption text-on-surface-variant border-b border-outline-variant pb-2">
+<span>Canlı Çubuk Simülasyonu</span>
+<span class="text-primary font-medium">Çalış Sekmesi Seçili</span>
+</div>
+<!-- Bottom Navigation Strip Representation -->
+<div class="rounded-md bg-surface-container border border-outline-variant p-1 shadow-inner">
+<nav aria-label="Alt Deneme Navigasyonu" class="flex justify-around items-center h-16 w-full">
+<!-- Tab 1: Bugün -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95 duration-100">
+<span class="material-symbols-outlined text-[24px]" data-icon="calendar_today">calendar_today</span>
+<span class="font-label text-caption font-medium tracking-tight mt-0.5">Bugün</span>
+</div>
+<!-- Tab 2: Çalış (Active) -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-semibold cursor-pointer active:scale-95 duration-100 relative">
+<span class="material-symbols-outlined fill text-[24px]" data-icon="menu_book">menu_book</span>
+<span class="font-label text-caption font-semibold tracking-tight mt-0.5">Çalış</span>
+<span class="absolute -bottom-1 w-5 h-0.5 bg-primary rounded-full"></span>
+</div>
+<!-- Tab 3: Deneme -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95 duration-100">
+<span class="material-symbols-outlined text-[24px]" data-icon="assignment">assignment</span>
+<span class="font-label text-caption font-medium tracking-tight mt-0.5">Deneme</span>
+</div>
+<!-- Tab 4: Öğretmen (With Safran Badge) -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95 duration-100 relative">
+<div class="relative inline-flex">
+<span class="material-symbols-outlined text-[24px]" data-icon="school">school</span>
+<!-- Safran notification dot (Never text color, only solid accent) -->
+<span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-secondary rounded-full border-2 border-surface-container" title="1 Yeni Değerlendirme"></span>
+</div>
+<span class="font-label text-caption font-medium tracking-tight mt-0.5">Öğretmen</span>
+</div>
+<!-- Tab 5: Ben -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95 duration-100">
+<span class="material-symbols-outlined text-[24px]" data-icon="person">person</span>
+<span class="font-label text-caption font-medium tracking-tight mt-0.5">Ben</span>
+</div>
+</nav>
+</div>
+<!-- Micro Spec breakdown -->
+<div class="grid grid-cols-2 gap-2 text-caption pt-1">
+<div class="p-2 rounded bg-surface-container-high/40 border border-outline-variant/60">
+<span class="text-primary font-semibold block">Aktif Durum:</span>
+<span class="text-on-surface-variant text-[11px] font-reading">Dolu ikon, petrol vurgusu, kalın etiket ve alt gösterge.</span>
+</div>
+<div class="p-2 rounded bg-surface-container-high/40 border border-outline-variant/60">
+<span class="text-secondary font-semibold block">Bildirim Durumu:</span>
+<span class="text-on-surface-variant text-[11px] font-reading">Yalnızca safran renkli dolgu nokta rozet.</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: TOP APP BAR VARIATIONS -->
+<section class="space-y-4">
+<div class="border-b border-outline-variant pb-2">
+<h3 class="font-headline text-headline-sm font-bold text-on-surface">2. Üst Çubuk Varyasyonları</h3>
+<p class="text-caption text-on-surface-variant mt-1 font-reading">
+            Kullanıcının derinlik seviyesine ve sınav odak durumuna göre 3 farklı üst çubuk yapısı.
+          </p>
+</div>
+<!-- Variation A: Büyük Başlıklı ve Geri Dönüşlü Çubuk -->
+<div class="p-3 rounded-lg bg-surface border border-outline-variant space-y-2">
+<div class="flex items-center justify-between text-caption font-semibold text-primary">
+<span>Varyasyon A · Hiyerarşik Modül Girişi</span>
+<span class="text-on-surface-variant text-[11px]">Geri Düğmeli</span>
+</div>
+<div class="rounded-md bg-surface-container border border-outline-variant p-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<button aria-label="Geri" class="touch-target-44 text-on-surface hover:bg-primary-container/40 rounded transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div>
+<div class="text-[11px] text-on-surface-variant font-medium">Soru Bankası #04</div>
+<div class="text-title font-bold text-on-surface">Kelime Bilgisi ve Bağlam</div>
+</div>
+</div>
+<div class="flex items-center">
+<button aria-label="Bildirimler" class="touch-target-44 text-on-surface-variant hover:text-on-surface rounded" type="button">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-caption border border-outline">
+                MK
+              </div>
+</div>
+</div>
+</div>
+<!-- Variation B: Arama ve Filtreli Üst Çubuk -->
+<div class="p-3 rounded-lg bg-surface border border-outline-variant space-y-2">
+<div class="flex items-center justify-between text-caption font-semibold text-primary">
+<span>Varyasyon B · Arama ve Liste Süzme</span>
+<span class="text-on-surface-variant text-[11px]">Sözlük &amp; Kural Arama</span>
+</div>
+<div class="rounded-md bg-surface-container border border-outline-variant p-2 space-y-2">
+<div class="flex items-center gap-2">
+<div class="flex-1 flex items-center gap-2 px-3 py-2 bg-surface rounded-md border border-outline-variant focus-within:border-primary">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-transparent border-0 p-0 text-body-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant font-reading" placeholder="Edat ve bağlaç kalıpları..." readonly="" type="text" value="Edat ve bağlaç kalıpları">
+<button aria-label="Temizle" class="touch-target-44 -mr-2 text-on-surface-variant hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+<button class="touch-target-44 px-3 bg-surface-container-high rounded-md border border-primary text-primary font-semibold text-caption flex items-center gap-1 active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+<span>Filtre</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Variation C: Sınav Odak Modu Üst Çubuğu (Distraction-Free) -->
+<div class="p-3 rounded-lg bg-surface border border-outline-variant space-y-2">
+<div class="flex items-center justify-between text-caption font-semibold text-secondary">
+<span>Varyasyon C · Gerçek Zamanlı Sınav Çubuğu</span>
+<span class="text-caption px-2 py-0.5 rounded bg-secondary-container text-secondary font-bold">Odak Modu</span>
+</div>
+<div class="rounded-md bg-surface-container border border-outline-variant p-2.5 flex items-center justify-between">
+<!-- Sınavdan Çık / Güvenli Çıkış -->
+<button class="touch-target-44 px-2 py-1 rounded bg-error-container text-error border border-error/40 text-caption font-semibold flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="cancel">cancel</span>
+<span>Çıkış</span>
+</button>
+<!-- Soru Sayacı -->
+<div class="text-center">
+<div class="text-caption font-bold text-on-surface">Soru 42 / 80</div>
+<div class="text-[10px] text-on-surface-variant">Cümle Tamamlama</div>
+</div>
+<!-- Kalan Süre -->
+<div class="flex items-center gap-1.5 px-2 py-1 rounded bg-surface border border-outline-variant">
+<span class="material-symbols-outlined text-secondary text-[16px]" data-icon="timer">timer</span>
+<span class="font-mono text-body-sm font-bold text-on-surface tracking-wider">01:24:35</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: TABS & SEGMENT CONTROLS -->
+<section class="space-y-4">
+<div class="border-b border-outline-variant pb-2">
+<h3 class="font-headline text-headline-sm font-bold text-on-surface">3. Sekme ve Segment Denetimleri</h3>
+<p class="text-caption text-on-surface-variant mt-1 font-reading">
+            YDS soru çözüm listelerinde ve istatistik panellerinde içeriği filtreleme yapıları.
+          </p>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant space-y-5">
+<!-- Underline Tabs -->
+<div class="space-y-2">
+<span class="text-caption font-semibold text-on-surface-variant block">Alt Çizgili Klasik Sekmeler (Underline Tabs)</span>
+<div class="flex items-center border-b border-outline-variant overflow-x-auto no-scrollbar gap-1 -mx-2 px-2">
+<!-- Tab 1: Aktif -->
+<button class="min-h-[44px] px-3 border-b-2 border-primary text-primary font-semibold text-caption whitespace-nowrap flex items-center gap-1.5" type="button">
+<span>Tüm Sorular</span>
+<span class="px-1.5 py-0.2 rounded-full bg-primary-container text-on-primary-container text-[11px] font-bold">80</span>
+</button>
+<!-- Tab 2: Pasif -->
+<button class="min-h-[44px] px-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-medium text-caption whitespace-nowrap flex items-center gap-1.5" type="button">
+<span>Çözülenler</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-on-surface-variant text-[11px]">38</span>
+</button>
+<!-- Tab 3: Hatalı Sorular (Tuğla rengi bildirimle) -->
+<button class="min-h-[44px] px-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-medium text-caption whitespace-nowrap flex items-center gap-1.5" type="button">
+<span>Hatalı</span>
+<span class="px-1.5 py-0.2 rounded-full bg-error-container text-error text-[11px] font-bold">42</span>
+</button>
+<!-- Tab 4: Boşlar -->
+<button class="min-h-[44px] px-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-medium text-caption whitespace-nowrap flex items-center gap-1.5" type="button">
+<span>İşaretlenen</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-on-surface-variant text-[11px]">7</span>
+</button>
+</div>
+</div>
+<!-- Segmented Capsule Control -->
+<div class="space-y-2">
+<span class="text-caption font-semibold text-on-surface-variant block">Kapsül Segment Kontrolü</span>
+<div class="grid grid-cols-3 p-1 rounded-full bg-surface-container border border-outline-variant" role="tablist">
+<button aria-selected="true" class="h-10 rounded-full bg-primary text-on-primary font-bold text-caption flex items-center justify-center shadow-sm" role="tab" type="button">
+                Tümü
+              </button>
+<button aria-selected="false" class="h-10 rounded-full text-on-surface-variant hover:text-on-surface font-medium text-caption flex items-center justify-center" role="tab" type="button">
+                ÖSYM Çıkmış
+              </button>
+<button aria-selected="false" class="h-10 rounded-full text-on-surface-variant hover:text-on-surface font-medium text-caption flex items-center justify-center" role="tab" type="button">
+                İleri Özgün
+              </button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: STEPPERS, LINEAR AND CIRCULAR PROGRESS -->
+<section class="space-y-4">
+<div class="border-b border-outline-variant pb-2">
+<h3 class="font-headline text-headline-sm font-bold text-on-surface">4. Adım ve İlerleme Göstergeleri</h3>
+<p class="text-caption text-on-surface-variant mt-1 font-reading">
+            Kullanıcının çok aşamalı sınav ve teşhis sürecindeki anlık konumunu hissettiren bileşenler.
+          </p>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant space-y-6">
+<!-- Stepper: Dot and Number Chain -->
+<div class="space-y-2">
+<div class="flex items-center justify-between text-caption">
+<span class="font-semibold text-on-surface">Adım 2 / 5 · Gramer ve Sentaks Teşhisi</span>
+<span class="font-mono font-bold text-primary">%40</span>
+</div>
+<!-- Stepper Nodes -->
+<div class="flex items-center justify-between px-2 pt-2">
+<!-- Step 1: Tamamlandı (Yeşil Onay) -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-8 h-8 rounded-full bg-tertiary-container border border-tertiary text-tertiary flex items-center justify-center font-bold text-caption">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span>
+</div>
+<span class="text-[10px] text-tertiary font-medium">Kelime</span>
+</div>
+<div class="flex-1 h-0.5 bg-tertiary mx-1"></div>
+<!-- Step 2: Aktif (Petrol Dolu) -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-caption shadow-md ring-4 ring-primary-container">
+                  2
+                </div>
+<span class="text-[10px] text-primary font-bold">Gramer</span>
+</div>
+<div class="flex-1 h-0.5 bg-outline-variant mx-1"></div>
+<!-- Step 3: Bekliyor -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-outline-variant text-on-surface-variant flex items-center justify-center font-medium text-caption">
+                  3
+                </div>
+<span class="text-[10px] text-on-surface-variant">Çeviri</span>
+</div>
+<div class="flex-1 h-0.5 bg-outline-variant mx-1"></div>
+<!-- Step 4: Bekliyor -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-outline-variant text-on-surface-variant flex items-center justify-center font-medium text-caption">
+                  4
+                </div>
+<span class="text-[10px] text-on-surface-variant">Paragraf</span>
+</div>
+</div>
+</div>
+<!-- Linear Progress Bar -->
+<div class="space-y-1.5 pt-2 border-t border-outline-variant">
+<div class="flex justify-between text-caption text-on-surface-variant">
+<span>Doğrusal Soru Tamamlama Oranı</span>
+<span class="font-bold text-on-surface">52 / 80 Soru (%65)</span>
+</div>
+<!-- Progress Track and Fill -->
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden border border-outline-variant/60">
+<div class="h-full bg-primary rounded-full transition-all duration-300" style="width: 65%;"></div>
+</div>
+</div>
+<!-- Circular Progress Rings (3 Distinct Scales) -->
+<div class="space-y-3 pt-2 border-t border-outline-variant">
+<span class="text-caption font-semibold text-on-surface-variant block">İlerleme Halkaları (3 Boyut Standardı)</span>
+<div class="grid grid-cols-3 gap-3 items-center justify-items-center bg-surface-container/60 p-3 rounded-md border border-outline-variant">
+<!-- 24px Micro Progress Ring -->
+<div class="flex flex-col items-center gap-1.5 text-center">
+<div class="relative w-8 h-8 flex items-center justify-center">
+<svg class="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
+<circle cx="16" cy="16" fill="none" r="13" stroke="#24343A" stroke-width="3"></circle>
+<circle cx="16" cy="16" fill="none" r="13" stroke="#4DB6B0" stroke-dasharray="81.6" stroke-dashoffset="24.4" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<span class="absolute text-[9px] font-bold font-mono">70</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-medium leading-tight">24-32 Mikro<br>Soru İçi</span>
+</div>
+<!-- 48px Card Progress Ring -->
+<div class="flex flex-col items-center gap-1.5 text-center">
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="w-12 h-12 transform -rotate-90" viewBox="0 0 48 48">
+<circle cx="24" cy="24" fill="none" r="20" stroke="#24343A" stroke-width="4"></circle>
+<circle cx="24" cy="24" fill="none" r="20" stroke="#4CC27D" stroke-dasharray="125.6" stroke-dashoffset="31.4" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<span class="material-symbols-outlined text-tertiary text-[18px]" data-icon="check">check</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-medium leading-tight">48 Modül<br>Başarı Kartı</span>
+</div>
+<!-- 72px Major Assessment Ring -->
+<div class="flex flex-col items-center gap-1.5 text-center">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
+<circle cx="32" cy="32" fill="none" r="27" stroke="#24343A" stroke-width="5"></circle>
+<circle cx="32" cy="32" fill="none" r="27" stroke="#4DB6B0" stroke-dasharray="169.6" stroke-dashoffset="29.6" stroke-linecap="round" stroke-width="5"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-display text-caption font-bold text-on-surface leading-none">82.5</span>
+<span class="text-[8px] text-primary font-semibold">HEDEF</span>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-medium leading-tight">64-96 Ana Sınav<br>Net Dairesi</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: BREADCRUMBS & PAGINATION CONTROLS -->
+<section class="space-y-4">
+<div class="border-b border-outline-variant pb-2">
+<h3 class="font-headline text-headline-sm font-bold text-on-surface">5. Ekmek Kırıntısı ve Sayfalama</h3>
+<p class="text-caption text-on-surface-variant mt-1 font-reading">
+            Sınav modülü derinliklerinde kaybolmayı önleyen hiyerarşik iz ve mobil 44px sayfalama.
+          </p>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant space-y-4">
+<!-- Breadcrumb View -->
+<div class="space-y-1.5">
+<span class="text-caption font-semibold text-on-surface-variant block">Hiyerarşik Ekmek Kırıntısı (Breadcrumb)</span>
+<nav aria-label="Ekmek Kırıntısı" class="flex items-center flex-wrap gap-1 text-caption text-on-surface-variant bg-surface-container p-2.5 rounded-md border border-outline-variant">
+<a class="hover:text-primary transition-colors" href="#">Ana Sayfa</a>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Soru Bankası</a>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Paragraf Çözümleri</a>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-bold">Çıkmış Soru</span>
+</nav>
+</div>
+<!-- Pagination Bar with 44px Target Guarantee -->
+<div class="space-y-1.5 pt-2 border-t border-outline-variant">
+<div class="flex items-center justify-between text-caption text-on-surface-variant mb-1">
+<span>Mobil Sayfalama Denetimi</span>
+<span class="text-primary font-semibold">Sayfa 2 / 24</span>
+</div>
+<div class="flex items-center justify-between bg-surface-container p-1 rounded-md border border-outline-variant">
+<!-- Previous Button (44px) -->
+<button aria-label="Önceki Sayfa" class="touch-target-44 px-2 text-on-surface rounded hover:bg-surface-container-high active:scale-95 transition-all text-caption font-medium flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back_ios">arrow_back_ios</span>
+<span>Önceki</span>
+</button>
+<!-- Page Numbers -->
+<div class="flex items-center gap-1">
+<button class="w-9 h-9 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-semibold text-caption" type="button">
+                  1
+                </button>
+<button class="w-9 h-9 rounded-md bg-primary text-on-primary font-bold text-caption shadow-sm" type="button">
+                  2
+                </button>
+<button class="w-9 h-9 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-semibold text-caption" type="button">
+                  3
+                </button>
+<span class="text-on-surface-variant px-1 font-bold">...</span>
+<button class="w-9 h-9 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-semibold text-caption" type="button">
+                  24
+                </button>
+</div>
+<!-- Next Button (44px) -->
+<button aria-label="Sonraki Sayfa" class="touch-target-44 px-2 text-on-surface rounded hover:bg-surface-container-high active:scale-95 transition-all text-caption font-medium flex items-center gap-1" type="button">
+<span>Sonraki</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward_ios">arrow_forward_ios</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: TABLET RAIL & DESKTOP SIDEBAR ARCHITECTURE -->
+<section class="space-y-4">
+<div class="border-b border-outline-variant pb-2">
+<h3 class="font-headline text-headline-sm font-bold text-on-surface">6. Tablet Ray ve Masaüstü Kenar Çubuğu</h3>
+<p class="text-caption text-on-surface-variant mt-1 font-reading">
+            Mobil ekrandan genişleyen ekranlara geçişte kullanılan 72px dar ray ve 248px sabit kenar çubuğu şeması.
+          </p>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant space-y-4">
+<div class="grid grid-cols-12 gap-2 p-2 bg-surface-container rounded-lg border border-outline-variant items-stretch min-h-[170px]">
+<!-- 72px Slim Navigation Rail Replica -->
+<div class="col-span-4 bg-background rounded border border-outline-variant p-2 flex flex-col items-center justify-between py-3">
+<div class="w-7 h-7 rounded bg-primary text-on-primary flex items-center justify-center font-bold text-caption">
+                Y
+              </div>
+<div class="space-y-3 flex flex-col items-center">
+<div class="w-8 h-8 rounded bg-primary-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="menu_book">menu_book</span>
+</div>
+<div class="w-8 h-8 rounded text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="assignment">assignment</span>
+</div>
+<div class="w-8 h-8 rounded text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="school">school</span>
+</div>
+</div>
+<div class="text-[9px] text-on-surface-variant font-mono">72 Piksel</div>
+</div>
+<!-- 248px Full Sidebar Architecture -->
+<div class="col-span-8 bg-background rounded border border-outline-variant p-3 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b border-outline-variant pb-1.5 mb-2">
+<span class="text-title font-bold text-on-surface text-[13px]">Geniş Kenar Çubuğu</span>
+<span class="text-[10px] text-primary font-mono">248 Piksel</span>
+</div>
+<div class="space-y-1">
+<div class="px-2 py-1.5 rounded bg-primary-container text-on-primary-container flex items-center gap-2 text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]" data-icon="menu_book">menu_book</span>
+<span>Çalışma Alanı</span>
+</div>
+<div class="px-2 py-1.5 rounded text-on-surface-variant flex items-center gap-2 text-caption font-medium">
+<span class="material-symbols-outlined text-[16px]" data-icon="quiz">quiz</span>
+<span>Deneme Çöz</span>
+</div>
+<div class="px-2 py-1.5 rounded text-on-surface-variant flex items-center gap-2 text-caption font-medium">
+<span class="material-symbols-outlined text-[16px]" data-icon="analytics">analytics</span>
+<span>Başarı Grafiği</span>
+</div>
+</div>
+</div>
+<div class="text-[10px] text-on-surface-variant font-reading border-t border-outline-variant pt-1.5 mt-2">
+                Tablet ve masaüstünde alt çubuk tamamen gizlenir, dikey hiyerarşi devreye girer.
+              </div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 7: TOKENS & ACCESSIBILITY SPECIFICATION -->
+<section class="space-y-4">
+<div class="border-b border-outline-variant pb-2">
+<h3 class="font-headline text-headline-sm font-bold text-on-surface">7. Tasarım Belirteçleri ve Kurallar</h3>
+<p class="text-caption text-on-surface-variant mt-1 font-reading">
+            Navigasyon sisteminde kullanılan ölçü değişkenleri ve optik form disiplin kuralları.
+          </p>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant space-y-4">
+<!-- Token Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left text-caption border-collapse">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant text-[11px]">
+<th class="py-2 font-semibold">Değişken Belirteci</th>
+<th class="py-2 font-semibold">Değer</th>
+<th class="py-2 font-semibold">Kullanım Amacı</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/60 font-mono text-[11px]">
+<tr>
+<td class="py-2 text-primary">nav-alt-yukseklik</td>
+<td class="py-2 text-on-surface">64 piksel</td>
+<td class="py-2 text-on-surface-variant font-sans">Alt çubuk sabit yüksekliği</td>
+</tr>
+<tr>
+<td class="py-2 text-primary">dokunma-min-olcu</td>
+<td class="py-2 text-on-surface">44 piksel</td>
+<td class="py-2 text-on-surface-variant font-sans">Kritik buton dokunma alanı</td>
+</tr>
+<tr>
+<td class="py-2 text-primary">sekme-cizgi-kalinlik</td>
+<td class="py-2 text-on-surface">2 piksel</td>
+<td class="py-2 text-on-surface-variant font-sans">Aktif sekme alt belirteci</td>
+</tr>
+<tr>
+<td class="py-2 text-primary">kenar-bosluk-mobil</td>
+<td class="py-2 text-on-surface">16 piksel</td>
+<td class="py-2 text-on-surface-variant font-sans">390 standart ekran kenar payı</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Strict Rule Card -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant flex items-start gap-2.5">
+<span class="material-symbols-outlined text-secondary text-[22px] flex-shrink-0 mt-0.5" data-icon="policy">policy</span>
+<div class="space-y-1">
+<span class="text-caption font-bold text-on-surface block">ÖSYM Optik Form Disiplin Kuralı</span>
+<p class="text-[11px] text-on-surface-variant font-reading leading-relaxed">
+                Durum bilgisi asla yalnızca renkle anlatılmaz. Doğru için yeşil artı onay ikonu, yanlış için tuğla rengi artı çarpı simgesi zorunludur. Safran rengi yalnızca ikon ve dolguda yer alır, hiçbir zaman metin rengi olarak kullanılmaz.
+              </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FIXED BOTTOM NAVIGATION BAR (Shared Component JSON Source) -->
+<!-- Destination count: 5; Labels: Bugün, Çalış (Active), Deneme, Öğretmen, Ben -->
+<nav aria-label="Ana Gezinme Çubuğu" class="fixed bottom-0 left-0 right-0 w-full max-w-[390px] mx-auto z-50 flex justify-around items-center h-16 px-2 pb-safe bg-surface border-t border-outline-variant shadow-2xl">
+<!-- 1: Bugün -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" href="#bugun">
+<span class="material-symbols-outlined text-[24px]" data-icon="calendar_today">calendar_today</span>
+<span class="font-label text-caption font-medium tracking-tight">Bugün</span>
+</a>
+<!-- 2: Çalış (Active according to JSON style_active_navigation) -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-semibold hover:text-primary transition-colors active:scale-95 duration-100" href="#calis">
+<span class="material-symbols-outlined fill text-[24px]" data-icon="menu_book">menu_book</span>
+<span class="font-label text-caption font-semibold tracking-tight">Çalış</span>
+</a>
+<!-- 3: Deneme -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" href="#deneme">
+<span class="material-symbols-outlined text-[24px]" data-icon="assignment">assignment</span>
+<span class="font-label text-caption font-medium tracking-tight">Deneme</span>
+</a>
+<!-- 4: Öğretmen -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100 relative" href="#ogretmen">
+<span class="material-symbols-outlined text-[24px]" data-icon="school">school</span>
+<!-- Safran notification badge -->
+<span class="absolute top-1.5 right-3.5 w-2 h-2 rounded-full bg-secondary border border-surface"></span>
+<span class="font-label text-caption font-medium tracking-tight">Öğretmen</span>
+</a>
+<!-- 5: Ben -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" href="#ben">
+<span class="material-symbols-outlined text-[24px]" data-icon="person">person</span>
+<span class="font-label text-caption font-medium tracking-tight">Ben</span>
+</a>
+</nav>
+</div>
+</body></html>

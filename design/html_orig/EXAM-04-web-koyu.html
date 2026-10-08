@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>e-YDS Elektronik Sınav Simülatörü</title>
+<!-- Typography: Literata (Academic text) & Work Sans (UI / Codes) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed": "#85faaf",
+            "tertiary-fixed-dim": "#68dd95",
+            "surface-container-low": "#141d21",
+            "outline-variant": "#3d4948",
+            "error": "#ffb4ab",
+            "surface": "#0c1519",
+            "secondary-fixed-dim": "#f9bc42",
+            "inverse-on-surface": "#293236",
+            "on-surface-variant": "#bdc9c7",
+            "on-primary-container": "#004441",
+            "on-error-container": "#ffdad6",
+            "secondary-container": "#bd8700",
+            "surface-container": "#182125",
+            "on-error": "#690005",
+            "on-primary-fixed": "#00201e",
+            "outline": "#879392",
+            "on-primary-fixed-variant": "#00504d",
+            "on-background": "#dae4e9",
+            "on-tertiary-container": "#004525",
+            "inverse-surface": "#dae4e9",
+            "surface-tint": "#71d7d1",
+            "primary-fixed-dim": "#71d7d1",
+            "on-secondary": "#422d00",
+            "on-secondary-fixed": "#271900",
+            "surface-variant": "#2d363b",
+            "on-primary": "#003735",
+            "error-container": "#93000a",
+            "primary": "#71d7d1",
+            "surface-container-lowest": "#070f13",
+            "secondary-fixed": "#ffdea8",
+            "secondary": "#f9bc42",
+            "on-tertiary-fixed-variant": "#00522c",
+            "on-secondary-container": "#392600",
+            "on-surface": "#dae4e9",
+            "surface-container-high": "#222b30",
+            "on-secondary-fixed-variant": "#5e4200",
+            "surface-dim": "#0c1519",
+            "surface-bright": "#313b3f",
+            "tertiary": "#68dd95",
+            "inverse-primary": "#006a66",
+            "surface-container-highest": "#2d363b",
+            "background": "#0c1519",
+            "on-tertiary-fixed": "#00210f",
+            "on-tertiary": "#00391d",
+            "primary-container": "#4db6b0",
+            "tertiary-container": "#44bb77",
+            "primary-fixed": "#8ef4ed"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "space-xl": "2.5rem",
+            "gutter": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "margin": "2rem",
+            "space-md": "1rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "legal-code": ["Work Sans"],
+            "label-lg": ["Work Sans"],
+            "body-sm": ["Literata"],
+            "headline-md": ["Literata"],
+            "headline-sm": ["Literata"],
+            "display-lg-mobile": ["Literata"],
+            "display-lg": ["Literata"],
+            "label-sm": ["Work Sans"],
+            "body-lg": ["Literata"],
+            "label-md": ["Work Sans"],
+            "body-md": ["Literata"]
+          },
+          "fontSize": {
+            "legal-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "500" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "display-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }],
+            "display-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "500" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Sınav salonu arayüzü için özel seçim rengi */
+    ::selection {
+      background-color: #0E6A6E;
+      color: #dae4e9;
+    }
+    /* İnce kaydırma çubuğu */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0E171B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #24343A;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3d4948;
+    }
+  </style>
+</head>
+<body class="bg-[#0E171B] text-[#E4ECEC] antialiased select-none min-h-screen flex flex-col font-label-md text-label-md">
+<!-- =========================================================================
+       ÜST KONTROL ÇUBUĞU (ÖSYM e-Sınav Salon Konsolu)
+       ========================================================================= -->
+<header class="w-full bg-[#142127] border-b border-[#24343A] h-16 px-space-md flex items-center justify-between z-30 shrink-0">
+<!-- Sol: Aday ve Oturum Tanımlayıcıları -->
+<div class="flex items-center space-x-space-md">
+<div class="w-10 h-10 bg-[#0E171B] border border-[#24343A] rounded flex items-center justify-center text-[#4DB6B0]">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-semibold text-[#E4ECEC]">Aday No: 48201 · S. Yılmaz</span>
+<span class="px-2 py-0.5 bg-[#0E171B] border border-[#24343A] rounded text-[#A9B8BA] font-label-sm text-label-sm">
+            2026-e-YDS / 2
+          </span>
+</div>
+<span class="font-label-sm text-label-sm text-[#A9B8BA]">
+          e-Sınav Merkezi - Salon 04 / Masa 18
+        </span>
+</div>
+</div>
+<!-- Orta: Kalan Süre Sayacı (180 dakika simülasyonu) -->
+<div class="flex items-center gap-space-sm bg-[#0E171B] border border-[#24343A] px-4 py-2 rounded">
+<span class="material-symbols-outlined text-[#4DB6B0]" data-icon="timer">timer</span>
+<div class="flex items-baseline gap-1.5">
+<span class="text-[#A9B8BA] font-label-sm text-label-sm">Kalan Süre:</span>
+<span class="font-label-lg text-label-lg font-bold text-[#E4ECEC] tracking-wider tabular-nums" id="exam-timer">02:14:38</span>
+</div>
+<span class="text-[#5A6C70] font-label-sm text-label-sm">/ 180 dk</span>
+</div>
+<!-- Sağ: Arayüz Araçları ve Sınavı Bitir Butonu -->
+<div class="flex items-center space-x-space-sm">
+<!-- Yazı Boyutu Seçimi -->
+<div class="flex items-center bg-[#0E171B] border border-[#24343A] rounded p-0.5" title="Yazı Boyutunu Değiştir">
+<button class="h-8 px-2.5 hover:bg-[#1A2B33] text-[#A9B8BA] hover:text-[#E4ECEC] font-label-sm text-label-sm rounded transition-colors" id="font-dec" title="Küçült">
+          A-
+        </button>
+<span class="text-[#24343A] px-1">|</span>
+<button class="h-8 px-2.5 bg-[#142127] text-[#4DB6B0] font-label-sm text-label-sm rounded transition-colors font-semibold" id="font-norm" title="Varsayılan">
+          A
+        </button>
+<span class="text-[#24343A] px-1">|</span>
+<button class="h-8 px-2.5 hover:bg-[#1A2B33] text-[#A9B8BA] hover:text-[#E4ECEC] font-label-sm text-label-sm rounded transition-colors" id="font-inc" title="Büyüt">
+          A+
+        </button>
+</div>
+<!-- Tam Ekran Modu -->
+<button class="h-9 px-3 flex items-center gap-1.5 bg-[#0E171B] border border-[#24343A] hover:bg-[#1A2B33] text-[#A9B8BA] hover:text-[#E4ECEC] rounded transition-colors font-label-sm text-label-sm" id="fullscreen-btn">
+<span class="material-symbols-outlined text-base" data-icon="fullscreen">fullscreen</span>
+<span>Tam Ekran</span>
+</button>
+<!-- Sınavı Bitir Butonu (Tuğla rengi çerçeve, ölçülü vurgu) -->
+<button class="h-9 px-4 flex items-center gap-1.5 bg-transparent border border-[#A33D27] text-[#EE8A6E] hover:bg-[#93000a]/20 rounded transition-colors font-label-sm text-label-sm font-semibold" id="finish-exam-btn">
+<span class="material-symbols-outlined text-base" data-icon="logout">logout</span>
+<span>Sınavı Bitir</span>
+</button>
+</div>
+</header>
+<!-- =========================================================================
+       ANA ÇALIŞMA ALANI: 2 SÜTUNLU DÜZEN (1440px Genişlik Odaklı)
+       ========================================================================= -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto p-4 flex gap-4 overflow-hidden">
+<!-- SOL / GENİŞ ÇALIŞMA ALANI (Soru ve Seçenekler) -->
+<section class="flex-1 flex flex-col bg-[#142127] border border-[#24343A] rounded overflow-hidden">
+<!-- Soru Üst Başlığı & e-Sınav Araçları -->
+<div class="h-14 px-space-lg bg-[#0E171B]/60 border-b border-[#24343A] flex items-center justify-between shrink-0">
+<!-- Sol: Soru Numarası & Soru Türü -->
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-1 bg-[#142127] border border-[#24343A] rounded text-[#4DB6B0] font-label-lg text-label-lg font-bold">
+            Soru 42
+          </span>
+<span class="text-[#A9B8BA] font-label-md text-label-md">/ 80</span>
+<div class="h-4 w-px bg-[#24343A]"></div>
+<span class="text-[#E4ECEC] font-label-md text-label-md">
+            Soru Türü: <span class="text-[#A9B8BA] font-normal">Cümle Tamamlama</span>
+</span>
+</div>
+<!-- Sağ: Sınav Araç Çubuğu (Bayrak, Eleme, Büyütme) -->
+<div class="flex items-center gap-2">
+<!-- Gözden Geçir / İşaretle (Bayrak) -->
+<button class="h-9 px-3 flex items-center gap-2 rounded border border-[#E9A514]/60 bg-[#142127] hover:bg-[#1A2B33] text-[#F0B43A] transition-colors font-label-sm text-label-sm font-medium" id="flag-btn">
+<span class="material-symbols-outlined text-base text-[#F0B43A]" data-icon="bookmark" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+<span>İşaretlendi (Bayrak Kaldır)</span>
+</button>
+<!-- Şıkları Ele (Üstünü Çiz Modu) -->
+<button class="h-9 px-3 flex items-center gap-1.5 rounded border border-[#24343A] bg-[#0E171B] hover:bg-[#1A2B33] text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors font-label-sm text-label-sm" id="strike-toggle-btn">
+<span class="material-symbols-outlined text-base" data-icon="strikethrough_s">strikethrough_s</span>
+<span>Şıkları Ele</span>
+</button>
+<!-- Soru Metnini Büyüt -->
+<button class="h-9 px-3 flex items-center gap-1.5 rounded border border-[#24343A] bg-[#0E171B] hover:bg-[#1A2B33] text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors font-label-sm text-label-sm" id="zoom-toggle-btn">
+<span class="material-symbols-outlined text-base" data-icon="zoom_in">zoom_in</span>
+<span>Metni Odakla</span>
+</button>
+</div>
+</div>
+<!-- Soru Gövdesi ve Seçenekler (Kaydırılabilir İçerik) -->
+<div class="flex-1 p-space-xl overflow-y-auto space-y-space-xl" id="question-content-container">
+<!-- Yönerge / Soru Kökü Metni -->
+<div class="border-l-2 border-[#4DB6B0] pl-space-md py-1">
+<p class="font-label-sm text-label-sm text-[#A9B8BA] uppercase tracking-wider mb-2">
+            Aşağıdaki cümlede boş bırakılan yeri en uygun şekilde tamamlayan ifadeyi bulunuz.
+          </p>
+<div class="font-body-lg text-body-lg text-[#E4ECEC] leading-relaxed select-text font-normal" id="question-stem">
+            Although quantum computational models demonstrate extraordinary theoretical efficiency, 
+            <span class="inline-block border-b-2 border-dashed border-[#4DB6B0] text-[#4DB6B0] px-3 py-0.5 mx-1 font-semibold">
+              ________________________________________________________
+            </span>.
+          </div>
+</div>
+<!-- 5 Seçenek Grubu (ÖSYM e-Sınav Baloncuk Motifi) -->
+<div class="space-y-3 pt-2">
+<!-- Seçenek A -->
+<div class="option-row group flex items-start gap-3 p-3 rounded border border-[#24343A] hover:border-[#4DB6B0]/50 bg-[#0E171B]/50 hover:bg-[#1A2B33]/60 transition-all cursor-pointer" data-choice="A">
+<button class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-[#24343A] text-[#E4ECEC] group-hover:border-[#4DB6B0] flex items-center justify-center font-label-lg text-label-lg font-bold transition-all">
+              A
+            </button>
+<div class="flex-1 pt-2.5 flex items-center justify-between">
+<span class="font-body-md text-body-md text-[#E4ECEC] leading-normal">
+                they have already supplanted classical microprocessors in ubiquitous consumer electronics
+              </span>
+<button class="strike-btn opacity-0 group-hover:opacity-100 text-[#5A6C70] hover:text-[#EE8A6E] p-1.5 transition-opacity" title="Bu şıkkı ele">
+<span class="material-symbols-outlined text-lg" data-icon="format_strikethrough">format_strikethrough</span>
+</button>
+</div>
+</div>
+<!-- Seçenek B (Şık Eleme Simülasyonu - Üstü Çizili Durum) -->
+<div class="option-row strike-active group flex items-start gap-3 p-3 rounded border border-[#24343A]/60 bg-[#0E171B]/20 transition-all cursor-pointer opacity-60" data-choice="B">
+<button class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-[#24343A] text-[#5A6C70] flex items-center justify-center font-label-lg text-label-lg font-bold transition-all line-through">
+              B
+            </button>
+<div class="flex-1 pt-2.5 flex items-center justify-between">
+<span class="font-body-md text-body-md text-[#A9B8BA] leading-normal line-through">
+                the architectural paradigms remained fundamentally indistinguishable from mechanical calculators
+              </span>
+<button class="strike-btn text-[#EE8A6E] p-1.5" title="Elemeyi kaldır">
+<span class="material-symbols-outlined text-lg" data-icon="undo">undo</span>
+</button>
+</div>
+</div>
+<!-- Seçenek C (SEÇİLİ CEVAP - Petrol Zemin Vurgusu) -->
+<div class="option-row selected-row group flex items-start gap-3 p-3 rounded border border-[#4DB6B0] bg-[#1A2B33] transition-all cursor-pointer ring-1 ring-[#4DB6B0]/50" data-choice="C">
+<button class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-[#4DB6B0] text-[#0E171B] border border-[#4DB6B0] flex items-center justify-center font-label-lg text-label-lg font-bold transition-all shadow-none">
+              C
+            </button>
+<div class="flex-1 pt-2.5 flex items-center justify-between">
+<span class="font-body-md text-body-md text-[#E4ECEC] font-medium leading-normal">
+                their practical physical deployment remains severely hindered by thermodynamic decoherence and fault-tolerance thresholds
+              </span>
+<div class="flex items-center gap-1.5 text-[#4DB6B0] pr-1">
+<span class="material-symbols-outlined text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-sm text-label-sm">Seçildi</span>
+</div>
+</div>
+</div>
+<!-- Seçenek D -->
+<div class="option-row group flex items-start gap-3 p-3 rounded border border-[#24343A] hover:border-[#4DB6B0]/50 bg-[#0E171B]/50 hover:bg-[#1A2B33]/60 transition-all cursor-pointer" data-choice="D">
+<button class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-[#24343A] text-[#E4ECEC] group-hover:border-[#4DB6B0] flex items-center justify-center font-label-lg text-label-lg font-bold transition-all">
+              D
+            </button>
+<div class="flex-1 pt-2.5 flex items-center justify-between">
+<span class="font-body-md text-body-md text-[#E4ECEC] leading-normal">
+                whereas silicon wafer fabrication has encountered an absolute physical impasse in sub-nanometer lithography
+              </span>
+<button class="strike-btn opacity-0 group-hover:opacity-100 text-[#5A6C70] hover:text-[#EE8A6E] p-1.5 transition-opacity" title="Bu şıkkı ele">
+<span class="material-symbols-outlined text-lg" data-icon="format_strikethrough">format_strikethrough</span>
+</button>
+</div>
+</div>
+<!-- Seçenek E -->
+<div class="option-row group flex items-start gap-3 p-3 rounded border border-[#24343A] hover:border-[#4DB6B0]/50 bg-[#0E171B]/50 hover:bg-[#1A2B33]/60 transition-all cursor-pointer" data-choice="E">
+<button class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-[#24343A] text-[#E4ECEC] group-hover:border-[#4DB6B0] flex items-center justify-center font-label-lg text-label-lg font-bold transition-all">
+              E
+            </button>
+<div class="flex-1 pt-2.5 flex items-center justify-between">
+<span class="font-body-md text-body-md text-[#E4ECEC] leading-normal">
+                so that contemporary cryptography algorithms could definitively safeguard global banking infrastructures indefinitely
+              </span>
+<button class="strike-btn opacity-0 group-hover:opacity-100 text-[#5A6C70] hover:text-[#EE8A6E] p-1.5 transition-opacity" title="Bu şıkkı ele">
+<span class="material-symbols-outlined text-lg" data-icon="format_strikethrough">format_strikethrough</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Alt Gezinme Barı (Önceki, İşaretle, Sonraki Butonları) -->
+<div class="h-16 px-space-lg bg-[#0E171B]/80 border-t border-[#24343A] flex items-center justify-between shrink-0">
+<!-- Önceki Soru -->
+<button class="h-11 px-5 flex items-center gap-2 bg-[#142127] border border-[#24343A] hover:border-[#4DB6B0] text-[#E4ECEC] rounded transition-all font-label-md text-label-md">
+<span class="material-symbols-outlined text-base" data-icon="arrow_back">arrow_back</span>
+<span>Önceki Soru</span>
+<span class="text-[#5A6C70] font-label-sm text-label-sm">(Ctrl + ←)</span>
+</button>
+<!-- Cevabı Temizle -->
+<button class="h-11 px-4 text-[#A9B8BA] hover:text-[#E4ECEC] font-label-sm text-label-sm hover:underline" id="clear-choice-btn">
+          Seçimi Temizle
+        </button>
+<!-- Sonraki Soru (Belirgin Buton) -->
+<button class="h-11 px-6 flex items-center gap-2 bg-[#4DB6B0] hover:bg-[#409893] text-[#0E171B] rounded transition-all font-label-md text-label-md font-bold">
+<span>Sonraki Soru</span>
+<span class="font-label-sm text-label-sm font-normal text-[#003735]">(Ctrl + →)</span>
+<span class="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- SAĞ / PANEL ALANI: 80 SORULUK GEZGİN MATRİSİ -->
+<aside class="w-[390px] flex flex-col bg-[#142127] border border-[#24343A] rounded overflow-hidden shrink-0">
+<!-- Panel Başlığı ve Durum Göstergesi -->
+<div class="p-space-md bg-[#0E171B]/60 border-b border-[#24343A] shrink-0">
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-lg text-label-lg font-semibold text-[#E4ECEC] flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[#4DB6B0] text-lg" data-icon="grid_view">grid_view</span>
+            Soru Haritası
+          </span>
+<span class="text-[#A9B8BA] font-label-sm text-label-sm">Toplam 80 Soru</span>
+</div>
+<!-- İstatistik Çubukları (Yanıtlanan / İşaretlenen / Yanıtlanmayan) -->
+<div class="grid grid-cols-3 gap-2 text-center">
+<div class="p-2 bg-[#0E171B] border border-[#24343A] rounded">
+<div class="text-[#4CC27D] font-label-lg text-label-lg font-bold">41</div>
+<div class="text-[#A9B8BA] font-label-sm text-label-sm text-[10px]">Yanıtlandı</div>
+</div>
+<div class="p-2 bg-[#0E171B] border border-[#E9A514]/40 rounded">
+<div class="text-[#F0B43A] font-label-lg text-label-lg font-bold flex items-center justify-center gap-0.5">
+<span>4</span>
+<span class="material-symbols-outlined text-xs text-[#F0B43A]" data-icon="bookmark" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</div>
+<div class="text-[#A9B8BA] font-label-sm text-label-sm text-[10px]">İşaretlendi</div>
+</div>
+<div class="p-2 bg-[#0E171B] border border-[#24343A] rounded">
+<div class="text-[#A9B8BA] font-label-lg text-label-lg font-bold">35</div>
+<div class="text-[#A9B8BA] font-label-sm text-label-sm text-[10px]">Yanıtlanmadı</div>
+</div>
+</div>
+</div>
+<!-- Hızlı Bölüm Atlama (ÖSYM e-YDS Standart Bölüm Dağılımı) -->
+<div class="px-space-md py-2 border-b border-[#24343A] bg-[#0E171B]/30 shrink-0">
+<label class="block font-label-sm text-label-sm text-[#A9B8BA] mb-1" for="section-select">
+          Bölüme Hızlı Git:
+        </label>
+<select class="w-full h-9 bg-[#0E171B] border border-[#24343A] text-[#E4ECEC] rounded px-2.5 font-label-sm text-label-sm focus:border-[#4DB6B0] focus:ring-0" id="section-select">
+<option value="1">Kelime Bilgisi (1 - 6)</option>
+<option value="7">Dilbilgisi (7 - 16)</option>
+<option value="17">Cloze Test (17 - 26)</option>
+<option selected="" value="27">Cümle Tamamlama (27 - 36)</option>
+<option value="37">Çeviri (İng-Türk / Türk-İng) (37 - 42)</option>
+<option value="43">Paragraf Okuma (43 - 62)</option>
+<option value="63">Diyalog Tamamlama (63 - 67)</option>
+<option value="68">Anlamca En Yakın Cümle (68 - 72)</option>
+<option value="73">Verilen Durumda Söylenecek (73 - 77)</option>
+<option value="78">Akışı Bozan Cümle (78 - 80)</option>
+</select>
+</div>
+<!-- 80 Soruluk Matris Grid (Scrollable) -->
+<div class="flex-1 p-space-md overflow-y-auto">
+<div class="grid grid-cols-8 gap-1.5" id="matrix-container">
+<!-- 
+            Matris JS ile veya aşağıda temsil edilen standart döngüyle:
+            - 1-41: Yanıtlandı (Petrol daire)
+            - 12, 28, 42, 60: İşaretlendi (Safran köşe/bayrak simgeli)
+            - 42: Aktif soru (Belirgin neon kontur ve odak)
+            - 43-80: Boş / Yanıtlanmadı
+          -->
+</div>
+</div>
+<!-- Gösterge / Lejant -->
+<div class="p-space-md bg-[#0E171B]/80 border-t border-[#24343A] shrink-0 text-[#A9B8BA] font-label-sm text-label-sm space-y-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-3.5 rounded-full bg-[#1F7A45] border border-[#4CC27D]"></span>
+<span>Yanıtlandı</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-3.5 rounded-full bg-[#142127] border border-[#24343A] flex items-center justify-center text-[8px] text-[#F0B43A]">★</span>
+<span>İşaretlendi</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-3.5 rounded-full bg-[#0E171B] border border-[#24343A]"></span>
+<span>Boş Soru</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 pt-1 text-[11px] text-[#5A6C70]">
+<span class="w-3.5 h-3.5 rounded border-2 border-[#4DB6B0]"></span>
+<span>Aktif Soru (Mevcut Odak)</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- =========================================================================
+       ALT BAR / RESMİ BİLGİLENDİRME ŞERİDİ
+       ========================================================================= -->
+<footer class="w-full bg-[#070F13] border-t border-[#24343A] h-10 px-space-md flex items-center justify-between z-20 shrink-0 text-[#A9B8BA] font-label-sm text-label-sm">
+<div class="flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-[#4CC27D]" title="Sistem Aktif ve Kaydediyor"></span>
+<span class="text-[#E4ECEC] font-semibold">e-YDS Elektronik Sınav Arayüz Simülasyonu</span>
+<span class="text-[#3d4948]">|</span>
+<span>YDS'de yanlış doğruyu götürmez; 80 soru, 180 dakika, her doğru soru 1,25 puan değerindedir. Başarılar dileriz.</span>
+</div>
+<div class="flex items-center gap-4 text-[#5A6C70]">
+<span>Klavye Kısayolları: ← / → (Gezinme), A-E (Cevaplama)</span>
+<span>Oturum Güvenliği: Doğrulandı</span>
+</div>
+</footer>
+<!-- =========================================================================
+       SINAVI BİTİR ONAY MODALI (Gizli / Tetiklenebilir)
+       ========================================================================= -->
+<div class="fixed inset-0 z-50 bg-[#070C0E]/85 hidden items-center justify-center p-4" id="finish-modal">
+<div class="bg-[#142127] border border-[#24343A] max-w-md w-full p-6 rounded space-y-4">
+<div class="flex items-center gap-3 text-[#EE8A6E]">
+<span class="material-symbols-outlined text-2xl" data-icon="warning">warning</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-[#E4ECEC]">Sınavı Bitirmek İstiyor Musunuz?</h3>
+</div>
+<p class="font-body-md text-body-md text-[#A9B8BA] leading-relaxed">
+        Bu işlem sınav oturumunuzu tamamen sonlandıracak ve cevaplarınız değerlendirmeye gönderilecektir. Geri dönüş mümkün değildir.
+      </p>
+<div class="bg-[#0E171B] border border-[#24343A] p-3 rounded space-y-1 font-label-sm text-label-sm">
+<div class="flex justify-between">
+<span class="text-[#A9B8BA]">Cevaplanan Soru:</span>
+<span class="text-[#4CC27D] font-bold">41 / 80</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[#A9B8BA]">Gözden Geçirilecek (İşaretli):</span>
+<span class="text-[#F0B43A] font-bold">4 Soru</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[#A9B8BA]">Boş Bırakılan Soru:</span>
+<span class="text-[#EE8A6E] font-bold">35 Soru</span>
+</div>
+</div>
+<div class="flex items-center justify-end gap-3 pt-2">
+<button class="h-10 px-4 bg-transparent border border-[#24343A] hover:bg-[#1A2B33] text-[#E4ECEC] rounded font-label-sm text-label-sm" id="cancel-finish-btn">
+          Sınava Devam Et
+        </button>
+<button class="h-10 px-5 bg-transparent border border-[#A33D27] text-[#EE8A6E] hover:bg-[#93000a]/20 rounded font-label-sm text-label-sm font-bold" id="confirm-finish-btn">
+          Evet, Sınavı Tamamla
+        </button>
+</div>
+</div>
+</div>
+<!-- =========================================================================
+       İNTERAKTİF İSTEMCİ SCRİPTİ (Matris Üretimi & Etkileşimler)
+       ========================================================================= -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Soru Matrisi Dinamik Üretimi (80 Soru)
+      const matrixContainer = document.getElementById("matrix-container");
+      const activeQuestion = 42;
+      const answeredQuestions = new Set([
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+        39, 40, 41, 42
+      ]);
+      const flaggedQuestions = new Set([12, 28, 42, 60]);
+
+      for (let i = 1; i <= 80; i++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.dataset.qNumber = i;
+        btn.textContent = i;
+        btn.className = "relative h-9 w-full flex items-center justify-center font-label-sm text-label-sm font-medium rounded transition-all";
+
+        const isCurrent = (i === activeQuestion);
+        const isAnswered = answeredQuestions.has(i);
+        const isFlagged = flaggedQuestions.has(i);
+
+        if (isCurrent) {
+          btn.classList.add("border-2", "border-[#4DB6B0]", "text-[#E4ECEC]", "font-bold", "bg-[#1A2B33]");
+        } else if (isAnswered) {
+          btn.classList.add("bg-[#1F7A45]/30", "border", "border-[#1F7A45]", "text-[#4CC27D]", "hover:bg-[#1F7A45]/50");
+        } else {
+          btn.classList.add("bg-[#0E171B]", "border", "border-[#24343A]", "text-[#A9B8BA]", "hover:border-[#4DB6B0]/50", "hover:text-[#E4ECEC]");
+        }
+
+        if (isFlagged) {
+          const flagPip = document.createElement("span");
+          flagPip.className = "absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#E9A514] border border-[#0E171B]";
+          btn.appendChild(flagPip);
+        }
+
+        btn.addEventListener("click", () => {
+          // Örnek seçim değişimi göstergesi
+          alert("Soru " + i + " seçildi.");
+        });
+
+        matrixContainer.appendChild(btn);
+      }
+
+      // 2. Kalan Süre Sayacı Geri Sayım Simülasyonu
+      let totalSeconds = 2 * 3600 + 14 * 60 + 38;
+      const timerElement = document.getElementById("exam-timer");
+
+      setInterval(() => {
+        if (totalSeconds > 0) {
+          totalSeconds--;
+          const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+          const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+          const secs = String(totalSeconds % 60).padStart(2, "0");
+          timerElement.textContent = `${hrs}:${mins}:${secs}`;
+        }
+      }, 1000);
+
+      // 3. Şık Seçimi Etkileşimi
+      const options = document.querySelectorAll(".option-row");
+      options.forEach(row => {
+        row.addEventListener("click", (e) => {
+          if (e.target.closest(".strike-btn")) return; // Eleme butonuna tıklanmışsa seçme
+
+          options.forEach(opt => {
+            opt.classList.remove("selected-row", "border-[#4DB6B0]", "bg-[#1A2B33]", "ring-1", "ring-[#4DB6B0]/50");
+            opt.classList.add("border-[#24343A]", "bg-[#0E171B]/50");
+            const btn = opt.querySelector("button:first-child");
+            if (btn) {
+              btn.classList.remove("bg-[#4DB6B0]", "text-[#0E171B]", "border-[#4DB6B0]");
+              btn.classList.add("border-[#24343A]", "text-[#E4ECEC]");
+            }
+            const checkLabel = opt.querySelector(".flex.items-center.gap-1.5.text-\\[\\#4DB6B0\\]");
+            if (checkLabel) checkLabel.remove();
+          });
+
+          row.classList.add("selected-row", "border-[#4DB6B0]", "bg-[#1A2B33]", "ring-1", "ring-[#4DB6B0]/50");
+          row.classList.remove("border-[#24343A]", "bg-[#0E171B]/50");
+          const activeBtn = row.querySelector("button:first-child");
+          if (activeBtn) {
+            activeBtn.classList.remove("border-[#24343A]", "text-[#E4ECEC]");
+            activeBtn.classList.add("bg-[#4DB6B0]", "text-[#0E171B]", "border-[#4DB6B0]");
+          }
+        });
+      });
+
+      // 4. Şık Eleme (Strike-through) Simülasyonu
+      const strikeBtns = document.querySelectorAll(".strike-btn");
+      strikeBtns.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const row = btn.closest(".option-row");
+          const textSpan = row.querySelector("span.font-body-md");
+          const bubbleBtn = row.querySelector("button:first-child");
+
+          if (row.classList.contains("strike-active")) {
+            row.classList.remove("strike-active", "opacity-60");
+            textSpan.classList.remove("line-through", "text-[#A9B8BA]");
+            bubbleBtn.classList.remove("line-through", "text-[#5A6C70]");
+            btn.innerHTML = '<span class="material-symbols-outlined text-lg" data-icon="format_strikethrough">format_strikethrough</span>';
+            btn.title = "Bu şıkkı ele";
+          } else {
+            row.classList.add("strike-active", "opacity-60");
+            textSpan.classList.add("line-through", "text-[#A9B8BA]");
+            bubbleBtn.classList.add("line-through", "text-[#5A6C70]");
+            btn.innerHTML = '<span class="material-symbols-outlined text-lg" data-icon="undo">undo</span>';
+            btn.title = "Elemeyi kaldır";
+          }
+        });
+      });
+
+      // 5. Yazı Boyutu Değiştirici
+      const questionStem = document.getElementById("question-stem");
+      document.getElementById("font-dec")?.addEventListener("click", () => {
+        questionStem.classList.remove("text-headline-sm", "text-headline-md");
+        questionStem.classList.add("text-body-md");
+      });
+      document.getElementById("font-norm")?.addEventListener("click", () => {
+        questionStem.classList.remove("text-body-md", "text-headline-md");
+        questionStem.classList.add("text-body-lg");
+      });
+      document.getElementById("font-inc")?.addEventListener("click", () => {
+        questionStem.classList.remove("text-body-md", "text-body-lg");
+        questionStem.classList.add("text-headline-sm");
+      });
+
+      // 6. Tam Ekran Geçişi
+      document.getElementById("fullscreen-btn")?.addEventListener("click", () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+
+      // 7. Sınavı Bitir Modalı
+      const modal = document.getElementById("finish-modal");
+      document.getElementById("finish-exam-btn")?.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      });
+      document.getElementById("cancel-finish-btn")?.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      });
+      document.getElementById("confirm-finish-btn")?.addEventListener("click", () => {
+        alert("Sınav tamamlandı. Cevaplarınız ÖSYM sunucusuna iletilmiştir.");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      });
+    });
+  </script>
+</body></html>

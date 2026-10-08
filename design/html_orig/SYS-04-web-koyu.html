@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ODAK · SYS-04 · Çevrimdışı Çalışma İstasyonu</title>
+<!-- Google Fonts: Literata & Work Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-variant": "#2d363b",
+            "on-primary-fixed-variant": "#00504d",
+            "background": "#0c1519",
+            "on-surface-variant": "#bdc9c7",
+            "tertiary": "#68dd95",
+            "surface-dim": "#0c1519",
+            "secondary": "#f9bc42",
+            "primary": "#71d7d1",
+            "on-background": "#dae4e9",
+            "tertiary-fixed": "#85faaf",
+            "secondary-fixed": "#ffdea8",
+            "primary-fixed": "#8ef4ed",
+            "secondary-fixed-dim": "#f9bc42",
+            "on-tertiary": "#00391d",
+            "on-surface": "#dae4e9",
+            "on-tertiary-container": "#004525",
+            "secondary-container": "#bd8700",
+            "on-primary-container": "#004441",
+            "surface-container-lowest": "#070f13",
+            "primary-fixed-dim": "#71d7d1",
+            "outline": "#879392",
+            "on-primary-fixed": "#00201e",
+            "on-secondary": "#422d00",
+            "on-error-container": "#ffdad6",
+            "on-secondary-container": "#392600",
+            "surface-container-highest": "#2d363b",
+            "outline-variant": "#3d4948",
+            "primary-container": "#4db6b0",
+            "on-secondary-fixed-variant": "#5e4200",
+            "on-error": "#690005",
+            "on-tertiary-fixed-variant": "#00522c",
+            "surface-container-low": "#141d21",
+            "on-secondary-fixed": "#271900",
+            "on-primary": "#003735",
+            "inverse-on-surface": "#293236",
+            "tertiary-container": "#44bb77",
+            "inverse-primary": "#006a66",
+            "error-container": "#93000a",
+            "surface-container": "#182125",
+            "error": "#ffb4ab",
+            "tertiary-fixed-dim": "#68dd95",
+            "surface": "#0c1519",
+            "on-tertiary-fixed": "#00210f",
+            "surface-bright": "#313b3f",
+            "inverse-surface": "#dae4e9",
+            "surface-tint": "#71d7d1",
+            "surface-container-high": "#222b30"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-xs": "0.25rem",
+            "margin-mobile": "1rem",
+            "space-sm": "0.5rem",
+            "margin": "2rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "display-lg-mobile": ["Literata"],
+            "body-md": ["Literata"],
+            "label-md": ["Work Sans"],
+            "body-lg": ["Literata"],
+            "label-lg": ["Work Sans"],
+            "legal-code": ["Work Sans"],
+            "label-sm": ["Work Sans"],
+            "headline-md": ["Literata"],
+            "display-lg": ["Literata"],
+            "body-sm": ["Literata"],
+            "headline-sm": ["Literata"]
+          },
+          "fontSize": {
+            "display-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "legal-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "500" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "500" }],
+            "display-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- ==================== ÜST NAVİGASYON (SHARED COMPONENT: TopNavBar) ==================== -->
+<header class="w-full bg-surface-container border-b border-outline-variant sticky top-0 z-40">
+<div class="w-full px-space-lg max-w-[1440px] mx-auto flex items-center justify-between h-16">
+<!-- Marka & Sınav Seçici -->
+<div class="flex items-center gap-space-md">
+<span class="text-headline-md font-headline-md font-semibold tracking-wider text-primary">ODAK</span>
+<div class="hidden sm:flex items-center gap-2 px-2.5 py-1.5 bg-surface-container-low border border-outline-variant rounded text-label-sm font-label-sm text-secondary">
+<span class="material-symbols-outlined text-[16px] text-secondary">event_note</span>
+<span>2026-YDS/2 · 22 Kasım</span>
+<span class="text-outline">|</span>
+<span class="text-on-surface-variant">52 gün kaldı</span>
+</div>
+</div>
+<!-- Navigasyon Linkleri (Desktop) -->
+<nav class="hidden lg:flex items-center gap-space-lg h-full">
+<a class="text-on-surface-variant hover:text-on-surface font-label-md transition-colors flex items-center h-full px-1" href="#">Müfredat</a>
+<a class="text-on-surface-variant hover:text-on-surface font-label-md transition-colors flex items-center h-full px-1" href="#">Denemeler</a>
+<a class="text-on-surface-variant hover:text-on-surface font-label-md transition-colors flex items-center h-full px-1" href="#">Soru Bankası</a>
+<a class="text-on-surface-variant hover:text-on-surface font-label-md transition-colors flex items-center h-full px-1" href="#">Kelime Kartları</a>
+<!-- Aktif Sekme: Senkronizasyon / Çevrimdışı Mod -->
+<a class="text-primary border-b-2 border-primary font-label-lg flex items-center h-full px-1" href="#">Senkronizasyon</a>
+</nav>
+<!-- Sağ Eylemler: Çevrimdışı Durum, Eşitleme ve Profil -->
+<div class="flex items-center gap-space-md">
+<!-- Çevrimdışı Durum Rozeti -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container-high border border-outline-variant rounded" title="İnternet bağlantısı mevcut değil">
+<span class="material-symbols-outlined text-secondary text-[18px]">cloud_off</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant hidden md:inline">Çevrimdışı Mod</span>
+</div>
+<!-- Bekleyen Senkronizasyon İkonu -->
+<button aria-label="Eşitleme durumu" class="relative p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors rounded min-h-[44px] min-w-[44px] flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary"></span>
+</button>
+<!-- Ayarlar Butonu -->
+<button aria-label="Ayarlar" class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors rounded min-h-[44px] min-w-[44px] flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<div class="h-6 w-px bg-outline-variant"></div>
+<!-- Kullanıcı Profili -->
+<div class="flex items-center gap-2.5 pl-1">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-label-md">
+            SY
+          </div>
+<div class="hidden xl:flex flex-col text-left">
+<span class="text-label-sm font-label-sm text-on-surface leading-tight">Dr. Selim Yılmaz</span>
+<span class="text-[10px] font-label-sm text-outline">Aday Profil Avatarı</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- ==================== KRİTİK BİLDİRİM BANDI: Çevrimdışı Durum ==================== -->
+<section class="w-full bg-surface-container border-b-2 border-secondary-container">
+<div class="max-w-[1440px] mx-auto px-space-lg py-space-sm flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 p-1 rounded bg-surface-container-high border border-secondary text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">wifi_off</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="text-label-lg font-label-lg text-secondary">Çevrimdışısın · İndirilen setler kesintisiz kullanılabilir</h1>
+<span class="inline-flex px-1.5 py-0.5 text-[10px] font-label-sm text-secondary border border-secondary rounded">Yerel Kayıt Aktif</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5 max-w-[850px]">
+            İnternet bağlantısı koptuğunda çözdüğünüz tüm sorular cihazınızda güvenle saklanır. Bağlantı sağlandığında sonuçlarınız profilinize ve kamp grubunuza kendiliğinden aktarılacaktır.
+          </p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-space-md shrink-0">
+<span class="text-legal-code font-legal-code text-outline">
+          Son başarılı bağlantı: <strong class="text-on-surface-variant font-medium">Bugün, 14:12</strong>
+</span>
+<button class="min-h-[44px] px-4 py-2 border border-outline-variant bg-surface-container-high hover:border-primary text-on-surface text-label-md font-label-md rounded flex items-center gap-2 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+<span>Bağlantıyı Yeniden Dene</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ==================== ANA ÇALIŞMA SAYFASI ==================== -->
+<main class="flex-1 max-w-[1440px] w-full mx-auto px-space-lg py-space-lg flex flex-col gap-space-lg">
+<!-- METRİK & GÖSTERGE KARTLARI (3'lü Bento Izgara) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Kart 1: Eşitleme Bekleyen Cevaplar -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col justify-between">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm font-label-sm text-outline">Eşitleme Bekleyen Cevaplar</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-label-sm bg-surface-container border border-secondary text-secondary">Kuyrukta</span>
+</div>
+<div class="my-1">
+<div class="text-display-lg font-display-lg text-secondary">47 Soru</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">3 Çevrimdışı Oturumdan kaydedildi</p>
+</div>
+<div class="pt-3 border-t border-outline-variant flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+<span>Bağlantı kurulduğunda otomatik aktarılacak</span>
+</div>
+</div>
+<!-- Kart 2: Çevrimdışı Kullanıma Hazır İçerik -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col justify-between">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm font-label-sm text-outline">Çevrimdışı Kullanıma Hazır İçerik</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-label-sm bg-surface-container border border-outline-variant text-primary">Tam Donanım</span>
+</div>
+<div class="my-1">
+<div class="text-display-lg font-display-lg text-primary">6 Set İndirildi</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Toplam 380 Soru &amp; 240 Kelime</p>
+</div>
+<div class="pt-3 border-t border-outline-variant flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+<span>1 Tam Deneme</span>
+<span>·</span>
+<span>2 Soru Paketi</span>
+<span>·</span>
+<span>3 Kelime Destesi</span>
+</div>
+</div>
+<!-- Kart 3: Yerel Saklama Durumu -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col justify-between">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm font-label-sm text-outline">Yerel Bellek ve Saklama Durumu</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-label-sm bg-surface-container border border-tertiary-container text-tertiary">Güvenli</span>
+</div>
+<div class="my-1">
+<div class="text-display-lg font-display-lg text-on-surface">14,8 MB</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Kota Sorunu Yok · Çevrimdışı paketler ayrıldı</p>
+</div>
+<div class="pt-3 border-t border-outline-variant flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px] text-tertiary">verified</span>
+<span>Tüm ses telaffuzları ve soru çözümleri hazır</span>
+</div>
+</div>
+</section>
+<!-- İKİ KOLONLU ANA BÖLÜM -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- ==================== SOL / GENİŞ KOLON: İndirilen Setler ==================== -->
+<div class="lg:col-span-8 flex flex-col gap-space-md">
+<!-- Başlık & Filtre Çubuğu -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-sm border-b border-outline-variant">
+<div>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">İndirilen Çalışma Setleri</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">İnternet erişimi olmadan çözülebilir tam sınav ve soru paketleri</p>
+</div>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px]">download_done</span>
+<span>Yerel Kütüphane</span>
+</div>
+</div>
+<!-- Filtre Sekmeleri -->
+<div class="flex flex-wrap items-center gap-2 pt-space-sm">
+<button class="px-3 py-1.5 bg-surface-variant text-primary border border-primary text-label-sm font-label-sm rounded min-h-[44px] flex items-center" type="button">
+              Tümü (6)
+            </button>
+<button class="px-3 py-1.5 bg-surface-container text-on-surface-variant border border-outline-variant hover:text-on-surface hover:border-outline text-label-sm font-label-sm rounded min-h-[44px] flex items-center transition-colors" type="button">
+              Deneme Sınavları (1)
+            </button>
+<button class="px-3 py-1.5 bg-surface-container text-on-surface-variant border border-outline-variant hover:text-on-surface hover:border-outline text-label-sm font-label-sm rounded min-h-[44px] flex items-center transition-colors" type="button">
+              Soru Paketleri (2)
+            </button>
+<button class="px-3 py-1.5 bg-surface-container text-on-surface-variant border border-outline-variant hover:text-on-surface hover:border-outline text-label-sm font-label-sm rounded min-h-[44px] flex items-center transition-colors" type="button">
+              Kelime Kartları (3)
+            </button>
+</div>
+</div>
+<!-- Set Listesi -->
+<div class="flex flex-col gap-space-md">
+<!-- Öğe 1: 2026-YDS/2 Özgün Deneme Simülasyonu 08 -->
+<article class="bg-surface-container-low border border-outline-variant rounded p-space-md flex flex-col md:flex-row md:items-center justify-between gap-space-md hover:border-outline transition-colors">
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-2 mb-1.5">
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-primary text-primary rounded">Tam Deneme</span>
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-outline-variant text-outline rounded">İndirildi: 1 Ekim 2026</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">2026-YDS/2 Özgün Deneme Simülasyonu 08</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                80 Soru · 180 Dakika · Gerçek sınav şablonu ve tam soru kitapçığı
+              </p>
+<div class="flex items-center gap-3 mt-2 text-label-sm font-label-sm text-outline">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+<span>Çevrimdışı Çözüme Hazır</span>
+</span>
+<span>·</span>
+<span>Puan: 100 üzerinden (1,25 katsayı)</span>
+</div>
+</div>
+<div class="shrink-0">
+<button class="w-full md:w-auto min-h-[44px] px-5 py-2.5 bg-primary-container text-on-primary-container font-label-lg rounded hover:bg-primary transition-colors flex items-center justify-center gap-2 font-semibold" type="button">
+<span class="material-symbols-outlined text-[20px]">play_arrow</span>
+<span>Sınavı Başlat (Çevrimdışı Mod)</span>
+</button>
+</div>
+</article>
+<!-- Öğe 2: Zıtlık ve Sebep Bağlaçları Odak Paketi -->
+<article class="bg-surface-container-low border border-outline-variant rounded p-space-md flex flex-col md:flex-row md:items-center justify-between gap-space-md hover:border-outline transition-colors">
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-2 mb-1.5">
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-secondary text-secondary rounded">Soru Paketi · Yarıda Kaldı</span>
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-outline-variant text-outline rounded">Cümle Tamamlama</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Zıtlık ve Sebep Bağlaçları Odak Paketi</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                30 Soru · 16 Soru çözüldü / 14 Soru bekliyor
+              </p>
+<div class="w-full max-w-xs bg-surface-container h-1.5 rounded mt-2 border border-outline-variant overflow-hidden">
+<div class="bg-secondary h-full w-[53%]"></div>
+</div>
+</div>
+<div class="shrink-0">
+<button class="w-full md:w-auto min-h-[44px] px-5 py-2.5 border border-outline-variant bg-surface-container hover:border-primary text-on-surface font-label-md rounded transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[20px]">resume</span>
+<span>Kaldığın Yerden Devam Et</span>
+</button>
+</div>
+</article>
+<!-- Öğe 3: Akademik Çeviri ve Edat Soru Paketi -->
+<article class="bg-surface-container-low border border-outline-variant rounded p-space-md flex flex-col md:flex-row md:items-center justify-between gap-space-md hover:border-outline transition-colors">
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-2 mb-1.5">
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-outline-variant text-primary rounded">Soru Paketi</span>
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-outline-variant text-outline rounded">İngilizce - Türkçe</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Akademik Çeviri ve Edat Soru Paketi</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                50 Soru · Tamamı çevrimdışı erişilebilir açıklayıcı çözüm kartlarıyla birlikte
+              </p>
+<div class="flex items-center gap-2 mt-2 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check</span>
+<span>Hazır (Henüz başlanmadı)</span>
+</div>
+</div>
+<div class="shrink-0">
+<button class="w-full md:w-auto min-h-[44px] px-5 py-2.5 border border-outline-variant bg-surface-container hover:border-primary text-on-surface font-label-md rounded transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+<span>Çözmeye Başla</span>
+</button>
+</div>
+</article>
+<!-- Öğe 4: YDS C1 İleri Düzey 200 Fiil ve İsim Kartı -->
+<article class="bg-surface-container-low border border-outline-variant rounded p-space-md flex flex-col md:flex-row md:items-center justify-between gap-space-md hover:border-outline transition-colors">
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-2 mb-1.5">
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-outline-variant text-primary rounded">Kelime Destesi</span>
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-outline-variant text-outline rounded">Akademik Sözlük</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">YDS C1 İleri Düzey 200 Fiil ve İsim Kartı</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                200 Kelime · Ses telaffuzları ve makale bağlam örnekleri yerel cihazda
+              </p>
+</div>
+<div class="shrink-0">
+<button class="w-full md:w-auto min-h-[44px] px-5 py-2.5 border border-outline-variant bg-surface-container hover:border-primary text-on-surface font-label-md rounded transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[20px]">style</span>
+<span>Kelime Tekrarı Yap</span>
+</button>
+</div>
+</article>
+<!-- Öğe 5: Son 10 Yılın En Çok Çıkan 40 Phrasal Verb Kartı -->
+<article class="bg-surface-container-low border border-outline-variant rounded p-space-md flex flex-col md:flex-row md:items-center justify-between gap-space-md hover:border-outline transition-colors">
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-2 mb-1.5">
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-outline-variant text-primary rounded">Kelime Destesi</span>
+<span class="px-2 py-0.5 text-[11px] font-label-sm bg-surface-container border border-tertiary-container text-tertiary rounded">Hazır</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Son 10 Yılın En Çok Çıkan 40 Phrasal Verb Kartı</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                40 Deyimsel Fiil · ÖSYM soru kökü örnekleri ve çeviriler
+              </p>
+</div>
+<div class="shrink-0">
+<button class="w-full md:w-auto min-h-[44px] px-5 py-2.5 border border-outline-variant bg-surface-container hover:border-primary text-on-surface font-label-md rounded transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[20px]">style</span>
+<span>Kelime Tekrarı Yap</span>
+</button>
+</div>
+</article>
+</div>
+<!-- İndirme Yönetimi Alt Barı -->
+<div class="bg-surface-container border border-outline-variant p-space-md rounded flex items-center justify-between opacity-80">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-outline text-[20px]">cloud_download</span>
+<span class="text-body-sm font-body-sm text-outline">Yeni Setleri Çevrimdışı İndir (İnternet bağlantısı gerekir)</span>
+</div>
+<button class="min-h-[44px] px-4 py-2 border border-outline-variant text-outline rounded text-label-sm font-label-sm cursor-not-allowed" disabled="" type="button">
+            Katalog Kilitli
+          </button>
+</div>
+</div>
+<!-- ==================== SAĞ KOLON: Eşitleme Kuyruğu & Güvence ==================== -->
+<aside class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Kart 1: Eşitleme Bekleyen Oturumlar -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<h2 class="text-label-lg font-label-lg text-on-surface">Eşitleme Bekleyen Oturumlar</h2>
+<span class="material-symbols-outlined text-secondary text-[18px]">pending_actions</span>
+</div>
+<div class="divide-y divide-outline-variant">
+<!-- Oturum 1 -->
+<div class="py-2.5 flex flex-col gap-1">
+<div class="flex items-start justify-between">
+<span class="text-body-sm font-body-sm font-medium text-on-surface">Özgün Deneme Simülasyonu 08</span>
+<span class="text-label-sm font-label-sm text-secondary font-medium">14:35</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>Bölüm 1: İlk 30 Soru cevaplandı</span>
+<span class="text-secondary">Bekliyor</span>
+</div>
+</div>
+<!-- Oturum 2 -->
+<div class="py-2.5 flex flex-col gap-1">
+<div class="flex items-start justify-between">
+<span class="text-body-sm font-body-sm font-medium text-on-surface">Cümle Tamamlama Egzersizi</span>
+<span class="text-label-sm font-label-sm text-secondary font-medium">15:10</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>12 Soru cevaplandı</span>
+<span class="text-secondary">Bekliyor</span>
+</div>
+</div>
+<!-- Oturum 3 -->
+<div class="py-2.5 flex flex-col gap-1">
+<div class="flex items-start justify-between">
+<span class="text-body-sm font-body-sm font-medium text-on-surface">Kelime Eşleştirme Pratiği</span>
+<span class="text-label-sm font-label-sm text-secondary font-medium">15:22</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>5 Cevap kaydedildi</span>
+<span class="text-secondary">Bekliyor</span>
+</div>
+</div>
+</div>
+<!-- Eşitleme Durumu Butonu -->
+<div class="pt-2 border-t border-outline-variant">
+<button class="w-full min-h-[44px] py-2.5 px-4 bg-surface-container border border-outline-variant hover:border-primary text-on-surface text-label-md font-label-md rounded flex items-center justify-center gap-2 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+<span>Şimdi Eşitlemeyi Dene</span>
+</button>
+</div>
+</div>
+<!-- Kart 2: Çevrimdışı Çalışma Güvencesi -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center gap-2 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-primary text-[20px]">shield</span>
+<h2 class="text-label-lg font-label-lg text-primary">Çevrimdışı Çalışma Güvencesi</h2>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            ODAK çevrimdışı motoru, internet kopmalarında akademik verinizin sıfırlanmasını engellemek üzere tasarlanmıştır:
+          </p>
+<ul class="flex flex-col gap-2.5 mt-1">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">check</span>
+<span class="text-body-sm font-body-sm text-on-surface">Sınav süreniz ve kronometreniz bağlantı kesintisinden etkilenmez.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">check</span>
+<span class="text-body-sm font-body-sm text-on-surface">Cevaplarınız ve işaretlemeleriniz anlık olarak cihazınıza kaydedilir.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">check</span>
+<span class="text-body-sm font-body-sm text-on-surface">Puanlama ÖSYM kuralına göre (her doğru 1,25 puan) bağlantı kurulur kurulmaz kesinleşir.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">check</span>
+<span class="text-body-sm font-body-sm text-on-surface">Çalışma seriniz (34 gün) ve haftalık odaklanma süreniz korunur.</span>
+</li>
+</ul>
+<div class="mt-2 p-2 bg-surface-container border border-outline-variant rounded text-legal-code font-legal-code text-outline">
+            Sınav esnasında yanlışlar doğruları götürmez; tüm işaretlemeler eksiksiz aktarılacaktır.
+          </div>
+</div>
+<!-- Ek Bilgi Kartı: Başvuru Hatırlatması -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md">
+<span class="text-label-sm font-label-sm text-secondary font-semibold">Resmi Takvim Hatırlatması</span>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+            2026-YDS/2 Başvuru süreci: <strong>30 Eylül – 8 Ekim 2026</strong>. Sınav gününe <strong>52 gün</strong> kalmıştır.
+          </p>
+</div>
+</aside>
+</section>
+</main>
+<!-- ==================== ALT BİLGİ (SHARED COMPONENT: Footer) ==================== -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant mt-auto">
+<div class="w-full px-space-lg max-w-[1440px] mx-auto py-space-md flex flex-col md:flex-row justify-between items-center text-legal-code font-legal-code text-outline gap-space-sm">
+<!-- Telif Metni -->
+<div class="text-center md:text-left">
+        © 2026 ODAK Akademik Değerlendirme ve Sınav Hazırlık Sistemleri A.Ş. Tüm hakları saklıdır.
+      </div>
+<!-- Bağlantılar -->
+<div class="flex flex-wrap items-center justify-center gap-space-md">
+<span class="text-primary underline">Sistem Durumu: Çevrimdışı (SYS-04)</span>
+<a class="text-outline hover:text-on-surface hover:text-primary transition-colors" href="#">KVKK Aydınlatma Metni</a>
+<a class="text-outline hover:text-on-surface hover:text-primary transition-colors" href="#">Senkronizasyon Protokolü</a>
+<a class="text-outline hover:text-on-surface hover:text-primary transition-colors" href="#">Kullanım Koşulları</a>
+<a class="text-outline hover:text-on-surface hover:text-primary transition-colors" href="#">Destek</a>
+</div>
+</div>
+</footer>
+</body></html>

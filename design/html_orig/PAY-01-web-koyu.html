@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ODAK · Sınavına Kadar Sınırsız Çalış</title>
+<!-- Typography: Google Fonts (Figtree for UI, Literata for Exam Reading, Bricolage Grotesque for Main Brand Display) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined (Literal transcription) -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN with forms and container-queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#0E171B',
+            surface: '#142127',
+            'surface-container': '#1B2B32',
+            'surface-container-high': '#16363A',
+            'on-surface': '#E4ECEC',
+            'on-surface-variant': '#A9B8BA',
+            outline: '#71838A',
+            'outline-variant': '#24343A',
+            primary: '#4DB6B0',
+            'on-primary': '#0E171B',
+            'primary-container': '#16363A',
+            'on-primary-container': '#87CDC8',
+            secondary: '#F0B43A',
+            'on-secondary': '#0E171B',
+            'secondary-container': '#3A2E12',
+            tertiary: '#4CC27D',
+            'tertiary-container': '#163524',
+            error: '#EE8A6E',
+            'error-container': '#3D211A',
+            'inverse-surface': '#E4ECEC',
+            'chart-1': '#04A19B',
+            'chart-2': '#7483E0',
+            'chart-3': '#C0851F',
+            'chart-4': '#C06099'
+          },
+          borderRadius: {
+            xs: '4px',
+            sm: '8px',
+            DEFAULT: '12px',
+            md: '12px',
+            lg: '16px',
+            xl: '24px',
+            full: '9999px'
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'Figtree', 'sans-serif'],
+            headline: ['Figtree', 'sans-serif'],
+            body: ['Figtree', 'sans-serif'],
+            reading: ['Literata', 'serif']
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .optical-bubble {
+      width: 24px;
+      height: 24px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 150ms ease;
+    }
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-[#0E171B] text-[#E4ECEC] font-body min-h-screen antialiased selection:bg-[#4DB6B0] selection:text-[#0E171B]">
+<!-- Top Announcement Bar -->
+<aside aria-label="Kampanya Bilgisi" class="w-full bg-[#16363A] border-b border-[#24343A] px-4 py-2.5 text-center text-xs md:text-sm font-medium text-[#87CDC8]">
+<div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
+<span aria-hidden="true" class="inline-flex items-center justify-center w-2 h-2 rounded-full bg-[#F0B43A]"></span>
+<span class="font-bold text-[#E4ECEC]">2026 Sonbahar Dönemi:</span>
+<span>Kurucu Akademisyen İndirimi · Tüm paketlerde %30 Fiyat Koruması garantilendi</span>
+</div>
+</aside>
+<!-- Top Sticky Navigation (Shared Component implementation) -->
+<header class="w-full h-16 top-0 sticky z-40 bg-[#142127] border-b border-[#24343A] shadow-none">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+<!-- Brand & Active Exam Chip -->
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-[#4DB6B0] rounded-sm py-1" href="#home">
+<!-- ODAK Optical Symbol motif -->
+<div aria-hidden="true" class="w-7 h-7 rounded-full border-2 border-[#4DB6B0] flex items-center justify-center">
+<div class="w-3 h-3 rounded-full bg-[#4DB6B0]"></div>
+</div>
+<span class="font-display text-2xl font-bold tracking-tight text-[#4DB6B0]">ODAK</span>
+</a>
+<!-- Exam Selector Chip (Single interactive element) -->
+<button class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1B2B32] border border-[#24343A] text-xs font-semibold text-[#E4ECEC] hover:border-[#71838A] transition-colors duration-150 min-h-[36px]" type="button">
+<span aria-hidden="true" class="w-2 h-2 rounded-full bg-[#4CC27D]"></span>
+<span>2026-YDS/2 · 22 Kasım 2026 · 52 Gün Kaldı</span>
+<span class="material-symbols-outlined text-base text-[#A9B8BA]" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+<!-- Navigation Links -->
+<nav aria-label="Ana Gezinti" class="hidden lg:flex items-center gap-1">
+<a class="text-[#A9B8BA] hover:text-[#E4ECEC] py-5 px-3 flex items-center gap-2 transition-colors text-sm font-medium" href="#bugun">Bugün</a>
+<a class="text-[#A9B8BA] hover:text-[#E4ECEC] py-5 px-3 flex items-center gap-2 transition-colors text-sm font-medium" href="#calis">Çalış</a>
+<a class="text-[#A9B8BA] hover:text-[#E4ECEC] py-5 px-3 flex items-center gap-2 transition-colors text-sm font-medium" href="#deneme">Deneme</a>
+<a class="text-[#A9B8BA] hover:text-[#E4ECEC] py-5 px-3 flex items-center gap-2 transition-colors text-sm font-medium" href="#ogretmen">Öğretmen</a>
+<a class="text-[#A9B8BA] hover:text-[#E4ECEC] py-5 px-3 flex items-center gap-2 transition-colors text-sm font-medium" href="#ben">Ben</a>
+</nav>
+<!-- Trailing Controls: Streak, Notifications, Close Modal Action -->
+<div class="flex items-center gap-3">
+<!-- Streak pill -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#3A2E12] border border-[#24343A] text-xs font-semibold text-[#E4ECEC]" title="Günlük Çalışma Serisi">
+<span class="material-symbols-outlined text-sm text-[#F0B43A]" data-icon="local_fire_department" data-weight="fill" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span>14 Gün Seri</span>
+</div>
+<!-- Delay-free Explicit Close Button (PAYWALL EXIT) -->
+<button aria-label="Sayfayı Kapat ve Soru Çözümüne Dön" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#1B2B32] hover:bg-[#16363A] text-[#E4ECEC] border border-[#24343A] hover:border-[#71838A] text-sm font-semibold transition-colors duration-150 min-h-[44px]" type="button">
+<span>Kapat</span>
+<span class="material-symbols-outlined text-base" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN PAYWALL CONTAINER -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+<!-- 1. HERO SECTION -->
+<section class="text-center max-w-4xl mx-auto pt-4 space-y-6">
+<!-- Optical Target Badge -->
+<div aria-hidden="true" class="inline-flex items-center justify-center mb-2">
+<div class="w-16 h-16 rounded-full border border-[#24343A] bg-[#142127] flex items-center justify-center p-3">
+<div class="w-10 h-10 rounded-full border-2 border-[#4DB6B0] flex items-center justify-center">
+<div class="w-4 h-4 rounded-full bg-[#4DB6B0]"></div>
+</div>
+</div>
+</div>
+<!-- Main Display Title -->
+<h1 class="font-display text-4xl sm:text-5xl font-bold tracking-tight text-[#E4ECEC] leading-tight">
+        Sınavına kadar sınırsız çalış
+      </h1>
+<!-- Academic Subtitle -->
+<p class="text-base sm:text-lg text-[#A9B8BA] max-w-2xl mx-auto leading-relaxed">
+        Öğretmen destekli sentaktik analizler, tüm özgün denemeler ve aralıklı tekrar algoritmasıyla doçentlik ve kamu hedef puanınıza eksiksiz hazırlanın.
+      </p>
+<!-- Exam Format Rule Micro-Chips -->
+<div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#142127] border border-[#24343A] text-xs font-medium text-[#E4ECEC]">
+<span class="material-symbols-outlined text-sm text-[#4DB6B0]" data-icon="schedule">schedule</span>
+          80 Soru · 180 Dakika
+        </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#142127] border border-[#24343A] text-xs font-medium text-[#E4ECEC]">
+<span class="material-symbols-outlined text-sm text-[#4DB6B0]" data-icon="calculate">calculate</span>
+          1 Doğru = 1,25 Puan
+        </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#142127] border border-[#24343A] text-xs font-medium text-[#E4ECEC]">
+<span class="material-symbols-outlined text-sm text-[#4CC27D]" data-icon="verified_user">verified_user</span>
+          Yanlışlar doğru puanını eksiltmez
+        </span>
+</div>
+</section>
+<!-- 2. CORE VALUE PROPOSITIONS (BENTO GRID - 4 CARDS) -->
+<section aria-labelledby="faydalar-baslik" class="space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-[#E4ECEC] tracking-tight" id="faydalar-baslik">Akademik Metodolojinin Sunduğu Temel Avantajlar</h2>
+<span class="text-xs font-semibold text-[#A9B8BA]">Tüm Planlara Dahildir</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Card 1 -->
+<article class="bg-[#142127] border border-[#24343A] rounded-lg p-6 flex flex-col justify-between hover:border-[#33474E] transition-colors">
+<div class="space-y-3">
+<div class="w-10 h-10 rounded-md bg-[#16363A] text-[#4DB6B0] flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="menu_book">menu_book</span>
+</div>
+<h3 class="text-base font-bold text-[#E4ECEC]">Sınırsız Soru ve Hap Not</h3>
+<p class="text-sm text-[#A9B8BA] leading-normal">
+              10 temel soru tipinde 6.500+ özgün soru, sentaktik tahliller ve 42 kural hap notu ile doğrudan soru üzerinde kalıcı öğrenme.
+            </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24343A] flex items-center text-xs font-semibold text-[#4DB6B0]">
+<span>6.500+ Tahlil Arşivi</span>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-[#142127] border border-[#24343A] rounded-lg p-6 flex flex-col justify-between hover:border-[#33474E] transition-colors">
+<div class="space-y-3">
+<div class="w-10 h-10 rounded-md bg-[#16363A] text-[#4DB6B0] flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="psychology">psychology</span>
+</div>
+<h3 class="text-base font-bold text-[#E4ECEC]">Günde 40 Öğretmen Mesajı</h3>
+<p class="text-sm text-[#A9B8BA] leading-normal">
+              Kıdemli YDS akademisyenleri ve pedagojik modellerle soru köküne özel anlık tahlil ve çeldirici ayrıştırma danışmanlığı.
+            </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24343A] flex items-center text-xs font-semibold text-[#4DB6B0]">
+<span>4 Kademeli İpucu Merdiveni</span>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-[#142127] border border-[#24343A] rounded-lg p-6 flex flex-col justify-between hover:border-[#33474E] transition-colors">
+<div class="space-y-3">
+<div class="w-10 h-10 rounded-md bg-[#16363A] text-[#4DB6B0] flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="assignment">assignment</span>
+</div>
+<h3 class="text-base font-bold text-[#E4ECEC]">Tüm Denemeler ve Analiz</h3>
+<p class="text-sm text-[#A9B8BA] leading-normal">
+              20 tam süreli ÖSYM optik deneme sınavı, çeldirici teşhis karnesi ve kategori bazlı süre yönetim projeksiyonu.
+            </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24343A] flex items-center text-xs font-semibold text-[#4DB6B0]">
+<span>Tam ÖSYM Optik Modülü</span>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="bg-[#142127] border border-[#24343A] rounded-lg p-6 flex flex-col justify-between hover:border-[#33474E] transition-colors">
+<div class="space-y-3">
+<div class="w-10 h-10 rounded-md bg-[#16363A] text-[#4DB6B0] flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="insights">insights</span>
+</div>
+<h3 class="text-base font-bold text-[#E4ECEC]">Puan Tahmini ve Rapor</h3>
+<p class="text-sm text-[#A9B8BA] leading-normal">
+              Gerçek sınav zorluk katsayılarıyla ağırlıklandırılmış başarı projeksiyonu ve 55, 65, 85 puan eşiği dinamik izleme paneli.
+            </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24343A] flex items-center text-xs font-semibold text-[#4DB6B0]">
+<span>±2,5 Puan Doğruluk Payı</span>
+</div>
+</article>
+</div>
+</section>
+<!-- 3. PLAN SELECTION CARDS (3-COLUMN PRICING GRID) -->
+<section aria-labelledby="planlar-baslik" class="space-y-6 pt-4">
+<div class="text-center space-y-2">
+<h2 class="text-2xl font-bold text-[#E4ECEC]" id="planlar-baslik">Çalışma Takviminize Uygun Planı Belirleyin</h2>
+<p class="text-sm text-[#A9B8BA]">Tüm üyelikler ilk 7 gün tamamen ücretsiz başlar. Taahhüt bulunmaz.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+<!-- PLAN 1: AYLIK PLAN -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-7 flex flex-col justify-between space-y-6">
+<div class="space-y-5">
+<div class="flex justify-between items-start">
+<div>
+<span class="text-xs font-bold uppercase tracking-wider text-[#A9B8BA]">Esnek Hazırlık</span>
+<h3 class="text-xl font-bold text-[#E4ECEC] mt-1">Aylık Plan</h3>
+</div>
+<span class="text-xs font-medium px-2.5 py-1 rounded bg-[#1B2B32] text-[#A9B8BA] border border-[#24343A]">Taahhütsüz</span>
+</div>
+<div class="pt-2">
+<div class="flex items-baseline gap-1">
+<span class="font-display text-4xl font-bold text-[#E4ECEC]">349</span>
+<span class="text-base font-semibold text-[#A9B8BA]">TL / ay</span>
+</div>
+<p class="text-xs text-[#A9B8BA] mt-1">Her ay otomatik yenilenir, tek tıkla iptal edilebilir.</p>
+</div>
+<ul class="space-y-3 pt-4 border-t border-[#24343A] text-sm text-[#E4ECEC]">
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Günlük 15 öğretmen soru inceleme hakkı</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Aylık 2 tam süreli deneme sınavı</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Akademik kelime merkezi ve aralıklı tekrar</span>
+</li>
+<li class="flex items-start gap-2.5 text-[#A9B8BA]">
+<span class="material-symbols-outlined text-[#71838A] text-lg mt-0.5" data-icon="remove">remove</span>
+<span>Doçentlik puan projeksiyon karnesi dahil değildir</span>
+</li>
+</ul>
+</div>
+<button class="w-full h-11 rounded-md border border-[#24343A] hover:border-[#4DB6B0] hover:text-[#4DB6B0] text-[#E4ECEC] font-semibold text-sm transition-colors duration-150 flex items-center justify-center" type="button">
+            Aylık Planı Seç
+          </button>
+</div>
+<!-- PLAN 2: SINAV DÖNEMİ PAKETİ (FEATURED / RECOMMENDED) -->
+<div class="bg-[#142127] border-2 border-[#4DB6B0] rounded-lg p-7 flex flex-col justify-between space-y-6 relative shadow-lg">
+<!-- Top Safran Badge -->
+<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#F0B43A] text-[#0E171B] font-bold text-xs px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>EN ÇOK TERCİH EDİLEN · 2026-YDS/2 ODAKLI</span>
+</div>
+<div class="space-y-5 pt-2">
+<div class="flex justify-between items-start">
+<div>
+<span class="text-xs font-bold uppercase tracking-wider text-[#4DB6B0]">22 Kasım 2026 Sınavı İçin</span>
+<h3 class="text-2xl font-bold text-[#E4ECEC] mt-1">Sınav Dönemi Paketi</h3>
+</div>
+<span class="text-xs font-bold px-2.5 py-1 rounded bg-[#16363A] text-[#87CDC8] border border-[#4DB6B0]">52 Günlük Erişim</span>
+</div>
+<div class="pt-2">
+<div class="flex items-baseline gap-2">
+<span class="font-display text-4xl sm:text-5xl font-bold text-[#E4ECEC]">1.490</span>
+<span class="text-base font-semibold text-[#A9B8BA]">TL / Tek Seferlik</span>
+</div>
+<p class="text-xs text-[#87CDC8] mt-1">Sınav gecesi kendiliğinden sonlanır. Otomatik çekim veya yenileme yapılmaz.</p>
+</div>
+<ul class="space-y-3.5 pt-4 border-t border-[#24343A] text-sm text-[#E4ECEC]">
+<li class="flex items-start gap-2.5 font-medium">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>20 Tam Özgün Deneme Sınavı (ÖSYM optik formatında 80 soru)</span>
+</li>
+<li class="flex items-start gap-2.5 font-medium">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Sınırsız Sentaktik Cümle Çözümlemesi (10 soru tipinin tamamı)</span>
+</li>
+<li class="flex items-start gap-2.5 font-medium">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Günde 40 Öğretmen Mesajı (Çeldirici teşhis ve soru tahlil danışmanlığı)</span>
+</li>
+<li class="flex items-start gap-2.5 font-medium">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Akıllı Hata Defteri (Aralıklı tekrar algoritmasıyla zayıf kural tespiti)</span>
+</li>
+<li class="flex items-start gap-2.5 font-medium">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Kurumsal Üniversite ve BAP Desteği (Resmi e-Arşiv Fatura imkanı)</span>
+</li>
+</ul>
+</div>
+<!-- Active Primary Action in Recommended Card -->
+<div class="space-y-2">
+<button class="w-full h-13 py-3 rounded-md bg-[#4DB6B0] hover:bg-[#3ea09a] text-[#0E171B] font-bold text-base transition-colors duration-150 flex items-center justify-center gap-2" type="button">
+<span>7 Günü Ücretsiz Başlat</span>
+<span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<p class="text-center text-xs text-[#A9B8BA]">Bugün ücret alınmaz. Deneme süresince istediğin zaman iptal et.</p>
+</div>
+</div>
+<!-- PLAN 3: YILLIK AKADEMİK PLAN -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-7 flex flex-col justify-between space-y-6">
+<div class="space-y-5">
+<div class="flex justify-between items-start">
+<div>
+<span class="text-xs font-bold uppercase tracking-wider text-[#A9B8BA]">Tüm Sınavlar &amp; 365 Gün</span>
+<h3 class="text-xl font-bold text-[#E4ECEC] mt-1">Yıllık Akademik Plan</h3>
+</div>
+<span class="text-xs font-semibold px-2.5 py-1 rounded bg-[#16363A] text-[#87CDC8] border border-[#24343A]">12 Ay Tam Erişim</span>
+</div>
+<div class="pt-2">
+<div class="flex items-baseline gap-1">
+<span class="font-display text-4xl font-bold text-[#E4ECEC]">2.490</span>
+<span class="text-base font-semibold text-[#A9B8BA]">TL / Yıllık</span>
+</div>
+<p class="text-xs text-[#A9B8BA] mt-1">Aylık ≈ 208 TL denkliği. Vade farksız 3 taksit seçeneği.</p>
+</div>
+<ul class="space-y-3 pt-4 border-t border-[#24343A] text-sm text-[#E4ECEC]">
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>YDS + YÖKDİL (Sağlık, Fen, Sosyal) soru havuzu (12.000+ Soru)</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>36 adet tam süreli özgün deneme sınavı</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Günde 60 öğretmen mesajı ve öncelikli soru analiz desteği</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-lg mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Doçentlik ve YLSY başvuru resmi süreç belge desteği</span>
+</li>
+</ul>
+</div>
+<button class="w-full h-11 rounded-md border border-[#24343A] hover:border-[#4DB6B0] hover:text-[#4DB6B0] text-[#E4ECEC] font-semibold text-sm transition-colors duration-150 flex items-center justify-center" type="button">
+            Yıllık Planı Seç
+          </button>
+</div>
+</div>
+</section>
+<!-- 4. TRUST & GUARANTEE CALLOUT BAR -->
+<section class="bg-[#1B2B32] border border-[#24343A] rounded-lg p-5">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs text-[#A9B8BA]">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-xl" data-icon="credit_card_off">credit_card_off</span>
+<span>İlk 7 gün karttan tahsilat yapılmaz</span>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-xl" data-icon="notifications_active">notifications_active</span>
+<span>Süre bitmeden 48 saat önce SMS ve e-posta bildirimi</span>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-xl" data-icon="lock_reset">lock_reset</span>
+<span>Tek tıkla, arama gerektirmeyen anında iptal</span>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#4CC27D] text-xl" data-icon="verified">verified</span>
+<span>14 gün koşulsuz yasal iade güvencesi</span>
+</div>
+</div>
+</section>
+<!-- 5. INTERACTIVE PEDAGOGICAL TEASER: REAL QUESTION & CLUE LADDER -->
+<section aria-labelledby="pedagoji-baslik" class="space-y-4">
+<div>
+<h2 class="text-xl font-bold text-[#E4ECEC]" id="pedagoji-baslik">Soru Başında Öğrenme: Sentaktik Tahlil ve İpucu Merdiveni</h2>
+<p class="text-sm text-[#A9B8BA]">Soruyu çözemediğinizde cevabı ezberletmez; sentaktik adımlarla zihinsel süreci inşa eder.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-[#142127] border border-[#24343A] rounded-lg p-6 lg:p-8">
+<!-- Left: Authentic Question Block (Literata typography) -->
+<div class="lg:col-span-7 space-y-6 border-b lg:border-b-0 lg:border-r border-[#24343A] pb-6 lg:pb-0 lg:pr-8">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold uppercase tracking-wider text-[#4DB6B0]">Örnek Soru 24 · Cümle Tamamlama</span>
+<span class="text-xs text-[#A9B8BA] font-mono">2026-YDS Formatı</span>
+</div>
+<!-- Sentence text in Literata font -->
+<p class="font-reading text-lg leading-relaxed text-[#E4ECEC]">
+            Although comprehensive economic sanctions were reinforced across multiple trade corridors, the domestic manufacturing capacity of the regional bloc <span class="inline-block border-b-2 border-[#4DB6B0] px-3 font-semibold text-[#87CDC8]">________</span> throughout the fiscal crisis.
+          </p>
+<!-- Options List with Optical Bubble Motif -->
+<div class="space-y-3 font-reading text-base">
+<!-- Option A (Default) -->
+<div class="flex items-center gap-3 p-3 rounded-md border border-[#24343A] bg-[#0E171B] text-[#A9B8BA]">
+<span class="optical-bubble border border-[#71838A] text-[#A9B8BA]">A</span>
+<span>had suffered catastrophic downturns within initial quarters</span>
+</div>
+<!-- Option B (Correct Selected) -->
+<div class="flex items-center justify-between p-3 rounded-md border-2 border-[#4CC27D] bg-[#163524] text-[#E4ECEC]">
+<div class="flex items-center gap-3">
+<span class="optical-bubble bg-[#4CC27D] text-[#0E171B] font-bold">B</span>
+<span class="font-semibold text-[#E4ECEC]">remained remarkably resilient</span>
+</div>
+<div class="flex items-center gap-1.5 text-xs font-bold text-[#4CC27D] font-body">
+<span class="material-symbols-outlined text-base" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Doğru (+1,25 Puan)</span>
+</div>
+</div>
+<!-- Option C (Eliminated) -->
+<div class="flex items-center gap-3 p-3 rounded-md border border-[#24343A] bg-[#0E171B] text-[#71838A] line-through">
+<span class="optical-bubble border border-[#24343A] text-[#71838A]">C</span>
+<span>would have been rendered completely obsolete by modern standards</span>
+</div>
+<!-- Option D (Default) -->
+<div class="flex items-center gap-3 p-3 rounded-md border border-[#24343A] bg-[#0E171B] text-[#A9B8BA]">
+<span class="optical-bubble border border-[#71838A] text-[#A9B8BA]">D</span>
+<span>is failing to compensate for systemic supply chain deficits</span>
+</div>
+</div>
+</div>
+<!-- Right: 4-Tier Teacher Clue Ladder -->
+<div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold uppercase tracking-wider text-[#87CDC8]">4 Kademeli İpucu Merdiveni</span>
+<span class="text-xs text-[#A9B8BA]">Akademik Öğretmen Modülü</span>
+</div>
+<!-- Ladder Step 1 (Unlocked) -->
+<div class="p-3.5 rounded-md bg-[#16363A] border border-[#4DB6B0] space-y-1.5">
+<div class="flex items-center justify-between text-xs font-bold text-[#4DB6B0]">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#4DB6B0]"></span>
+                  1. Kademe: Odak Noktası (Bağlaç Analizi)
+                </span>
+<span class="text-[11px] text-[#87CDC8]">Açık</span>
+</div>
+<p class="text-xs text-[#E4ECEC] leading-normal font-body">
+                Cümle <strong class="text-[#4DB6B0]">"Although"</strong> (zıtlık bağlacı) ile başlıyor. İlk yan cümlecik olumsuz etki (<span class="italic">sanctions reinforced</span>) içerdiği için, ana cümlede dirençli/olumlu bir fiil aranmalıdır.
+              </p>
+</div>
+<!-- Ladder Step 2 (Locked) -->
+<div class="p-3 rounded-md bg-[#1B2B32] border border-[#24343A] opacity-80 flex items-center justify-between">
+<div class="space-y-0.5">
+<span class="text-xs font-bold text-[#E4ECEC]">2. Kademe: Gramer &amp; Zaman Filtresi</span>
+<p class="text-[11px] text-[#A9B8BA]">Past simple uyumu ve eylem zaman çizelgesi</p>
+</div>
+<span class="material-symbols-outlined text-base text-[#F0B43A]" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<!-- Ladder Step 3 (Locked) -->
+<div class="p-3 rounded-md bg-[#1B2B32] border border-[#24343A] opacity-80 flex items-center justify-between">
+<div class="space-y-0.5">
+<span class="text-xs font-bold text-[#E4ECEC]">3. Kademe: Çeldirici Eleme Tekniği</span>
+<p class="text-[11px] text-[#A9B8BA]">A ve D seçeneklerindeki sentaktik tuzaklar</p>
+</div>
+<span class="material-symbols-outlined text-base text-[#F0B43A]" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<!-- Ladder Step 4 (Locked) -->
+<div class="p-3 rounded-md bg-[#1B2B32] border border-[#24343A] opacity-80 flex items-center justify-between">
+<div class="space-y-0.5">
+<span class="text-xs font-bold text-[#E4ECEC]">4. Kademe: Tam Akademik Çözüm &amp; Çeviri</span>
+<p class="text-[11px] text-[#A9B8BA]">Kıdemli hoca sentaktik ses kaydı ve tam çevirisi</p>
+</div>
+<span class="material-symbols-outlined text-base text-[#F0B43A]" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+</div>
+<div class="pt-2 text-xs text-[#A9B8BA] border-t border-[#24343A] flex items-center justify-between">
+<span>Paket üyeliğiyle günde 40 tahlil hakkı açılır</span>
+<span class="font-bold text-[#4DB6B0]">Anında Çözüm</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 6. INSTITUTIONAL & BAP PROJECT SUPPORT CALLOUT -->
+<section class="bg-[#142127] border border-[#24343A] rounded-lg p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="space-y-2 max-w-2xl">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#4DB6B0] text-xl" data-icon="account_balance">account_balance</span>
+<h3 class="text-lg font-bold text-[#E4ECEC]">Üniversite BAP ve Kurumsal Proje Desteği</h3>
+</div>
+<p class="text-sm text-[#A9B8BA]">
+          Doçentlik, doktora ve akademik kadro hazırlıklarında harcama belgelerinize uygun kurumsal Proforma ve e-Arşiv faturası düzenlenir. Üniversite veya enstitü bütçenizden doğrudan temin edebilirsiniz.
+        </p>
+</div>
+<div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+<button class="px-4 py-2.5 rounded-md border border-[#24343A] hover:border-[#71838A] text-[#E4ECEC] text-sm font-semibold transition-colors duration-150 min-h-[44px]" type="button">
+          Proforma Talep Et
+        </button>
+<button class="px-4 py-2.5 rounded-md bg-[#1B2B32] hover:bg-[#16363A] text-[#4DB6B0] border border-[#4DB6B0] text-sm font-semibold transition-colors duration-150 min-h-[44px]" type="button">
+          Kurumsal Bilgi Al
+        </button>
+</div>
+</section>
+<!-- 7. FREQUENTLY ASKED QUESTIONS (FAQ) -->
+<section aria-labelledby="sss-baslik" class="space-y-4">
+<h2 class="text-xl font-bold text-[#E4ECEC]" id="sss-baslik">Sıkça Sorulan Sorular</h2>
+<div class="space-y-3">
+<!-- FAQ Item 1 -->
+<details class="group bg-[#142127] border border-[#24343A] rounded-lg p-5 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex items-center justify-between cursor-pointer text-base font-semibold text-[#E4ECEC] group-open:text-[#4DB6B0]">
+<span>İstediğim zaman üyeliğimi iptal edebilir miyim? İptal prosedürü nasıldır?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180 text-[#A9B8BA]" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="mt-3 text-sm text-[#A9B8BA] leading-relaxed border-t border-[#24343A] pt-3">
+            Evet, profilinizdeki "Hesap ve Abonelik" panelinden hiçbir temsilciyle görüşmek zorunda kalmadan tek tıklamayla anında iptal edebilirsiniz. 7 günlük deneme süresi içinde yapılan iptallerde kartınızdan kesinlikle herhangi bir ücret tahsil edilmez.
+          </div>
+</details>
+<!-- FAQ Item 2 -->
+<details class="group bg-[#142127] border border-[#24343A] rounded-lg p-5 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex items-center justify-between cursor-pointer text-base font-semibold text-[#E4ECEC] group-open:text-[#4DB6B0]">
+<span>14 gün koşulsuz cayma ve yasal iade süreci nasıl işler?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180 text-[#A9B8BA]" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="mt-3 text-sm text-[#A9B8BA] leading-relaxed border-t border-[#24343A] pt-3">
+            Satın alım sonrasındaki 14 gün içerisinde herhangi bir gerekçe göstermeksizin iade talebinde bulunabilirsiniz. Talebiniz onaylandığında tutar, ödeme yaptığınız kredi veya banka kartınıza bankanızın prosedürüne bağlı olarak 3 iş günü içinde eksiksiz aktarılır.
+          </div>
+</details>
+<!-- FAQ Item 3 -->
+<details class="group bg-[#142127] border border-[#24343A] rounded-lg p-5 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex items-center justify-between cursor-pointer text-base font-semibold text-[#E4ECEC] group-open:text-[#4DB6B0]">
+<span>YDS'de yanlış cevaplar doğru sayısını etkiler mi? Sistem puanımı nasıl hesaplar?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180 text-[#A9B8BA]" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="mt-3 text-sm text-[#A9B8BA] leading-relaxed border-t border-[#24343A] pt-3">
+            ÖSYM mevzuatına göre YDS sınavında yanlış cevaplar doğru sayısını eksiltmez ("net" hesabı yapılmaz). Toplam 80 soru yer alır ve her bir doğru cevap 1,25 puan değerindedir. ODAK platformundaki tüm deneme ve soru setleri bu resmi kurala tam uyumlu olarak puan üretir.
+          </div>
+</details>
+<!-- FAQ Item 4 -->
+<details class="group bg-[#142127] border border-[#24343A] rounded-lg p-5 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex items-center justify-between cursor-pointer text-base font-semibold text-[#E4ECEC] group-open:text-[#4DB6B0]">
+<span>Üniversite BAP veya kurumsal bütçeden ödeme yapabilir miyim?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180 text-[#A9B8BA]" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="mt-3 text-sm text-[#A9B8BA] leading-relaxed border-t border-[#24343A] pt-3">
+            Evet, kurumsal fatura bilgilerinizi (Vergi Dairesi, Vergi No veya TC Kimlik No, Kurum Adı) girerek resmi e-Arşiv faturası oluşturabilirsiniz. Proforma fatura gereksinimleriniz için kurumsal destek ekibimiz aynı gün resmi belgeyi e-posta adresinize iletir.
+          </div>
+</details>
+</div>
+</section>
+<!-- 8. SYSTEM ARCHITECTURE & CANDIDATE SCENARIOS (STATE ARCHITECTURE MATRIX) -->
+<section aria-labelledby="mimari-baslik" class="space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-[#E4ECEC]" id="mimari-baslik">Sistem Mimarisi ve Aday Senaryoları</h2>
+<span class="text-xs font-mono text-[#4DB6B0]">PAY-01 Flow Matrix</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Durum 1 -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 space-y-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-[#4DB6B0]">Durum 1: Yeni Aday</span>
+<span class="w-2 h-2 rounded-full bg-[#4CC27D]"></span>
+</div>
+<p class="text-xs font-semibold text-[#E4ECEC]">7 Günlük Ücretsiz Deneme</p>
+<p class="text-[12px] text-[#A9B8BA] leading-normal">
+            Kullanıcıya '7 Günü Ücretsiz Başlat' düğmesi sunulur. Kart doğrulanır ancak provizyon alınmaz.
+          </p>
+</div>
+<!-- Durum 2 -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 space-y-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-[#F0B43A]">Durum 2: Süresi Dolan</span>
+<span class="w-2 h-2 rounded-full bg-[#F0B43A]"></span>
+</div>
+<p class="text-xs font-semibold text-[#E4ECEC]">Doğrudan Tahsilat</p>
+<p class="text-[12px] text-[#A9B8BA] leading-normal">
+            Deneme hakkını tamamlamış adaylar için 'Devam Et · 1.490 TL' doğrudan ödeme akışı tetiklenir.
+          </p>
+</div>
+<!-- Durum 3 -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 space-y-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-[#87CDC8]">Durum 3: Kurumsal Kod</span>
+<span class="w-2 h-2 rounded-full bg-[#04A19B]"></span>
+</div>
+<p class="text-xs font-semibold text-[#E4ECEC]">BAP / Enstitü Girişi</p>
+<p class="text-[12px] text-[#A9B8BA] leading-normal">
+            Üniversite anlaşması olan adaylar kurum lisans kodunu girerek beklemeden tam erişim açar.
+          </p>
+</div>
+<!-- Durum 4 -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 space-y-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-[#E4ECEC]">Durum 4: Kesintisiz Soru</span>
+<span class="w-2 h-2 rounded-full bg-[#7483E0]"></span>
+</div>
+<p class="text-xs font-semibold text-[#E4ECEC]">Oturum Koruma Güvencesi</p>
+<p class="text-[12px] text-[#A9B8BA] leading-normal">
+            Deneme esnasında limit dolsa dahi aktif soru çözümü kesilmez; sonuç kaydedildikten sonra paywall belirir.
+          </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Trust Bar for Quick Decision -->
+<aside aria-label="Hızlı Kayıt Özeti" class="sticky bottom-0 z-30 w-full bg-[#142127] border-t border-[#24343A] py-3 px-6 shadow-2xl">
+<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div aria-hidden="true" class="w-8 h-8 rounded-full bg-[#16363A] text-[#4DB6B0] flex items-center justify-center font-bold text-xs">
+          52g
+        </div>
+<div>
+<div class="text-xs sm:text-sm font-bold text-[#E4ECEC]">2026-YDS/2 Sınav Dönemi Paketi</div>
+<div class="text-[11px] sm:text-xs text-[#A9B8BA]">İlk 7 gün 0 TL · Sonrasında 1.490 TL tek seferlik</div>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<button class="w-full sm:w-auto px-6 py-2.5 rounded-md bg-[#4DB6B0] hover:bg-[#3ea09a] text-[#0E171B] font-bold text-sm transition-colors duration-150 flex items-center justify-center gap-2 min-h-[44px]" type="button">
+<span>7 Günü Ücretsiz Başlat</span>
+<span class="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- FOOTER (Shared Component implementation) -->
+<footer class="w-full bottom-0 bg-[#142127] border-t border-[#24343A] shadow-none mt-12">
+<div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body text-sm text-[#A9B8BA]">
+<!-- Brand & Copyright -->
+<div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+<span class="font-display text-lg font-bold text-[#E4ECEC]">ODAK</span>
+<span class="hidden sm:inline text-[#71838A]">|</span>
+<span>© 2026 ODAK Yabancı Dil Sınavı Hazırlık Platformu. Tüm hakları saklıdır.</span>
+</div>
+<!-- Links -->
+<nav aria-label="Yasal ve Kurumsal Bağlantılar" class="flex flex-wrap items-center justify-center gap-4 text-sm">
+<a class="text-[#A9B8BA] hover:text-[#4DB6B0] transition-colors text-sm" href="#osym">ÖSYM Formatı Esasları</a>
+<a class="text-[#A9B8BA] hover:text-[#4DB6B0] transition-colors text-sm" href="#takvim">Sınav Takvimi</a>
+<a class="text-[#A9B8BA] hover:text-[#4DB6B0] transition-colors text-sm" href="#akademik">Akademik Çerçeve</a>
+<a class="text-[#A9B8BA] hover:text-[#4DB6B0] transition-colors text-sm" href="#metodoloji">Metodoloji</a>
+<a class="text-[#A9B8BA] hover:text-[#4DB6B0] transition-colors text-sm" href="#gizlilik">Gizlilik ve Güvenlik</a>
+<a class="text-[#A9B8BA] hover:text-[#4DB6B0] transition-colors text-sm" href="#iletisim">İletişim</a>
+</nav>
+</div>
+<!-- Official ÖSYM Assessment Regulatory Notice (Bottom bar) -->
+<div class="border-t border-[#24343A] bg-[#0E171B] py-3 px-6 text-center text-xs text-[#71838A]">
+<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2">
+<span class="font-semibold text-[#A9B8BA]">ÖSYM YDS Değerlendirme Esası:</span>
+<span>80 Soru · 180 Dakika · 1 Doğru = 1,25 Puan · Yanlış cevaplar doğru puanını eksiltmez.</span>
+</div>
+</div>
+</footer>
+</body></html>

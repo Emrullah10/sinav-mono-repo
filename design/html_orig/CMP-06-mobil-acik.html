@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMP-06 · Soru Kartı ve Seçenek Satırı</title>
+  <!-- Google Fonts: Figtree (Arayüz Sans) & Literata (Okuma/Soru Serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'yds-bg': '#F4F6F5',
+            'yds-surface': '#FFFFFF',
+            'yds-border': '#E4ECEC',
+            'yds-border-dark': '#CBD7D7',
+            'yds-text-main': '#13232A',
+            'yds-text-muted': '#5A6F78',
+            'yds-text-dim': '#7C9099',
+            'yds-petrol': '#0E6A6E',
+            'yds-petrol-hover': '#0B5558',
+            'yds-petrol-light': '#E6F3F3',
+            'yds-petrol-surface': '#F0F7F7',
+            'yds-safran': '#E9A514',
+            'yds-safran-bg': '#FEF7E8',
+            'yds-safran-border': '#FCDD9B',
+            'yds-correct': '#1F7A45',
+            'yds-correct-bg': '#EAF6EE',
+            'yds-correct-border': '#B7E4C7',
+            'yds-wrong': '#B83227',
+            'yds-wrong-bg': '#FDF2F0',
+            'yds-wrong-border': '#F5C2BC',
+            'yds-neutral-box': '#F8FAFA',
+          },
+          fontFamily: {
+            sans: ['Figtree', 'system-ui', 'sans-serif'],
+            serif: ['Literata', 'Georgia', 'serif'],
+          },
+          boxShadow: {
+            'subtle': '0 1px 3px rgba(14, 106, 110, 0.05)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 22;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.filled {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 22;
+    }
+    body {
+      font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    }
+  </style>
+</head>
+<body class="bg-yds-bg text-yds-text-main font-sans antialiased min-h-screen flex justify-center selection:bg-yds-petrol-light selection:text-yds-petrol">
+
+  <!-- Mobil Ekran Taşıyıcısı (390px Standart) -->
+  <div class="w-full max-w-[390px] bg-yds-bg min-h-screen flex flex-col relative pb-24 border-x border-yds-border shadow-sm">
+
+    <!-- ÜST ÇUBUK / APP BAR -->
+    <header class="sticky top-0 z-40 bg-yds-surface border-b border-yds-border px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button type="button" aria-label="Geri Dön" class="w-11 h-11 -ml-1 rounded-lg flex items-center justify-center text-yds-text-main hover:bg-yds-bg active:bg-yds-border transition-colors">
+          <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+        </button>
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-yds-petrol block leading-tight">BİLEŞEN SAYFASI · CMP-06</span>
+          <h1 class="text-[15px] font-bold text-yds-text-main leading-tight">Soru & Seçenek Mimarisi</h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="text-[11px] font-semibold text-yds-text-muted bg-yds-bg border border-yds-border px-2 py-0.5 rounded">v2.4</span>
+      </div>
+    </header>
+
+    <!-- SAYFA GÖVDESİ -->
+    <main class="p-3.5 space-y-4">
+
+      <!-- BİLEŞEN TANITIM & KURALLAR KARTI -->
+      <section class="bg-yds-surface rounded-xl border border-yds-border p-3.5 space-y-2.5">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-yds-petrol text-[20px]">quiz</span>
+          <span class="text-[13px] font-bold text-yds-text-main">Soru Bileşenleri Standartları</span>
+        </div>
+        <p class="text-[12px] text-yds-text-muted leading-relaxed">
+          YDS akademik sınav disiplinine uygun; bilişsel yükü azaltan, net 1px kenarlıklı, gölgesiz ve tam daire optik cevap baloncuğu sistemidir.
+        </p>
+        <div class="grid grid-cols-2 gap-2 pt-1 text-[11px]">
+          <div class="bg-yds-neutral-box p-2 rounded-lg border border-yds-border">
+            <span class="text-yds-text-dim block text-[10px]">Arayüz Fontu</span>
+            <span class="font-semibold text-yds-text-main">Figtree (Sans)</span>
+          </div>
+          <div class="bg-yds-neutral-box p-2 rounded-lg border border-yds-border">
+            <span class="text-yds-text-dim block text-[10px]">Soru & Metin</span>
+            <span class="font-serif font-semibold text-yds-text-main">Literata (Serif)</span>
+          </div>
+          <div class="bg-yds-neutral-box p-2 rounded-lg border border-yds-border">
+            <span class="text-yds-text-dim block text-[10px]">Dokunma Standardı</span>
+            <span class="font-semibold text-yds-petrol">En az 44px Hedef</span>
+          </div>
+          <div class="bg-yds-neutral-box p-2 rounded-lg border border-yds-border">
+            <span class="text-yds-text-dim block text-[10px]">Geri Bildirim</span>
+            <span class="font-semibold text-yds-text-main">Çift Belirteç (İkon + Yazı)</span>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- BÖLÜM 1: SORU KARTI ANATOMİSİ -->
+      <section class="space-y-2">
+        <div class="flex items-center justify-between px-0.5">
+          <h2 class="text-[13px] font-bold text-yds-text-main uppercase tracking-wide">1. Soru Kartı Anatomisi</h2>
+          <span class="text-[11px] text-yds-text-dim font-medium">Örnek Soru Akışı</span>
+        </div>
+
+        <div class="bg-yds-surface rounded-xl border border-yds-border overflow-hidden">
+          <!-- Soru Kartı Üst Başlık Şeridi -->
+          <div class="px-3.5 py-2.5 bg-yds-neutral-box border-b border-yds-border flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="bg-yds-petrol-light text-yds-petrol text-[11px] font-bold px-2 py-0.5 rounded border border-yds-petrol/20">
+                Cümle Tamamlama
+              </span>
+              <span class="text-[12px] font-bold text-yds-text-muted">7 / 10</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1 text-[11px] font-semibold text-yds-text-muted bg-yds-surface border border-yds-border px-2 py-1 rounded">
+                <span class="material-symbols-outlined text-[15px] text-yds-text-dim">timer</span>
+                <span>01:18</span>
+              </div>
+              <button type="button" aria-label="Soruyu İşaretle" class="min-w-[44px] min-h-[44px] -my-2 -mr-1 flex items-center justify-center text-yds-text-muted hover:text-yds-safran transition-colors">
+                <span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Soru Kökü (Literata Serif) -->
+          <div class="p-3.5 space-y-2">
+            <p class="font-serif text-[15px] text-yds-text-main leading-relaxed">
+              <span class="font-bold text-yds-petrol mr-1">7.</span>
+              <span class="border-b-2 border-yds-petrol font-medium px-1 bg-yds-petrol-light/40">Although</span> the new vaccine proved remarkably effective in early clinical trials, regulators delayed its market approval until longer-term safety parameters could be independently verified.
+            </p>
+            <p class="text-[11px] text-yds-text-dim">
+              Cümlede boş bırakılan yere en uygun düşen bağlacı veya ifadeyi işaretleyiniz.
+            </p>
+          </div>
+
+          <!-- Seçenekler A - E (Canlı Soru Kartı İçi) -->
+          <div class="px-3.5 pb-3.5 space-y-2">
+            
+            <!-- Seçenek A -->
+            <button type="button" class="w-full min-h-[46px] text-left rounded-lg border border-yds-border bg-yds-surface p-2.5 flex items-center gap-3 hover:bg-yds-neutral-box transition-colors group">
+              <span class="w-7 h-7 rounded-full border border-yds-border-dark flex items-center justify-center font-bold text-[12px] text-yds-text-muted shrink-0 group-hover:border-yds-petrol group-hover:text-yds-petrol">
+                A
+              </span>
+              <span class="font-serif text-[14px] text-yds-text-main flex-1">Unless</span>
+            </button>
+
+            <!-- Seçenek B (Seçili / Aktif Durum) -->
+            <button type="button" class="w-full min-h-[46px] text-left rounded-lg border-2 border-yds-petrol bg-yds-petrol-surface p-2.5 flex items-center gap-3 transition-colors">
+              <span class="w-7 h-7 rounded-full bg-yds-petrol text-white flex items-center justify-center font-bold text-[12px] shrink-0">
+                B
+              </span>
+              <span class="font-serif text-[14px] text-yds-petrol font-semibold flex-1">Although</span>
+              <span class="text-[11px] font-bold text-yds-petrol uppercase tracking-wider bg-yds-petrol-light px-1.5 py-0.5 rounded">Seçildi</span>
+            </button>
+
+            <!-- Seçenek C -->
+            <button type="button" class="w-full min-h-[46px] text-left rounded-lg border border-yds-border bg-yds-surface p-2.5 flex items-center gap-3 hover:bg-yds-neutral-box transition-colors group">
+              <span class="w-7 h-7 rounded-full border border-yds-border-dark flex items-center justify-center font-bold text-[12px] text-yds-text-muted shrink-0 group-hover:border-yds-petrol group-hover:text-yds-petrol">
+                C
+              </span>
+              <span class="font-serif text-[14px] text-yds-text-main flex-1">Because</span>
+            </button>
+
+            <!-- Seçenek D -->
+            <button type="button" class="w-full min-h-[46px] text-left rounded-lg border border-yds-border bg-yds-surface p-2.5 flex items-center gap-3 hover:bg-yds-neutral-box transition-colors group">
+              <span class="w-7 h-7 rounded-full border border-yds-border-dark flex items-center justify-center font-bold text-[12px] text-yds-text-muted shrink-0 group-hover:border-yds-petrol group-hover:text-yds-petrol">
+                D
+              </span>
+              <span class="font-serif text-[14px] text-yds-text-main flex-1">As long as</span>
+            </button>
+
+            <!-- Seçenek E -->
+            <button type="button" class="w-full min-h-[46px] text-left rounded-lg border border-yds-border bg-yds-surface p-2.5 flex items-center gap-3 hover:bg-yds-neutral-box transition-colors group">
+              <span class="w-7 h-7 rounded-full border border-yds-border-dark flex items-center justify-center font-bold text-[12px] text-yds-text-muted shrink-0 group-hover:border-yds-petrol group-hover:text-yds-petrol">
+                E
+              </span>
+              <span class="font-serif text-[14px] text-yds-text-main flex-1">Once</span>
+            </button>
+
+          </div>
+
+          <!-- Alt Eylem Çubuğu (İpucu / Kontrol Et) -->
+          <div class="px-3.5 py-3 bg-yds-neutral-box border-t border-yds-border flex items-center justify-between gap-3">
+            <button type="button" class="min-h-[44px] px-3.5 rounded-lg border border-yds-border bg-yds-surface text-yds-text-main text-[13px] font-semibold flex items-center gap-1.5 hover:bg-yds-bg active:bg-yds-border transition-colors">
+              <span class="w-4 h-4 rounded-full bg-yds-safran flex items-center justify-center text-white shrink-0">
+                <span class="material-symbols-outlined text-[13px]">lightbulb</span>
+              </span>
+              <span>Pedagojik İpucu</span>
+            </button>
+            <button type="button" class="min-h-[44px] flex-1 px-4 rounded-lg bg-yds-petrol text-white text-[13px] font-bold flex items-center justify-center gap-1.5 hover:bg-yds-petrol-hover active:scale-[0.99] transition-all">
+              <span>Cevabı Kontrol Et</span>
+              <span class="material-symbols-outlined text-[18px]">check</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- BÖLÜM 2: SEÇENEK SATIRI DURUM MATRİSİ (8 DURUM) -->
+      <section class="space-y-2">
+        <div class="flex items-center justify-between px-0.5">
+          <h2 class="text-[13px] font-bold text-yds-text-main uppercase tracking-wide">2. Seçenek Satırı Durumları</h2>
+          <span class="text-[11px] font-semibold text-yds-petrol bg-yds-petrol-light px-2 py-0.5 rounded">8 Tam Durum</span>
+        </div>
+        <p class="text-[11px] text-yds-text-muted px-0.5">
+          Baloncuk motifi 28px tam dairedir; 44px asgari dokunma alanı garantilidir. Durumlar çift belirteçle (renk + metin/simge) ifade edilir.
+        </p>
+
+        <div class="space-y-2 bg-yds-surface rounded-xl border border-yds-border p-3">
+
+          <!-- 1. Varsayılan Durum -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-yds-text-dim uppercase tracking-wider block">01 · Varsayılan (Default)</span>
+            <div class="min-h-[44px] rounded-lg border border-yds-border bg-yds-surface px-3 py-2 flex items-center gap-3">
+              <span class="w-7 h-7 rounded-full border border-yds-border-dark bg-yds-surface text-yds-text-muted flex items-center justify-center text-[12px] font-bold shrink-0">A</span>
+              <span class="font-serif text-[14px] text-yds-text-main flex-1">Unless</span>
+              <span class="text-[10px] text-yds-text-dim">Boş / Bekliyor</span>
+            </div>
+          </div>
+
+          <!-- 2. Üzerine Gelme (Hover) -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-yds-text-dim uppercase tracking-wider block">02 · Üzerine Gelme (Hover)</span>
+            <div class="min-h-[44px] rounded-lg border border-yds-petrol/40 bg-yds-petrol-surface/50 px-3 py-2 flex items-center gap-3">
+              <span class="w-7 h-7 rounded-full border-2 border-yds-petrol text-yds-petrol bg-yds-surface flex items-center justify-center text-[12px] font-bold shrink-0">B</span>
+              <span class="font-serif text-[14px] text-yds-text-main font-medium flex-1">Although</span>
+              <span class="text-[10px] text-yds-petrol font-semibold">Odaklama</span>
+            </div>
+          </div>
+
+          <!-- 3. Basılı Durum (Active / Pressed) -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-yds-text-dim uppercase tracking-wider block">03 · Basılı (Active / Pressed)</span>
+            <div class="min-h-[44px] rounded-lg border border-yds-petrol bg-yds-petrol-light px-3 py-2 flex items-center gap-3 scale-[0.99] transition-transform">
+              <span class="w-7 h-7 rounded-full bg-yds-petrol/80 text-white flex items-center justify-center text-[12px] font-bold shrink-0">C</span>
+              <span class="font-serif text-[14px] text-yds-petrol font-medium flex-1">Because</span>
+              <span class="text-[10px] text-yds-petrol font-semibold">Dokunma Anı</span>
+            </div>
+          </div>
+
+          <!-- 4. Seçili Durum (2px petrol, dolu baloncuk) -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-yds-petrol uppercase tracking-wider block">04 · Seçili (Aday Tercihi - 2px Petrol)</span>
+            <div class="min-h-[44px] rounded-lg border-2 border-yds-petrol bg-yds-petrol-surface px-3 py-2 flex items-center gap-3">
+              <span class="w-7 h-7 rounded-full bg-yds-petrol text-white flex items-center justify-center text-[12px] font-bold shrink-0">B</span>
+              <span class="font-serif text-[14px] text-yds-petrol font-semibold flex-1">Although</span>
+              <span class="text-[11px] font-bold text-yds-petrol flex items-center gap-1 bg-yds-petrol-light px-2 py-0.5 rounded">
+                <span class="material-symbols-outlined text-[14px]">radio_button_checked</span>
+                <span>Seçildi</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- 5. Doğru Durum (Yeşil + ✓ + 'Doğru') -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-yds-correct uppercase tracking-wider block">05 · Doğru Cevap (Yeşil + ✓ + Doğru)</span>
+            <div class="min-h-[44px] rounded-lg border-2 border-yds-correct bg-yds-correct-bg px-3 py-2 flex items-center gap-3">
+              <span class="w-7 h-7 rounded-full bg-yds-correct text-white flex items-center justify-center text-[13px] font-bold shrink-0">
+                <span class="material-symbols-outlined text-[16px] text-white">check</span>
+              </span>
+              <span class="font-serif text-[14px] text-yds-correct font-semibold flex-1">Although</span>
+              <span class="text-[11px] font-bold text-yds-correct flex items-center gap-1 bg-white/80 border border-yds-correct-border px-2 py-0.5 rounded">
+                <span class="material-symbols-outlined text-[15px] font-bold">check_circle</span>
+                <span>Doğru</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- 6. Yanlış Durum (Tuğla + ✕ + 'Senin cevabın') -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-yds-wrong uppercase tracking-wider block">06 · Yanlış Cevap (Tuğla + ✕ + Senin cevabın)</span>
+            <div class="min-h-[44px] rounded-lg border-2 border-yds-wrong bg-yds-wrong-bg px-3 py-2 flex items-center gap-3">
+              <span class="w-7 h-7 rounded-full bg-yds-wrong text-white flex items-center justify-center text-[13px] font-bold shrink-0">
+                <span class="material-symbols-outlined text-[16px] text-white">close</span>
+              </span>
+              <span class="font-serif text-[14px] text-yds-wrong font-semibold flex-1">Because</span>
+              <span class="text-[11px] font-bold text-yds-wrong flex items-center gap-1 bg-white/80 border border-yds-wrong-border px-2 py-0.5 rounded">
+                <span class="material-symbols-outlined text-[15px]">cancel</span>
+                <span>Senin cevabın</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- 7. Elendi Durumu (Adayın şık elemesi / üstü çizili) -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-yds-text-dim uppercase tracking-wider block">07 · Elendi (Aday Çift Tıklama İle Eledi)</span>
+            <div class="min-h-[44px] rounded-lg border border-dashed border-yds-border bg-yds-neutral-box/60 px-3 py-2 flex items-center gap-3 opacity-60">
+              <span class="w-7 h-7 rounded-full border border-yds-border-dark text-yds-text-dim flex items-center justify-center text-[12px] line-through font-bold shrink-0">D</span>
+              <span class="font-serif text-[14px] text-yds-text-dim line-through flex-1">As long as</span>
+              <span class="text-[11px] font-semibold text-yds-text-dim bg-yds-border/50 px-1.5 py-0.5 rounded">Elendi</span>
+            </div>
+          </div>
+
+          <!-- 8. Pasif / Kilitli Durum -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-yds-text-dim uppercase tracking-wider block">08 · Pasif (Disabled / Kilitli)</span>
+            <div class="min-h-[44px] rounded-lg border border-yds-border bg-yds-neutral-box px-3 py-2 flex items-center gap-3 cursor-not-allowed">
+              <span class="w-7 h-7 rounded-full border border-yds-border bg-yds-border/30 text-yds-text-dim flex items-center justify-center text-[12px] font-semibold shrink-0">E</span>
+              <span class="font-serif text-[14px] text-yds-text-dim flex-1">Once</span>
+              <span class="material-symbols-outlined text-yds-text-dim text-[16px]">lock</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- BÖLÜM 3: SORU MODLARI GÖSTERGESİ (4 MOD) -->
+      <section class="space-y-2">
+        <div class="flex items-center justify-between px-0.5">
+          <h2 class="text-[13px] font-bold text-yds-text-main uppercase tracking-wide">3. Soru Çözüm Modları</h2>
+          <span class="text-[11px] text-yds-text-dim font-medium">4 Standart Mod</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          
+          <!-- Mod A: Öğrenme -->
+          <div class="bg-yds-surface rounded-xl border border-yds-border p-3 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[12px] font-bold text-yds-petrol flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-yds-petrol"></span>
+                Öğrenme Modu
+              </span>
+              <span class="w-4 h-4 rounded-full bg-yds-safran flex items-center justify-center text-white shrink-0">
+                <span class="material-symbols-outlined text-[11px]">lightbulb</span>
+              </span>
+            </div>
+            <p class="text-[11px] text-yds-text-muted leading-tight">
+              Anında açıklama, kademeli ipucu basamakları ve kelime tahlili aktiftir.
+            </p>
+            <div class="text-[10px] font-semibold text-yds-petrol bg-yds-petrol-light px-1.5 py-0.5 rounded inline-block">
+              Süre Sınırı Yok
+            </div>
+          </div>
+
+          <!-- Mod B: Hızlı Çözüm -->
+          <div class="bg-yds-surface rounded-xl border border-yds-border p-3 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[12px] font-bold text-yds-text-main flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-yds-safran"></span>
+                Hızlı Çözüm
+              </span>
+              <span class="material-symbols-outlined text-[16px] text-yds-safran">bolt</span>
+            </div>
+            <p class="text-[11px] text-yds-text-muted leading-tight">
+              Soru başına 1.25 dakika sınırlaması. Seri odaklı ve optik çevikliğe dayalı.
+            </p>
+            <div class="text-[10px] font-semibold text-yds-text-muted bg-yds-neutral-box border border-yds-border px-1.5 py-0.5 rounded inline-block">
+              Hedef: 75 sn / Soru
+            </div>
+          </div>
+
+          <!-- Mod C: Deneme Sınavı -->
+          <div class="bg-yds-surface rounded-xl border border-yds-border p-3 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[12px] font-bold text-yds-text-main flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-yds-text-muted"></span>
+                Deneme Modu
+              </span>
+              <span class="material-symbols-outlined text-[16px] text-yds-petrol">timer</span>
+            </div>
+            <p class="text-[11px] text-yds-text-muted leading-tight">
+              ÖSYM formatında 80 soru / 180 dk. İpucu kapalı, sınav sonunda toplu analiz.
+            </p>
+            <div class="text-[10px] font-semibold text-yds-text-muted bg-yds-neutral-box border border-yds-border px-1.5 py-0.5 rounded inline-block">
+              Resmi Protokol
+            </div>
+          </div>
+
+          <!-- Mod D: İnceleme / Hata Analizi -->
+          <div class="bg-yds-surface rounded-xl border border-yds-border p-3 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[12px] font-bold text-yds-wrong flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-yds-wrong"></span>
+                İnceleme Modu
+              </span>
+              <span class="material-symbols-outlined text-[16px] text-yds-wrong">find_in_page</span>
+            </div>
+            <p class="text-[11px] text-yds-text-muted leading-tight">
+              Hatalı ve boş bırakılan soruların kök neden analizi ve çeldirici uyarısı.
+            </p>
+            <div class="text-[10px] font-semibold text-yds-wrong bg-yds-wrong-bg border border-yds-wrong-border px-1.5 py-0.5 rounded inline-block">
+              Çeldirici Teşhisi
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- BÖLÜM 4: CLOZE TEST PARAGRAFI (NUMARALI BOŞLUKLAR) -->
+      <section class="space-y-2">
+        <div class="flex items-center justify-between px-0.5">
+          <h2 class="text-[13px] font-bold text-yds-text-main uppercase tracking-wide">4. Cloze Test Formatı</h2>
+          <span class="text-[11px] text-yds-petrol font-bold">Sorular 17–21</span>
+        </div>
+
+        <div class="bg-yds-surface rounded-xl border border-yds-border p-3.5 space-y-3">
+          <div class="flex items-center justify-between border-b border-yds-border pb-2">
+            <span class="text-[12px] font-bold text-yds-text-main">Akademik Paragraf İçi Boşluk Doldurma</span>
+            <span class="text-[11px] text-yds-text-dim">Optik Boşluk Seçimi</span>
+          </div>
+
+          <!-- Paragraf Metni (Literata Serif + Numaralı Etkileşimli Boşluklar) -->
+          <div class="font-serif text-[14px] text-yds-text-main leading-relaxed space-y-2 bg-yds-neutral-box p-3 rounded-lg border border-yds-border">
+            <p>
+              In contemporary cognitive linguistics, the acquisition of a second language during adulthood is widely acknowledged to differ fundamentally 
+              <!-- Boşluk 17 (Pasif/Tamamlanmış) -->
+              <span class="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded bg-yds-surface border border-yds-border font-sans font-bold text-[12px] text-yds-petrol">
+                (17) from
+              </span>
+              childhood acquisition. Early theorists argued that the neural pathways responsible for syntactic processing become rigid after puberty; however, more recent neuroimaging studies demonstrate that the human brain 
+              <!-- Boşluk 18 (Aktif Odaktaki Boşluk - 2px Petrol Kenarlık) -->
+              <span class="inline-flex items-center px-2 py-0.5 mx-0.5 rounded bg-yds-petrol-light border-2 border-yds-petrol font-sans font-bold text-[12px] text-yds-petrol animate-pulse">
+                [18] _______
+              </span>
+              remarkable plasticity throughout adulthood, 
+              <!-- Boşluk 19 (Bekleyen) -->
+              <span class="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded bg-yds-surface border border-yds-border-dark font-sans font-semibold text-[12px] text-yds-text-muted">
+                (19) _______
+              </span>
+              the learner engages in sustained interactive practice.
+            </p>
+          </div>
+
+          <!-- Aktif Boşluğun (18) Seçenekleri -->
+          <div class="space-y-1.5 pt-1">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-yds-petrol uppercase tracking-wider">Boşluk 18 İçin Seçenekler</span>
+              <span class="text-[11px] text-yds-text-dim">Fiil Uyumu</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" class="min-h-[44px] px-2.5 py-2 rounded-lg border border-yds-border bg-yds-surface text-left flex items-center gap-2 hover:bg-yds-neutral-box">
+                <span class="w-6 h-6 rounded-full border border-yds-border-dark text-yds-text-muted flex items-center justify-center font-bold text-[11px] shrink-0">A</span>
+                <span class="font-serif text-[13px] text-yds-text-main truncate">retains</span>
+              </button>
+              <button type="button" class="min-h-[44px] px-2.5 py-2 rounded-lg border-2 border-yds-petrol bg-yds-petrol-surface text-left flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-yds-petrol text-white flex items-center justify-center font-bold text-[11px] shrink-0">B</span>
+                <span class="font-serif text-[13px] text-yds-petrol font-semibold truncate">exhibits</span>
+              </button>
+              <button type="button" class="min-h-[44px] px-2.5 py-2 rounded-lg border border-yds-border bg-yds-surface text-left flex items-center gap-2 hover:bg-yds-neutral-box">
+                <span class="w-6 h-6 rounded-full border border-yds-border-dark text-yds-text-muted flex items-center justify-center font-bold text-[11px] shrink-0">C</span>
+                <span class="font-serif text-[13px] text-yds-text-main truncate">depletes</span>
+              </button>
+              <button type="button" class="min-h-[44px] px-2.5 py-2 rounded-lg border border-yds-border bg-yds-surface text-left flex items-center gap-2 hover:bg-yds-neutral-box">
+                <span class="w-6 h-6 rounded-full border border-yds-border-dark text-yds-text-muted flex items-center justify-center font-bold text-[11px] shrink-0">D</span>
+                <span class="font-serif text-[13px] text-yds-text-main truncate">postpones</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- BÖLÜM 5: OKUMA GÖRÜNTÜLEYİCİ (READING COMPREHENSION VIEWER) -->
+      <section class="space-y-2">
+        <div class="flex items-center justify-between px-0.5">
+          <h2 class="text-[13px] font-bold text-yds-text-main uppercase tracking-wide">5. Okuma Parçası & Soru Görüntüleyici</h2>
+          <span class="text-[11px] text-yds-text-dim font-medium">Bölünmüş / Kaydırmalı Panel</span>
+        </div>
+
+        <div class="bg-yds-surface rounded-xl border border-yds-border overflow-hidden">
+          <!-- Okuma Başlığı & Sekmeler -->
+          <div class="px-3.5 py-2.5 bg-yds-neutral-box border-b border-yds-border flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-yds-petrol text-[18px]">article</span>
+              <span class="text-[12px] font-bold text-yds-text-main truncate max-w-[190px]">İklim ve Tarım Reformu</span>
+            </div>
+            <div class="flex items-center gap-1 text-[11px] font-semibold text-yds-text-muted bg-yds-surface border border-yds-border px-2 py-0.5 rounded">
+              <span>Soru 42 / 44</span>
+            </div>
+          </div>
+
+          <!-- Okuma Parçası Kartı (Daraltılabilir/Kaydırılabilir Alan) -->
+          <div class="p-3 bg-yds-bg/50 border-b border-yds-border">
+            <div class="max-h-28 overflow-y-auto pr-1 space-y-1 text-[13px] font-serif text-yds-text-main leading-relaxed border-l-2 border-yds-petrol pl-2.5">
+              <p>
+                Archaeological digs across the fertile crescent have yielded evidence indicating that ancient agrarian societies adapted to abrupt climatic fluctuations with far greater flexibility than previously assumed. Sediment cores retrieved from dried lakebeds correlate tightly with grain storage records...
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-2 text-[11px] text-yds-text-dim">
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">touch_app</span> Metne dokunarak vurgulayın
+              </span>
+              <span class="font-semibold text-yds-petrol">Tüm Pasajı Aç (148 Kelime)</span>
+            </div>
+          </div>
+
+          <!-- Bağlı Soru (Literata Serif + Kısa Seçenekler) -->
+          <div class="p-3.5 space-y-2.5">
+            <p class="font-serif text-[14px] text-yds-text-main leading-snug font-medium">
+              <span class="font-bold text-yds-petrol mr-1">42.</span>
+              It is explicitly stated in the passage that ancient agrarian communities —.
+            </p>
+
+            <div class="space-y-1.5">
+              <div class="min-h-[44px] rounded-lg border border-yds-border bg-yds-surface px-3 py-2 flex items-center gap-2.5 hover:bg-yds-neutral-box">
+                <span class="w-6 h-6 rounded-full border border-yds-border-dark text-yds-text-muted flex items-center justify-center font-bold text-[11px] shrink-0">A</span>
+                <span class="font-serif text-[13px] text-yds-text-main flex-1">failed to predict severe environmental catastrophes</span>
+              </div>
+              <div class="min-h-[44px] rounded-lg border-2 border-yds-petrol bg-yds-petrol-surface px-3 py-2 flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-full bg-yds-petrol text-white flex items-center justify-center font-bold text-[11px] shrink-0">B</span>
+                <span class="font-serif text-[13px] text-yds-petrol font-semibold flex-1">demonstrated resilience through adaptive techniques</span>
+                <span class="text-[10px] font-bold text-yds-petrol bg-yds-petrol-light px-1.5 py-0.5 rounded">Seçili</span>
+              </div>
+              <div class="min-h-[44px] rounded-lg border border-yds-border bg-yds-surface px-3 py-2 flex items-center gap-2.5 hover:bg-yds-neutral-box">
+                <span class="w-6 h-6 rounded-full border border-yds-border-dark text-yds-text-muted flex items-center justify-center font-bold text-[11px] shrink-0">C</span>
+                <span class="font-serif text-[13px] text-yds-text-main flex-1">relied exclusively upon permanent irrigation channels</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- BÖLÜM 6: TASARIM BELİRTEÇLERİ VE PEDAGOJİK İLKELER -->
+      <section class="bg-yds-surface rounded-xl border border-yds-border p-3.5 space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-yds-petrol text-[19px]">rule</span>
+          <h3 class="text-[12px] font-bold text-yds-text-main">Pedagojik Kurallar ve WCAG AAA</h3>
+        </div>
+
+        <ul class="space-y-2 text-[11px] text-yds-text-muted">
+          <li class="flex items-start gap-2">
+            <span class="material-symbols-outlined text-yds-correct text-[16px] shrink-0 mt-0.5">check_circle</span>
+            <span><strong>Doğru Cevap:</strong> Yalnızca renkle bildirilmez; yeşil dolgu + ✓ ikonu + 'Doğru' metin rozeti ile teyit edilir.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="material-symbols-outlined text-yds-wrong text-[16px] shrink-0 mt-0.5">cancel</span>
+            <span><strong>Yanlış Cevap:</strong> Tuğla kırmızısı (#B83227) + ✕ ikonu + 'Senin cevabın' etiketi ile bilişsel stres yaratmadan gösterilir.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="w-3.5 h-3.5 rounded-full bg-yds-safran flex items-center justify-center text-white shrink-0 mt-0.5 text-[9px] font-bold">i</span>
+            <span><strong>Safran Rengi Kuralı:</strong> Asla metin rengi olarak kullanılmaz. Yalnızca ipucu ikonu, rozet dolgusu ve dikkat çekicilerde yer alır.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="material-symbols-outlined text-yds-petrol text-[16px] shrink-0 mt-0.5">touch_app</span>
+            <span><strong>Dokunma Alanı:</strong> Baloncuk 28px olsa bile çevreleyen satır dolgusuyla en az 44×44px dokunma toleransı korunur.</span>
+          </li>
+        </ul>
+      </section>
+
+    </main>
+
+    <!-- MOBİL ALT SEKME ÇUBUĞU (BOTTOM NAVIGATION BAR) -->
+    <!-- 5 Standart İstasyon: Bugün, Çalış, Deneme, Öğretmen, Ben -->
+    <nav class="fixed bottom-0 left-0 right-0 w-full max-w-[390px] mx-auto bg-yds-surface border-t border-yds-border z-50 flex items-center justify-around h-16 px-1 shadow-[0_-2px_6px_rgba(0,0,0,0.03)]" aria-label="Ana Gezinme">
+      
+      <!-- Bugün -->
+      <a href="#bugun" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-yds-text-dim hover:text-yds-text-main transition-colors">
+        <span class="material-symbols-outlined text-[20px]">calendar_today</span>
+        <span class="text-[10px] font-medium mt-1">Bugün</span>
+      </a>
+
+      <!-- Çalış (Aktif Sekme - Petrol Vurgusu) -->
+      <a href="#calis" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-yds-petrol transition-colors font-bold" aria-current="page">
+        <span class="material-symbols-outlined text-[20px] filled">menu_book</span>
+        <span class="text-[10px] mt-1">Çalış</span>
+      </a>
+
+      <!-- Deneme -->
+      <a href="#deneme" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-yds-text-dim hover:text-yds-text-main transition-colors">
+        <span class="material-symbols-outlined text-[20px]">assignment</span>
+        <span class="text-[10px] font-medium mt-1">Deneme</span>
+      </a>
+
+      <!-- Öğretmen -->
+      <a href="#ogretmen" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-yds-text-dim hover:text-yds-text-main transition-colors">
+        <span class="material-symbols-outlined text-[20px]">school</span>
+        <span class="text-[10px] font-medium mt-1">Öğretmen</span>
+      </a>
+
+      <!-- Ben -->
+      <a href="#ben" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-yds-text-dim hover:text-yds-text-main transition-colors">
+        <span class="material-symbols-outlined text-[20px]">person</span>
+        <span class="text-[10px] font-medium mt-1">Ben</span>
+      </a>
+
+    </nav>
+
+  </div>
+
+</body>
+</html>

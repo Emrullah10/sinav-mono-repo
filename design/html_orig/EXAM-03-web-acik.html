@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ODAK · EXAM-03 Sınav Ekranı (2026-YDS/2)</title>
+  
+  <!-- Google Fonts: Figtree (UI), Literata (Akademik Okuma / Sorular) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet"/>
+  
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'background': '#F4F6F5',
+            'surface': '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            'outline': '#77868A',
+            'outline-variant': '#DAE1E0',
+            'primary': '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            'secondary': '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            'tertiary': '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            'error': '#A33D27',
+            'error-container': '#F8E3DC'
+          },
+          fontFamily: {
+            'sans': ['Figtree', 'sans-serif'],
+            'reading': ['Literata', 'serif']
+          },
+          borderRadius: {
+            'sm': '4px',
+            'DEFAULT': '8px',
+            'md': '12px',
+            'lg': '16px',
+            'full': '9999px'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .font-reading {
+      font-family: 'Literata', serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#F4F6F5] text-[#13232A]">
+
+  <!-- ========================================================================= -->
+  <!-- 1. ÜST SINAV ODAK ÇUBUĞU (Exam Focus Header - 64px)                      -->
+  <!-- ========================================================================= -->
+  <header class="bg-surface border-b border-outline-variant sticky top-0 z-50 shadow-none">
+    <div class="w-full px-6 h-16 flex items-center justify-between">
+      
+      <!-- Sol: Marka, Sınav Çipi, Deneme Adı ve Soru Kodu -->
+      <div class="flex items-center gap-4">
+        <!-- Logo: Yalnızca ODAK -->
+        <a href="#" class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight select-none">
+          <span class="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center">
+            <span class="w-3 h-3 rounded-full bg-primary"></span>
+          </span>
+          <span>ODAK</span>
+        </a>
+
+        <div class="h-5 w-px bg-outline-variant"></div>
+
+        <!-- Çoklu Sınav Desteği Çipi -->
+        <div class="flex items-center gap-1.5 bg-[#F4F6F5] border border-outline-variant px-2.5 py-1 rounded-full text-xs font-semibold text-on-surface">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          <span>YDS · 22 Kasım 2026</span>
+          <span class="text-on-surface-variant font-normal">· 52 Gün</span>
+        </div>
+
+        <div class="hidden xl:flex items-center gap-2 text-xs font-medium text-on-surface-variant">
+          <span class="text-on-surface font-semibold">2026 Sonbahar YDS Özgün Tam Deneme #05</span>
+          <span class="text-outline">·</span>
+          <span>80 Soru · 180 Dakika</span>
+          <span class="text-outline">·</span>
+          <span class="text-primary font-semibold">1 Doğru = 1,25 Puan</span>
+        </div>
+      </div>
+
+      <!-- Orta: Odak Sayaç (Kalan Süre) -->
+      <div class="flex items-center gap-3 bg-[#F4F6F5] px-4 py-1.5 rounded-full border border-outline-variant">
+        <span class="material-symbols-outlined text-primary text-base">timer</span>
+        <div class="flex items-center gap-1.5">
+          <span class="text-xs font-medium text-on-surface-variant">Kalan Süre:</span>
+          <span class="font-bold text-sm tracking-wide text-primary tabular-nums" id="examTimer">02:14:36</span>
+        </div>
+        <span class="w-1.5 h-1.5 rounded-full bg-tertiary" title="Süre akıyor"></span>
+      </div>
+
+      <!-- Sağ Aksiyonlar: Duraklat, Soru İşaretle, Sınavı Bitir, Sınavdan Çık -->
+      <div class="flex items-center gap-3">
+        <!-- Antrenman / Duraklat -->
+        <button type="button" class="h-10 px-3 rounded border border-outline-variant hover:border-primary text-xs font-semibold text-on-surface transition-colors flex items-center gap-1.5" title="Sınavı Duraklat (Antrenman Modu)">
+          <span class="material-symbols-outlined text-base">pause</span>
+          <span class="hidden md:inline">Duraklat</span>
+        </button>
+
+        <!-- Soru İşaretle (F) -->
+        <button type="button" class="h-10 px-3.5 rounded border border-outline-variant hover:border-secondary bg-surface text-xs font-semibold text-on-surface transition-colors flex items-center gap-1.5" title="Bu soruyu sonra incelemek üzere işaretle (Kısayol: F)">
+          <span class="w-2 h-2 rounded-full bg-secondary"></span>
+          <span>İşaretle</span>
+          <kbd class="ml-1 px-1.5 py-0.5 text-[10px] bg-[#F4F6F5] border border-outline-variant rounded text-on-surface-variant font-mono">F</kbd>
+        </button>
+
+        <!-- Sınavı Bitir Butonu (Öncelikli Aksiyon) -->
+        <button type="button" class="h-10 px-4 rounded bg-primary hover:bg-[#0A5458] text-white text-xs font-bold transition-colors flex items-center gap-1.5" title="Sınavı teslim et ve sonuca geç">
+          <span class="material-symbols-outlined text-base">task_alt</span>
+          <span>Sınavı Bitir</span>
+        </button>
+
+        <!-- Sınavdan Çık (Ayrılma) -->
+        <button type="button" class="h-10 px-3 rounded hover:bg-error-container text-on-surface-variant hover:text-error text-xs font-medium transition-colors flex items-center gap-1" title="Sınavdan ayrıl">
+          <span class="material-symbols-outlined text-base">logout</span>
+          <span class="hidden lg:inline">Çık</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. ÇEVRİMDIŞI / BAĞLANTI DURUM ŞERİDİ (Sakin Bilgilendirme)               -->
+  <!-- ========================================================================= -->
+  <div class="bg-surface border-b border-outline-variant py-1.5 px-6">
+    <div class="w-full flex flex-wrap items-center justify-between text-xs text-on-surface-variant">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+        <span class="font-medium text-on-surface">Cevaplarınız anlık olarak kaydedilmektedir.</span>
+        <span class="text-outline">·</span>
+        <span>Ağ kesintisi olsa dahi sınavınız kesintisiz devam eder.</span>
+      </div>
+      <div class="hidden md:flex items-center gap-4 text-[11px]">
+        <span>Klavye Kısayolları: <kbd class="px-1 bg-[#F4F6F5] border border-outline-variant rounded font-mono">A-E</kbd> Seçenek, <kbd class="px-1 bg-[#F4F6F5] border border-outline-variant rounded font-mono">← →</kbd> Gezinme, <kbd class="px-1 bg-[#F4F6F5] border border-outline-variant rounded font-mono">F</kbd> İşaretle, <kbd class="px-1 bg-[#F4F6F5] border border-outline-variant rounded font-mono">G</kbd> Gezgin</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 3. ANA SINAV ALANI (1440px Masaüstü: Soru Alanı + 280px Gezgin)          -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 w-full max-w-[1440px] mx-auto px-6 py-6 flex gap-6 items-start">
+
+    <!-- SOL VE ORTA ALAN: Sınav Sorusu ve Metin İki Bölmesi (Split-view) -->
+    <div class="flex-1 flex flex-col gap-5 min-w-0">
+
+      <!-- Soru Başlık & Tip Bilgi Bandı -->
+      <div class="bg-surface border border-outline-variant rounded-md p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center tabular-nums">
+            42
+          </span>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-primary">Bölüm 3 · Okuma Parçaları</span>
+              <span class="text-outline">·</span>
+              <span class="text-xs font-medium text-on-surface-variant">Soru 42 / 80</span>
+            </div>
+            <p class="text-xs text-on-surface-variant mt-0.5">Paragraf 4 / 6 · Metin konusu: Bilişsel Sinirbilim ve Bellek</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs">
+          <span class="bg-[#F4F6F5] border border-outline-variant px-2.5 py-1 rounded text-on-surface-variant font-medium">
+            Zorluk: C1 İleri
+          </span>
+          <span class="bg-primary-container text-on-primary-container px-2.5 py-1 rounded font-semibold tabular-nums">
+            Değer: 1,25 Puan
+          </span>
+          <span class="bg-[#F4F6F5] border border-outline-variant px-2.5 py-1 rounded text-on-surface-variant font-medium flex items-center gap-1 tabular-nums">
+            <span class="material-symbols-outlined text-xs">schedule</span>
+            Bu soruda: 01:18
+          </span>
+        </div>
+      </div>
+
+      <!-- Soru Gövdesi: İki Sütunlu Okuma & Soru Alanı (ÖSYM e-YDS Standardı) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        
+        <!-- Sol Bölme: Akademik Okuma Metni (Paragraf 41-44) -->
+        <section class="lg:col-span-6 bg-surface border border-outline-variant rounded-md p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+              <span class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-primary text-base">article</span>
+                Akademik Okuma Parçası (Soru 41 - 44)
+              </span>
+              <span class="text-[11px] text-on-surface-variant font-medium">284 Sözcük</span>
+            </div>
+
+            <!-- Metin Başlığı ve Gövdesi (Literata Serif 17px) -->
+            <h2 class="text-sm font-bold text-on-surface mb-3 leading-snug">
+              The Cognitive Architecture of Memory Consolidation in Bilingual Adults
+            </h2>
+
+            <div class="space-y-3 font-reading text-[16px] leading-[27px] text-[#13232A]">
+              <p>
+                <span class="text-xs text-outline font-sans select-none mr-1.5">01</span>
+                Memory consolidation during sleep is an active biological process rather than a passive decay of experiences. Neural oscillations, particularly slow waves and sleep spindles, play a coordinated role in transferring short-term representations from the hippocampus to the neocortex.
+              </p>
+              <p class="bg-primary-container/20 border-l-2 border-primary pl-2 py-0.5 rounded-r">
+                <span class="text-xs text-primary font-sans font-bold select-none mr-1.5">05</span>
+                Consequently, interruptions to this slow-wave synchronization lead to quantifiable deficits in declarative memory retention across aging demographics. Bilingual individuals demonstrate fortified synaptic adaptability, effectively mitigating typical decay pathways.
+              </p>
+              <p>
+                <span class="text-xs text-outline font-sans select-none mr-1.5">10</span>
+                Recent neuroimaging paradigms reveal that sustained lexical management alters structural connectivity. Cross-frequency coupling between neocortical slow oscillations and thalamocortical spindles coordinates the precise replay of linguistic traces, shielding memories against cognitive interference.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between text-xs text-on-surface-variant">
+            <span>Metin 41, 42, 43 ve 44. sorular için ortaktır.</span>
+            <span class="text-primary font-medium cursor-pointer hover:underline">Yazı Boyutu (16px)</span>
+          </div>
+        </section>
+
+        <!-- Sağ Bölme: 42. Soru Kökü ve 5 Seçenek -->
+        <section class="lg:col-span-6 bg-surface border border-outline-variant rounded-md p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+              <span class="text-xs font-bold text-on-surface">Soru Metni</span>
+              <span class="text-xs bg-[#F4F6F5] text-on-surface-variant px-2 py-0.5 rounded border border-outline-variant font-medium">
+                Soru Tipi: Çıkarım
+              </span>
+            </div>
+
+            <!-- Soru Kökü (Literata Serif 17px) -->
+            <p class="font-reading text-[17px] leading-[27px] text-[#13232A] font-medium mb-6">
+              According to the passage, the synaptic dialogue between the hippocampus and neocortex is crucial because ----.
+            </p>
+
+            <!-- 5 Seçenek Satırı (Tam Daire Cevap Baloncuğu A-E, En az 44px Dokunma Alanı) -->
+            <div class="space-y-3">
+              
+              <!-- A Seçeneği (Varsayılan Boş) -->
+              <label class="group flex items-start gap-3.5 p-3 rounded border border-outline-variant bg-surface hover:bg-[#F4F6F5] cursor-pointer transition-colors min-h-[48px] select-none">
+                <input type="radio" name="question_42" value="A" class="sr-only"/>
+                <span class="w-7 h-7 rounded-full border border-outline flex items-center justify-center text-xs font-semibold text-on-surface-variant group-hover:border-primary shrink-0 mt-0.5 transition-colors">
+                  A
+                </span>
+                <span class="font-reading text-[15px] leading-normal text-on-surface pt-0.5">
+                  it completely eliminates the need for slow-wave sleep in adults who speak more than two foreign tongues.
+                </span>
+              </label>
+
+              <!-- B Seçeneği (SEÇİLİ CEVAP - Petrol Renk Vurgusu) -->
+              <label class="flex items-start gap-3.5 p-3 rounded border-2 border-primary bg-primary-container/20 cursor-pointer transition-colors min-h-[48px] select-none">
+                <input type="radio" name="question_42" value="B" checked class="sr-only"/>
+                <!-- Seçili Optik Baloncuk: Petrol Dolgulu Tam Daire -->
+                <span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                  B
+                </span>
+                <div class="flex-1">
+                  <span class="font-reading text-[15px] leading-normal font-semibold text-on-surface pt-0.5 block">
+                    it prevents grammatical and vocabulary conflict across different languages while preserving stored memories.
+                  </span>
+                  <span class="text-[11px] font-semibold text-primary mt-1 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">check_circle</span>
+                    Seçiminiz kaydedildi · Değiştirmek için başka şıkka tıklayabilirsiniz
+                  </span>
+                </div>
+              </label>
+
+              <!-- C Seçeneği (Varsayılan Boş) -->
+              <label class="group flex items-start gap-3.5 p-3 rounded border border-outline-variant bg-surface hover:bg-[#F4F6F5] cursor-pointer transition-colors min-h-[48px] select-none">
+                <input type="radio" name="question_42" value="C" class="sr-only"/>
+                <span class="w-7 h-7 rounded-full border border-outline flex items-center justify-center text-xs font-semibold text-on-surface-variant group-hover:border-primary shrink-0 mt-0.5 transition-colors">
+                  C
+                </span>
+                <span class="font-reading text-[15px] leading-normal text-on-surface pt-0.5">
+                  it triggers cognitive fatigue and rapidly weakens long-term linguistic proficiency in bilingual speakers.
+                </span>
+              </label>
+
+              <!-- D Seçeneği (Varsayılan Boş) -->
+              <label class="group flex items-start gap-3.5 p-3 rounded border border-outline-variant bg-surface hover:bg-[#F4F6F5] cursor-pointer transition-colors min-h-[48px] select-none">
+                <input type="radio" name="question_42" value="D" class="sr-only"/>
+                <span class="w-7 h-7 rounded-full border border-outline flex items-center justify-center text-xs font-semibold text-on-surface-variant group-hover:border-primary shrink-0 mt-0.5 transition-colors">
+                  D
+                </span>
+                <span class="font-reading text-[15px] leading-normal text-on-surface pt-0.5">
+                  it accelerates the rate of lexical attrition by continuously shutting down prefrontal circuits.
+                </span>
+              </label>
+
+              <!-- E Seçeneği (Varsayılan Boş) -->
+              <label class="group flex items-start gap-3.5 p-3 rounded border border-outline-variant bg-surface hover:bg-[#F4F6F5] cursor-pointer transition-colors min-h-[48px] select-none">
+                <input type="radio" name="question_42" value="E" class="sr-only"/>
+                <span class="w-7 h-7 rounded-full border border-outline flex items-center justify-center text-xs font-semibold text-on-surface-variant group-hover:border-primary shrink-0 mt-0.5 transition-colors">
+                  E
+                </span>
+                <span class="font-reading text-[15px] leading-normal text-on-surface pt-0.5">
+                  it forces the executive control center to operate solely within non-rapid eye movement stages.
+                </span>
+              </label>
+
+            </div>
+          </div>
+
+          <!-- Soru İçi Aksiyonlar: Yanıtı Temizle & İpucu/Yardım kilitli bilgilendirmesi -->
+          <div class="mt-6 pt-4 border-t border-outline-variant flex items-center justify-between text-xs">
+            <button type="button" class="text-on-surface-variant hover:text-error transition-colors flex items-center gap-1 font-medium">
+              <span class="material-symbols-outlined text-sm">backspace</span>
+              <span>Cevabı Temizle (Boş Bırak)</span>
+            </button>
+            <span class="text-on-surface-variant text-[11px]">
+              YDS Kuralı: Yanlış doğruyu götürmez · Boş bırakmak yerine tahmin yapmanız önerilir
+            </span>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Alt Gezinme ve Kontrol Çubuğu (44px dokunma boyutu) -->
+      <div class="bg-surface border border-outline-variant rounded-md p-4 flex flex-wrap items-center justify-between gap-3">
+        <!-- Sol: Önceki Soru Butonu -->
+        <button type="button" class="h-11 px-5 rounded border border-outline-variant hover:border-primary text-xs font-semibold text-on-surface transition-colors flex items-center gap-2 active:scale-98">
+          <span class="material-symbols-outlined text-base">arrow_back</span>
+          <span>Önceki Soru (41)</span>
+          <kbd class="hidden sm:inline px-1 py-0.5 text-[10px] bg-[#F4F6F5] border border-outline-variant rounded text-on-surface-variant font-mono">←</kbd>
+        </button>
+
+        <!-- Orta: Boş Soruya Git Butonu -->
+        <div class="flex items-center gap-2">
+          <button type="button" class="h-11 px-4 rounded border border-outline-variant hover:border-primary text-xs font-medium text-on-surface-variant transition-colors flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">skip_next</span>
+            <span>İlk Boş Soruya Git (Soru 45)</span>
+          </button>
+        </div>
+
+        <!-- Sağ: Sonraki Soru Butonu -->
+        <button type="button" class="h-11 px-6 rounded bg-primary hover:bg-[#0A5458] text-white text-xs font-bold transition-colors flex items-center gap-2 active:scale-98">
+          <span>Sonraki Soru (43)</span>
+          <kbd class="hidden sm:inline px-1.5 py-0.5 text-[10px] bg-white/20 rounded text-white font-mono">→</kbd>
+          <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- SAĞ PANEL: 280px KALICI SORU GEZGİNİ VE OPTİK CEVAP MATRİSİ            -->
+    <!-- ======================================================================= -->
+    <aside class="w-[280px] shrink-0 bg-surface border border-outline-variant rounded-md p-4 flex flex-col gap-4 sticky top-24 select-none">
+      
+      <!-- Gezgin Başlık ve Filtre Özeti -->
+      <div>
+        <div class="flex items-center justify-between pb-2 border-b border-outline-variant">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-primary text-base">grid_view</span>
+            <h3 class="text-xs font-bold text-on-surface uppercase tracking-wide">Soru Gezgini</h3>
+          </div>
+          <span class="text-xs font-bold text-primary tabular-nums">42 / 80</span>
+        </div>
+
+        <!-- Sayaç Hapları: Cevaplanan, İşaretli, Boş -->
+        <div class="grid grid-cols-3 gap-1.5 mt-3 text-center">
+          <div class="bg-[#F4F6F5] border border-outline-variant p-1.5 rounded">
+            <span class="text-[10px] block text-on-surface-variant font-medium">Cevaplanan</span>
+            <span class="text-xs font-bold text-primary tabular-nums">62</span>
+          </div>
+          <div class="bg-[#F4F6F5] border border-outline-variant p-1.5 rounded">
+            <span class="text-[10px] block text-on-surface-variant font-medium">İşaretli</span>
+            <span class="text-xs font-bold text-secondary tabular-nums">3</span>
+          </div>
+          <div class="bg-[#F4F6F5] border border-outline-variant p-1.5 rounded">
+            <span class="text-[10px] block text-on-surface-variant font-medium">Boş</span>
+            <span class="text-xs font-bold text-error tabular-nums">15</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lejant (Durum Açıklamaları) -->
+      <div class="flex items-center justify-between text-[11px] text-on-surface-variant px-1 border-b border-outline-variant pb-2">
+        <div class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+          <span>Dolu</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+          <span>İşaretli</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded-full border border-outline"></span>
+          <span>Boş</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded-full border-2 border-primary bg-primary-container"></span>
+          <span>Aktif</span>
+        </div>
+      </div>
+
+      <!-- Soru Butonları Matrisi (80 Soru - 8 sütun x 10 satır veya bölümlü) -->
+      <div class="overflow-y-auto max-h-[460px] pr-1 space-y-3">
+        
+        <!-- Bölüm I: Kelime ve Gramer (1-16) -->
+        <div>
+          <div class="flex justify-between items-center mb-1.5 text-[10px] font-bold text-on-surface-variant uppercase">
+            <span>1. Kelime & Gramer</span>
+            <span class="text-tertiary">16/16 Tam</span>
+          </div>
+          <div class="grid grid-cols-5 gap-1.5">
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">1</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">2</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">3</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">4</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">5</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">6</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">7</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">8</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">9</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">10</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">11</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">12</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">13</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">14</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">15</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">16</button>
+          </div>
+        </div>
+
+        <!-- Bölüm II: Boşluk Doldurma ve Cümle Tamamlama (17-36) -->
+        <div>
+          <div class="flex justify-between items-center mb-1.5 text-[10px] font-bold text-on-surface-variant uppercase">
+            <span>2. Boşluk & Cümle</span>
+            <span>18/20</span>
+          </div>
+          <div class="grid grid-cols-5 gap-1.5">
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">17</button>
+            <button class="h-7 rounded text-xs font-semibold bg-secondary text-white relative">
+              18
+              <span class="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-white"></span>
+            </button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">19</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">20</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">21</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">22</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">23</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">24</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">25</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">26</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">27</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">28</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">29</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">30</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">31</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">32</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">33</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">34</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">35</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">36</button>
+          </div>
+        </div>
+
+        <!-- Bölüm III: Çeviri ve Okuma Parçaları (37-62) -->
+        <div>
+          <div class="flex justify-between items-center mb-1.5 text-[10px] font-bold text-on-surface-variant uppercase">
+            <span>3. Çeviri & Okuma</span>
+            <span class="text-primary font-bold">42. Aktif</span>
+          </div>
+          <div class="grid grid-cols-5 gap-1.5">
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">37</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">38</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">39</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">40</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">41</button>
+            <!-- 42. SORU AKTİF ODAK HALKASI -->
+            <button class="h-7 rounded text-xs font-bold bg-primary text-white ring-2 ring-primary ring-offset-2 ring-offset-surface">42</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">43</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">44</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">45</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">46</button>
+            <button class="h-7 rounded text-xs font-semibold bg-secondary text-white relative">
+              47
+              <span class="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-white"></span>
+            </button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">48</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">49</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">50</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">51</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">52</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">53</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">54</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">55</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">56</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">57</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">58</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">59</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">60</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">61</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">62</button>
+          </div>
+        </div>
+
+        <!-- Bölüm IV: Diyalog, Eş Anlam, Paragraf Tamamlama & Akışı Bozan (63-80) -->
+        <div>
+          <div class="flex justify-between items-center mb-1.5 text-[10px] font-bold text-on-surface-variant uppercase">
+            <span>4. Diyalog & Akış</span>
+            <span>12/18</span>
+          </div>
+          <div class="grid grid-cols-5 gap-1.5">
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">63</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">64</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">65</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">66</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">67</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">68</button>
+            <button class="h-7 rounded text-xs font-semibold bg-secondary text-white relative">
+              69
+              <span class="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-white"></span>
+            </button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">70</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">71</button>
+            <button class="h-7 rounded text-xs font-semibold bg-primary text-white">72</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">73</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">74</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">75</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">76</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">77</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">78</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">79</button>
+            <button class="h-7 rounded text-xs font-semibold border border-outline bg-surface text-on-surface">80</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Hızlı Filtre Butonları -->
+      <div class="pt-3 border-t border-outline-variant flex flex-col gap-2">
+        <button type="button" class="w-full py-2 px-3 rounded bg-[#F4F6F5] hover:bg-surface-container-high border border-outline-variant text-xs font-semibold text-on-surface transition-colors flex items-center justify-between">
+          <span>Yalnızca Boş Soruları Göster</span>
+          <span class="text-xs bg-error text-white px-1.5 py-0.2 rounded font-bold">15</span>
+        </button>
+        <button type="button" class="w-full py-2 px-3 rounded bg-[#F4F6F5] hover:bg-surface-container-high border border-outline-variant text-xs font-semibold text-on-surface transition-colors flex items-center justify-between">
+          <span>İşaretli Soruları Göster</span>
+          <span class="text-xs bg-secondary text-white px-1.5 py-0.2 rounded font-bold">3</span>
+        </button>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 4. PLATFORM SİSTEM DURUMLARI & GÜVENCE MATRİSİ (EXAM-03 Spesifikasyonu)   -->
+  <!-- ========================================================================= -->
+  <section class="max-w-[1440px] w-full mx-auto px-6 py-8 border-t border-outline-variant mt-8">
+    <div class="mb-4">
+      <span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Sınav Güvencesi ve Çalışma Standartları</span>
+      <h3 class="text-sm font-bold text-on-surface">EXAM-03 Kesintisiz Sınav Davranış Modelleri</h3>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Durum 1: Süre Bittiğinde Otomatik Teslim -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="w-8 h-8 rounded bg-primary-container text-primary flex items-center justify-center mb-3">
+            <span class="material-symbols-outlined text-lg">alarm_on</span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Durum 1: Süre Bittiğinde Otomatik Teslim</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            180 dakikalık süre tamamlandığında ekran otomatik olarak kilitlenir; işaretlenen tüm cevaplar derlenir ve doğrudan ayrıntılı sınav sonucuna aktarılır.
+          </p>
+        </div>
+        <div class="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-tertiary">
+          <span class="material-symbols-outlined text-sm">check_circle</span>
+          <span>Sıfır Veri Kaybı</span>
+        </div>
+      </div>
+
+      <!-- Durum 2: Bağlantı Koptuğunda Kesintisiz Devam -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="w-8 h-8 rounded bg-secondary-container text-secondary flex items-center justify-center mb-3">
+            <span class="material-symbols-outlined text-lg">wifi_off</span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Durum 2: Çevrimdışı Sınav Korunumu</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            İnternet bağlantısı kesilse dahi sayaç durmaz, işaretlemeleriniz cihazınızda anında saklanır. Bağlantı yeniden kurulduğunda otomatik olarak senkronize edilir.
+          </p>
+        </div>
+        <div class="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-primary">
+          <span class="material-symbols-outlined text-sm">sync</span>
+          <span>Kesintisiz Sınav Akışı</span>
+        </div>
+      </div>
+
+      <!-- Durum 3: Tarayıcı Kapandığında Kaldığı Yerden -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="w-8 h-8 rounded bg-primary-container text-primary flex items-center justify-center mb-3">
+            <span class="material-symbols-outlined text-lg">history_toggle_off</span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Durum 3: Kaldığı Yerden Devam</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Yanlışlıkla sekme kapansa veya cihaz kapansa dahi, tekrar giriş yapıldığında sınav kalınan sorudan ve kalan dakikadan devam ettirilir.
+          </p>
+        </div>
+        <div class="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-primary">
+          <span class="material-symbols-outlined text-sm">bookmark</span>
+          <span>Otomatik Seans Hafızası</span>
+        </div>
+      </div>
+
+      <!-- Durum 4: Son 5 Dakika Uyarı ve Optik Kontrol -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="w-8 h-8 rounded bg-secondary-container text-secondary flex items-center justify-center mb-3">
+            <span class="material-symbols-outlined text-lg">notifications_active</span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Durum 4: Son 5 Dakika Uyarısı</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Sınavın bitimine 5 dakika kaldığında üst sayaç sakin safran uyarı tonuna geçer ve boş bırakılan sorular için nazik optik kontrol tavsiyesi sunulur.
+          </p>
+        </div>
+        <div class="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-secondary">
+          <span class="material-symbols-outlined text-sm">hourglass_bottom</span>
+          <span>Bilişsel Zaman Yönetimi</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 5. KURUMSAL ALTBİLGİ (Footer - Sade ve Şeffaf)                           -->
+  <!-- ========================================================================= -->
+  <footer class="bg-background border-t border-outline-variant mt-auto">
+    <div class="w-full py-6 px-6 max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-sans text-on-surface-variant">
+      <div class="flex items-center gap-3">
+        <span class="font-bold text-primary text-sm tracking-tight">ODAK</span>
+        <span>•</span>
+        <span>© 2026 ODAK Yabancı Dil Sınavı Hazırlık Platformu. Tüm hakları saklıdır.</span>
+      </div>
+      <nav class="flex flex-wrap items-center gap-6">
+        <a href="#" class="hover:text-primary transition-colors">Sınav Takvimi</a>
+        <a href="#" class="hover:text-primary transition-colors">ÖSYM Kılavuzu</a>
+        <a href="#" class="hover:text-primary transition-colors">Akademik Çerçeve</a>
+        <a href="#" class="hover:text-primary transition-colors">Gizlilik Politikası</a>
+        <a href="#" class="hover:text-primary transition-colors">Destek ve İletişim</a>
+      </nav>
+    </div>
+    <div class="bg-surface border-t border-outline-variant py-2 px-6 text-center text-[11px] text-on-surface-variant">
+      ÖSYM YDS Değerlendirme Esası: 80 Soru · 180 Dakika · 1 Doğru = 1,25 Puan · Yanlışlar doğru puanı etkilemez.
+    </div>
+  </footer>
+
+</body>
+</html>

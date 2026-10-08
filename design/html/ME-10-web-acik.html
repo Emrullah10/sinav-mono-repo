@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="tr"><head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>ODAK · ME-10 Hesap Silme ve Veri İmhası</title>
+  <!-- Google Fonts: Figtree (UI), Literata (Okuma Metinleri), Bricolage Grotesque (Logo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet">
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            'background': '#F4F6F5',
+            'surface': '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            'outline': '#77868A',
+            'outline-variant': '#DAE1E0',
+            'primary': '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            'secondary': '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            'tertiary': '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            'error': '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+          },
+          borderRadius: {
+            'xs': '4px',
+            'sm': '8px',
+            'DEFAULT': '12px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '24px',
+            'full': '9999px'
+          },
+          fontFamily: {
+            "headline": ["Bricolage Grotesque"],
+            "display": ["Bricolage Grotesque"],
+            'body': ['Figtree', 'sans-serif'],
+            'reading': ['Literata', 'serif'],
+          }
+        },
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .font-reading {
+      font-family: 'Literata', serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.relative{position:relative}.sticky{position:sticky}.top-0{top:0px}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-0\.5{margin-bottom:0.125rem}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.ml-auto{margin-left:auto}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-1\.5{margin-top:0.375rem}.mt-3{margin-top:0.75rem}.mt-8{margin-top:2rem}.mt-auto{margin-top:auto}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-11{height:2.75rem}.h-12{height:3rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-3\.5{height:0.875rem}.h-5{height:1.25rem}.h-7{height:1.75rem}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-11{width:2.75rem}.w-2{width:0.5rem}.w-3\.5{width:0.875rem}.w-5{width:1.25rem}.w-7{width:1.75rem}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-7xl{max-width:80rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.rounded{border-radius:12px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:16px}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-l{border-left-width:1px}.border-t{border-top-width:1px}.border-\[\#E9A514\]\/30{border-color:rgb(233 165 20 / 0.3)}.border-error{--tw-border-opacity:1;border-color:rgb(163 61 39 / var(--tw-border-opacity, 1))}.border-error\/20{border-color:rgb(163 61 39 / 0.2)}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(218 225 224 / var(--tw-border-opacity, 1))}.border-outline-variant\/60{border-color:rgb(218 225 224 / 0.6)}.border-primary{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}.border-primary\/30{border-color:rgb(14 106 110 / 0.3)}.border-tertiary\/20{border-color:rgb(31 122 69 / 0.2)}.bg-\[\#F4F6F5\]{--tw-bg-opacity:1;background-color:rgb(244 246 245 / var(--tw-bg-opacity, 1))}.bg-error{--tw-bg-opacity:1;background-color:rgb(163 61 39 / var(--tw-bg-opacity, 1))}.bg-error-container{--tw-bg-opacity:1;background-color:rgb(248 227 220 / var(--tw-bg-opacity, 1))}.bg-error-container\/40{background-color:rgb(248 227 220 / 0.4)}.bg-on-surface-variant{--tw-bg-opacity:1;background-color:rgb(70 86 92 / var(--tw-bg-opacity, 1))}.bg-primary{--tw-bg-opacity:1;background-color:rgb(14 106 110 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.bg-secondary-container{--tw-bg-opacity:1;background-color:rgb(251 239 210 / var(--tw-bg-opacity, 1))}.bg-surface{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-tertiary{--tw-bg-opacity:1;background-color:rgb(31 122 69 / var(--tw-bg-opacity, 1))}.bg-tertiary-container{--tw-bg-opacity:1;background-color:rgb(223 241 230 / var(--tw-bg-opacity, 1))}.bg-tertiary-container\/30{background-color:rgb(223 241 230 / 0.3)}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-1{padding-bottom:0.25rem}.pb-3{padding-bottom:0.75rem}.pl-2{padding-left:0.5rem}.pt-2{padding-top:0.5rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-display{font-family:Bricolage Grotesque}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-reading{font-family:Literata, serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.leading-normal{line-height:1.5}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-\[\#13232A\]{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.text-\[\#BA7F14\]{--tw-text-opacity:1;color:rgb(186 127 20 / var(--tw-text-opacity, 1))}.text-\[\#E9A514\]{--tw-text-opacity:1;color:rgb(233 165 20 / var(--tw-text-opacity, 1))}.text-error{--tw-text-opacity:1;color:rgb(163 61 39 / var(--tw-text-opacity, 1))}.text-on-primary-container{--tw-text-opacity:1;color:rgb(10 84 88 / var(--tw-text-opacity, 1))}.text-on-secondary{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(70 86 92 / var(--tw-text-opacity, 1))}.text-outline-variant{--tw-text-opacity:1;color:rgb(218 225 224 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.text-tertiary{--tw-text-opacity:1;color:rgb(31 122 69 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow-none{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-primary{--tw-ring-opacity:1;--tw-ring-color:rgb(14 106 110 / var(--tw-ring-opacity, 1))}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:border-primary:hover{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}.hover\:bg-\[\#852E1B\]:hover{--tw-bg-opacity:1;background-color:rgb(133 46 27 / var(--tw-bg-opacity, 1))}.hover\:bg-\[\#F4F6F5\]:hover{--tw-bg-opacity:1;background-color:rgb(244 246 245 / var(--tw-bg-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.focus\:border-error:focus{--tw-border-opacity:1;border-color:rgb(163 61 39 / var(--tw-border-opacity, 1))}.focus\:border-primary:focus{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}.focus\:ring-1:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-error:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(163 61 39 / var(--tw-ring-opacity, 1))}.focus\:ring-primary:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(14 106 110 / var(--tw-ring-opacity, 1))}@media (min-width: 640px){.sm\:flex{display:flex}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:gap-3{gap:0.75rem}}@media (min-width: 768px){.md\:flex{display:flex}.md\:flex-row{flex-direction:row}}@media (min-width: 1024px){.lg\:col-span-4{grid-column:span 4 / span 4}.lg\:col-span-8{grid-column:span 8 / span 8}.lg\:flex{display:flex}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:text-3xl{font-size:1.875rem;line-height:2.25rem}}</style></head>
+<body class="min-h-screen flex flex-col bg-[#F4F6F5] text-[#13232A]">
+
+  <!-- 1. ÜST GEZİNME ÇUBUĞU (TopNavBar) -->
+  <header class="bg-surface border-b border-outline-variant sticky top-0 z-50">
+    <div class="flex justify-between items-center w-full px-8 h-16 max-w-7xl mx-auto">
+      <!-- Marka Logosu & Sınav Seçici Çip -->
+      <div class="flex items-center gap-6">
+        <a class="flex items-center gap-2.5 text-primary font-display font-bold text-2xl tracking-tight" href="#">
+          <span class="w-7 h-7 rounded-full border-2 border-primary flex items-center justify-center">
+            <span class="w-3.5 h-3.5 rounded-full bg-primary"></span>
+          </span>
+          <span>ODAK</span>
+        </a>
+
+        <!-- Sınav Seçici Çip -->
+        <div class="hidden sm:flex items-center gap-2 bg-[#F4F6F5] border border-outline-variant hover:border-primary transition-colors px-3 py-1.5 rounded-full text-xs font-semibold text-on-surface cursor-pointer select-none">
+          <span class="w-2 h-2 rounded-full bg-primary"></span>
+          <span>2026-YDS/2 · 22 Kasım 2026 · 52 Gün Kaldı</span>
+          <span class="material-symbols-outlined text-base text-on-surface-variant">arrow_drop_down</span>
+        </div>
+      </div>
+
+      <!-- Navigasyon Sekmeleri -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">Bugün</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">Çalış</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">Deneme</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">Öğretmen</a>
+        <a class="text-primary font-semibold border-b-2 border-primary pb-1" href="#">Ben</a>
+      </nav>
+
+      <!-- Sağ Aksiyonlar: Seri, Bildirim, Profil -->
+      <div class="flex items-center gap-3">
+        <!-- 14 Gün Seri Rozeti -->
+        <div class="flex items-center gap-1.5 bg-secondary-container border border-[#E9A514]/30 px-3 py-1 rounded-full text-xs font-bold text-on-secondary">
+          <span class="material-symbols-outlined text-[#E9A514] text-base" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+          <span class="tabular-nums">14 Gün Seri</span>
+        </div>
+
+        <!-- Bildirim Butonu -->
+        <button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-[#F4F6F5] border border-outline-variant transition-colors" title="Bildirimler">
+          <span class="material-symbols-outlined text-xl">notifications</span>
+        </button>
+
+        <!-- Profil Özeti -->
+        <div class="flex items-center gap-2.5 pl-2 border-l border-outline-variant">
+          <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container font-semibold text-xs flex items-center justify-center border border-primary/30">
+            BK
+          </div>
+          <div class="hidden lg:flex flex-col text-left">
+            <span class="text-xs font-bold leading-tight">Doç. Dr. Bilge Kağan Öztürk</span>
+            <span class="text-[11px] text-on-surface-variant leading-tight">Hacettepe Tıp Fakültesi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. ALT ÜST BİLGİ & BREADCRUMB ÇUBUĞU -->
+  <section class="bg-surface border-b border-outline-variant">
+    <div class="max-w-7xl mx-auto px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+      <nav class="flex items-center gap-2 text-xs text-on-surface-variant">
+        <span class="hover:text-primary cursor-pointer">Hesabım</span>
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+        <span class="hover:text-primary cursor-pointer">Kişisel Tercihler</span>
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+        <span class="hover:text-primary cursor-pointer">Hesap Güvenliği</span>
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+        <span class="font-bold text-on-surface">ME-10 · Hesap Silme</span>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-error-container text-error border border-error/20">
+          <span class="material-symbols-outlined text-sm">gavel</span>
+          <span>Yüksek Güvenlikli Veri İmha Protokolü</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ANA İÇERİK ALANI (1440px Masaüstü Izgarası) -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-8 py-8">
+    <!-- Sayfa Başlığı ve Kısa Açıklama -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 text-error font-bold text-xs uppercase tracking-wider mb-1">
+        <span class="material-symbols-outlined text-sm">report</span>
+        <span>Geri Alınamaz İşlem</span>
+      </div>
+      <h1 class="text-2xl lg:text-3xl font-bold text-on-surface tracking-tight">
+        Hesap Silme ve Veri Tasfiyesi Talebi
+      </h1>
+      <p class="text-sm text-on-surface-variant mt-1.5 max-w-3xl leading-relaxed">
+        Bu işlem geri alınamaz. 6698 sayılı Kişisel Verilerin Korunması Kanunu ve ÖSYM aday portföyü saklama standartları uyarınca hesabınız 30 günlük askı süresinin ardından kalıcı olarak silinecektir.
+      </p>
+    </div>
+
+    <!-- İki Sütunlu Çalışma Düzeni (Sol: 8 Sütun Akış Formu, Sağ: 4 Sütun Durum & Örnek Önizleme) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- SOL SÜTUN (col-span-8): Form, Uyarılar, İmha Listesi, Doğrulama -->
+      <div class="lg:col-span-8 space-y-6">
+
+        <!-- 3.1 MADDE 9.6 UYARI KUTUSU (Vurgulu Tuğla Kenarlık ve Kırmızı İkaz) -->
+        <div class="bg-surface rounded-lg border-2 border-error p-6 relative overflow-hidden">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-full bg-error-container text-error flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-2xl">warning</span>
+            </div>
+            <div class="space-y-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="bg-error text-white text-[11px] font-bold px-2.5 py-0.5 rounded">MADDE 9.6 UYARISI</span>
+                <h2 class="text-base font-bold text-error">Dikkat: Bu işlem geri alınamaz bir veri imha protokolüdür.</h2>
+              </div>
+              <p class="text-xs text-on-surface leading-relaxed">
+                Hesap silme talebiniz onaylandığı andan itibaren tüm aktif oturumlarınız derhal sonlandırılır. Kurumsal YDS analiz motoru, deneme geçmişiniz, kişisel kelime hazneleriniz ve öğretmen geri bildirimleriniz <strong>30 gün boyunca askıda tutulur</strong> ve bu sürenin bitiminde veri tabanından geri getirilemeyecek şekilde kazınır.
+              </p>
+              <div class="flex flex-wrap items-center gap-6 pt-2 text-xs text-on-surface-variant border-t border-outline-variant">
+                <span class="flex items-center gap-1.5 font-medium">
+                  <span class="material-symbols-outlined text-base text-primary">schedule</span>
+                  <span>Cayma Hakkı Süresi: <strong class="text-on-surface font-semibold">30 Gün</strong></span>
+                </span>
+                <span class="flex items-center gap-1.5 font-medium">
+                  <span class="material-symbols-outlined text-base text-primary">event_available</span>
+                  <span>Veri İtibarı: <strong class="text-on-surface font-semibold">Doğrudan İmha</strong></span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.2 İMHA EDİLECEK VERİ VE HAK ENVANTERİ (4 Kategori Kartı) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-6">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-xl">folder_delete</span>
+              <h3 class="text-sm font-bold text-on-surface">İmha Edilecek Veri ve Hak Envanteri</h3>
+            </div>
+            <span class="text-xs text-on-surface-variant font-medium bg-[#F4F6F5] px-2.5 py-0.5 rounded border border-outline-variant">
+              Toplam 4 Kategori
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- 01 Sınav ve Deneme Geçmişi -->
+            <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-on-surface">01 · Sınav ve Deneme Geçmişi</span>
+                  <span class="text-[11px] font-bold text-error bg-error-container px-2 py-0.5 rounded">Kurtarılamaz</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  6 resmi YDS tam deneme karnesi, 1.420 çözülen soru analizi, sentaktik tahliller ve süre istatistikleri.
+                </p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-xs text-on-surface font-semibold">
+                <span>Kayıt Hacmi:</span>
+                <span class="tabular-nums">1.420 Soru</span>
+              </div>
+            </div>
+
+            <!-- 02 Hata Defteri ve Kelime Havuzu -->
+            <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-on-surface">02 · Hata Defteri ve Kelime Havuzu</span>
+                  <span class="text-[11px] font-bold text-error bg-error-container px-2 py-0.5 rounded">Kurtarılamaz</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  42 kayıtlı aralıklı tekrar kelimesi, çeldirici tuzak notları ve kişisel zayıf nokta haritası.
+                </p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-xs text-on-surface font-semibold">
+                <span>Hafıza Hacmi:</span>
+                <span class="tabular-nums">42 Kelime Kartı</span>
+              </div>
+            </div>
+
+            <!-- 03 Öğretmen İncelemeleri -->
+            <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-on-surface">03 · Öğretmen İncelemeleri</span>
+                  <span class="text-[11px] font-bold text-error bg-error-container px-2 py-0.5 rounded">Kurtarılamaz</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  Doç. Dr. Selin Yılmaz ile yapılan 18 detaylı cümle röntgeni ve soru müzakeresi arşiv kaydı.
+                </p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-xs text-on-surface font-semibold">
+                <span>Müzakere Kaydı:</span>
+                <span class="tabular-nums">18 Oturum</span>
+              </div>
+            </div>
+
+            <!-- 04 Kurumsal Lisans Hakları -->
+            <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-on-surface">04 · Kurumsal Lisans Hakları</span>
+                  <span class="text-[11px] font-bold text-on-surface-variant bg-surface px-2 py-0.5 rounded border border-outline-variant">İade Edilemez</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  Hacettepe Üniversitesi Rektörlüğü lisans yetkilendirmesi koparılır, tanımlı kalan 7 soru inceleme hakkı yanar.
+                </p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-xs text-on-surface font-semibold">
+                <span>Aktif Durum:</span>
+                <span class="text-error">7 Hak İptali</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.3 MOBİL MAĞAZA ABONELİK HATIRLATMASI (Apple/Google Uyarısı) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-5 flex items-start gap-4">
+          <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-xl text-[#BA7F14]">storefront</span>
+          </div>
+          <div class="space-y-1.5 flex-1">
+            <h3 class="text-sm font-bold text-on-surface">Mobil Mağaza Abonelik Hatırlatması</h3>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Hesabınızı platformdan silmek Apple App Store veya Google Play Store üzerinden başlattığınız abonelik ödemelerini <strong>otomatik olarak sonlandırmaz</strong>. Düzenli çekimlerin kesilmesi için ilgili mağazanın abonelik yönetim panelinden iptal işlemini bizzat tamamlamanız gerekmektedir.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3.4 KİMLİK TEYİDİ VE YENİDEN DOĞRULAMA (OTP + Teyit Metni Yazma) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-6 space-y-6">
+          <div class="pb-3 border-b border-outline-variant">
+            <h3 class="text-sm font-bold text-on-surface flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-xl">verified_user</span>
+              <span>Kimlik Teyidi ve Güvenlik Onayı</span>
+            </h3>
+            <p class="text-xs text-on-surface-variant mt-1">
+              Hesap sahibi olduğunuzu kanıtlamak için lütfen kurumsal e-posta adresinize gönderilen güvenlik kodunu ve silme ifadesini giriniz.
+            </p>
+          </div>
+
+          <!-- Adım A: 6 Haneli Doğrulama Kodu -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-on-surface">Doğrulama Kodu (Gönderilen adres: bilge.ozturk@hacettepe.edu.tr)</span>
+              <span class="text-on-surface-variant font-medium flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">timer</span>
+                <span class="tabular-nums">02:45 kaldı</span>
+              </span>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-3">
+              <input type="text" maxlength="1" value="7" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" readonly="">
+              <input type="text" maxlength="1" value="3" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" readonly="">
+              <input type="text" maxlength="1" value="9" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" readonly="">
+              <span class="text-outline-variant font-bold">-</span>
+              <input type="text" maxlength="1" value="4" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" readonly="">
+              <input type="text" maxlength="1" value="2" class="w-11 h-12 text-center text-lg font-bold border border-primary ring-1 ring-primary rounded bg-surface text-on-surface" autofocus="">
+              <input type="text" maxlength="1" placeholder="•" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary">
+              <button class="h-11 px-3.5 rounded border border-outline-variant hover:border-primary text-xs font-semibold text-primary transition-colors ml-auto flex items-center gap-1 active:scale-98">
+                <span class="material-symbols-outlined text-sm">refresh</span>
+                <span>Yeni Kod Gönder</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Adım B: Onay İfadesi Yazma -->
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-on-surface">
+              Onaylamak için aşağıdaki kutuya tam olarak <span class="text-error font-mono font-bold bg-error-container px-1.5 py-0.5 rounded">HESABIMI SİLMEK İSTİYORUM</span> yazınız:
+            </label>
+            <input type="text" value="HESABIMI SİLMEK İSTİYORUM" class="w-full h-11 px-3.5 text-xs font-semibold text-on-surface bg-[#F4F6F5] border border-outline-variant rounded focus:border-error focus:ring-1 focus:ring-error transition-colors" placeholder="HESABIMI SİLMEK İSTİYORUM">
+            <p class="text-[11px] text-tertiary flex items-center gap-1 font-medium mt-1">
+              <span class="material-symbols-outlined text-sm">check_circle</span>
+              <span>İfade tam eşleşti. Doğrulama başarılı.</span>
+            </p>
+          </div>
+
+          <!-- Adım C: KVKK Yasal Onay Kutusu -->
+          <div class="pt-2">
+            <label class="flex items-start gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked="" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
+              <span class="text-xs text-on-surface-variant leading-normal">
+                <strong>6698 sayılı KVKK kapsamındaki haklarımı okudum.</strong> 30 günlük askı süresi bittiğinde deneme verilerimin, akademik hata analizlerimin ve öğretmen değerlendirmelerimin geri alınamaz biçimde imha edileceğini kabul ediyorum.
+              </span>
+            </label>
+          </div>
+
+          <!-- Adım D: Karar Eylemleri (Vazgeç & Yıkıcı Sil) -->
+          <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-outline-variant">
+            <button class="h-11 px-5 rounded border border-outline-variant hover:border-primary text-xs font-bold text-on-surface transition-colors flex items-center gap-2 active:scale-98">
+              <span class="material-symbols-outlined text-base">arrow_back</span>
+              <span>Vazgeç ve Profil Ayarlarına Dön</span>
+            </button>
+
+            <button class="h-11 px-6 rounded bg-error hover:bg-[#852E1B] text-white text-xs font-bold transition-colors flex items-center gap-2 shadow-none active:scale-98">
+              <span class="material-symbols-outlined text-base">delete_forever</span>
+              <span>Hesabımı ve Tüm Verilerimi Kalıcı Olarak Sil</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SAĞ SÜTUN (col-span-4): İşlem Akış Önizlemesi, Soru Röntgeni Örneği, Destek -->
+      <div class="lg:col-span-4 space-y-6">
+
+        <!-- 3.5 İŞLEM AKIŞ ÖNİZLEMESİ (30 Günlük Askı & Sonuç Ekranı Modeli) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">İşlem Akış Önizlemesi</h3>
+            <span class="text-[11px] font-bold text-tertiary bg-tertiary-container px-2 py-0.5 rounded">Talep Hazır</span>
+          </div>
+
+          <!-- Askı Bildirimi Kutusu -->
+          <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] space-y-2">
+            <div class="flex items-center gap-2 text-on-surface font-bold text-xs">
+              <span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px]">✓</span>
+              <span>Hesap Silme Talebiniz Alındı — 30 Günlük Askı Süresi Başladı</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Hesabınız derhal pasife alınmış ve tüm oturumlarınız kapatılmıştır. 30 gün içinde aynı kurumsal e-posta ile giriş yaparak silme talebini dilediğiniz an iptal edebilirsiniz. 30 günün sonunda tüm veriler kalıcı olarak imha edilecektir.
+            </p>
+            <div class="pt-2 border-t border-outline-variant/60 flex items-center justify-between text-[11px] text-on-surface-variant font-medium">
+              <span>Referans Kodu:</span>
+              <strong class="font-mono text-on-surface">#TR-İMHA-2026-0814</strong>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-on-surface-variant font-medium">
+              <span>Son Cayma Tarihi:</span>
+              <strong class="text-on-surface">1 Kasım 2026, 23:59</strong>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-2 text-xs text-on-surface-variant">
+            <span class="material-symbols-outlined text-sm text-primary mt-0.5">mark_email_read</span>
+            <span>Teyit bildirimi Hacettepe kurumsal e-postanıza iletilmiştir.</span>
+          </div>
+        </div>
+
+        <!-- 3.6 SİLİNME RİSKİNE GİRECEK ÖRNEK AKADEMİK ÇALIŞMA (Cümle Röntgeni & Soru Kartı) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-primary text-lg">psychology</span>
+              <h3 class="text-xs font-bold text-on-surface">YDS Bağlamında Akademik İfade Analizi</h3>
+            </div>
+            <span class="text-[10px] font-bold text-on-surface-variant bg-[#F4F6F5] px-2 py-0.5 rounded border border-outline-variant">
+              Sağlık Bilimleri
+            </span>
+          </div>
+
+          <div>
+            <span class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block mb-1.5">
+              Akademik Metin Parçacığı:
+            </span>
+            <p class="font-reading text-xs text-on-surface leading-relaxed p-3 rounded bg-[#F4F6F5] border border-outline-variant">
+              "Although the clinical dataset was permanently retracted from the medical archives, subsequent replication studies reaffirmed the foundational hypotheses."
+            </p>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="p-2.5 rounded bg-tertiary-container/30 border border-tertiary/20 text-on-surface">
+              <span class="font-bold text-tertiary flex items-center gap-1 mb-0.5">
+                <span class="material-symbols-outlined text-sm">check</span> Doğru Sentaktik Anlam:
+              </span>
+              <p class="text-[11px] text-on-surface-variant">
+                Klinik veri seti tıbbi arşivlerden kalıcı olarak geri çekilmesine rağmen, sonraki tekrarlama çalışmaları temel hipotezleri doğrulamıştır.
+              </p>
+            </div>
+
+            <div class="p-2.5 rounded bg-error-container/40 border border-error/20 text-on-surface">
+              <span class="font-bold text-error flex items-center gap-1 mb-0.5">
+                <span class="material-symbols-outlined text-sm">close</span> Çeldirici Tuzak:
+              </span>
+              <p class="text-[11px] text-on-surface-variant">
+                Kalıcı veri silinmesi nedeniyle sonraki çalışmaların iptal edildiği iddiası yanlıştır; zıtlık bağlacı olumlu çıktıyı korumuştur.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.7 KURUMSAL DESTEK VE VERİ SORUMLUSU İLETİŞİM KARTI -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-3">
+          <div class="flex items-center gap-2 text-xs font-bold text-on-surface">
+            <span class="material-symbols-outlined text-primary text-lg">support_agent</span>
+            <span>Kurumsal Destek ve Veri Sorumlusu</span>
+          </div>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Yanlışlıkla talep açtığınızı düşünüyorsanız veya lisans haklarınızı başka bir kuruma devretmek isterseniz danışma masasıyla temasa geçebilirsiniz.
+          </p>
+          <div class="pt-2 border-t border-outline-variant flex items-center justify-between text-xs">
+            <span class="font-semibold text-primary">destek@odakyds.gov.tr</span>
+            <span class="text-on-surface-variant">7/24 Çağrı</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 4. SİSTEM GÜVENLİK VE YAŞAM DÖNGÜSÜ MATRİSİ (Bento Grid) -->
+  <section class="max-w-7xl mx-auto px-8 py-8 border-t border-outline-variant mt-8 w-full">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Sistem Güvenlik Durum Matrisi</h3>
+        <p class="text-sm font-semibold text-on-surface">Silme protokolünün aşamalı teknik davranışları ve güvenlik teyit mekanizmaları</p>
+      </div>
+      <span class="text-xs bg-[#F4F6F5] text-on-surface-variant px-2.5 py-1 rounded font-medium border border-outline-variant">
+        ISO 27001 &amp; KVKK 12. Madde Uyumu
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Durum 01 -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-on-surface">DURUM 01</span>
+            <span class="w-2 h-2 rounded-full bg-primary"></span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Doğrulama Kodu Bekleniyor</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Kullanıcının kurumsal Hacettepe e-posta adresine 6 haneli şifreli güvenlik kodu gönderilmiştir. Süreç 180 saniyedir.
+          </p>
+        </div>
+        <span class="text-[11px] font-semibold text-primary mt-3 block flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">mark_email_unread</span> Kod Doğrulama Bekleniyor
+        </span>
+      </div>
+
+      <!-- Durum 02 -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-on-surface">DURUM 02</span>
+            <span class="w-2 h-2 rounded-full bg-error"></span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Hatalı Kod veya Eksik Teyit</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            3 defa art arda hatalı giriş durumunda kimlik doğrulama 15 dakika boyunca bloke edilir ve güvenlik günlüğü kaydedilir.
+          </p>
+        </div>
+        <span class="text-[11px] font-semibold text-error mt-3 block flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">block</span> Kalan Deneme Hakkı: 2
+        </span>
+      </div>
+
+      <!-- Durum 03 -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-on-surface">DURUM 03</span>
+            <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">30 Günlük Askı Süreci Başladı</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Hesap donduruldu. Oturum anında kapatıldı. Aday bu süreçte tekrar giriş yaparsa "Talebi İptal Et" ekranı ile karşılaşır.
+          </p>
+        </div>
+        <span class="text-[11px] font-semibold text-tertiary mt-3 block flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">undo</span> Cayma Mekanizması Açık
+        </span>
+      </div>
+
+      <!-- Durum 04 -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-on-surface">DURUM 04</span>
+            <span class="w-2 h-2 rounded-full bg-on-surface-variant"></span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Önbellek ve Yerel Mühürleme</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Tarayıcı yerel saklama alanı, oturum önbelleği ve geçici yetki simgeleri anında sıfırlanır; cihaz izole edilir.
+          </p>
+        </div>
+        <span class="text-[11px] font-semibold text-on-surface-variant mt-3 block flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">lock_reset</span> İstemci Temizlendi
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. KURUMSAL ALTBİLGİ (Footer) -->
+  <footer class="bg-surface border-t border-outline-variant mt-auto">
+    <div class="w-full py-6 px-8 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-on-surface-variant">
+      <div class="flex items-center gap-2">
+        <span class="font-display font-bold text-sm tracking-tight text-primary">ODAK</span>
+        <span class="text-outline-variant">•</span>
+        <span>© 2026 ODAK Platformu. ÖSYM Sınav Standartları ve Optik Uyum Modülü. Tüm hakları saklıdır.</span>
+      </div>
+      <nav class="flex flex-wrap items-center gap-6">
+        <a class="hover:text-primary transition-colors" href="#">Soru İtirazı</a>
+        <a class="hover:text-primary transition-colors" href="#">Sınav Yönergesi</a>
+        <a class="hover:text-primary transition-colors" href="#">Optik Form Doğrulama</a>
+        <a class="hover:text-primary transition-colors" href="#">Teknik Destek</a>
+      </nav>
+    </div>
+  </footer>
+
+
+
+</body></html>

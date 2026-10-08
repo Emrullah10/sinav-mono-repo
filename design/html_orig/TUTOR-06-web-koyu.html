@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ODAK | TUTOR-06 Soru İçi Öğretmen Danışmanı</title>
+<!-- Google Fonts: Figtree (Arayüz), Literata (Okuma/Soru/Sentaks), Bricolage Grotesque (Marka/Display) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Figtree:ital,wght@0,300..900;1,300..900&amp;family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..800&amp;family=Public+Sans:ital,wght@0,400..800;1,400..800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#0E171B',
+            surface: '#142127',
+            'surface-container': '#1B2B32',
+            'surface-container-high': '#16363A',
+            'on-surface': '#E4ECEC',
+            'on-surface-variant': '#A9B8BA',
+            outline: '#71838A',
+            'outline-variant': '#24343A',
+            primary: '#4DB6B0',
+            'on-primary': '#0E171B',
+            'primary-container': '#16363A',
+            'on-primary-container': '#87CDC8',
+            secondary: '#F0B43A',
+            'on-secondary': '#0E171B',
+            'secondary-container': '#3A2E12',
+            tertiary: '#4CC27D',
+            'tertiary-container': '#163524',
+            error: '#EE8A6E',
+            'error-container': '#3D211A',
+            'inverse-surface': '#E4ECEC',
+            'chart-1': '#04A19B',
+            'chart-2': '#7483E0',
+            'chart-3': '#C0851F',
+            'chart-4': '#C06099',
+          },
+          borderRadius: {
+            'xs': '4px',
+            'sm': '8px',
+            'DEFAULT': '12px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '24px',
+            'full': '9999px',
+          },
+          fontFamily: {
+            sans: ['Figtree', 'Public Sans', 'sans-serif'],
+            headline: ['Figtree', 'sans-serif'],
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            body: ['Figtree', 'DM Sans', 'sans-serif'],
+            reading: ['Literata', 'serif'],
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #0E171B;
+      color: #E4ECEC;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .font-reading {
+      font-family: 'Literata', serif;
+    }
+    /* Tabular figures for academic counts & timers */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Scrollbar customized for academic dark platform */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #142127;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #24343A;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4DB6B0;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-background text-on-surface flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- ========================================================================= -->
+<!-- 1. ÜST GEZİNME ÇUBUĞU (TopNavBar - 64px, JSON Kaynaklı & Masaüstü Hizalı) -->
+<!-- ========================================================================= -->
+<header class="fixed top-0 left-0 right-0 z-50 h-16 w-full bg-surface border-b border-outline-variant flex items-center justify-between px-6">
+<!-- Sol Bölüm: Marka Logosu & Sınav Seçici Çipi -->
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-2.5 group" href="#">
+<!-- Optik Form Motifli Daire Amblem -->
+<div class="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center bg-primary-container/40">
+<div class="w-4 h-4 rounded-full bg-primary group-hover:scale-110 transition-transform"></div>
+</div>
+<span class="font-display text-xl font-bold tracking-tight text-primary">ODAK</span>
+</a>
+<div class="h-5 w-px bg-outline-variant"></div>
+<!-- Sınav Seçici Açılır Çip -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant hover:border-outline text-xs text-on-surface transition-colors">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-medium text-on-surface">2026-YDS/2</span>
+<span class="text-on-surface-variant">·</span>
+<span class="text-on-surface-variant">22 Kasım 2026 Pazar</span>
+<span class="text-on-surface-variant">·</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold tabular-nums">52 Gün Kaldı</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant">expand_more</span>
+</button>
+</div>
+<!-- Orta Bölüm: Ana Navigasyon Sekmeleri (JSON: Bugün, Çalış, Deneme, Öğretmen, Ben) -->
+<!-- Aktif: 'Çalış' (Bu ekran soru içi çalışma ortamı olduğu için) -->
+<nav class="hidden md:flex items-center gap-8 h-full">
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm font-medium" href="#">Bugün</a>
+<a class="text-primary font-semibold text-sm border-b-2 border-primary h-full flex items-center pt-0.5" href="#">Çalış</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm font-medium" href="#">Deneme</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm font-medium" href="#">Öğretmen</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm font-medium" href="#">Ben</a>
+</nav>
+<!-- Sağ Bölüm: İlerleme Rozetleri, Soru Hakkı, Bildirim ve Profil -->
+<div class="flex items-center gap-3">
+<!-- 14 Gün Seri Rozeti (Safran dolgu, koyu ikon, açık zemin yazısı) -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container border border-outline-variant text-xs" title="Kesintisiz 14 gün günlük çalışma hedefi tamamlandı">
+<span class="w-5 h-5 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</span>
+<span class="font-bold tabular-nums text-on-surface">14 Gün Seri</span>
+</div>
+<!-- Kalan Soru Hakkı -->
+<div class="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container border border-outline-variant text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-primary">psychology</span>
+<span>Kalan Soru Hakkı:</span>
+<span class="font-bold text-on-surface tabular-nums">7 / 10</span>
+</div>
+<!-- Bildirim -->
+<button aria-label="Bildirimler" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined text-xl">notifications</span>
+<span class="w-2 h-2 rounded-full bg-secondary absolute top-1.5 right-1.5"></span>
+</button>
+<!-- Hedef & Profil Avatarı -->
+<div class="flex items-center gap-2 pl-2 border-l border-outline-variant">
+<div class="text-right hidden xl:block">
+<div class="text-xs font-semibold text-on-surface">Doç. Dr. Bilge Kağan Öztürk</div>
+<div class="text-[11px] text-primary font-medium tracking-tight">Hedef: 85+ Puan</div>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container border border-primary/40 flex items-center justify-center font-bold text-xs">
+          BK
+        </div>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- 2. ALT ÜST BİLGİ BANDI (Breadcrumb & Oturum / Danışman Durumu)            -->
+<!-- ========================================================================= -->
+<div class="mt-16 w-full bg-surface border-b border-outline-variant px-6 py-2.5 flex flex-wrap items-center justify-between gap-4">
+<!-- Breadcrumb & Soru Künyesi -->
+<div class="flex items-center gap-3 text-xs">
+<nav aria-label="Harita" class="flex items-center gap-1.5 text-on-surface-variant">
+<span>Çalışma Merkezi</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span>Soru Tipleri</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-on-surface font-medium">Cümle Tamamlama</span>
+</nav>
+<span class="text-outline-variant">|</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-primary font-semibold tabular-nums">Soru 24 / 80</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">Zorluk: C1 İleri Düzey</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-medium tabular-nums">Soru Değeri: 1,25 Puan</span>
+<div class="flex items-center gap-1 text-on-surface-variant tabular-nums ml-1">
+<span class="material-symbols-outlined text-xs">timer</span>
+<span>01:14</span>
+</div>
+</div>
+<!-- Sağ: Öğretmen Danışmanı Durum Butonları -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant text-xs">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-on-surface font-medium">Öğretmen Danışmanı Açık</span>
+</div>
+<button class="flex items-center gap-1 px-3 py-1 rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant text-xs text-on-surface font-medium transition-colors" id="toggle-width-btn">
+<span class="material-symbols-outlined text-xs">open_in_full</span>
+<span>Genişlet (520px)</span>
+</button>
+<button class="flex items-center gap-1 px-3 py-1 rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant text-xs text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-xs">visibility_off</span>
+<span>Danışmanı Gizle</span>
+</button>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- 3. ANA ÇALIŞMA ALANI (1440px Kapsayıcı, Sol: Soru & Röntgen, Sağ: Danışman)-->
+<!-- ========================================================================= -->
+<main class="w-full max-w-[1440px] mx-auto px-6 py-6 flex-1 flex flex-col gap-6">
+<!-- Grid Konteyneri: 8 Sütun (Soru) + 4 Sütun (Öğretmen Danışmanı 380px) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- ===================================================================== -->
+<!-- A) SOL SÜTUN (lg:col-span-8) - Soru Alanı, Seçenekler & Sentaktik Röntgen -->
+<!-- ===================================================================== -->
+<section class="lg:col-span-8 flex flex-col gap-5">
+<!-- Soru Kartı -->
+<article class="bg-surface rounded-lg border border-outline-variant p-6 flex flex-col gap-6">
+<!-- Soru Başlık & İşlem Satırı -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-4">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container font-bold text-sm flex items-center justify-center tabular-nums">24</span>
+<div>
+<h1 class="text-base font-semibold text-on-surface">Cümle Tamamlama</h1>
+<p class="text-xs text-on-surface-variant">Cümledeki boşluğa anlamca ve sentaktik olarak en uygun ifadeyi seçiniz.</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors" title="Soruyu İşaretle">
+<span class="material-symbols-outlined text-lg">bookmark</span>
+</button>
+<button class="p-2 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Yazı Boyutunu Değiştir">
+<span class="material-symbols-outlined text-lg">format_size</span>
+</button>
+<button class="p-2 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Hata Bildir">
+<span class="material-symbols-outlined text-lg">flag</span>
+</button>
+</div>
+</div>
+<!-- Soru Metni (Literata Serif 17px, 1.6 Satır Yüksekliği) -->
+<div class="font-reading text-[17px] leading-[27px] text-on-surface max-w-[680px]">
+            Although the initial clinical trial results appeared promising, the subsequent research failed to replicate the findings; 
+            <span class="inline-flex items-center justify-center px-4 py-0.5 mx-1.5 border-b-2 border-primary bg-primary-container/30 text-primary font-semibold rounded-xs tabular-nums">
+              ________
+            </span>, 
+            regulatory authorities decided to suspend further distribution pending rigorous safety audits.
+          </div>
+<!-- Seçenekler (Tam Daire A-E Optik Baloncuklar, min 44px dokunma boyutu) -->
+<div class="flex flex-col gap-3 max-w-[680px]">
+<!-- Seçenek A (Çeldirici) -->
+<label class="group flex items-center justify-between p-3.5 rounded-DEFAULT bg-surface-container border border-outline-variant hover:border-outline cursor-pointer transition-colors min-h-[56px]">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full border border-outline text-on-surface-variant flex items-center justify-center font-bold text-xs">
+                  A
+                </div>
+<span class="font-reading text-[17px] text-on-surface">nevertheless</span>
+</div>
+<span class="text-xs text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-error">trending_down</span>
+                Çeldirici (%38 yöneldi)
+              </span>
+</label>
+<!-- Seçenek B (DOĞRU İŞARETLENEN - Çift Belirteç: Yeşil Zemin + Onay İkonu + Puan) -->
+<div class="p-3.5 rounded-DEFAULT bg-tertiary-container border-2 border-tertiary text-on-surface min-h-[56px] flex items-center justify-between">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full bg-tertiary text-background flex items-center justify-center font-bold text-xs" style="font-variation-settings: 'FILL' 1;">
+<span class="material-symbols-outlined text-sm font-black">check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-reading text-[17px] font-semibold text-on-surface">consequently</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-tertiary/20 text-tertiary font-bold text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">verified</span>
+                  Doğru Yanıt · +1,25 Puan
+                </span>
+<span class="text-xs text-on-surface-variant hidden sm:inline">(Sebep-Sonuç)</span>
+</div>
+</div>
+<!-- Seçenek C -->
+<label class="group flex items-center justify-between p-3.5 rounded-DEFAULT bg-surface-container border border-outline-variant hover:border-outline cursor-pointer transition-colors min-h-[56px]">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full border border-outline text-on-surface-variant flex items-center justify-center font-bold text-xs">
+                  C
+                </div>
+<span class="font-reading text-[17px] text-on-surface">moreover</span>
+</div>
+<span class="text-xs text-on-surface-variant opacity-60">Ek bilgi bağlacı</span>
+</label>
+<!-- Seçenek D -->
+<label class="group flex items-center justify-between p-3.5 rounded-DEFAULT bg-surface-container border border-outline-variant hover:border-outline cursor-pointer transition-colors min-h-[56px]">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full border border-outline text-on-surface-variant flex items-center justify-center font-bold text-xs">
+                  D
+                </div>
+<span class="font-reading text-[17px] text-on-surface">in contrast</span>
+</div>
+<span class="text-xs text-on-surface-variant opacity-60">Zıtlık bağlacı</span>
+</label>
+<!-- Seçenek E -->
+<label class="group flex items-center justify-between p-3.5 rounded-DEFAULT bg-surface-container border border-outline-variant hover:border-outline cursor-pointer transition-colors min-h-[56px]">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full border border-outline text-on-surface-variant flex items-center justify-center font-bold text-xs">
+                  E
+                </div>
+<span class="font-reading text-[17px] text-on-surface">otherwise</span>
+</div>
+<span class="text-xs text-on-surface-variant opacity-60">Koşul / aksi takdirde</span>
+</label>
+</div>
+<!-- ================================================================= -->
+<!-- CÜMLE RÖNTGENİ VE SENTAKTİK AYRIŞTIRMA BLOĞU                      -->
+<!-- ================================================================= -->
+<div class="mt-2 bg-surface-container rounded-DEFAULT border border-outline-variant p-4 flex flex-col gap-3.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">biotech</span>
+<h2 class="text-sm font-bold text-on-surface tracking-tight">Cümle Röntgeni ve Sentaktik Ayrıştırma</h2>
+</div>
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary-container text-on-primary-container">
+                ÖSYM Sentaks Çözümlemesi
+              </span>
+</div>
+<!-- Sentaktik Katmanlar -->
+<div class="grid grid-cols-1 gap-2 text-xs">
+<!-- 1. Katman -->
+<div class="p-2.5 rounded-sm bg-surface border-l-4 border-secondary border-t border-r border-b border-outline-variant flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-semibold text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    1. Katman: Yan Cümlecik (Bağımlı Zıtlık Zarf Tümleci)
+                  </span>
+<span class="text-[11px] text-on-surface-variant">Giriş Şartı</span>
+</div>
+<p class="font-reading text-sm text-on-surface italic">
+                  "Although the initial clinical trial results appeared promising,"
+                </p>
+<span class="text-[11px] text-on-surface-variant">İlk klinik deneyler ümit verici görünmesine rağmen...</span>
+</div>
+<!-- 2. Katman -->
+<div class="p-2.5 rounded-sm bg-surface border-l-4 border-error border-t border-r border-b border-outline-variant flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-semibold text-error flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                    2. Katman: Ana Cümle (Olumsuz Realite)
+                  </span>
+<span class="text-[11px] text-on-surface-variant">Kırılma Noktası</span>
+</div>
+<p class="font-reading text-sm text-on-surface italic">
+                  "...the subsequent research failed to replicate the findings;"
+                </p>
+<span class="text-[11px] text-on-surface-variant">...sonraki araştırmalar bulguları tekrarlamakta başarısız oldu (Noktalı virgül ile bitti).</span>
+</div>
+<!-- 3. Katman -->
+<div class="p-2.5 rounded-sm bg-surface border-l-4 border-tertiary border-t border-r border-b border-outline-variant flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-semibold text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                    3. Katman: Mantıksal Netice (Bağımsız Sonuç Hükmü)
+                  </span>
+<span class="text-[11px] text-on-surface-variant">Gereken Bağlaç: Sonuç Bildiren Geçiş Zarfı</span>
+</div>
+<p class="font-reading text-sm text-on-surface italic">
+                  "[<strong class="text-tertiary">consequently</strong>], regulatory authorities decided to suspend further distribution..."
+                </p>
+<span class="text-[11px] text-on-surface-variant">...bunun bir sonucu olarak denetleyici otoriteler dağıtımı askıya alma kararı aldı.</span>
+</div>
+</div>
+<!-- ÖSYM Sınav Taktik İpucu -->
+<div class="p-3 rounded-sm bg-surface-container-high border border-primary/30 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-base mt-0.5">lightbulb</span>
+<div class="text-xs flex flex-col gap-0.5">
+<span class="font-bold text-on-primary-container">ÖSYM Taktik Kuralı (Noktalı Virgül + Virgül Yapısı):</span>
+<p class="text-on-surface-variant leading-relaxed">
+                  İki bağımsız cümle noktalı virgül (;) ve virgül (,) ile ayrıldığında araya <strong>geçiş zarfı (conjunctive adverb)</strong> gelmelidir. Cümle başında <em class="text-on-surface">Although</em> kullanıldığı için zıtlık zaten kurulmuştur; ikinci bir <em class="text-on-surface">nevertheless</em> anlatım bozukluğu yaratır. İhtiyaç duyulan ilişki başarısızlığın getirdiği <strong>sebep-sonuç</strong> bağıntısıdır.
+                </p>
+</div>
+</div>
+</div>
+<!-- Alt İşlem ve Gezinme Çubuğu -->
+<div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-outline-variant">
+<div class="flex items-center gap-2">
+<button class="h-11 px-4 rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface text-sm font-semibold flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-base">arrow_back</span>
+<span>Önceki Soru (23)</span>
+</button>
+<button class="h-11 px-4 rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface-variant hover:text-on-surface text-sm font-medium flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-base text-secondary">star</span>
+<span>Hata Defterine Ekle</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<button class="h-11 px-4 rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant text-xs text-primary font-semibold flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-sm">fullscreen</span>
+<span>Cümle Röntgenini Genişlet</span>
+</button>
+<!-- Birincil Aksiyon Butonu (Fiille başlar: 'Devam et') -->
+<button class="h-11 px-6 rounded-DEFAULT bg-primary hover:bg-[#5fc5be] text-on-primary font-bold text-sm flex items-center gap-2 transition-transform active:scale-98">
+<span>Sonraki Soruya Geç (25)</span>
+<span class="material-symbols-outlined text-base font-bold">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+</section>
+<!-- ===================================================================== -->
+<!-- B) SAĞ SÜTUN (lg:col-span-4) - Soru İçi Öğretmen Danışmanı (TUTOR-06)   -->
+<!-- ===================================================================== -->
+<aside class="lg:col-span-4 flex flex-col gap-4" id="tutor-panel">
+<div class="bg-surface rounded-lg border border-outline-variant p-4 flex flex-col gap-4 sticky top-24">
+<!-- Öğretmen Kartı Üst Başlığı -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<div class="flex items-center gap-2.5">
+<div class="relative">
+<div class="w-10 h-10 rounded-full bg-primary-container text-primary font-bold flex items-center justify-center border border-primary/30 text-sm">
+                  SY
+                </div>
+<span class="w-3 h-3 rounded-full bg-tertiary border-2 border-surface absolute -bottom-0.5 -right-0.5" title="Öğretmen Çevrim İçi"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<h3 class="text-sm font-bold text-on-surface">Doç. Dr. Selin Yılmaz</h3>
+<span class="text-[10px] px-1.5 py-0.2 rounded bg-tertiary-container text-tertiary font-bold">Çevrim İçi</span>
+</div>
+<p class="text-xs text-on-surface-variant">Soru İçi Öğretmen Danışmanı</p>
+</div>
+</div>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Danışman Seçenekleri">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</div>
+<!-- Otomatik Bağlam Çipi -->
+<div class="px-3 py-1.5 rounded-sm bg-surface-container border border-outline-variant flex items-center justify-between text-xs">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-xs text-primary">auto_awesome</span>
+<span class="font-medium">Otomatik Bağlam: Soru 24 · Cümle Tamamlama</span>
+</div>
+<span class="text-[11px] text-on-surface-variant">C1 Düzey</span>
+</div>
+<!-- 4 Hazır Pedagojik Soru Çipi (Grid 2x2) -->
+<div class="flex flex-col gap-1.5">
+<span class="text-[11px] font-bold text-on-surface-variant tracking-wider">HIZLI PEDAGOJİK SORULAR</span>
+<div class="grid grid-cols-2 gap-2 text-xs">
+<button class="p-2 text-left rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface flex items-center justify-between transition-colors">
+<span class="font-medium">1. Neden B?</span>
+<span class="material-symbols-outlined text-xs text-primary">arrow_forward</span>
+</button>
+<button class="p-2 text-left rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface flex items-center justify-between transition-colors">
+<span class="font-medium">2. C neden yanlış?</span>
+<span class="material-symbols-outlined text-xs text-primary">arrow_forward</span>
+</button>
+<button class="p-2 text-left rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface flex items-center justify-between transition-colors">
+<span class="font-medium">3. Benzer soru ver</span>
+<span class="material-symbols-outlined text-xs text-primary">quiz</span>
+</button>
+<button class="p-2 text-left rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface flex items-center justify-between transition-colors">
+<span class="font-medium">4. Kuralı özetle</span>
+<span class="material-symbols-outlined text-xs text-primary">summarize</span>
+</button>
+</div>
+</div>
+<!-- Sohbet & Açıklama Akışı (Pedagojik Sokratik Yanıt) -->
+<div class="flex flex-col gap-3 max-h-[360px] overflow-y-auto pr-1">
+<!-- Öğrenci Sorusu (Aday BK) -->
+<div class="flex flex-col items-end gap-1">
+<div class="max-w-[85%] p-3 rounded-lg bg-surface-container border border-outline-variant text-xs text-on-surface">
+                Neden B (consequently) doğru yanıt oldu? Cümle başında 'Although' varken kafam karıştı, nevertheless düşünmüştüm.
+              </div>
+<span class="text-[10px] text-on-surface-variant tabular-nums mr-1">14:32 · Siz</span>
+</div>
+<!-- Öğretmen Yanıtı (Doç. Dr. Selin Yılmaz) -->
+<div class="flex flex-col items-start gap-1">
+<div class="p-3.5 rounded-lg bg-surface-container border-l-2 border-primary border-t border-r border-b border-outline-variant text-xs text-on-surface flex flex-col gap-2">
+<div class="flex items-center gap-1.5 font-bold text-primary">
+<span class="material-symbols-outlined text-sm">school</span>
+<span>Öğretmen Değerlendirmesi:</span>
+</div>
+<p class="leading-relaxed">
+                  Harika bir noktaya değindin Bilge! Birçok aday tam burada <strong class="text-error font-semibold">çeldirici A şıkkına (nevertheless)</strong> düşüyor.
+                </p>
+<p class="leading-relaxed">
+                  Cümlenin ilk kısmı <em class="text-on-surface">"Although trial results appeared promising"</em> ifadesi ile zıtlığı zaten kapattı. Ana cümlenin ardından noktalı virgül konmuş. Yani klinik başarısızlık yaşandı; <strong>peki yetkililer ne yaptı?</strong>
+</p>
+<!-- Sentaktik Formül Şeması -->
+<div class="p-2 rounded bg-surface border border-outline-variant font-mono text-[11px] text-on-primary-container flex flex-col gap-0.5">
+<span class="text-on-surface-variant font-bold">[Zıtlık (Although)] + [Olumsuz Durum]</span>
+<span class="text-primary font-bold">; consequently ,</span>
+<span class="text-tertiary font-bold">[Sonuç: Dağıtımın Durdurulması]</span>
+</div>
+<p class="leading-relaxed">
+                  Dağıtımın durdurulması, başarısızlığın <strong>mantıksal sonucudur</strong>. Bu yüzden sebep-sonuç bağlacı olan <strong class="text-tertiary font-semibold">consequently</strong> şarttır. İki zıtlık bağlacı peş peşe gelirse mantık çöker!
+                </p>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between text-[11px]">
+<span class="text-on-surface-variant">Bu açıklama netleşti mi?</span>
+<div class="flex items-center gap-2">
+<button class="px-2 py-0.5 rounded bg-surface hover:bg-surface-container text-tertiary border border-outline-variant flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs">thumb_up</span> Evet
+                    </button>
+<button class="px-2 py-0.5 rounded bg-surface hover:bg-surface-container text-on-surface-variant border border-outline-variant flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs">thumb_down</span> Hayır
+                    </button>
+</div>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant tabular-nums ml-1">14:33 · Selin Hoca</span>
+</div>
+</div>
+<!-- Soru Sorma Giriş Alanı -->
+<div class="flex flex-col gap-2 pt-2 border-t border-outline-variant">
+<div class="relative">
+<textarea class="w-full rounded-sm bg-surface-container border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-2.5 text-xs text-on-surface placeholder:text-on-surface-variant resize-none outline-none font-sans" placeholder="Hocaya bu soruyla ilgili ek soru sorun..." rows="2"></textarea>
+<button class="absolute right-2 bottom-2 p-1 text-on-surface-variant hover:text-primary transition-colors" title="Sesli Soru Sor">
+<span class="material-symbols-outlined text-sm">mic</span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[11px] text-on-surface-variant">
+                Kalan Soru Hakkı: <strong class="text-on-surface tabular-nums">7 / 10</strong>
+</span>
+<button class="h-8 px-4 rounded-sm bg-primary hover:bg-[#5fc5be] text-on-primary font-bold text-xs flex items-center gap-1.5 transition-colors">
+<span>Sor</span>
+<span class="material-symbols-outlined text-xs">send</span>
+</button>
+</div>
+</div>
+<!-- Hap Not Kartı (YDS Cümle Tamamlama Kuralı #38) -->
+<div class="p-3 rounded-sm bg-surface-container border border-outline-variant flex items-start gap-2.5">
+<span class="w-6 h-6 rounded-full bg-secondary-container text-secondary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</span>
+<div class="flex flex-col text-xs">
+<span class="font-bold text-on-surface">Hap Not (#38 · Geçiş Zarfları)</span>
+<p class="text-on-surface-variant leading-normal mt-0.5">
+                Noktalı virgül (;) ardından gelen Therefore, Thus, Consequently, Hence yapıları mutlak sonuç bildirir.
+              </p>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- ========================================================================= -->
+<!-- 4. ALT SİSTEM VE PEDAGOJİK GÜVENCE MATRİSİ (4 Kartlık Bento Grid)         -->
+<!-- ========================================================================= -->
+<section class="mt-4 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-base font-bold text-on-surface">Öğretmen Danışmanı Pedagojik Altyapısı</h2>
+<p class="text-xs text-on-surface-variant">Soru çözme esnasında bilişsel yükü azaltan dört temel öğretmen danışmanlık modu.</p>
+</div>
+<span class="text-xs text-primary font-semibold">TUTOR-06 Mimari Şeması</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Kart 1: Otomatik Bağlam Algılama -->
+<div class="p-4 rounded-DEFAULT bg-surface border border-outline-variant flex flex-col gap-2">
+<div class="w-8 h-8 rounded-full bg-primary-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-base">sensors</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface mt-1">Otomatik Bağlam Algılama</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Soru açıldığı anda kök metin, 5 şık ve ÖSYM geçmiş çeldirici yoğunlukları danışman hafızasına aktarılır.
+          </p>
+<div class="mt-auto pt-2 flex items-center gap-1.5 text-[11px] text-tertiary font-semibold">
+<span class="material-symbols-outlined text-xs">check_circle</span>
+<span>Aktif &amp; Hafızada</span>
+</div>
+</div>
+<!-- Kart 2: 4 Hazır Pedagojik Çip -->
+<div class="p-4 rounded-DEFAULT bg-surface border border-outline-variant flex flex-col gap-2">
+<div class="w-8 h-8 rounded-full bg-primary-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-base">touch_app</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface mt-1">4 Hazır Pedagojik Soru Çipi</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Metin yazma gereği olmadan tek tıkla doğru yanıt analizi, çeldirici eleme ve benzer kalıp sorulara anında erişim.
+          </p>
+<div class="mt-auto pt-2 flex items-center gap-1.5 text-[11px] text-primary font-semibold">
+<span class="material-symbols-outlined text-xs">bolt</span>
+<span>1 Tıkla Sokratik Yanıt</span>
+</div>
+</div>
+<!-- Kart 3: Panel Genişletme & Odak -->
+<div class="p-4 rounded-DEFAULT bg-surface border border-outline-variant flex flex-col gap-2">
+<div class="w-8 h-8 rounded-full bg-primary-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-base">fit_screen</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface mt-1">Panel Genişletme &amp; Odak</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            380px standart genişlikten 520px derin analiz moduna geçiş. Soru alanı ve öğretmen paneli dengeli daralır.
+          </p>
+<div class="mt-auto pt-2 flex items-center gap-1.5 text-[11px] text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-xs">aspect_ratio</span>
+<span>380px ↔ 520px Dinamik</span>
+</div>
+</div>
+<!-- Kart 4: Günlük Kota & Güvenli Bellek -->
+<div class="p-4 rounded-DEFAULT bg-surface border border-outline-variant flex flex-col gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface mt-1">Kota ve Pedagojik Güvenlik</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Günlük 10 soru hakkı ile adayın kendi muhakeme yeteneği korunur; ezbercilik değil sentaktik kavrayış hedeflenir.
+          </p>
+<div class="mt-auto pt-2 flex items-center gap-1.5 text-[11px] text-on-surface font-semibold">
+<span class="tabular-nums">7 / 10 Soru Kredisi</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ========================================================================= -->
+<!-- 5. KURUMSAL ALTBİLGİ (Footer - Sade, Koyu & ÖSYM Esasları)                -->
+<!-- ========================================================================= -->
+<footer class="mt-12 bg-surface border-t border-outline-variant py-8 px-6">
+<div class="max-w-[1440px] mx-auto flex flex-col gap-6">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-7 h-7 rounded-full border-2 border-primary flex items-center justify-center bg-primary-container/40">
+<div class="w-3.5 h-3.5 rounded-full bg-primary"></div>
+</div>
+<span class="font-display text-lg font-bold text-primary">ODAK</span>
+<span class="text-xs text-on-surface-variant">· Akademik YDS Hazırlık ve Pedagojik Soru Çözüm Platformu</span>
+</div>
+<!-- ÖSYM Puanlama Esası Bildirimi -->
+<div class="text-xs text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-primary">info</span>
+<span>ÖSYM YDS Değerlendirme Esası: <strong>80 Soru · 180 Dakika · 1 Doğru = 1,25 Puan</strong> (Yanlışlar doğru puanı etkilemez).</span>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-on-surface-variant">
+<p>© 2026 ODAK Platformu. Tüm hakları saklıdır. Sınav: 2026-YDS/2 (22 Kasım 2026).</p>
+<div class="flex items-center gap-6">
+<a class="hover:text-primary transition-colors" href="#">Sınav Takvimi</a>
+<a class="hover:text-primary transition-colors" href="#">ÖSYM Kılavuzu</a>
+<a class="hover:text-primary transition-colors" href="#">Gizlilik Politikası</a>
+<a class="hover:text-primary transition-colors" href="#">Kullanım Koşulları</a>
+<a class="hover:text-primary transition-colors" href="#">Destek ve İletişim</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- ========================================================================= -->
+<!-- Mikro-Etkileşim Scripti: Panel Boyutunu Ayarlama (380px ↔ 520px)           -->
+<!-- ========================================================================= -->
+<script>
+    const toggleBtn = document.getElementById('toggle-width-btn');
+    const tutorPanel = document.getElementById('tutor-panel');
+    let isExpanded = false;
+
+    if (toggleBtn && tutorPanel) {
+      toggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        if (isExpanded) {
+          tutorPanel.classList.remove('lg:col-span-4');
+          tutorPanel.classList.add('lg:col-span-5');
+          tutorPanel.previousElementSibling.classList.remove('lg:col-span-8');
+          tutorPanel.previousElementSibling.classList.add('lg:col-span-7');
+          toggleBtn.innerHTML = '<span class="material-symbols-outlined text-xs">close_fullscreen</span><span>Standart (380px)</span>';
+        } else {
+          tutorPanel.classList.remove('lg:col-span-5');
+          tutorPanel.classList.add('lg:col-span-4');
+          tutorPanel.previousElementSibling.classList.remove('lg:col-span-7');
+          tutorPanel.previousElementSibling.classList.add('lg:col-span-8');
+          toggleBtn.innerHTML = '<span class="material-symbols-outlined text-xs">open_in_full</span><span>Genişlet (520px)</span>';
+        }
+      });
+    }
+  </script>
+</body></html>

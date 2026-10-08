@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FND-01 · Renk Paleti ve Token Sistemi | ODAK Tasarım Sistemi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&amp;family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Figtree', 'sans-serif'],
+            serif: ['Literata', 'serif'],
+          },
+          colors: {
+            odak: {
+              petrol: '#0E6A6E',
+              petrolLight: '#4DB6B0',
+              safran: '#E9A514',
+              safranHover: '#F0B43A',
+              correct: '#1F7A45',
+              correctLight: '#4CC27D',
+              incorrect: '#A33D27',
+              incorrectLight: '#EE8A6E',
+              // Koyu tema zemin ve yüzey nötrleri
+              bg: '#0E171B',
+              surface: '#142127',
+              surfaceAlt: '#1B2C34',
+              border: '#24343A',
+              text: '#E4ECEC',
+              textMuted: '#A9B8BA',
+              textDim: '#708386'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #0E171B;
+      color: #E4ECEC;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .swatch-box {
+      min-height: 84px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .swatch-box:hover {
+      transform: translateY(-2px);
+    }
+    /* Dokunma hedefi min 44px */
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;display=swap" rel="stylesheet"><style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Figtree, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.sticky{position:sticky}.top-0{top:0px}.z-30{z-index:30}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:0.5rem}.mb-8{margin-bottom:2rem}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-1\.5{margin-top:0.375rem}.mt-2{margin-top:0.5rem}.mt-auto{margin-top:auto}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-16{height:4rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-3\.5{height:0.875rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-8{height:2rem}.h-9{height:2.25rem}.min-h-screen{min-height:100vh}.w-2{width:0.5rem}.w-2\.5{width:0.625rem}.w-3\.5{width:0.875rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-fit{width:-moz-fit-content;width:fit-content}.w-full{width:100%}.w-px{width:1px}.max-w-3xl{max-width:48rem}.max-w-\[1440px\]{max-width:1440px}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-\[\#24343A\] > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(36 52 58 / var(--tw-divide-opacity, 1))}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:0.25rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-t{border-top-width:1px}.border-\[\#24343A\]{--tw-border-opacity:1;border-color:rgb(36 52 58 / var(--tw-border-opacity, 1))}.border-\[\#4CC27D\]{--tw-border-opacity:1;border-color:rgb(76 194 125 / var(--tw-border-opacity, 1))}.border-\[\#4DB6B0\]{--tw-border-opacity:1;border-color:rgb(77 182 176 / var(--tw-border-opacity, 1))}.border-\[\#EE8A6E\]{--tw-border-opacity:1;border-color:rgb(238 138 110 / var(--tw-border-opacity, 1))}.bg-\[\#0E171B\]{--tw-bg-opacity:1;background-color:rgb(14 23 27 / var(--tw-bg-opacity, 1))}.bg-\[\#142127\]{--tw-bg-opacity:1;background-color:rgb(20 33 39 / var(--tw-bg-opacity, 1))}.bg-\[\#164028\]{--tw-bg-opacity:1;background-color:rgb(22 64 40 / var(--tw-bg-opacity, 1))}.bg-\[\#164028\]\/40{background-color:rgb(22 64 40 / 0.4)}.bg-\[\#1B2C34\]{--tw-bg-opacity:1;background-color:rgb(27 44 52 / var(--tw-bg-opacity, 1))}.bg-\[\#24343A\]{--tw-bg-opacity:1;background-color:rgb(36 52 58 / var(--tw-bg-opacity, 1))}.bg-\[\#4A1A12\]{--tw-bg-opacity:1;background-color:rgb(74 26 18 / var(--tw-bg-opacity, 1))}.bg-\[\#4A1A12\]\/40{background-color:rgb(74 26 18 / 0.4)}.bg-\[\#4CC27D\]{--tw-bg-opacity:1;background-color:rgb(76 194 125 / var(--tw-bg-opacity, 1))}.bg-\[\#4DB6B0\]{--tw-bg-opacity:1;background-color:rgb(77 182 176 / var(--tw-bg-opacity, 1))}.bg-\[\#708386\]{--tw-bg-opacity:1;background-color:rgb(112 131 134 / var(--tw-bg-opacity, 1))}.bg-\[\#A9B8BA\]{--tw-bg-opacity:1;background-color:rgb(169 184 186 / var(--tw-bg-opacity, 1))}.bg-\[\#E4ECEC\]{--tw-bg-opacity:1;background-color:rgb(228 236 236 / var(--tw-bg-opacity, 1))}.bg-\[\#E9A514\]{--tw-bg-opacity:1;background-color:rgb(233 165 20 / var(--tw-bg-opacity, 1))}.bg-\[\#EE8A6E\]{--tw-bg-opacity:1;background-color:rgb(238 138 110 / var(--tw-bg-opacity, 1))}.bg-\[\#FFFFFF\]{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-3{padding-bottom:0.75rem}.pb-6{padding-bottom:1.5rem}.pl-2{padding-left:0.5rem}.pt-3{padding-top:0.75rem}.text-left{text-align:left}.text-right{text-align:right}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-sans{font-family:Figtree, sans-serif}.font-serif{font-family:Literata, serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[9px\]{font-size:9px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-normal{line-height:1.5}.leading-relaxed{line-height:1.625}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-\[\#0E171B\]{--tw-text-opacity:1;color:rgb(14 23 27 / var(--tw-text-opacity, 1))}.text-\[\#24343A\]{--tw-text-opacity:1;color:rgb(36 52 58 / var(--tw-text-opacity, 1))}.text-\[\#46565C\]{--tw-text-opacity:1;color:rgb(70 86 92 / var(--tw-text-opacity, 1))}.text-\[\#4CC27D\]{--tw-text-opacity:1;color:rgb(76 194 125 / var(--tw-text-opacity, 1))}.text-\[\#4DB6B0\]{--tw-text-opacity:1;color:rgb(77 182 176 / var(--tw-text-opacity, 1))}.text-\[\#A9B8BA\]{--tw-text-opacity:1;color:rgb(169 184 186 / var(--tw-text-opacity, 1))}.text-\[\#E4ECEC\]{--tw-text-opacity:1;color:rgb(228 236 236 / var(--tw-text-opacity, 1))}.text-\[\#E9A514\]{--tw-text-opacity:1;color:rgb(233 165 20 / var(--tw-text-opacity, 1))}.text-\[\#EE8A6E\]{--tw-text-opacity:1;color:rgb(238 138 110 / var(--tw-text-opacity, 1))}.opacity-75{opacity:0.75}.ring-2{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-\[\#4DB6B0\]{--tw-ring-opacity:1;--tw-ring-color:rgb(77 182 176 / var(--tw-ring-opacity, 1))}.ring-\[\#E4ECEC\]{--tw-ring-opacity:1;--tw-ring-color:rgb(228 236 236 / var(--tw-ring-opacity, 1))}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:border-\[\#4DB6B0\]:hover{--tw-border-opacity:1;border-color:rgb(77 182 176 / var(--tw-border-opacity, 1))}.hover\:bg-\[\#1B2C34\]:hover{--tw-bg-opacity:1;background-color:rgb(27 44 52 / var(--tw-bg-opacity, 1))}.hover\:bg-\[\#1B2C34\]\/50:hover{background-color:rgb(27 44 52 / 0.5)}.hover\:bg-\[\#24343A\]:hover{--tw-bg-opacity:1;background-color:rgb(36 52 58 / var(--tw-bg-opacity, 1))}.hover\:bg-\[\#F0B43A\]:hover{--tw-bg-opacity:1;background-color:rgb(240 180 58 / var(--tw-bg-opacity, 1))}.hover\:text-\[\#E4ECEC\]:hover{--tw-text-opacity:1;color:rgb(228 236 236 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:block{display:block}.sm\:grid-cols-10{grid-template-columns:repeat(10, minmax(0, 1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}}@media (min-width: 768px){.md\:flex{display:flex}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-end{align-items:flex-end}}@media (min-width: 1024px){.lg\:col-span-2{grid-column:span 2 / span 2}.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}</style></head>
+<body class="min-h-screen flex flex-col bg-[#0E171B] text-[#E4ECEC]">
+
+  <!-- Üst Gezinme Çubuğu (Top Bar) -->
+  <header class="w-full bg-[#142127] border-b border-[#24343A] sticky top-0 z-30">
+    <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
+      
+      <!-- Sol: Marka ve Sistem Başlığı -->
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl font-bold tracking-wider text-[#4DB6B0]">ODAK</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-[#1B2C34] text-[#A9B8BA] border border-[#24343A]">Tasarım Sistemi</span>
+        </div>
+        
+        <span class="text-[#24343A]">|</span>
+
+        <!-- Sınav Seçici ve Çip (Platform birden çok sınavı destekler) -->
+        <div class="flex items-center gap-2">
+          <div class="relative inline-flex items-center">
+            <button type="button" class="touch-target px-3 py-1.5 rounded bg-[#1B2C34] hover:bg-[#24343A] border border-[#24343A] text-xs font-medium text-[#E4ECEC] flex items-center gap-1.5 transition-colors">
+              <span class="material-symbols-outlined text-sm text-[#4DB6B0]">school</span>
+              <span>YDS / YÖKDİL / e-YDS</span>
+              <span class="material-symbols-outlined text-xs text-[#A9B8BA]">expand_more</span>
+            </button>
+          </div>
+          <!-- Etkin Sınav Küçük Çipi -->
+          <div class="px-2.5 py-1 rounded bg-[#0E171B] border border-[#24343A] flex items-center gap-2 text-xs">
+            <span class="w-2 h-2 rounded-full bg-[#4DB6B0]"></span>
+            <span class="font-medium text-[#E4ECEC]">YDS · 22 Kasım</span>
+            <span class="text-[#A9B8BA] border-l border-[#24343A] pl-2">52 Gün Kaldı</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orta: Modül Gezintisi -->
+      <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+        <a href="#" class="touch-target px-3 py-1.5 rounded text-[#4DB6B0] bg-[#1B2C34] border border-[#24343A]">FND-01 Renkler</a>
+        <a href="#" class="touch-target px-3 py-1.5 rounded text-[#A9B8BA] hover:text-[#E4ECEC] hover:bg-[#1B2C34] transition-colors">FND-02 Tipografi</a>
+        <a href="#" class="touch-target px-3 py-1.5 rounded text-[#A9B8BA] hover:text-[#E4ECEC] hover:bg-[#1B2C34] transition-colors">FND-03 Boşluk &amp; Grid</a>
+        <a href="#" class="touch-target px-3 py-1.5 rounded text-[#A9B8BA] hover:text-[#E4ECEC] hover:bg-[#1B2C34] transition-colors">FND-04 Bileşenler</a>
+      </nav>
+
+      <!-- Sağ: Bilgi & Durum -->
+      <div class="flex items-center gap-3">
+        <div class="text-right hidden sm:block">
+          <div class="text-xs font-medium text-[#E4ECEC]">2 Ekim 2026 Cuma</div>
+          <div class="text-[11px] text-[#A9B8BA]">Başvuru Dönemi: 30 Eylül–8 Ekim</div>
+        </div>
+        <div class="w-px h-6 bg-[#24343A]"></div>
+        <div class="flex items-center gap-1">
+          <button class="touch-target p-2 rounded bg-[#1B2C34] hover:bg-[#24343A] text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors" title="Koyu Tema Aktif">
+            <span class="material-symbols-outlined text-sm">dark_mode</span>
+          </button>
+          <div class="flex items-center gap-2 pl-2">
+            <div class="w-8 h-8 rounded-full bg-[#1B2C34] border border-[#4DB6B0] flex items-center justify-center text-xs font-bold text-[#4DB6B0]">
+              OD
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Ana İçerik Alanı -->
+  <main class="flex-1 max-w-[1440px] w-full mx-auto px-6 py-8 flex flex-col gap-10">
+
+    <!-- Sayfa Başlığı ve Meta Kartı -->
+    <div class="border-b border-[#24343A] pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-semibold text-[#4DB6B0] uppercase tracking-wider mb-2">
+          <span>Temeller Kılavuzu</span>
+          <span>•</span>
+          <span>FND-01</span>
+        </div>
+        <h1 class="text-3xl font-bold tracking-tight text-[#E4ECEC]">Renk Sistemi ve Token Mimarisi</h1>
+        <p class="text-sm text-[#A9B8BA] mt-1.5 max-w-3xl">
+          Akademik sınav ortamı için sakin, odaklı ve dikkati dağıtmayan koyu tema renk hiyerarşisi. Gradyansız, abartısız ve yüksek kontrastlı okuma standartları.
+        </p>
+      </div>
+
+      <!-- Kural Hatırlatıcı Rozetler -->
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="px-3 py-1.5 rounded bg-[#142127] border border-[#24343A] text-xs flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#4DB6B0]"></span>
+          <span class="text-[#A9B8BA]">Ana Renk:</span>
+          <span class="font-mono text-[#E4ECEC]">#4DB6B0 (Koyu)</span>
+        </div>
+        <div class="px-3 py-1.5 rounded bg-[#142127] border border-[#24343A] text-xs flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#E9A514]"></span>
+          <span class="text-[#A9B8BA]">Safran:</span>
+          <span class="text-[#E4ECEC]">Yalnızca Dolgu/İkon</span>
+        </div>
+        <div class="px-3 py-1.5 rounded bg-[#142127] border border-[#24343A] text-xs flex items-center gap-1.5">
+          <span class="text-[#A9B8BA]">Değerlendirme:</span>
+          <span class="text-[#E4ECEC]">Doğru Başına 1,25 Puan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BÖLÜM 1: İLKEL RENK ÖLÇEKLERİ (PRIMITIVE SCALES) -->
+    <section class="flex flex-col gap-6">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#4DB6B0] text-lg">palette</span>
+          <h2 class="text-xl font-bold text-[#E4ECEC]">1. İlkel Renk Ölçekleri</h2>
+        </div>
+        <span class="text-xs text-[#A9B8BA]">Değiştirilemez temel renk değerleri ve ton basamakları</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- 1.1 Petrol Skalası (Ana Renk) -->
+        <div class="p-5 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-[#E4ECEC] flex items-center gap-2">
+                <span>Petrol Skalası</span>
+                <span class="px-2 py-0.5 rounded text-[11px] bg-[#1B2C34] text-[#4DB6B0] border border-[#24343A]">Birincil</span>
+              </h3>
+              <p class="text-xs text-[#A9B8BA] mt-0.5">Açık temada #0E6A6E (600), koyu temada #4DB6B0 (400) merkez alınır.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-5 sm:grid-cols-10 gap-2">
+            <!-- 50 -->
+            <div class="swatch-box p-2 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #E6F4F3; color: #0E171B;">
+              <span class="text-[11px] font-bold">50</span>
+              <span class="text-[10px] font-mono">#E6F4F3</span>
+            </div>
+            <!-- 100 -->
+            <div class="swatch-box p-2 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #C3E5E3; color: #0E171B;">
+              <span class="text-[11px] font-bold">100</span>
+              <span class="text-[10px] font-mono">#C3E5E3</span>
+            </div>
+            <!-- 200 -->
+            <div class="swatch-box p-2 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #9CD4D0; color: #0E171B;">
+              <span class="text-[11px] font-bold">200</span>
+              <span class="text-[10px] font-mono">#9CD4D0</span>
+            </div>
+            <!-- 300 -->
+            <div class="swatch-box p-2 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #72C3BE; color: #0E171B;">
+              <span class="text-[11px] font-bold">300</span>
+              <span class="text-[10px] font-mono">#72C3BE</span>
+            </div>
+            <!-- 400 (Koyu Tema Ana) -->
+            <div class="swatch-box p-2 rounded ring-2 ring-[#E4ECEC] flex flex-col justify-between" style="background-color: #4DB6B0; color: #0E171B;">
+              <div class="flex justify-between items-start">
+                <span class="text-[11px] font-bold">400</span>
+                <span class="text-[9px] bg-[#0E171B] text-[#E4ECEC] px-1 rounded">KOYU</span>
+              </div>
+              <span class="text-[10px] font-mono font-bold">#4DB6B0</span>
+            </div>
+            <!-- 500 -->
+            <div class="swatch-box p-2 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #268C8B; color: #FFFFFF;">
+              <span class="text-[11px] font-bold">500</span>
+              <span class="text-[10px] font-mono">#268C8B</span>
+            </div>
+            <!-- 600 (Açık Tema Ana) -->
+            <div class="swatch-box p-2 rounded ring-2 ring-[#4DB6B0] flex flex-col justify-between" style="background-color: #0E6A6E; color: #FFFFFF;">
+              <div class="flex justify-between items-start">
+                <span class="text-[11px] font-bold">600</span>
+                <span class="text-[9px] bg-[#FFFFFF] text-[#0E171B] px-1 rounded">AÇIK</span>
+              </div>
+              <span class="text-[10px] font-mono font-bold">#0E6A6E</span>
+            </div>
+            <!-- 700 -->
+            <div class="swatch-box p-2 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #0A5357; color: #E4ECEC;">
+              <span class="text-[11px] font-bold">700</span>
+              <span class="text-[10px] font-mono">#0A5357</span>
+            </div>
+            <!-- 800 -->
+            <div class="swatch-box p-2 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #083E41; color: #E4ECEC;">
+              <span class="text-[11px] font-bold">800</span>
+              <span class="text-[10px] font-mono">#083E41</span>
+            </div>
+            <!-- 950 -->
+            <div class="swatch-box p-2 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #042224; color: #A9B8BA;">
+              <span class="text-[11px] font-bold">950</span>
+              <span class="text-[10px] font-mono">#042224</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.2 Safran Skalası (Dolgu & İkon) -->
+        <div class="p-5 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-[#E4ECEC] flex items-center gap-2">
+                <span>Safran Skalası</span>
+                <span class="px-2 py-0.5 rounded text-[11px] bg-[#1B2C34] text-[#E9A514] border border-[#24343A]">Yalnızca Dolgu / İkon</span>
+              </h3>
+              <p class="text-xs text-[#A9B8BA] mt-0.5">Kesin kural: Metin rengi olarak kullanılmaz. Rozet dolgusu, süre uyarısı ve ödül ikonlarında geçerlidir.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2">
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #FDF4E1; color: #0E171B;">
+              <span class="text-[11px] font-bold">Safran 100</span>
+              <span class="text-[11px] font-mono">#FDF4E1</span>
+              <span class="text-[10px] opacity-75">Hafif Zemin</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #F8D176; color: #0E171B;">
+              <span class="text-[11px] font-bold">Safran 300</span>
+              <span class="text-[11px] font-mono">#F8D176</span>
+              <span class="text-[10px] opacity-75">Rozet Çerçevesi</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded ring-2 ring-[#E4ECEC] flex flex-col justify-between" style="background-color: #E9A514; color: #0E171B;">
+              <div class="flex justify-between items-start">
+                <span class="text-[11px] font-bold">Safran 500</span>
+                <span class="text-[9px] bg-[#0E171B] text-[#E4ECEC] px-1 rounded">TEMEL</span>
+              </div>
+              <span class="text-[11px] font-mono font-bold">#E9A514</span>
+              <span class="text-[10px]">Birincil Dolgu</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #F0B43A; color: #0E171B;">
+              <span class="text-[11px] font-bold">Safran 400 (Etkileşim)</span>
+              <span class="text-[11px] font-mono">#F0B43A</span>
+              <span class="text-[10px]">Hover / Vurgu Dolgu</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.3 Yaprak / Doğru Skalası -->
+        <div class="p-5 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+          <div>
+            <h3 class="font-bold text-sm text-[#E4ECEC] flex items-center gap-2">
+              <span>Yaprak / Doğru Yanıt Skalası</span>
+              <span class="px-2 py-0.5 rounded text-[11px] bg-[#1B2C34] text-[#4CC27D] border border-[#24343A]">✓ Yeşil + İkon + Yazı</span>
+            </h3>
+            <p class="text-xs text-[#A9B8BA] mt-0.5">Parlak standart neon yeşil yasaktır. Akademik sakin yeşil tonları kullanılır.</p>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2">
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #EBF7F0; color: #0E171B;">
+              <span class="text-[11px] font-bold">Doğru 50</span>
+              <span class="text-[11px] font-mono">#EBF7F0</span>
+              <span class="text-[10px] opacity-75">Açık Zemin</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #164028; color: #E4ECEC;">
+              <span class="text-[11px] font-bold">Doğru 800</span>
+              <span class="text-[11px] font-mono">#164028</span>
+              <span class="text-[10px] opacity-75">Koyu Kapsayıcı</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #1F7A45; color: #FFFFFF;">
+              <span class="text-[11px] font-bold">Doğru 600</span>
+              <span class="text-[11px] font-mono">#1F7A45</span>
+              <span class="text-[10px]">Açık Tema / Dolgu</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded ring-2 ring-[#E4ECEC] flex flex-col justify-between" style="background-color: #4CC27D; color: #0E171B;">
+              <div class="flex justify-between items-start">
+                <span class="text-[11px] font-bold">Doğru 400</span>
+                <span class="text-[9px] bg-[#0E171B] text-[#E4ECEC] px-1 rounded">KOYU</span>
+              </div>
+              <span class="text-[11px] font-mono font-bold">#4CC27D</span>
+              <span class="text-[10px]">Koyu Metin &amp; İkon</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.4 Tuğla / Yanlış Skalası -->
+        <div class="p-5 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+          <div>
+            <h3 class="font-bold text-sm text-[#E4ECEC] flex items-center gap-2">
+              <span>Tuğla / Yanlış Seçenek Skalası</span>
+              <span class="px-2 py-0.5 rounded text-[11px] bg-[#1B2C34] text-[#EE8A6E] border border-[#24343A]">✕ Tuğla + İkon + Yazı</span>
+            </h3>
+            <p class="text-xs text-[#A9B8BA] mt-0.5">Parlak alarm kırmızısı yasaktır. Terakota ve tuğla tabanlı pedagojik tonlar kullanılır.</p>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2">
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #FDF0ED; color: #0E171B;">
+              <span class="text-[11px] font-bold">Tuğla 50</span>
+              <span class="text-[11px] font-mono">#FDF0ED</span>
+              <span class="text-[10px] opacity-75">Açık Zemin</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #4A1A12; color: #E4ECEC;">
+              <span class="text-[11px] font-bold">Tuğla 850</span>
+              <span class="text-[11px] font-mono">#4A1A12</span>
+              <span class="text-[10px] opacity-75">Koyu Kapsayıcı</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #A33D27; color: #FFFFFF;">
+              <span class="text-[11px] font-bold">Tuğla 600</span>
+              <span class="text-[11px] font-mono">#A33D27</span>
+              <span class="text-[10px]">Açık Tema / Dolgu</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded ring-2 ring-[#E4ECEC] flex flex-col justify-between" style="background-color: #EE8A6E; color: #0E171B;">
+              <div class="flex justify-between items-start">
+                <span class="text-[11px] font-bold">Tuğla 400</span>
+                <span class="text-[9px] bg-[#0E171B] text-[#E4ECEC] px-1 rounded">KOYU</span>
+              </div>
+              <span class="text-[11px] font-mono font-bold">#EE8A6E</span>
+              <span class="text-[10px]">Koyu Metin &amp; İkon</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.5 Gece Nötrleri (Koyu Tema Tabanı) -->
+        <div class="p-5 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+          <div>
+            <h3 class="font-bold text-sm text-[#E4ECEC] flex items-center gap-2">
+              <span>Gece Nötrleri</span>
+              <span class="px-2 py-0.5 rounded text-[11px] bg-[#1B2C34] text-[#E4ECEC] border border-[#24343A]">Etkin Tema</span>
+            </h3>
+            <p class="text-xs text-[#A9B8BA] mt-0.5">Siyah yerine hafif yeşil/petrol alt tonlu derin arduvaz nötrleri.</p>
+          </div>
+
+          <div class="grid grid-cols-5 gap-2">
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #0E171B; color: #E4ECEC;">
+              <span class="text-[11px] font-bold">Gece 950</span>
+              <span class="text-[11px] font-mono">#0E171B</span>
+              <span class="text-[10px] text-[#A9B8BA]">Ana Zemin</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #142127; color: #E4ECEC;">
+              <span class="text-[11px] font-bold">Gece 900</span>
+              <span class="text-[11px] font-mono">#142127</span>
+              <span class="text-[10px] text-[#A9B8BA]">Yüzey Kartı</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #24343A; color: #E4ECEC;">
+              <span class="text-[11px] font-bold">Gece 700</span>
+              <span class="text-[11px] font-mono">#24343A</span>
+              <span class="text-[10px] text-[#A9B8BA]">Kenarlık</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #A9B8BA; color: #0E171B;">
+              <span class="text-[11px] font-bold">Gece 300</span>
+              <span class="text-[11px] font-mono">#A9B8BA</span>
+              <span class="text-[10px]">İkincil Metin</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #E4ECEC; color: #0E171B;">
+              <span class="text-[11px] font-bold">Gece 100</span>
+              <span class="text-[11px] font-mono">#E4ECEC</span>
+              <span class="text-[10px]">Birincil Metin</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.6 Mürekkep Nötrleri (Açık Tema Tabanı) -->
+        <div class="p-5 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+          <div>
+            <h3 class="font-bold text-sm text-[#E4ECEC] flex items-center gap-2">
+              <span>Mürekkep Nötrleri (Açık Tema Eşleniği)</span>
+              <span class="px-2 py-0.5 rounded text-[11px] bg-[#1B2C34] text-[#A9B8BA] border border-[#24343A]">Referans</span>
+            </h3>
+            <p class="text-xs text-[#A9B8BA] mt-0.5">Açık tema modunda kullanılan temiz kağıt ve mürekkep nötrleri.</p>
+          </div>
+
+          <div class="grid grid-cols-5 gap-2">
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #FFFFFF; color: #13232A;">
+              <span class="text-[11px] font-bold">Mürekkep 0</span>
+              <span class="text-[11px] font-mono">#FFFFFF</span>
+              <span class="text-[10px] text-[#46565C]">Kart Yüzeyi</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #F4F6F5; color: #13232A;">
+              <span class="text-[11px] font-bold">Mürekkep 50</span>
+              <span class="text-[11px] font-mono">#F4F6F5</span>
+              <span class="text-[10px] text-[#46565C]">Sayfa Zemini</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #DAE1E0; color: #13232A;">
+              <span class="text-[11px] font-bold">Mürekkep 200</span>
+              <span class="text-[11px] font-mono">#DAE1E0</span>
+              <span class="text-[10px] text-[#46565C]">Kenarlık</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #46565C; color: #FFFFFF;">
+              <span class="text-[11px] font-bold">Mürekkep 600</span>
+              <span class="text-[11px] font-mono">#46565C</span>
+              <span class="text-[10px]">İkincil Yazı</span>
+            </div>
+            <div class="swatch-box p-2.5 rounded border border-[#24343A] flex flex-col justify-between" style="background-color: #13232A; color: #FFFFFF;">
+              <span class="text-[11px] font-bold">Mürekkep 900</span>
+              <span class="text-[11px] font-mono">#13232A</span>
+              <span class="text-[10px]">Gövde Yazısı</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BÖLÜM 2: ANLAMSAL TOKEN TABLOSU (SEMANTIC TOKENS) -->
+    <section class="flex flex-col gap-6">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#4DB6B0] text-lg">token</span>
+          <h2 class="text-xl font-bold text-[#E4ECEC]">2. Anlamsal Token Sistemi</h2>
+        </div>
+        <span class="text-xs text-[#A9B8BA]">Arayüz elemanlarının görev odaklı token karşılıkları</span>
+      </div>
+
+      <div class="overflow-x-auto rounded-lg border border-[#24343A] bg-[#142127]">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-[#1B2C34] text-[#A9B8BA] uppercase tracking-wider font-semibold border-b border-[#24343A]">
+              <th class="py-3 px-4">Token Adı</th>
+              <th class="py-3 px-4">Görsel Örnek</th>
+              <th class="py-3 px-4">Onaltılık Kod (Hex)</th>
+              <th class="py-3 px-4">İlkel Eşleşme</th>
+              <th class="py-3 px-4">Kullanım Amacı</th>
+              <th class="py-3 px-4">WCAG Seviyesi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#24343A] font-mono text-[11px]">
+            
+            <!-- Zemin -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#4DB6B0]">color-bg-base</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#0E171B]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#0E171B</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Gece 950</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Genel sayfa arka planı; gözü yormayan derin arduvaz</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#1B2C34] text-[#4CC27D] font-bold">Zemin</span></td>
+            </tr>
+
+            <!-- Yüzey -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#4DB6B0]">color-surface-card</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#142127]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#142127</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Gece 900</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Kartlar, modüller, soru alanı taşıyıcı yüzeyi</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#1B2C34] text-[#4CC27D] font-bold">Yüzey</span></td>
+            </tr>
+
+            <!-- Metin Birincil -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#4DB6B0]">color-text-primary</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#E4ECEC]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#E4ECEC</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Gece 100</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Başlıklar, soru metinleri, seçenek paragrafları</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#164028] text-[#4CC27D] font-bold">14.2:1 (AAA)</span></td>
+            </tr>
+
+            <!-- Metin İkincil -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#4DB6B0]">color-text-secondary</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#A9B8BA]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#A9B8BA</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Gece 300</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Açıklamalar, sınav ipuçları, sayaç etiketleri</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#164028] text-[#4CC27D] font-bold">8.1:1 (AAA)</span></td>
+            </tr>
+
+            <!-- Metin Üçüncül / Pasif -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#4DB6B0]">color-text-tertiary</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#708386]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#708386</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Gece 500</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Pasif sayaçlar, devre dışı seçenek metinleri</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#164028] text-[#4CC27D] font-bold">4.6:1 (AA)</span></td>
+            </tr>
+
+            <!-- Bağlantı / Vurgu -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#4DB6B0]">color-action-primary</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#4DB6B0]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#4DB6B0</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Petrol 400</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Bağlantılar, etkin düğmeler, seçili soru numarası</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#164028] text-[#4CC27D] font-bold">9.2:1 (AAA)</span></td>
+            </tr>
+
+            <!-- Ödül / Rozet Dolgusu (Safran) -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#E9A514]">color-badge-safran</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#E9A514]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#E9A514</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Safran 500</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Yalnızca rozet dolgusu, süre uyarı ikonları (yazı olarak kullanılmaz)</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#1B2C34] text-[#E9A514] font-bold">Dolgu</span></td>
+            </tr>
+
+            <!-- Doğru Yanıt -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#4CC27D]">color-status-correct</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#4CC27D]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#4CC27D</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Doğru 400</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Doğru seçenek kenarlığı, ✓ ikonu, puan kazanım bildirimi</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#164028] text-[#4CC27D] font-bold">8.7:1 (AAA)</span></td>
+            </tr>
+
+            <!-- Yanlış Yanıt -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#EE8A6E]">color-status-incorrect</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#EE8A6E]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#EE8A6E</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Tuğla 400</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Yanlış seçenek vurgusu, ✕ ikonu, çeldirici uyarısı</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#164028] text-[#4CC27D] font-bold">7.4:1 (AAA)</span></td>
+            </tr>
+
+            <!-- Kenarlık -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#4DB6B0]">color-border-subtle</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded border border-[#24343A] bg-[#24343A]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#24343A</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Gece 700</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Kutular, buton sınırları, soru gezgini hücreleri</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#164028] text-[#4CC27D] font-bold">3.2:1 (Bileşen)</span></td>
+            </tr>
+
+            <!-- Odak Durumu -->
+            <tr class="hover:bg-[#1B2C34]/50 transition-colors">
+              <td class="py-3 px-4 font-bold text-[#4DB6B0]">color-focus-ring</td>
+              <td class="py-3 px-4">
+                <span class="inline-block w-6 h-6 rounded ring-2 ring-[#4DB6B0] bg-[#142127]"></span>
+              </td>
+              <td class="py-3 px-4 text-[#E4ECEC]">#4DB6B0</td>
+              <td class="py-3 px-4 text-[#A9B8BA]">Petrol 400</td>
+              <td class="py-3 px-4 font-sans text-xs text-[#E4ECEC]">Klavye erişilebilirliği ve sekme gezinme halkası (2px net)</td>
+              <td class="py-3 px-4 font-sans"><span class="px-2 py-0.5 rounded bg-[#164028] text-[#4CC27D] font-bold">Odak</span></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 3: SINAV DURUMLARI VE BALONCUK MOTİFİ ÖNİZLEMESİ -->
+    <section class="flex flex-col gap-6">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#4DB6B0] text-lg">fact_check</span>
+          <h2 class="text-xl font-bold text-[#E4ECEC]">3. Renklerin Sınav Arayüzü Durumlarında Uygulanışı</h2>
+        </div>
+        <span class="text-xs text-[#A9B8BA]">A-E cevap baloncuğu motifi, Literata soru kökü, touch target min 44px</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Durum 1: Doğru Seçenek Örneği -->
+        <div class="p-6 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+            <span class="text-xs font-semibold text-[#A9B8BA] uppercase tracking-wider">Durum: Doğru Yanıt Belirlendi</span>
+            <div class="flex items-center gap-1.5 text-xs text-[#4CC27D] font-medium bg-[#164028] px-2 py-0.5 rounded">
+              <span class="material-symbols-outlined text-sm">check_circle</span>
+              <span>+1,25 Puan</span>
+            </div>
+          </div>
+
+          <!-- Soru Parçası (Literata) -->
+          <div class="font-serif text-sm leading-relaxed text-[#E4ECEC]">
+            "Although early excavations indicated a strictly egalitarian social structure, subsequent stratigraphical analyses have revealed that ------."
+          </div>
+
+          <!-- Seçenek (Doğru Durum) -->
+          <div class="p-3.5 rounded-lg bg-[#164028]/40 border-2 border-[#4CC27D] flex items-start gap-3 touch-target w-full">
+            <!-- Tam daire cevap baloncuğu (Min 44px dokunma hedefi) -->
+            <div class="w-9 h-9 rounded-full bg-[#4CC27D] text-[#0E171B] font-bold text-sm flex items-center justify-center shrink-0">
+              B
+            </div>
+            <div class="flex-1 text-xs">
+              <p class="font-serif text-[#E4ECEC] leading-normal">
+                marked disparities in burial goods and residential architecture clearly pointed to an entrenched hierarchy
+              </p>
+              <div class="flex items-center gap-2 mt-2 text-[#4CC27D] font-sans font-semibold text-[11px]">
+                <span class="material-symbols-outlined text-sm">check</span>
+                <span>Doğru Yanıt (Akademik çelişki sentaksı onaylandı)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Durum 2: Yanlış Seçenek Örneği -->
+        <div class="p-6 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+            <span class="text-xs font-semibold text-[#A9B8BA] uppercase tracking-wider">Durum: Yanlış Seçenek İşaretlendi</span>
+            <div class="flex items-center gap-1.5 text-xs text-[#EE8A6E] font-medium bg-[#4A1A12] px-2 py-0.5 rounded">
+              <span class="material-symbols-outlined text-sm">cancel</span>
+              <span>0 Puan (Doğruyu Götürmez)</span>
+            </div>
+          </div>
+
+          <!-- Soru Parçası (Literata) -->
+          <div class="font-serif text-sm leading-relaxed text-[#E4ECEC]">
+            "Although early excavations indicated a strictly egalitarian social structure, subsequent stratigraphical analyses have revealed that ------."
+          </div>
+
+          <!-- Seçenek (Yanlış Durum) -->
+          <div class="p-3.5 rounded-lg bg-[#4A1A12]/40 border-2 border-[#EE8A6E] flex items-start gap-3 touch-target w-full">
+            <!-- Tam daire cevap baloncuğu -->
+            <div class="w-9 h-9 rounded-full bg-[#EE8A6E] text-[#0E171B] font-bold text-sm flex items-center justify-center shrink-0">
+              C
+            </div>
+            <div class="flex-1 text-xs">
+              <p class="font-serif text-[#E4ECEC] leading-normal">
+                trade networks with Mesopotamia were totally disrupted by nomadic invaders
+              </p>
+              <div class="flex items-center gap-2 mt-2 text-[#EE8A6E] font-sans font-semibold text-[11px]">
+                <span class="material-symbols-outlined text-sm">close</span>
+                <span>Yanlış Seçenek (Konu dışı aşırı kesinlik çeldiricisi)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Durum 3: Standart Boş ve Odak Durumu -->
+        <div class="p-6 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-3">
+          <span class="text-xs font-semibold text-[#A9B8BA] uppercase tracking-wider">Durum: Standart Seçenek ve Odak (Focus)</span>
+          
+          <!-- Boş Seçenek -->
+          <div class="p-3 rounded-lg bg-[#0E171B] border border-[#24343A] hover:border-[#4DB6B0] flex items-center gap-3 touch-target cursor-pointer transition-colors">
+            <div class="w-9 h-9 rounded-full bg-[#1B2C34] border border-[#24343A] text-[#A9B8BA] font-bold text-sm flex items-center justify-center shrink-0">
+              A
+            </div>
+            <span class="font-serif text-xs text-[#E4ECEC]">monumental palaces were reserved strictly for spiritual leaders</span>
+          </div>
+
+          <!-- Odaklanmış Seçenek -->
+          <div class="p-3 rounded-lg bg-[#1B2C34] ring-2 ring-[#4DB6B0] flex items-center gap-3 touch-target cursor-pointer">
+            <div class="w-9 h-9 rounded-full bg-[#4DB6B0] text-[#0E171B] font-bold text-sm flex items-center justify-center shrink-0">
+              D
+            </div>
+            <span class="font-serif text-xs text-[#E4ECEC]">they will have been catalogued under contemporary conventions</span>
+          </div>
+        </div>
+
+        <!-- Durum 4: Safran Dolgulu Rozetler ve Sayaçlar -->
+        <div class="p-6 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col justify-between gap-4">
+          <div>
+            <span class="text-xs font-semibold text-[#A9B8BA] uppercase tracking-wider">Kural Uygulaması: Safran Yalnızca Dolgu / İkon</span>
+            <p class="text-xs text-[#A9B8BA] mt-1">Metin rengi asla safran sarısı olamaz; metin rengi zemin rengine göre her zaman Gece 950 veya Gece 100 kalır.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Safran Dolgulu Buton/Rozet (İç metin koyu #0E171B) -->
+            <div class="touch-target px-4 py-2 rounded bg-[#E9A514] hover:bg-[#F0B43A] text-[#0E171B] font-bold text-xs flex items-center gap-2 transition-colors">
+              <span class="material-symbols-outlined text-sm">star</span>
+              <span>52 Günlük Plan Paketi</span>
+            </div>
+
+            <!-- Safran İkonlu Koyu Rozet -->
+            <div class="touch-target px-3.5 py-2 rounded bg-[#1B2C34] border border-[#24343A] text-xs text-[#E4ECEC] flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#E9A514]"></span>
+              <span>Sınav Sayacı Uyarısı</span>
+            </div>
+
+            <!-- Sayı Çipi -->
+            <div class="touch-target px-3 py-1.5 rounded-full bg-[#1B2C34] border border-[#24343A] text-xs flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-[#E9A514] text-[#0E171B] font-bold flex items-center justify-center text-[10px]">80</span>
+              <span class="text-[#A9B8BA]">Soru / 100 Puan</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded bg-[#0E171B] border border-[#24343A] text-[11px] text-[#A9B8BA] flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#4DB6B0] text-sm">verified_user</span>
+            <span>Doğrulama: Tüm buton ve seçim hedefleri minimum 44×44px dokunma alanını karşılamaktadır.</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BÖLÜM 4: WCAG 2.1 AA/AAA ERİŞİLEBİLİRLİK MATRİSİ & GRAFİK SERİSİ -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+      <!-- Sol 2 Kolon: Kontrast Matrisi -->
+      <div class="lg:col-span-2 p-5 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#4DB6B0] text-lg">contrast</span>
+            <h3 class="font-bold text-sm text-[#E4ECEC]">WCAG 2.1 Kontrast Doğrulama Matrisi</h3>
+          </div>
+          <span class="text-xs text-[#4CC27D] font-semibold bg-[#164028] px-2 py-0.5 rounded">Tümü Uyumlu</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          
+          <div class="p-3 rounded bg-[#0E171B] border border-[#24343A] flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[#A9B8BA]">Metin Birincil</span>
+              <span class="text-[#4CC27D] font-bold">14.2 : 1</span>
+            </div>
+            <div class="text-sm font-bold text-[#E4ECEC]">#E4ECEC / #0E171B</div>
+            <div class="text-[10px] text-[#4CC27D] flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">check</span>
+              <span>AAA (Gövde &amp; Başlık)</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded bg-[#0E171B] border border-[#24343A] flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[#A9B8BA]">Petrol Koyu Vurgu</span>
+              <span class="text-[#4CC27D] font-bold">9.2 : 1</span>
+            </div>
+            <div class="text-sm font-bold text-[#4DB6B0]">#4DB6B0 / #0E171B</div>
+            <div class="text-[10px] text-[#4CC27D] flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">check</span>
+              <span>AAA (Etkileşimli Öğe)</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded bg-[#0E171B] border border-[#24343A] flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[#A9B8BA]">Metin İkincil</span>
+              <span class="text-[#4CC27D] font-bold">8.1 : 1</span>
+            </div>
+            <div class="text-sm font-bold text-[#A9B8BA]">#A9B8BA / #0E171B</div>
+            <div class="text-[10px] text-[#4CC27D] flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">check</span>
+              <span>AAA (Yardımcı Bilgi)</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded bg-[#0E171B] border border-[#24343A] flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[#A9B8BA]">Doğru Yanıt Yeşili</span>
+              <span class="text-[#4CC27D] font-bold">8.7 : 1</span>
+            </div>
+            <div class="text-sm font-bold text-[#4CC27D]">#4CC27D / #0E171B</div>
+            <div class="text-[10px] text-[#4CC27D] flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">check</span>
+              <span>AAA Onaylı</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded bg-[#0E171B] border border-[#24343A] flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[#A9B8BA]">Yanlış Tuğla Tonu</span>
+              <span class="text-[#4CC27D] font-bold">7.4 : 1</span>
+            </div>
+            <div class="text-sm font-bold text-[#EE8A6E]">#EE8A6E / #0E171B</div>
+            <div class="text-[10px] text-[#4CC27D] flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">check</span>
+              <span>AAA Onaylı</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded bg-[#0E171B] border border-[#24343A] flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[#A9B8BA]">Safran Dolguda Metin</span>
+              <span class="text-[#4CC27D] font-bold">11.8 : 1</span>
+            </div>
+            <div class="text-sm font-bold text-[#0E171B] bg-[#E9A514] px-1 rounded inline-block w-fit">#0E171B / #E9A514</div>
+            <div class="text-[10px] text-[#4CC27D] flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">check</span>
+              <span>Koyu Metinle AAA</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Sağ Kolon: Grafik Serisi Renkleri (4 Renk) -->
+      <div class="p-5 rounded-lg bg-[#142127] border border-[#24343A] flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#4DB6B0] text-lg">donut_small</span>
+            <h3 class="font-bold text-sm text-[#E4ECEC]">Grafik Serisi Renkleri (4 Renk)</h3>
+          </div>
+          <span class="text-[11px] text-[#A9B8BA]">Analitik Göstergeler</span>
+        </div>
+
+        <p class="text-xs text-[#A9B8BA]">Adayın 80 soruluk analizinde doğru, yanlış, boş ve kural dağılımlarını gösteren grafik paleti:</p>
+
+        <div class="flex flex-col gap-2.5">
+          <!-- Seri 1: Petrol -->
+          <div class="flex items-center justify-between p-2 rounded bg-[#0E171B] border border-[#24343A]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3.5 h-3.5 rounded bg-[#4DB6B0]"></span>
+              <span class="text-xs font-medium text-[#E4ECEC]">Seri 1 · Çözülen / İşaretlenen</span>
+            </div>
+            <span class="text-xs font-mono text-[#4DB6B0]">#4DB6B0</span>
+          </div>
+
+          <!-- Seri 2: Yaprak Yeşili -->
+          <div class="flex items-center justify-between p-2 rounded bg-[#0E171B] border border-[#24343A]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3.5 h-3.5 rounded bg-[#4CC27D]"></span>
+              <span class="text-xs font-medium text-[#E4ECEC]">Seri 2 · Doğru Yanıt Sayısı</span>
+            </div>
+            <span class="text-xs font-mono text-[#4CC27D]">#4CC27D</span>
+          </div>
+
+          <!-- Seri 3: Tuğla Kırmızısı -->
+          <div class="flex items-center justify-between p-2 rounded bg-[#0E171B] border border-[#24343A]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3.5 h-3.5 rounded bg-[#EE8A6E]"></span>
+              <span class="text-xs font-medium text-[#E4ECEC]">Seri 3 · Çeldirici / Yanlış</span>
+            </div>
+            <span class="text-xs font-mono text-[#EE8A6E]">#EE8A6E</span>
+          </div>
+
+          <!-- Seri 4: Safran Dolgu -->
+          <div class="flex items-center justify-between p-2 rounded bg-[#0E171B] border border-[#24343A]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3.5 h-3.5 rounded bg-[#E9A514]"></span>
+              <span class="text-xs font-medium text-[#E4ECEC]">Seri 4 · Boş / İncelenecek</span>
+            </div>
+            <span class="text-xs font-mono text-[#E9A514]">#E9A514</span>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-3 border-t border-[#24343A] text-[11px] text-[#A9B8BA]">
+          Grafiklerde standart mavi, mor veya fosforlu renkler kullanılmaz.
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Alt Bilgi Çubuğu (Footer) -->
+  <footer class="w-full bg-[#142127] border-t border-[#24343A] py-4 text-xs text-[#A9B8BA]">
+    <div class="max-w-[1440px] mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="font-bold text-[#4DB6B0]">ODAK</span>
+        <span>•</span>
+        <span>Akademik Dil Sınavları Tasarım Sistemi</span>
+        <span>•</span>
+        <span>Sürüm 2.4 (Koyu Tema)</span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px]">
+        <span>YDS değerlendirme kuralı: 1 doğru = 1,25 puan</span>
+        <span>•</span>
+        <span>Yanlış doğruyu götürmez</span>
+      </div>
+    </div>
+  </footer>
+
+
+
+</body></html>

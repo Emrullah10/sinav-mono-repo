@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>ODAK · ME-10 Hesap Silme ve Veri İmhası</title>
+  <!-- Google Fonts: Figtree (UI), Literata (Okuma Metinleri), Bricolage Grotesque (Logo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet"/>
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            'background': '#F4F6F5',
+            'surface': '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            'outline': '#77868A',
+            'outline-variant': '#DAE1E0',
+            'primary': '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            'secondary': '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            'tertiary': '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            'error': '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+          },
+          borderRadius: {
+            'xs': '4px',
+            'sm': '8px',
+            'DEFAULT': '12px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '24px',
+            'full': '9999px'
+          },
+          fontFamily: {
+            'headline': ['Figtree', 'sans-serif'],
+            'display': ['Bricolage Grotesque', 'sans-serif'],
+            'body': ['Figtree', 'sans-serif'],
+            'reading': ['Literata', 'serif'],
+          }
+        },
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .font-reading {
+      font-family: 'Literata', serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#F4F6F5] text-[#13232A]">
+
+  <!-- 1. ÜST GEZİNME ÇUBUĞU (TopNavBar) -->
+  <header class="bg-surface border-b border-outline-variant sticky top-0 z-50">
+    <div class="flex justify-between items-center w-full px-8 h-16 max-w-7xl mx-auto">
+      <!-- Marka Logosu & Sınav Seçici Çip -->
+      <div class="flex items-center gap-6">
+        <a class="flex items-center gap-2.5 text-primary font-display font-bold text-2xl tracking-tight" href="#">
+          <span class="w-7 h-7 rounded-full border-2 border-primary flex items-center justify-center">
+            <span class="w-3.5 h-3.5 rounded-full bg-primary"></span>
+          </span>
+          <span>ODAK</span>
+        </a>
+
+        <!-- Sınav Seçici Çip -->
+        <div class="hidden sm:flex items-center gap-2 bg-[#F4F6F5] border border-outline-variant hover:border-primary transition-colors px-3 py-1.5 rounded-full text-xs font-semibold text-on-surface cursor-pointer select-none">
+          <span class="w-2 h-2 rounded-full bg-primary"></span>
+          <span>2026-YDS/2 · 22 Kasım 2026 · 52 Gün Kaldı</span>
+          <span class="material-symbols-outlined text-base text-on-surface-variant">arrow_drop_down</span>
+        </div>
+      </div>
+
+      <!-- Navigasyon Sekmeleri -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">Bugün</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">Çalış</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">Deneme</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">Öğretmen</a>
+        <a class="text-primary font-semibold border-b-2 border-primary pb-1" href="#">Ben</a>
+      </nav>
+
+      <!-- Sağ Aksiyonlar: Seri, Bildirim, Profil -->
+      <div class="flex items-center gap-3">
+        <!-- 14 Gün Seri Rozeti -->
+        <div class="flex items-center gap-1.5 bg-secondary-container border border-[#E9A514]/30 px-3 py-1 rounded-full text-xs font-bold text-on-secondary">
+          <span class="material-symbols-outlined text-[#E9A514] text-base" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+          <span class="tabular-nums">14 Gün Seri</span>
+        </div>
+
+        <!-- Bildirim Butonu -->
+        <button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-[#F4F6F5] border border-outline-variant transition-colors" title="Bildirimler">
+          <span class="material-symbols-outlined text-xl">notifications</span>
+        </button>
+
+        <!-- Profil Özeti -->
+        <div class="flex items-center gap-2.5 pl-2 border-l border-outline-variant">
+          <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container font-semibold text-xs flex items-center justify-center border border-primary/30">
+            BK
+          </div>
+          <div class="hidden lg:flex flex-col text-left">
+            <span class="text-xs font-bold leading-tight">Doç. Dr. Bilge Kağan Öztürk</span>
+            <span class="text-[11px] text-on-surface-variant leading-tight">Hacettepe Tıp Fakültesi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. ALT ÜST BİLGİ & BREADCRUMB ÇUBUĞU -->
+  <section class="bg-surface border-b border-outline-variant">
+    <div class="max-w-7xl mx-auto px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+      <nav class="flex items-center gap-2 text-xs text-on-surface-variant">
+        <span class="hover:text-primary cursor-pointer">Hesabım</span>
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+        <span class="hover:text-primary cursor-pointer">Kişisel Tercihler</span>
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+        <span class="hover:text-primary cursor-pointer">Hesap Güvenliği</span>
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+        <span class="font-bold text-on-surface">ME-10 · Hesap Silme</span>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-error-container text-error border border-error/20">
+          <span class="material-symbols-outlined text-sm">gavel</span>
+          <span>Yüksek Güvenlikli Veri İmha Protokolü</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ANA İÇERİK ALANI (1440px Masaüstü Izgarası) -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-8 py-8">
+    <!-- Sayfa Başlığı ve Kısa Açıklama -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 text-error font-bold text-xs uppercase tracking-wider mb-1">
+        <span class="material-symbols-outlined text-sm">report</span>
+        <span>Geri Alınamaz İşlem</span>
+      </div>
+      <h1 class="text-2xl lg:text-3xl font-bold text-on-surface tracking-tight">
+        Hesap Silme ve Veri Tasfiyesi Talebi
+      </h1>
+      <p class="text-sm text-on-surface-variant mt-1.5 max-w-3xl leading-relaxed">
+        Bu işlem geri alınamaz. 6698 sayılı Kişisel Verilerin Korunması Kanunu ve ÖSYM aday portföyü saklama standartları uyarınca hesabınız 30 günlük askı süresinin ardından kalıcı olarak silinecektir.
+      </p>
+    </div>
+
+    <!-- İki Sütunlu Çalışma Düzeni (Sol: 8 Sütun Akış Formu, Sağ: 4 Sütun Durum & Örnek Önizleme) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- SOL SÜTUN (col-span-8): Form, Uyarılar, İmha Listesi, Doğrulama -->
+      <div class="lg:col-span-8 space-y-6">
+
+        <!-- 3.1 MADDE 9.6 UYARI KUTUSU (Vurgulu Tuğla Kenarlık ve Kırmızı İkaz) -->
+        <div class="bg-surface rounded-lg border-2 border-error p-6 relative overflow-hidden">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-full bg-error-container text-error flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-2xl">warning</span>
+            </div>
+            <div class="space-y-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="bg-error text-white text-[11px] font-bold px-2.5 py-0.5 rounded">MADDE 9.6 UYARISI</span>
+                <h2 class="text-base font-bold text-error">Dikkat: Bu işlem geri alınamaz bir veri imha protokolüdür.</h2>
+              </div>
+              <p class="text-xs text-on-surface leading-relaxed">
+                Hesap silme talebiniz onaylandığı andan itibaren tüm aktif oturumlarınız derhal sonlandırılır. Kurumsal YDS analiz motoru, deneme geçmişiniz, kişisel kelime hazneleriniz ve öğretmen geri bildirimleriniz <strong>30 gün boyunca askıda tutulur</strong> ve bu sürenin bitiminde veri tabanından geri getirilemeyecek şekilde kazınır.
+              </p>
+              <div class="flex flex-wrap items-center gap-6 pt-2 text-xs text-on-surface-variant border-t border-outline-variant">
+                <span class="flex items-center gap-1.5 font-medium">
+                  <span class="material-symbols-outlined text-base text-primary">schedule</span>
+                  <span>Cayma Hakkı Süresi: <strong class="text-on-surface font-semibold">30 Gün</strong></span>
+                </span>
+                <span class="flex items-center gap-1.5 font-medium">
+                  <span class="material-symbols-outlined text-base text-primary">event_available</span>
+                  <span>Veri İtibarı: <strong class="text-on-surface font-semibold">Doğrudan İmha</strong></span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.2 İMHA EDİLECEK VERİ VE HAK ENVANTERİ (4 Kategori Kartı) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-6">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-xl">folder_delete</span>
+              <h3 class="text-sm font-bold text-on-surface">İmha Edilecek Veri ve Hak Envanteri</h3>
+            </div>
+            <span class="text-xs text-on-surface-variant font-medium bg-[#F4F6F5] px-2.5 py-0.5 rounded border border-outline-variant">
+              Toplam 4 Kategori
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- 01 Sınav ve Deneme Geçmişi -->
+            <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-on-surface">01 · Sınav ve Deneme Geçmişi</span>
+                  <span class="text-[11px] font-bold text-error bg-error-container px-2 py-0.5 rounded">Kurtarılamaz</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  6 resmi YDS tam deneme karnesi, 1.420 çözülen soru analizi, sentaktik tahliller ve süre istatistikleri.
+                </p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-xs text-on-surface font-semibold">
+                <span>Kayıt Hacmi:</span>
+                <span class="tabular-nums">1.420 Soru</span>
+              </div>
+            </div>
+
+            <!-- 02 Hata Defteri ve Kelime Havuzu -->
+            <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-on-surface">02 · Hata Defteri ve Kelime Havuzu</span>
+                  <span class="text-[11px] font-bold text-error bg-error-container px-2 py-0.5 rounded">Kurtarılamaz</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  42 kayıtlı aralıklı tekrar kelimesi, çeldirici tuzak notları ve kişisel zayıf nokta haritası.
+                </p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-xs text-on-surface font-semibold">
+                <span>Hafıza Hacmi:</span>
+                <span class="tabular-nums">42 Kelime Kartı</span>
+              </div>
+            </div>
+
+            <!-- 03 Öğretmen İncelemeleri -->
+            <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-on-surface">03 · Öğretmen İncelemeleri</span>
+                  <span class="text-[11px] font-bold text-error bg-error-container px-2 py-0.5 rounded">Kurtarılamaz</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  Doç. Dr. Selin Yılmaz ile yapılan 18 detaylı cümle röntgeni ve soru müzakeresi arşiv kaydı.
+                </p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-xs text-on-surface font-semibold">
+                <span>Müzakere Kaydı:</span>
+                <span class="tabular-nums">18 Oturum</span>
+              </div>
+            </div>
+
+            <!-- 04 Kurumsal Lisans Hakları -->
+            <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-on-surface">04 · Kurumsal Lisans Hakları</span>
+                  <span class="text-[11px] font-bold text-on-surface-variant bg-surface px-2 py-0.5 rounded border border-outline-variant">İade Edilemez</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  Hacettepe Üniversitesi Rektörlüğü lisans yetkilendirmesi koparılır, tanımlı kalan 7 soru inceleme hakkı yanar.
+                </p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-xs text-on-surface font-semibold">
+                <span>Aktif Durum:</span>
+                <span class="text-error">7 Hak İptali</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.3 MOBİL MAĞAZA ABONELİK HATIRLATMASI (Apple/Google Uyarısı) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-5 flex items-start gap-4">
+          <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-xl text-[#BA7F14]">storefront</span>
+          </div>
+          <div class="space-y-1.5 flex-1">
+            <h3 class="text-sm font-bold text-on-surface">Mobil Mağaza Abonelik Hatırlatması</h3>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Hesabınızı platformdan silmek Apple App Store veya Google Play Store üzerinden başlattığınız abonelik ödemelerini <strong>otomatik olarak sonlandırmaz</strong>. Düzenli çekimlerin kesilmesi için ilgili mağazanın abonelik yönetim panelinden iptal işlemini bizzat tamamlamanız gerekmektedir.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3.4 KİMLİK TEYİDİ VE YENİDEN DOĞRULAMA (OTP + Teyit Metni Yazma) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-6 space-y-6">
+          <div class="pb-3 border-b border-outline-variant">
+            <h3 class="text-sm font-bold text-on-surface flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-xl">verified_user</span>
+              <span>Kimlik Teyidi ve Güvenlik Onayı</span>
+            </h3>
+            <p class="text-xs text-on-surface-variant mt-1">
+              Hesap sahibi olduğunuzu kanıtlamak için lütfen kurumsal e-posta adresinize gönderilen güvenlik kodunu ve silme ifadesini giriniz.
+            </p>
+          </div>
+
+          <!-- Adım A: 6 Haneli Doğrulama Kodu -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-on-surface">Doğrulama Kodu (Gönderilen adres: bilge.ozturk@hacettepe.edu.tr)</span>
+              <span class="text-on-surface-variant font-medium flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">timer</span>
+                <span class="tabular-nums">02:45 kaldı</span>
+              </span>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-3">
+              <input type="text" maxlength="1" value="7" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" readonly/>
+              <input type="text" maxlength="1" value="3" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" readonly/>
+              <input type="text" maxlength="1" value="9" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" readonly/>
+              <span class="text-outline-variant font-bold">-</span>
+              <input type="text" maxlength="1" value="4" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" readonly/>
+              <input type="text" maxlength="1" value="2" class="w-11 h-12 text-center text-lg font-bold border border-primary ring-1 ring-primary rounded bg-surface text-on-surface" autofocus/>
+              <input type="text" maxlength="1" placeholder="•" class="w-11 h-12 text-center text-lg font-bold border border-outline-variant rounded bg-[#F4F6F5] text-on-surface focus:border-primary focus:ring-1 focus:ring-primary"/>
+              <button class="h-11 px-3.5 rounded border border-outline-variant hover:border-primary text-xs font-semibold text-primary transition-colors ml-auto flex items-center gap-1 active:scale-98">
+                <span class="material-symbols-outlined text-sm">refresh</span>
+                <span>Yeni Kod Gönder</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Adım B: Onay İfadesi Yazma -->
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-on-surface">
+              Onaylamak için aşağıdaki kutuya tam olarak <span class="text-error font-mono font-bold bg-error-container px-1.5 py-0.5 rounded">HESABIMI SİLMEK İSTİYORUM</span> yazınız:
+            </label>
+            <input type="text" value="HESABIMI SİLMEK İSTİYORUM" class="w-full h-11 px-3.5 text-xs font-semibold text-on-surface bg-[#F4F6F5] border border-outline-variant rounded focus:border-error focus:ring-1 focus:ring-error transition-colors" placeholder="HESABIMI SİLMEK İSTİYORUM"/>
+            <p class="text-[11px] text-tertiary flex items-center gap-1 font-medium mt-1">
+              <span class="material-symbols-outlined text-sm">check_circle</span>
+              <span>İfade tam eşleşti. Doğrulama başarılı.</span>
+            </p>
+          </div>
+
+          <!-- Adım C: KVKK Yasal Onay Kutusu -->
+          <div class="pt-2">
+            <label class="flex items-start gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary mt-0.5"/>
+              <span class="text-xs text-on-surface-variant leading-normal">
+                <strong>6698 sayılı KVKK kapsamındaki haklarımı okudum.</strong> 30 günlük askı süresi bittiğinde deneme verilerimin, akademik hata analizlerimin ve öğretmen değerlendirmelerimin geri alınamaz biçimde imha edileceğini kabul ediyorum.
+              </span>
+            </label>
+          </div>
+
+          <!-- Adım D: Karar Eylemleri (Vazgeç & Yıkıcı Sil) -->
+          <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-outline-variant">
+            <button class="h-11 px-5 rounded border border-outline-variant hover:border-primary text-xs font-bold text-on-surface transition-colors flex items-center gap-2 active:scale-98">
+              <span class="material-symbols-outlined text-base">arrow_back</span>
+              <span>Vazgeç ve Profil Ayarlarına Dön</span>
+            </button>
+
+            <button class="h-11 px-6 rounded bg-error hover:bg-[#852E1B] text-white text-xs font-bold transition-colors flex items-center gap-2 shadow-none active:scale-98">
+              <span class="material-symbols-outlined text-base">delete_forever</span>
+              <span>Hesabımı ve Tüm Verilerimi Kalıcı Olarak Sil</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SAĞ SÜTUN (col-span-4): İşlem Akış Önizlemesi, Soru Röntgeni Örneği, Destek -->
+      <div class="lg:col-span-4 space-y-6">
+
+        <!-- 3.5 İŞLEM AKIŞ ÖNİZLEMESİ (30 Günlük Askı & Sonuç Ekranı Modeli) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">İşlem Akış Önizlemesi</h3>
+            <span class="text-[11px] font-bold text-tertiary bg-tertiary-container px-2 py-0.5 rounded">Talep Hazır</span>
+          </div>
+
+          <!-- Askı Bildirimi Kutusu -->
+          <div class="p-4 rounded border border-outline-variant bg-[#F4F6F5] space-y-2">
+            <div class="flex items-center gap-2 text-on-surface font-bold text-xs">
+              <span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px]">✓</span>
+              <span>Hesap Silme Talebiniz Alındı — 30 Günlük Askı Süresi Başladı</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Hesabınız derhal pasife alınmış ve tüm oturumlarınız kapatılmıştır. 30 gün içinde aynı kurumsal e-posta ile giriş yaparak silme talebini dilediğiniz an iptal edebilirsiniz. 30 günün sonunda tüm veriler kalıcı olarak imha edilecektir.
+            </p>
+            <div class="pt-2 border-t border-outline-variant/60 flex items-center justify-between text-[11px] text-on-surface-variant font-medium">
+              <span>Referans Kodu:</span>
+              <strong class="font-mono text-on-surface">#TR-İMHA-2026-0814</strong>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-on-surface-variant font-medium">
+              <span>Son Cayma Tarihi:</span>
+              <strong class="text-on-surface">1 Kasım 2026, 23:59</strong>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-2 text-xs text-on-surface-variant">
+            <span class="material-symbols-outlined text-sm text-primary mt-0.5">mark_email_read</span>
+            <span>Teyit bildirimi Hacettepe kurumsal e-postanıza iletilmiştir.</span>
+          </div>
+        </div>
+
+        <!-- 3.6 SİLİNME RİSKİNE GİRECEK ÖRNEK AKADEMİK ÇALIŞMA (Cümle Röntgeni & Soru Kartı) -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-primary text-lg">psychology</span>
+              <h3 class="text-xs font-bold text-on-surface">YDS Bağlamında Akademik İfade Analizi</h3>
+            </div>
+            <span class="text-[10px] font-bold text-on-surface-variant bg-[#F4F6F5] px-2 py-0.5 rounded border border-outline-variant">
+              Sağlık Bilimleri
+            </span>
+          </div>
+
+          <div>
+            <span class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block mb-1.5">
+              Akademik Metin Parçacığı:
+            </span>
+            <p class="font-reading text-xs text-on-surface leading-relaxed p-3 rounded bg-[#F4F6F5] border border-outline-variant">
+              "Although the clinical dataset was permanently retracted from the medical archives, subsequent replication studies reaffirmed the foundational hypotheses."
+            </p>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="p-2.5 rounded bg-tertiary-container/30 border border-tertiary/20 text-on-surface">
+              <span class="font-bold text-tertiary flex items-center gap-1 mb-0.5">
+                <span class="material-symbols-outlined text-sm">check</span> Doğru Sentaktik Anlam:
+              </span>
+              <p class="text-[11px] text-on-surface-variant">
+                Klinik veri seti tıbbi arşivlerden kalıcı olarak geri çekilmesine rağmen, sonraki tekrarlama çalışmaları temel hipotezleri doğrulamıştır.
+              </p>
+            </div>
+
+            <div class="p-2.5 rounded bg-error-container/40 border border-error/20 text-on-surface">
+              <span class="font-bold text-error flex items-center gap-1 mb-0.5">
+                <span class="material-symbols-outlined text-sm">close</span> Çeldirici Tuzak:
+              </span>
+              <p class="text-[11px] text-on-surface-variant">
+                Kalıcı veri silinmesi nedeniyle sonraki çalışmaların iptal edildiği iddiası yanlıştır; zıtlık bağlacı olumlu çıktıyı korumuştur.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.7 KURUMSAL DESTEK VE VERİ SORUMLUSU İLETİŞİM KARTI -->
+        <div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-3">
+          <div class="flex items-center gap-2 text-xs font-bold text-on-surface">
+            <span class="material-symbols-outlined text-primary text-lg">support_agent</span>
+            <span>Kurumsal Destek ve Veri Sorumlusu</span>
+          </div>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Yanlışlıkla talep açtığınızı düşünüyorsanız veya lisans haklarınızı başka bir kuruma devretmek isterseniz danışma masasıyla temasa geçebilirsiniz.
+          </p>
+          <div class="pt-2 border-t border-outline-variant flex items-center justify-between text-xs">
+            <span class="font-semibold text-primary">destek@odakyds.gov.tr</span>
+            <span class="text-on-surface-variant">7/24 Çağrı</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 4. SİSTEM GÜVENLİK VE YAŞAM DÖNGÜSÜ MATRİSİ (Bento Grid) -->
+  <section class="max-w-7xl mx-auto px-8 py-8 border-t border-outline-variant mt-8 w-full">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Sistem Güvenlik Durum Matrisi</h3>
+        <p class="text-sm font-semibold text-on-surface">Silme protokolünün aşamalı teknik davranışları ve güvenlik teyit mekanizmaları</p>
+      </div>
+      <span class="text-xs bg-[#F4F6F5] text-on-surface-variant px-2.5 py-1 rounded font-medium border border-outline-variant">
+        ISO 27001 &amp; KVKK 12. Madde Uyumu
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Durum 01 -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-on-surface">DURUM 01</span>
+            <span class="w-2 h-2 rounded-full bg-primary"></span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Doğrulama Kodu Bekleniyor</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Kullanıcının kurumsal Hacettepe e-posta adresine 6 haneli şifreli güvenlik kodu gönderilmiştir. Süreç 180 saniyedir.
+          </p>
+        </div>
+        <span class="text-[11px] font-semibold text-primary mt-3 block flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">mark_email_unread</span> Kod Doğrulama Bekleniyor
+        </span>
+      </div>
+
+      <!-- Durum 02 -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-on-surface">DURUM 02</span>
+            <span class="w-2 h-2 rounded-full bg-error"></span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Hatalı Kod veya Eksik Teyit</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            3 defa art arda hatalı giriş durumunda kimlik doğrulama 15 dakika boyunca bloke edilir ve güvenlik günlüğü kaydedilir.
+          </p>
+        </div>
+        <span class="text-[11px] font-semibold text-error mt-3 block flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">block</span> Kalan Deneme Hakkı: 2
+        </span>
+      </div>
+
+      <!-- Durum 03 -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-on-surface">DURUM 03</span>
+            <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">30 Günlük Askı Süreci Başladı</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Hesap donduruldu. Oturum anında kapatıldı. Aday bu süreçte tekrar giriş yaparsa "Talebi İptal Et" ekranı ile karşılaşır.
+          </p>
+        </div>
+        <span class="text-[11px] font-semibold text-tertiary mt-3 block flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">undo</span> Cayma Mekanizması Açık
+        </span>
+      </div>
+
+      <!-- Durum 04 -->
+      <div class="bg-surface p-4 rounded border border-outline-variant flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-on-surface">DURUM 04</span>
+            <span class="w-2 h-2 rounded-full bg-on-surface-variant"></span>
+          </div>
+          <h4 class="text-xs font-bold text-on-surface mb-1">Önbellek ve Yerel Mühürleme</h4>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Tarayıcı yerel saklama alanı, oturum önbelleği ve geçici yetki simgeleri anında sıfırlanır; cihaz izole edilir.
+          </p>
+        </div>
+        <span class="text-[11px] font-semibold text-on-surface-variant mt-3 block flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">lock_reset</span> İstemci Temizlendi
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. KURUMSAL ALTBİLGİ (Footer) -->
+  <footer class="bg-surface border-t border-outline-variant mt-auto">
+    <div class="w-full py-6 px-8 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-on-surface-variant">
+      <div class="flex items-center gap-2">
+        <span class="font-display font-bold text-sm tracking-tight text-primary">ODAK</span>
+        <span class="text-outline-variant">•</span>
+        <span>© 2026 ODAK YDS Platformu. ÖSYM Sınav Standartları ve Optik Uyum Modülü. Tüm hakları saklıdır.</span>
+      </div>
+      <nav class="flex flex-wrap items-center gap-6">
+        <a class="hover:text-primary transition-colors" href="#">Soru İtirazı</a>
+        <a class="hover:text-primary transition-colors" href="#">Sınav Yönergesi</a>
+        <a class="hover:text-primary transition-colors" href="#">Optik Form Doğrulama</a>
+        <a class="hover:text-primary transition-colors" href="#">Teknik Destek</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>

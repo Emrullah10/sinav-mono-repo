@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>ODAK · Kilometre Taşları</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            // Katı Palet Kuralları
+            petrol: {
+              DEFAULT: "#4DB6B0",
+              dark: "#0E6A6E",
+              deep: "#004441",
+              tint: "#163435"
+            },
+            safran: {
+              DEFAULT: "#F0B43A",
+              dark: "#E9A514",
+              bg: "#322509"
+            },
+            dogru: {
+              DEFAULT: "#4CC27D",
+              dark: "#1F7A45",
+              bg: "#10281C"
+            },
+            yanlis: {
+              DEFAULT: "#EE8A6E",
+              dark: "#A33D27",
+              bg: "#2E1510"
+            },
+            // Koyu Tema Nötrleri: #0E171B #142127 #E4ECEC #A9B8BA #24343A
+            surface: {
+              DEFAULT: "#0E171B",
+              container: "#142127",
+              card: "#192830",
+              elevated: "#20323C",
+              border: "#24343A"
+            },
+            content: {
+              primary: "#E4ECEC",
+              secondary: "#A9B8BA",
+              muted: "#718588"
+            }
+          },
+          fontFamily: {
+            sans: ["Work Sans", "Figtree", "sans-serif"],
+            serif: ["Literata", "serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #0E171B;
+      color: #E4ECEC;
+      font-family: 'Work Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-surface flex flex-col items-center justify-start selection:bg-petrol-dark selection:text-content-primary">
+
+  <!-- Mobile Viewport Wrapper (390px Max Canvas) -->
+  <div class="w-full max-w-[390px] min-h-screen bg-surface flex flex-col relative border-x border-surface-border pb-20">
+
+    <!-- Üst Çubuk (ODAK Marka Adı + Sınav Seçici Çipi + Bildirim) -->
+    <header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-none border-b border-surface-border flex justify-between items-center w-full px-4 h-14">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-petrol text-[22px]">school</span>
+        <span class="font-sans font-bold text-[19px] tracking-tight text-content-primary">ODAK</span>
+        
+        <!-- Sınav Seçici ve Geri Sayım Çipi -->
+        <button type="button" aria-label="Sınav Değiştir" class="flex items-center gap-1 bg-surface-container hover:bg-surface-elevated px-2.5 py-1 rounded border border-surface-border text-content-secondary text-[11px] font-medium transition-colors">
+          <span class="w-1.5 h-1.5 rounded-full bg-safran"></span>
+          <span>YDS · 22 Kasım (52 gün)</span>
+          <span class="material-symbols-outlined text-[15px] text-content-muted">arrow_drop_down</span>
+        </button>
+      </div>
+
+      <button aria-label="Bildirimler" class="w-11 h-11 flex items-center justify-center text-content-secondary hover:text-content-primary active:scale-95 transition-transform" type="button">
+        <span class="material-symbols-outlined text-[20px]">notifications</span>
+      </button>
+    </header>
+
+    <!-- Mevzuat ve Takvim Durum Çubuğu -->
+    <div class="bg-surface-container px-4 py-2 border-b border-surface-border flex items-center justify-between text-content-secondary text-[11px]">
+      <div class="flex items-center gap-1.5">
+        <span class="text-content-primary font-medium">2 Ekim 2026 Cuma</span>
+        <span>·</span>
+        <span>2026-YDS/2</span>
+      </div>
+      <span class="text-safran font-medium">Başvuru: 30 Eyl – 8 Eki</span>
+    </div>
+
+    <!-- Ana İçerik -->
+    <main class="flex-1 px-4 py-4 space-y-4">
+
+      <!-- Başlık ve Modül Bilgisi -->
+      <div>
+        <div class="flex items-center gap-1.5 text-petrol text-[11px] font-semibold tracking-wider uppercase mb-1">
+          <span class="material-symbols-outlined text-[16px]">military_tech</span>
+          <span>AKADEMİK İLERLEME VE KAZANIMLAR</span>
+        </div>
+        <h1 class="text-[22px] font-serif font-bold text-content-primary tracking-tight">Kilometre Taşları</h1>
+        <p class="text-[13px] text-content-secondary mt-0.5 leading-snug">
+          Deneme oturumları, bilişsel kelime dağarcığı ve kesintisiz çalışma serisinde tescillenen resmi eşikler.
+        </p>
+      </div>
+
+      <!-- Genel İlerleme Özeti Paneli -->
+      <section class="bg-surface-container border border-surface-border rounded-lg p-3.5 space-y-3">
+        <div class="flex items-center justify-between pb-3 border-b border-surface-border">
+          <div>
+            <span class="text-[11px] uppercase tracking-wider text-content-muted font-medium block">Tamamlanan Eşikler</span>
+            <div class="flex items-baseline gap-1.5 mt-0.5">
+              <span class="text-[22px] font-serif font-bold text-content-primary">5</span>
+              <span class="text-[13px] text-content-muted">/ 8 Taş</span>
+              <span class="text-[11px] font-semibold text-dogru ml-1">(%62,5)</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[11px] uppercase tracking-wider text-content-muted font-medium block">Kazanılan Puan Katkısı</span>
+            <div class="text-[18px] font-serif font-bold text-petrol mt-0.5">+18,75 Puan</div>
+          </div>
+        </div>
+
+        <!-- İlerleme Çubuğu -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center text-[11px]">
+            <span class="text-content-secondary">Sıradaki Eşik: <strong class="text-content-primary font-medium">30 Gün Çalışma Serisi</strong></span>
+            <span class="text-safran font-semibold">22 / 30 Gün</span>
+          </div>
+          <div class="w-full bg-surface-card h-2 rounded-full overflow-hidden flex border border-surface-border/60">
+            <div class="bg-dogru h-full" style="width: 62.5%;"></div>
+            <div class="bg-safran h-full" style="width: 11%;"></div>
+          </div>
+        </div>
+
+        <!-- YDS Ölçme Kuralı Notu -->
+        <div class="flex items-start gap-2 bg-surface-card/70 p-2.5 rounded border border-surface-border text-[11px] text-content-secondary">
+          <span class="material-symbols-outlined text-petrol text-[16px] shrink-0 mt-0.5">gavel</span>
+          <span>
+            ÖSYM YDS esaslarına göre her doğru 1,25 puandır. Yanlış cevap doğruyu eksiltmez; kazanılan eşikler doğrudan resmi akademik yeterlilik barajlarını destekler.
+          </span>
+        </div>
+      </section>
+
+      <!-- Sekme Filtresi (Tümü, Kazanılanlar, Kilitli) -->
+      <div class="flex items-center gap-1.5 border-b border-surface-border pb-1">
+        <button type="button" class="h-11 px-3.5 rounded text-[12px] font-semibold bg-surface-elevated text-content-primary border border-surface-border flex items-center justify-center gap-1.5">
+          <span>Tüm Taşlar</span>
+          <span class="text-[10px] px-1.5 py-0.2 bg-surface-card rounded text-petrol font-bold">8</span>
+        </button>
+        <button type="button" class="h-11 px-3 rounded text-[12px] font-medium text-content-secondary hover:text-content-primary hover:bg-surface-container flex items-center justify-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-[15px] text-dogru">check</span>
+          <span>Kazanılan</span>
+          <span class="text-[10px] text-content-muted">(5)</span>
+        </button>
+        <button type="button" class="h-11 px-3 rounded text-[12px] font-medium text-content-secondary hover:text-content-primary hover:bg-surface-container flex items-center justify-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-[15px] text-content-muted">lock</span>
+          <span>Kilitli</span>
+          <span class="text-[10px] text-content-muted">(3)</span>
+        </button>
+      </div>
+
+      <!-- KİLOMETRE TAŞLARI LİSTESİ -->
+      <section class="space-y-3">
+
+        <!-- 1. TAŞ: İLK TAM DENEME (KAZANILDI) -->
+        <article class="bg-surface-container border border-surface-border rounded-lg p-3.5 space-y-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <div class="w-10 h-10 rounded bg-dogru-bg border border-dogru/40 flex items-center justify-center text-dogru shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono text-content-muted uppercase">EŞİK · DS-01</span>
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold text-dogru bg-dogru-bg px-1.5 py-0.2 rounded border border-dogru/30">
+                    <span class="material-symbols-outlined text-[12px]">check</span>
+                    <span>Kazanıldı</span>
+                  </span>
+                </div>
+                <h3 class="text-[15px] font-sans font-bold text-content-primary mt-0.5">İlk Tam Deneme</h3>
+                <p class="text-[12px] text-content-secondary mt-0.5">
+                  180 dakika süre sınırında 80 soruluk resmi ÖSYM formatında ilk deneme simülasyonu eksiksiz tamamlandı.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kazanım Detayı ve Tescil Bilgisi -->
+          <div class="bg-surface-card p-2.5 rounded border border-surface-border/70 flex items-center justify-between text-[11px]">
+            <div class="text-content-secondary">
+              <span>Tescil: </span>
+              <strong class="text-content-primary font-medium">12 Ağustos 2026</strong>
+              <span class="text-content-muted"> · 42 Doğru (52,50 Puan)</span>
+            </div>
+            <div class="text-dogru font-semibold flex items-center gap-1">
+              <span>Kazanım:</span>
+              <span class="bg-dogru/10 px-1.5 py-0.5 rounded border border-dogru/30">Başlangıç Performans Raporu</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2. TAŞ: HEDEFİN YARISI (KAZANILDI) -->
+        <article class="bg-surface-container border border-surface-border rounded-lg p-3.5 space-y-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <div class="w-10 h-10 rounded bg-dogru-bg border border-dogru/40 flex items-center justify-center text-dogru shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[20px]">flag</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono text-content-muted uppercase">EŞİK · DS-02</span>
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold text-dogru bg-dogru-bg px-1.5 py-0.2 rounded border border-dogru/30">
+                    <span class="material-symbols-outlined text-[12px]">check</span>
+                    <span>Kazanıldı</span>
+                  </span>
+                </div>
+                <h3 class="text-[15px] font-sans font-bold text-content-primary mt-0.5">Hedefin Yarısı (50,00 Puan)</h3>
+                <p class="text-[12px] text-content-secondary mt-0.5">
+                  80 soru üzerinden 40 doğru yanıt barajı aşılarak 50,00 taban puan resmen elde edildi.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-surface-card p-2.5 rounded border border-surface-border/70 flex items-center justify-between text-[11px]">
+            <div class="text-content-secondary">
+              <span>Tescil: </span>
+              <strong class="text-content-primary font-medium">26 Ağustos 2026</strong>
+              <span class="text-content-muted"> · Seviye D Barajı Geçildi</span>
+            </div>
+            <div class="text-dogru font-semibold flex items-center gap-1">
+              <span>Kazanım:</span>
+              <span class="bg-dogru/10 px-1.5 py-0.5 rounded border border-dogru/30">Orta Düzey Paragraf Taktiği</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3. TAŞ: 55 EŞİĞİNE ULAŞAN TAHMİN (KAZANILDI) -->
+        <article class="bg-surface-container border-2 border-petrol/60 rounded-lg p-3.5 space-y-2.5 relative">
+          <!-- Odak Rozeti -->
+          <div class="absolute -top-2.5 right-3 bg-petrol text-surface text-[10px] font-bold px-2 py-0.5 rounded">
+            Doçentlik Eşiği Geçildi
+          </div>
+
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <div class="w-10 h-10 rounded bg-petrol-tint border border-petrol/50 flex items-center justify-center text-petrol shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[20px]">trending_up</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono text-petrol font-bold uppercase">EŞİK · DS-03</span>
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold text-dogru bg-dogru-bg px-1.5 py-0.2 rounded border border-dogru/30">
+                    <span class="material-symbols-outlined text-[12px]">check</span>
+                    <span>Kazanıldı</span>
+                  </span>
+                </div>
+                <h3 class="text-[15px] font-sans font-bold text-content-primary mt-0.5">55 Eşiğine Ulaşan Tahmin (68,75 Puan)</h3>
+                <p class="text-[12px] text-content-secondary mt-0.5">
+                  80 soruluk resmi denemede 55 doğru yanıt ile ÜAK doçentlik asgari şartı olan 65,00 puan (52 doğru) geride bırakıldı.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metrik Detayı -->
+          <div class="grid grid-cols-2 gap-2 bg-surface-card p-2.5 rounded border border-surface-border text-[11px]">
+            <div>
+              <span class="text-content-muted block">Tescil Tarihi:</span>
+              <strong class="text-content-primary font-medium">1 Ekim 2026</strong>
+              <span class="text-content-secondary block mt-0.5">55 Doğru · 23 Yanlış · 2 Boş</span>
+            </div>
+            <div class="text-right">
+              <span class="text-content-muted block">Tescillenen Hak:</span>
+              <span class="text-petrol font-semibold block">ÜAK Yabancı Dil Şartı</span>
+              <span class="text-[10px] text-content-secondary">80 Puan Hedefine 9 Doğru Kaldı</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. TAŞ: 100 HAP NOT (KAZANILDI) -->
+        <article class="bg-surface-container border border-surface-border rounded-lg p-3.5 space-y-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <div class="w-10 h-10 rounded bg-dogru-bg border border-dogru/40 flex items-center justify-center text-dogru shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[20px]">sticky_note_2</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono text-content-muted uppercase">EŞİK · HN-01</span>
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold text-dogru bg-dogru-bg px-1.5 py-0.2 rounded border border-dogru/30">
+                    <span class="material-symbols-outlined text-[12px]">check</span>
+                    <span>Kazanıldı</span>
+                  </span>
+                </div>
+                <h3 class="text-[15px] font-sans font-bold text-content-primary mt-0.5">100 Akademik Hap Not</h3>
+                <p class="text-[12px] text-content-secondary mt-0.5">
+                  Çözülen sorulardan çıkarılan 100 kritik gramer, edat ve bağlaç kuralı kişisel etüt arşivine sabitlendi.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-surface-card p-2.5 rounded border border-surface-border/70 flex items-center justify-between text-[11px]">
+            <div class="text-content-secondary">
+              <span>Tescil: </span>
+              <strong class="text-content-primary font-medium">28 Eylül 2026</strong>
+              <span class="text-content-muted"> · 100 Kural Arşivde</span>
+            </div>
+            <div class="text-dogru font-semibold flex items-center gap-1">
+              <span>Kazanım:</span>
+              <span class="bg-dogru/10 px-1.5 py-0.5 rounded border border-dogru/30">Kişisel Hata Röntgeni Raporu</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5. TAŞ: 500 KELİME (KAZANILDI) -->
+        <article class="bg-surface-container border border-surface-border rounded-lg p-3.5 space-y-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <div class="w-10 h-10 rounded bg-dogru-bg border border-dogru/40 flex items-center justify-center text-dogru shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[20px]">menu_book</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono text-content-muted uppercase">EŞİK · KH-01</span>
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold text-dogru bg-dogru-bg px-1.5 py-0.2 rounded border border-dogru/30">
+                    <span class="material-symbols-outlined text-[12px]">check</span>
+                    <span>Kazanıldı</span>
+                  </span>
+                </div>
+                <h3 class="text-[15px] font-sans font-bold text-content-primary mt-0.5">500 Hedef Kelime</h3>
+                <p class="text-[12px] text-content-secondary mt-0.5">
+                  YDS C1 frekans listesindeki 500 yüksek öncelikli akademik sözcük hafıza havuzunda kalıcı olarak doğrulandı.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kelime İlerleme ve Örnek Literata Cümle -->
+          <div class="bg-surface-card p-2.5 rounded border border-surface-border/70 space-y-2">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="text-content-secondary">Tescil: <strong class="text-content-primary">2 Ekim 2026</strong> (512 / 500 Kelime)</span>
+              <span class="text-dogru font-semibold">Tüm Kelime Kartları Açık</span>
+            </div>
+            <div class="text-[12px] font-serif italic text-content-primary border-l-2 border-petrol pl-2 py-0.5">
+              "The research team achieved an <span class="text-petrol font-semibold not-italic">unprecedented</span> breakthrough in energy storage."
+            </div>
+          </div>
+        </article>
+
+        <!-- 6. TAŞ: 7 GÜN KESİNTİSİZ SERİ (KAZANILDI) -->
+        <article class="bg-surface-container border border-surface-border rounded-lg p-3.5 space-y-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <div class="w-10 h-10 rounded bg-dogru-bg border border-dogru/40 flex items-center justify-center text-dogru shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[20px]">calendar_month</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono text-content-muted uppercase">EŞİK · ÇD-01</span>
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold text-dogru bg-dogru-bg px-1.5 py-0.2 rounded border border-dogru/30">
+                    <span class="material-symbols-outlined text-[12px]">check</span>
+                    <span>Kazanıldı</span>
+                  </span>
+                </div>
+                <h3 class="text-[15px] font-sans font-bold text-content-primary mt-0.5">7 Gün Kesintisiz Çalışma Serisi</h3>
+                <p class="text-[12px] text-content-secondary mt-0.5">
+                  Bir tam hafta boyunca çalışma ritmi bozulmadan her takvim gününde asgari odak süresi sağlandı.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-surface-card p-2.5 rounded border border-surface-border/70 flex items-center justify-between text-[11px]">
+            <div class="text-content-secondary">
+              <span>Tescil: </span>
+              <strong class="text-content-primary font-medium">20 Ağustos 2026</strong>
+              <span class="text-content-muted"> · 7 Günlük Zincir</span>
+            </div>
+            <div class="text-dogru font-semibold flex items-center gap-1">
+              <span>Kazanım:</span>
+              <span class="bg-dogru/10 px-1.5 py-0.5 rounded border border-dogru/30">Hızlı Tekrar Oturumu</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7. TAŞ: 30 GÜN KESİNTİSİZ SERİ (KİLİTLİ / DEVAM EDİYOR) -->
+        <article class="bg-surface-container border border-safran/40 rounded-lg p-3.5 space-y-3 relative">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <div class="w-10 h-10 rounded bg-safran-bg border border-safran/40 flex items-center justify-center text-safran shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[20px]">hourglass_top</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono text-safran font-semibold uppercase">EŞİK · ÇD-02</span>
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold text-safran bg-safran-bg px-1.5 py-0.2 rounded border border-safran/30">
+                    <span>Devam Ediyor</span>
+                  </span>
+                </div>
+                <h3 class="text-[15px] font-sans font-bold text-content-primary mt-0.5">30 Gün Kesintisiz Çalışma Serisi</h3>
+                <p class="text-[12px] text-content-secondary mt-0.5">
+                  1 tam ay boyunca her takvim gününde en az 40 soruluk akademik çalışma tamamlanarak kalıcı çalışma disiplini kurulması.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- İlerleme Çubuğu ve Kalan Gün -->
+          <div class="space-y-1 bg-surface-card p-2.5 rounded border border-surface-border">
+            <div class="flex justify-between items-center text-[11px]">
+              <span class="text-content-secondary">Mevcut Durum: <strong class="text-content-primary font-semibold">22 Gün</strong></span>
+              <span class="text-safran font-bold">Kalan: 8 Gün (%73,3)</span>
+            </div>
+            <div class="w-full bg-surface-elevated h-2 rounded-full overflow-hidden flex">
+              <div class="bg-safran h-full" style="width: 73.3%;"></div>
+            </div>
+            <div class="flex justify-between items-center text-[10px] text-content-muted pt-1">
+              <span>Hedef Tarih: 10 Ekim 2026</span>
+              <span class="text-content-secondary font-medium">Ödül: Akademik Dayanıklılık Brövesi</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 8. TAŞ: 100 GÜN KESİNTİSİZ SERİ (TAM KİLİTLİ) -->
+        <article class="bg-surface-container/60 border border-surface-border rounded-lg p-3.5 space-y-2.5 opacity-80">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <div class="w-10 h-10 rounded bg-surface-card border border-surface-border flex items-center justify-center text-content-muted shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[20px]">lock</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono text-content-muted uppercase">EŞİK · ÇD-03</span>
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-medium text-content-muted bg-surface-card px-1.5 py-0.2 rounded border border-surface-border">
+                    <span class="material-symbols-outlined text-[11px]">lock</span>
+                    <span>Kilitli</span>
+                  </span>
+                </div>
+                <h3 class="text-[15px] font-sans font-bold text-content-secondary mt-0.5">100 Gün Kesintisiz Çalışma Serisi</h3>
+                <p class="text-[12px] text-content-muted mt-0.5">
+                  Sınav gününe kadar ara vermeden her gün en az 1 modül ve 30 soru tamamlama kuralı. Sınav gününe kalan 52 gün boyunca zincir korunursa hedef açılmış olacaktır.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-surface-card/60 p-2.5 rounded border border-surface-border flex items-center justify-between text-[11px] text-content-muted">
+            <div>
+              <span>İlerleme: </span>
+              <strong class="text-content-secondary">22 / 100 Gün</strong>
+              <span> (%22,0)</span>
+            </div>
+            <div class="flex items-center gap-1 text-[10px]">
+              <span class="material-symbols-outlined text-[13px]">workspace_premium</span>
+              <span>Akademik Üstünlük Plaketi</span>
+            </div>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- Hedef Eylem Butonu (44px Minimum Dokunma Hedefi) -->
+      <div class="pt-2">
+        <button type="button" class="w-full h-11 bg-petrol text-surface font-sans font-bold text-[13px] rounded flex items-center justify-center gap-2 hover:bg-petrol-dark active:scale-[0.98] transition-all">
+          <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+          <span>Bugünkü 40 Soruluk Çalışmayı Başlat (23. Gün)</span>
+        </button>
+      </div>
+
+    </main>
+
+    <!-- Sabit Alt Gezinme Çubuğu (BottomNavBar - 5 Sekmeli ODAK Standardı) -->
+    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-1 h-16 bg-surface border-t border-surface-border max-w-[390px] mx-auto right-0">
+      <!-- Sekme 1: Bugün -->
+      <a class="flex flex-col items-center justify-center text-content-muted hover:text-content-primary py-1 px-2 min-w-[56px] min-h-[44px] transition-colors" href="#">
+        <span class="material-symbols-outlined text-[20px]">calendar_today</span>
+        <span class="text-[11px] mt-0.5 font-medium">Bugün</span>
+      </a>
+
+      <!-- Sekme 2: Çalış -->
+      <a class="flex flex-col items-center justify-center text-content-muted hover:text-content-primary py-1 px-2 min-w-[56px] min-h-[44px] transition-colors" href="#">
+        <span class="material-symbols-outlined text-[20px]">menu_book</span>
+        <span class="text-[11px] mt-0.5 font-medium">Çalış</span>
+      </a>
+
+      <!-- Sekme 3: Deneme -->
+      <a class="flex flex-col items-center justify-center text-content-muted hover:text-content-primary py-1 px-2 min-w-[56px] min-h-[44px] transition-colors" href="#">
+        <span class="material-symbols-outlined text-[20px]">assignment</span>
+        <span class="text-[11px] mt-0.5 font-medium">Deneme</span>
+      </a>
+
+      <!-- Sekme 4: Öğretmen -->
+      <a class="flex flex-col items-center justify-center text-content-muted hover:text-content-primary py-1 px-2 min-w-[56px] min-h-[44px] transition-colors" href="#">
+        <span class="material-symbols-outlined text-[20px]">psychology</span>
+        <span class="text-[11px] mt-0.5 font-medium">Öğretmen</span>
+      </a>
+
+      <!-- Sekme 5: Ben (AKTİF SEKME) -->
+      <a class="flex flex-col items-center justify-center text-petrol font-bold py-1 px-2 rounded-lg bg-surface-container min-w-[56px] min-h-[44px]" href="#">
+        <span class="material-symbols-outlined text-[20px] fill-icon">person</span>
+        <span class="text-[11px] mt-0.5">Ben</span>
+      </a>
+    </nav>
+
+  </div>
+</body>
+</html>

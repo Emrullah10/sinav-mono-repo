@@ -1,0 +1,25 @@
+name: sinav-dev
+services:
+  dev-pg:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: sinav_dev
+      POSTGRES_PASSWORD: dev_pass
+      POSTGRES_DB: sinav
+    ports: ['5434:5432']
+    volumes:
+      - dev-pg-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U sinav_dev -d sinav']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  dev-redis:
+    image: redis:7-alpine
+    command: ['redis-server', '--appendonly', 'yes', '--maxmemory-policy', 'noeviction']
+    ports: ['6380:6379']
+  dev-mailpit:
+    image: axllent/mailpit:latest
+    ports: ['1025:1025', '8025:8025']
+volumes:
+  dev-pg-data:

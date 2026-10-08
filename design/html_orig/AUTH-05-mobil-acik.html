@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AUTH-05 · E-posta Doğrulama - YDS Platformu</title>
+<!-- Google Fonts: Public Sans (Headline), DM Sans (Body/Label), Literata (Reading/Serif) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&amp;family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration matching Design System Tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "background": "#F4F6F5",
+            "surface": "#FFFFFF",
+            "surface-container": "#FFFFFF",
+            "surface-container-high": "#DCEDEC",
+            "on-surface": "#13232A",
+            "on-surface-variant": "#46565C",
+            "outline": "#77868A",
+            "outline-variant": "#DAE1E0",
+            "primary": "#0E6A6E",
+            "on-primary": "#FFFFFF",
+            "primary-container": "#DCEDEC",
+            "on-primary-container": "#0A5458",
+            "secondary": "#E9A514",
+            "on-secondary": "#13232A",
+            "secondary-container": "#FBEFD2",
+            "tertiary": "#1F7A45",
+            "tertiary-container": "#DFF1E6",
+            "error": "#A33D27",
+            "error-container": "#F8E3DC",
+            "inverse-surface": "#13232A",
+            "chart-1": "#0F9485",
+            "chart-2": "#505AC8",
+            "chart-3": "#BA7F14",
+            "chart-4": "#9E427B"
+          },
+          borderRadius: {
+            "xs": "4px",
+            "sm": "8px",
+            "DEFAULT": "12px",
+            "md": "12px",
+            "lg": "16px",
+            "xl": "24px",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Public Sans", "sans-serif"],
+            "display": ["Public Sans", "sans-serif"],
+            "body": ["DM Sans", "sans-serif"],
+            "label": ["DM Sans", "sans-serif"],
+            "reading": ["Literata", "serif"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .blinking-caret {
+      animation: cursor-blink 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col justify-between selection:bg-primary-container selection:text-on-primary-container">
+<!-- WRAPPER: Mobile Frame 390px Max Width centered -->
+<div class="w-full max-w-[390px] mx-auto min-h-screen bg-background flex flex-col relative pb-24 shadow-sm">
+<!-- 1. TOP APP BAR (Shared Components JSON execution) -->
+<header class="w-full h-14 max-w-[390px] mx-auto px-4 flex items-center justify-between bg-surface border-b border-outline-variant sticky top-0 z-40">
+<!-- Leading: arrow_back with 44px hit target -->
+<button aria-label="Geri Dön" class="min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface hover:bg-primary-container/40 transition-all duration-150 active:scale-95 rounded-full" type="button">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<!-- Center Title -->
+<h1 class="font-headline font-semibold text-[17px] leading-tight text-on-surface tracking-tight">
+        E-posta Doğrulama
+      </h1>
+<!-- Trailing Action: Giriş Yap -->
+<a class="min-h-[44px] min-w-[44px] flex items-center justify-center font-label font-medium text-[14px] text-primary hover:bg-primary-container/40 transition-all duration-150 active:scale-95 rounded px-2" href="#giris">
+        Giriş Yap
+      </a>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<main class="flex-1 px-4 pt-4 pb-6 space-y-5">
+<!-- 2. STEPPER & SECURITY BADGE SECTION -->
+<div class="space-y-3">
+<!-- Metadata Pill Badge -->
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container text-on-primary-container text-[11px] font-headline font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[14px]">verified_user</span>
+<span>AUTH-05 · GÜVENLİK ADIMI</span>
+</div>
+<!-- Headline & Explanation -->
+<div>
+<h2 class="font-headline font-bold text-[22px] leading-7 text-on-surface">
+            Doğrulama Kodunu Girin
+          </h2>
+<p class="font-body text-[14px] leading-5 text-on-surface-variant mt-1.5">
+<span class="font-semibold text-on-surface">selin.kaya@hacettepe.edu.tr</span> adresine tek kullanımlık 6 haneli güvenlik kodu gönderilmiştir. Hesabınızı aktifleştirmek için kodu giriniz.
+          </p>
+</div>
+<!-- Change Email Action Chip (44px touch height) -->
+<button class="min-h-[44px] inline-flex items-center gap-1.5 text-primary text-[13px] font-label font-semibold hover:text-on-primary-container transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>E-postayı Değiştir</span>
+</button>
+<!-- 3-Step Compact Stepper Indicator -->
+<div class="bg-surface rounded-xl p-3 border border-outline-variant space-y-2">
+<div class="flex items-center justify-between text-[12px] font-label">
+<div class="flex items-center gap-1.5 text-tertiary font-semibold">
+<span class="w-4 h-4 rounded-full bg-tertiary-container text-tertiary flex items-center justify-center text-[10px]">
+<span class="material-symbols-outlined text-[12px]">check</span>
+</span>
+<span>1. E-posta</span>
+</div>
+<div class="h-[1px] flex-1 mx-2 bg-primary"></div>
+<div class="flex items-center gap-1.5 text-primary font-bold">
+<span class="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-[10px]">2</span>
+<span>2. Kod Onayı</span>
+</div>
+<div class="h-[1px] flex-1 mx-2 bg-outline-variant"></div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="w-4 h-4 rounded-full bg-background text-on-surface-variant border border-outline-variant flex items-center justify-center text-[10px]">3</span>
+<span>3. Hazır</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. SIX-DIGIT PIN INPUT CARD -->
+<section class="bg-surface rounded-2xl p-4 border border-outline-variant space-y-4">
+<div class="flex items-center justify-between">
+<label class="text-[13px] font-label font-semibold text-on-surface">
+            Güvenlik Kodu (6 Hane)
+          </label>
+<div class="flex items-center gap-1 text-[11px] font-label text-on-surface-variant bg-background px-2 py-0.5 rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-[13px] text-primary">content_paste</span>
+<span>Panodan yapıştır aktif</span>
+</div>
+</div>
+<!-- 6 OTP Boxes: [4] [8] [2] [1] [ | ] [   ] -->
+<div aria-label="6 haneli doğrulama kodu giriş alanları" class="grid grid-cols-6 gap-2 justify-items-center" role="group">
+<!-- Box 1: Filled '4' -->
+<div class="w-12 h-[52px] rounded-xl border border-primary bg-primary-container/20 flex items-center justify-center font-headline text-[22px] font-bold text-on-surface shadow-none">
+            4
+          </div>
+<!-- Box 2: Filled '8' -->
+<div class="w-12 h-[52px] rounded-xl border border-primary bg-primary-container/20 flex items-center justify-center font-headline text-[22px] font-bold text-on-surface shadow-none">
+            8
+          </div>
+<!-- Box 3: Filled '2' -->
+<div class="w-12 h-[52px] rounded-xl border border-primary bg-primary-container/20 flex items-center justify-center font-headline text-[22px] font-bold text-on-surface shadow-none">
+            2
+          </div>
+<!-- Box 4: Filled '1' -->
+<div class="w-12 h-[52px] rounded-xl border border-primary bg-primary-container/20 flex items-center justify-center font-headline text-[22px] font-bold text-on-surface shadow-none">
+            1
+          </div>
+<!-- Box 5: Active Focus with blinking cursor -->
+<div class="w-12 h-[52px] rounded-xl border-2 border-primary bg-surface flex items-center justify-center shadow-none relative">
+<span class="w-[2px] h-6 bg-primary blinking-caret"></span>
+</div>
+<!-- Box 6: Empty awaiting input -->
+<div class="w-12 h-[52px] rounded-xl border border-outline-variant bg-background/50 flex items-center justify-center text-outline shadow-none">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
+</div>
+</div>
+<!-- Timer & Resend Strip -->
+<div class="flex items-center justify-between pt-1 border-t border-outline-variant text-[13px]">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-label">
+<span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+<span><strong class="text-on-surface font-semibold">00:48</strong> içinde geçerli</span>
+</div>
+<button class="min-h-[44px] min-w-[44px] flex items-center text-primary hover:text-on-primary-container font-label font-semibold text-[13px] active:scale-95 transition-all" type="button">
+            Kodu Yeniden Gönder
+          </button>
+</div>
+</section>
+<!-- 4. PRIMARY ACTION BUTTON -->
+<div>
+<button class="w-full min-h-[52px] rounded-xl bg-primary text-on-primary font-label font-bold text-[15px] flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.99] hover:bg-on-primary-container" type="button">
+<span>Kodu Onayla ve Devam Et</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<p class="text-center text-[12px] font-body text-on-surface-variant mt-2">
+          SMS ile almak isterseniz <button class="text-primary font-semibold underline underline-offset-2" type="button">SMS Kodunu İste</button>
+</p>
+</div>
+<!-- 5. FEEDBACK & INTERACTION SCENARIO MATRIX -->
+<section class="space-y-3 pt-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">rule</span>
+<h3 class="font-headline font-semibold text-[14px] text-on-surface">
+            Doğrulama ve Geri Bildirim Senaryoları
+          </h3>
+</div>
+<div class="space-y-2.5">
+<!-- Durum A: Hatalı / Geçersiz Kod -->
+<div class="bg-error-container/40 rounded-xl p-3 border border-error/30 flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-full bg-error text-white flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</div>
+<div class="space-y-0.5">
+<p class="font-label font-semibold text-[13px] text-error">
+                Hata: Geçersiz Kod
+              </p>
+<p class="font-body text-[12px] text-on-surface leading-snug">
+                Girdiğiniz 6 haneli kod hatalıdır. Kalan deneme hakkı: <strong>2</strong>
+</p>
+</div>
+</div>
+<!-- Durum B: Kodun Süresi Doldu -->
+<div class="bg-secondary-container/40 rounded-xl p-3 border border-secondary/40 flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[15px] fill-icon">history_toggle_off</span>
+</div>
+<div class="space-y-0.5">
+<p class="font-label font-semibold text-[13px] text-on-surface">
+                  Kodun Süresi Doldu
+                </p>
+<p class="font-body text-[12px] text-on-surface-variant leading-snug">
+                  Güvenliğiniz için kod geçerliliğini yitirdi. Lütfen yeni bir kod isteyiniz.
+                </p>
+</div>
+</div>
+<button class="min-h-[44px] px-2.5 rounded-lg border border-outline-variant bg-surface text-primary font-label text-[12px] font-semibold whitespace-nowrap active:scale-95" type="button">
+              Yeni Kod
+            </button>
+</div>
+<!-- Durum C: Başarılı Doğrulama -->
+<div class="bg-tertiary-container/50 rounded-xl p-3 border border-tertiary/30 flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-full bg-tertiary text-white flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[15px]">check</span>
+</div>
+<div class="space-y-0.5">
+<p class="font-label font-semibold text-[13px] text-tertiary">
+                Doğrulandı: E-posta Başarıyla Eşleşti
+              </p>
+<p class="font-body text-[12px] text-on-surface-variant leading-snug">
+                YDS hazırlık profilinize ve seviye tespit testine aktarılıyorsunuz...
+              </p>
+</div>
+</div>
+<!-- Durum D: Ağ Bağlantısı Hatası -->
+<div class="bg-surface rounded-xl p-3 border border-outline-variant flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-full bg-background border border-outline text-on-surface-variant flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[15px]">wifi_off</span>
+</div>
+<div class="space-y-0.5">
+<p class="font-label font-semibold text-[13px] text-on-surface">
+                  Sunucu Bağlantısı Kurulamadı
+                </p>
+<p class="font-body text-[12px] text-on-surface-variant leading-snug">
+                  ÖSYM doğrulama ağında geçici gecikme. Lütfen tekrar deneyin.
+                </p>
+</div>
+</div>
+<button class="min-h-[44px] px-2.5 rounded-lg bg-surface text-primary border border-outline-variant font-label text-[12px] font-semibold active:scale-95" type="button">
+              Yeniden Dene
+            </button>
+</div>
+</div>
+</section>
+<!-- 6. PEDAGOGIC SECURITY & READING NOTIFICATION -->
+<section class="bg-surface rounded-xl p-3.5 border border-outline-variant space-y-3">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary">lock</span>
+<h4 class="font-headline font-semibold text-[13px]">ÖSYM Akreditasyon ve KVKK Güvencesi</h4>
+</div>
+<p class="text-[12px] font-body text-on-surface-variant leading-relaxed">
+          Tüm kullanıcı kimlik doğrulama işlemleri 256-bit SSL şifreleme ve akademik e-posta standartlarına tam uyumlu olarak korunur. Verileriniz üçüncü taraflarla paylaşılmaz.
+        </p>
+<!-- Mini Reading & Vocabulary Warm-Up Tip (Literata Serif) -->
+<div class="p-2.5 rounded-lg bg-background border-l-2 border-primary space-y-1">
+<span class="text-[11px] font-label font-bold uppercase tracking-wider text-primary">Günün Sınav Cümlesi</span>
+<p class="font-reading text-[14px] leading-relaxed text-on-surface italic">
+            “Although time is strictly limited in standardized exams, consistent daily practice ensures long-term accuracy.”
+          </p>
+<p class="text-[11px] font-body text-on-surface-variant">
+<strong>İpucu:</strong> ‘Although’ bağlacı zıtlık bildirir ve YDS Paragraf Tamamlama sorularında anahtar belirleyicidir.
+          </p>
+</div>
+</section>
+</main>
+<!-- 7. BOTTOM NAVIGATION BAR (Shared Components JSON execution) -->
+<!-- Destination count: 5 | Labels: Bugün, Çalış, Deneme, Öğretmen, Ben -->
+<nav class="fixed bottom-0 left-0 right-0 w-full max-w-[390px] mx-auto h-16 z-50 flex items-center justify-around px-2 pb-safe bg-surface border-t border-outline-variant">
+<!-- Tab 1: Bugün (Active authentication/daily start context) -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-primary font-semibold py-1 active:scale-95 transition-transform duration-100" href="#bugun">
+<span class="material-symbols-outlined text-[22px] fill-icon">calendar_today</span>
+<span class="font-label text-[11px] font-semibold text-primary mt-0.5">Bugün</span>
+</a>
+<!-- Tab 2: Çalış -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 active:scale-95 transition-transform duration-100 hover:text-primary" href="#calis">
+<span class="material-symbols-outlined text-[22px]">menu_book</span>
+<span class="font-label text-[11px] text-on-surface-variant mt-0.5">Çalış</span>
+</a>
+<!-- Tab 3: Deneme -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 active:scale-95 transition-transform duration-100 hover:text-primary" href="#deneme">
+<span class="material-symbols-outlined text-[22px]">assignment</span>
+<span class="font-label text-[11px] text-on-surface-variant mt-0.5">Deneme</span>
+</a>
+<!-- Tab 4: Öğretmen -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 active:scale-95 transition-transform duration-100 hover:text-primary" href="#ogretmen">
+<span class="material-symbols-outlined text-[22px]">school</span>
+<span class="font-label text-[11px] text-on-surface-variant mt-0.5">Öğretmen</span>
+</a>
+<!-- Tab 5: Ben -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 active:scale-95 transition-transform duration-100 hover:text-primary" href="#ben">
+<span class="material-symbols-outlined text-[22px]">person</span>
+<span class="font-label text-[11px] text-on-surface-variant mt-0.5">Ben</span>
+</a>
+</nav>
+</div>
+</body></html>

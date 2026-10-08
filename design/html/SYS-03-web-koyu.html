@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ODAK · SYS-03 Hata Durumları ve Güvenlik Güvencesi</title>
+<!-- Google Fonts: Figtree, Literata, Bricolage Grotesque -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#0E171B',
+            surface: '#142127',
+            'surface-container': '#1B2B32',
+            'surface-container-high': '#16363A',
+            'on-surface': '#E4ECEC',
+            'on-surface-variant': '#A9B8BA',
+            outline: '#71838A',
+            'outline-variant': '#24343A',
+            'outline-highlight': '#33474E',
+            primary: '#4DB6B0',
+            'on-primary': '#0E171B',
+            'primary-container': '#16363A',
+            'on-primary-container': '#87CDC8',
+            secondary: '#F0B43A',
+            'on-secondary': '#0E171B',
+            'secondary-container': '#3A2E12',
+            tertiary: '#4CC27D',
+            'tertiary-container': '#163524',
+            error: '#EE8A6E',
+            'error-container': '#3D211A',
+            'inverse-surface': '#E4ECEC',
+            'chart-1': '#04A19B',
+            'chart-2': '#7483E0',
+            'chart-3': '#C0851F',
+            'chart-4': '#C06099'
+          },
+          fontFamily: {
+            "display": ["Bricolage Grotesque"],
+            "headline": ["Bricolage Grotesque"],
+            body: ['Figtree', 'sans-serif'],
+            label: ['Figtree', 'sans-serif'],
+            reading: ['Literata', 'serif']
+          },
+          borderRadius: {
+            xs: '4px',
+            sm: '8px',
+            DEFAULT: '12px',
+            md: '12px',
+            lg: '16px',
+            xl: '24px',
+            full: '9999px'
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #0E171B;
+      color: #E4ECEC;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+    .reading-font {
+      font-family: 'Literata', serif;
+    }
+    /* Tabular numeric values for precision */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.relative{position:relative}.sticky{position:sticky}.top-0{top:0px}.z-50{z-index:50}.mx-1{margin-left:0.25rem;margin-right:0.25rem}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.mb-2{margin-bottom:0.5rem}.mb-6{margin-bottom:1.5rem}.ml-1{margin-left:0.25rem}.mt-0\.5{margin-top:0.125rem}.mt-1\.5{margin-top:0.375rem}.mt-16{margin-top:4rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-1\.5{height:0.375rem}.h-11{height:2.75rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-36{height:9rem}.h-4{height:1rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-1\.5{width:0.375rem}.w-2{width:0.5rem}.w-2\.5{width:0.625rem}.w-36{width:9rem}.w-4{width:1rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-9{width:2.25rem}.w-full{width:100%}.w-px{width:1px}.max-w-2xl{max-width:42rem}.max-w-7xl{max-width:80rem}.max-w-\[680px\]{max-width:680px}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-10 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2.5rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.self-start{align-self:flex-start}.overflow-hidden{overflow:hidden}.rounded{border-radius:12px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:16px}.rounded-md{border-radius:12px}.rounded-xs{border-radius:4px}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-t{border-top-width:1px}.border-error{--tw-border-opacity:1;border-color:rgb(238 138 110 / var(--tw-border-opacity, 1))}.border-error\/40{border-color:rgb(238 138 110 / 0.4)}.border-outline{--tw-border-opacity:1;border-color:rgb(113 131 138 / var(--tw-border-opacity, 1))}.border-outline-highlight{--tw-border-opacity:1;border-color:rgb(51 71 78 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(36 52 58 / var(--tw-border-opacity, 1))}.border-outline-variant\/40{border-color:rgb(36 52 58 / 0.4)}.border-outline-variant\/60{border-color:rgb(36 52 58 / 0.6)}.border-primary{--tw-border-opacity:1;border-color:rgb(77 182 176 / var(--tw-border-opacity, 1))}.border-primary\/30{border-color:rgb(77 182 176 / 0.3)}.border-secondary\/30{border-color:rgb(240 180 58 / 0.3)}.bg-background{--tw-bg-opacity:1;background-color:rgb(14 23 27 / var(--tw-bg-opacity, 1))}.bg-error{--tw-bg-opacity:1;background-color:rgb(238 138 110 / var(--tw-bg-opacity, 1))}.bg-error-container{--tw-bg-opacity:1;background-color:rgb(61 33 26 / var(--tw-bg-opacity, 1))}.bg-error-container\/80{background-color:rgb(61 33 26 / 0.8)}.bg-outline-variant{--tw-bg-opacity:1;background-color:rgb(36 52 58 / var(--tw-bg-opacity, 1))}.bg-primary{--tw-bg-opacity:1;background-color:rgb(77 182 176 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(22 54 58 / var(--tw-bg-opacity, 1))}.bg-primary-container\/40{background-color:rgb(22 54 58 / 0.4)}.bg-primary\/20{background-color:rgb(77 182 176 / 0.2)}.bg-secondary{--tw-bg-opacity:1;background-color:rgb(240 180 58 / var(--tw-bg-opacity, 1))}.bg-secondary-container{--tw-bg-opacity:1;background-color:rgb(58 46 18 / var(--tw-bg-opacity, 1))}.bg-surface{--tw-bg-opacity:1;background-color:rgb(20 33 39 / var(--tw-bg-opacity, 1))}.bg-surface-container{--tw-bg-opacity:1;background-color:rgb(27 43 50 / var(--tw-bg-opacity, 1))}.p-1{padding:0.25rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-3{padding-bottom:0.75rem}.pb-4{padding-bottom:1rem}.pb-6{padding-bottom:1.5rem}.pl-1{padding-left:0.25rem}.pt-1{padding-top:0.25rem}.pt-2{padding-top:0.5rem}.pt-3{padding-top:0.75rem}.pt-4{padding-top:1rem}.pt-8{padding-top:2rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.font-display{font-family:Bricolage Grotesque}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[16px\]{font-size:16px}.text-\[17px\]{font-size:17px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.leading-\[1\.65\]{line-height:1.65}.leading-normal{line-height:1.5}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-error{--tw-text-opacity:1;color:rgb(238 138 110 / var(--tw-text-opacity, 1))}.text-on-primary{--tw-text-opacity:1;color:rgb(14 23 27 / var(--tw-text-opacity, 1))}.text-on-primary-container{--tw-text-opacity:1;color:rgb(135 205 200 / var(--tw-text-opacity, 1))}.text-on-secondary{--tw-text-opacity:1;color:rgb(14 23 27 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(228 236 236 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(169 184 186 / var(--tw-text-opacity, 1))}.text-outline{--tw-text-opacity:1;color:rgb(113 131 138 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(77 182 176 / var(--tw-text-opacity, 1))}.text-secondary{--tw-text-opacity:1;color:rgb(240 180 58 / var(--tw-text-opacity, 1))}.text-tertiary{--tw-text-opacity:1;color:rgb(76 194 125 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-primary *::selection{--tw-bg-opacity:1;background-color:rgb(77 182 176 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary *::selection{--tw-text-opacity:1;color:rgb(14 23 27 / var(--tw-text-opacity, 1))}.selection\:bg-primary::selection{--tw-bg-opacity:1;background-color:rgb(77 182 176 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary::selection{--tw-text-opacity:1;color:rgb(14 23 27 / var(--tw-text-opacity, 1))}.hover\:border-outline:hover{--tw-border-opacity:1;border-color:rgb(113 131 138 / var(--tw-border-opacity, 1))}.hover\:border-primary:hover{--tw-border-opacity:1;border-color:rgb(77 182 176 / var(--tw-border-opacity, 1))}.hover\:text-on-surface:hover{--tw-text-opacity:1;color:rgb(228 236 236 / var(--tw-text-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(77 182 176 / var(--tw-text-opacity, 1))}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}.hover\:opacity-95:hover{opacity:0.95}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.active\:opacity-90:active{opacity:0.9}@media (min-width: 640px){.sm\:block{display:block}.sm\:flex{display:flex}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}.sm\:p-8{padding:2rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}}@media (min-width: 768px){.md\:inline{display:inline}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-end{align-items:flex-end}.md\:justify-start{justify-content:flex-start}.md\:self-auto{align-self:auto}.md\:text-left{text-align:left}}@media (min-width: 1024px){.lg\:col-span-4{grid-column:span 4 / span 4}.lg\:col-span-8{grid-column:span 8 / span 8}.lg\:flex{display:flex}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (min-width: 1280px){.xl\:flex{display:flex}}</style></head>
+<body class="min-h-screen flex flex-col bg-background text-on-surface antialiased selection:bg-primary selection:text-on-primary">
+<!-- 1. ÜST ÇUBUK (TopNavBar) -->
+<header class="w-full h-16 flex items-center justify-between px-6 bg-surface border-b border-outline-variant sticky top-0 z-50">
+<!-- Sol Bölüm: Marka Logosu ve Sınav Seçici Çip -->
+<div class="flex items-center gap-5">
+<div class="flex items-center gap-2">
+<span class="font-display text-2xl font-bold tracking-tight text-on-surface">ODAK</span>
+<span class="text-xs px-2 py-0.5 rounded-xs bg-primary-container text-on-primary-container font-semibold uppercase tracking-wider">Akademik</span>
+</div>
+<div class="h-5 w-px bg-outline-variant hidden sm:block"></div>
+<!-- Sınav Seçici Çip (Zorunlu İçerik) -->
+<div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant text-body-sm">
+<span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+<span class="font-semibold text-on-surface text-sm">YDS</span>
+<span class="text-outline">·</span>
+<span class="text-on-surface-variant text-sm">22 Kasım 2026</span>
+<span class="text-outline">·</span>
+<span class="text-on-surface font-medium text-sm tabular-nums">52 Gün Kaldı</span>
+</div>
+</div>
+<!-- Orta Navigasyon Bağlantıları (Desktop) -->
+<nav class="hidden lg:flex items-center gap-8 h-full">
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface transition-colors" href="#">Bugün</a>
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface transition-colors" href="#">Çalış</a>
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface transition-colors" href="#">Deneme</a>
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface transition-colors" href="#">Öğretmen</a>
+<a class="text-primary border-b-2 border-primary font-semibold py-5 transition-colors" href="#">Ben</a>
+</nav>
+<!-- Sağ Aksiyon Grubu -->
+<div class="flex items-center gap-3">
+<!-- 14 Gün Seri Rozeti (Safran dolgu, koyu metin/ikon kuralına uygun) -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-on-secondary font-semibold text-xs tabular-nums" title="Kesintisiz 14 Günlük Akademik Çalışma Serisi">
+<span class="material-symbols-outlined text-sm material-symbols-fill" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span>14 Gün</span>
+</div>
+<!-- Sınav Modu Butonu (min 44px) -->
+<button class="h-11 px-4 rounded-md border border-outline-variant hover:border-outline bg-surface-container text-on-surface text-sm font-medium transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-base text-primary">timer</span>
+<span class="hidden md:inline">Sınav Modu</span>
+</button>
+<div class="h-5 w-px bg-outline-variant mx-1"></div>
+<!-- Kullanıcı Profili -->
+<div class="flex items-center gap-2.5 pl-1">
+<div class="w-9 h-9 rounded-full bg-primary-container border border-primary/30 flex items-center justify-center text-primary font-semibold text-sm">
+          BK
+        </div>
+<div class="hidden xl:flex flex-col text-left leading-tight">
+<span class="text-sm font-medium text-on-surface">Doç. Dr. Bilge Kağan Öztürk</span>
+<span class="text-xs text-on-surface-variant">Akademisyen Adayı</span>
+</div>
+</div>
+</div>
+</header>
+<!-- ANA İÇERİK ALANI -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+<!-- 2. SAYFA BAŞLIĞI VE SİSTEM GÜVENLİK BİLGİLENDİRMESİ -->
+<div class="border-b border-outline-variant pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-2.5 mb-2">
+<span class="px-2.5 py-1 rounded bg-surface-container border border-outline-variant font-mono text-xs text-on-surface-variant tracking-wide">SYS-03</span>
+<span class="text-xs text-outline">·</span>
+<span class="text-xs text-on-surface-variant font-medium">Hata Protokolleri &amp; Kesintisiz Sınav Güvencesi</span>
+</div>
+<h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-on-surface">
+          Hata Durumları ve Güvenlik Güvencesi
+        </h1>
+<p class="text-on-surface-variant text-sm mt-1.5 max-w-2xl">
+          ODAK platformu, sınav sırasında yaşanabilecek ağ kesintisi ve sunucu gecikmelerinde cevaplarınızı kayıpsız korur. YDS kuralları gereği her soru 1,25 puan değerindedir ve hiçbir işaretlemeniz kaybolmaz.
+        </p>
+</div>
+<!-- Durum İki Sekmeli Seçim Çubuğu -->
+<div class="flex items-center bg-surface p-1 rounded-md border border-outline-variant self-start md:self-auto">
+<button class="h-9 px-4 rounded text-xs font-semibold bg-surface-container text-on-surface border border-outline-highlight flex items-center gap-2 transition-all" id="tab-fullscreen-btn" onclick="switchView('fullscreen')">
+<span class="material-symbols-outlined text-sm text-primary">fullscreen</span>
+          Biçim 1: Tam Ekran Hataları
+        </button>
+<button class="h-9 px-4 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface flex items-center gap-2 transition-all" id="tab-inline-btn" onclick="switchView('inline')">
+<span class="material-symbols-outlined text-sm">view_agenda</span>
+          Biçim 2: Kart İçi Satır Hataları
+        </button>
+</div>
+</div>
+<!-- 3. BİÇİM 1: TAM EKRAN HATA DURUMLARI (Ağ Kesintisi & Sunucu Gecikmesi) -->
+<section class="space-y-6" id="view-fullscreen">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="text-lg font-bold text-on-surface">Tam Ekran Güvenlik &amp; Kesinti Deneyimi</h2>
+<span class="text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface-variant border border-outline-variant font-mono">Modal / Bloke Eden Durum</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Yerel Kayıt Güvencesi Aktif</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- DURUM A: AĞ BAĞLANTISI KESİLDİ -->
+<div class="bg-surface rounded-lg border border-outline-variant p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+<!-- Üst Durum Rozeti & Hata Kodu -->
+<div class="flex items-center justify-between border-b border-outline-variant/60 pb-4 mb-6">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+<span class="text-xs font-semibold text-on-surface">Durum A · Çevrimdışı İletişim</span>
+</div>
+<span class="font-mono text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded border border-outline-variant">ERR-AG-10</span>
+</div>
+<!-- Teknik Konturlu Optik Kilit İllüstrasyonu (1.5px kontur, sıfır gradyan) -->
+<div class="my-4 flex justify-center">
+<div class="w-36 h-36 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center relative">
+<svg fill="none" height="84" viewBox="0 0 84 84" width="84" xmlns="http://www.w3.org/2000/svg">
+<!-- Optik Cevap Dairesi (Aday Formu Motifi) -->
+<circle cx="42" cy="42" r="38" stroke="#33474E" stroke-dasharray="4 4" stroke-width="1.5"></circle>
+<circle cx="42" cy="42" r="28" stroke="#4DB6B0" stroke-width="1.5"></circle>
+<!-- Kilit ve Güvenli Veri Çizgisi -->
+<path d="M34 38V32C34 27.5817 37.5817 24 42 24C46.4183 24 50 27.5817 50 32V38" stroke="#E4ECEC" stroke-linecap="round" stroke-width="1.5"></path>
+<rect fill="#1B2B32" height="18" rx="3" stroke="#E4ECEC" stroke-width="1.5" width="24" x="30" y="38"></rect>
+<!-- Kilit Anahtar Deliği -->
+<circle cx="42" cy="45" fill="#4DB6B0" r="2"></circle>
+<path d="M42 47V51" stroke="#4DB6B0" stroke-linecap="round" stroke-width="1.5"></path>
+<!-- Ağ Kesik Şimşek / Sinyal Yok İzi -->
+<path d="M58 26L64 32" stroke="#EE8A6E" stroke-linecap="round" stroke-width="1.5"></path>
+<path d="M64 26L58 32" stroke="#EE8A6E" stroke-linecap="round" stroke-width="1.5"></path>
+</svg>
+</div>
+</div>
+<!-- Metin Açıklamaları -->
+<div class="text-center space-y-2.5 my-4">
+<h3 class="text-xl font-bold text-on-surface">Ağ Bağlantınız Kesildi, Çözümleriniz Güvende</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed max-w-md mx-auto">
+              İnternet bağlantınız koptu ancak endişelenmeyin. Çözdüğünüz son 18 soru ve işaretlemeleriniz yerel belleğe kaydedildi. Bağlantı yeniden kurulduğunda yanıtlarınız otomatik olarak sunucuya aktarılacaktır.
+            </p>
+</div>
+<!-- Bilgi Şeridi: ÖSYM Kural Güvencesi -->
+<div class="bg-surface-container border border-outline-variant rounded-md p-3.5 my-4 flex items-start gap-3 text-left">
+<span class="material-symbols-outlined text-primary text-lg mt-0.5">verified_user</span>
+<div class="text-xs text-on-surface-variant leading-normal">
+<span class="font-semibold text-on-surface">Yerel Kayıt Güvencesi:</span> İşaretlediğiniz hiçbir soru kaybolmaz. Süre sayacınız durduruldu, sınav hak kaybı önlendi.
+            </div>
+</div>
+<!-- Butonlar (Dokunma hedefi min 44px) -->
+<div class="pt-4 flex flex-col sm:flex-row gap-3">
+<button class="h-11 flex-1 rounded-md bg-primary text-on-primary font-semibold text-sm hover:opacity-95 active:opacity-90 transition-opacity flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-base">refresh</span>
+              Bağlantıyı Yeniden Dene
+            </button>
+<button class="h-11 px-5 rounded-md border border-outline-variant hover:border-outline text-on-surface font-medium text-sm transition-colors flex items-center justify-center gap-2" type="button">
+              Çevrimdışı Çalışmaya Devam Et
+            </button>
+</div>
+</div>
+<!-- DURUM B: SUNUCU YANIT VERMİYOR -->
+<div class="bg-surface rounded-lg border border-outline-variant p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+<!-- Üst Durum Rozeti & Hata Kodu -->
+<div class="flex items-center justify-between border-b border-outline-variant/60 pb-4 mb-6">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="text-xs font-semibold text-on-surface">Durum B · Sunucu Yanıt Gecikmesi</span>
+</div>
+<span class="font-mono text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded border border-outline-variant">ERR-SNC-11</span>
+</div>
+<!-- Teknik İllüstrasyon (Veritabanı / Mühürlü Form) -->
+<div class="my-4 flex justify-center">
+<div class="w-36 h-36 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center relative">
+<svg fill="none" height="84" viewBox="0 0 84 84" width="84" xmlns="http://www.w3.org/2000/svg">
+<!-- Veritabanı Katmanları 1.5px kontur -->
+<ellipse cx="42" cy="26" rx="20" ry="7" stroke="#33474E" stroke-width="1.5"></ellipse>
+<path d="M22 26V38C22 41.866 30.9543 45 42 45C53.0457 45 62 41.866 62 38V26" stroke="#33474E" stroke-width="1.5"></path>
+<path d="M22 38V50C22 53.866 30.9543 57 42 57C53.0457 57 62 53.866 62 50V38" stroke="#4DB6B0" stroke-width="1.5"></path>
+<!-- Mühür ve Koruma Kalkanı İkonu -->
+<circle cx="42" cy="54" fill="#142127" r="14" stroke="#4DB6B0" stroke-width="1.5"></circle>
+<path d="M42 45L49 48V54C49 58 45.5 61 42 62C38.5 61 35 58 35 54V48L42 45Z" fill="#1B2B32" stroke="#E4ECEC" stroke-width="1.2"></path>
+<!-- Koruma Tık İzi -->
+<path d="M39 53.5L41.5 56L45.5 51" stroke="#4CC27D" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"></path>
+</svg>
+</div>
+</div>
+<!-- Metin Açıklamaları -->
+<div class="text-center space-y-2.5 my-4">
+<h3 class="text-xl font-bold text-on-surface">Sunucu Yanıt Vermiyor · Çalışmanız Koruma Altında</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed max-w-md mx-auto">
+              Merkezi sınav veritabanı yanıt vermekte gecikiyor. Ancak işaretlemeleriniz anlık mühürlenmiştir. Herhangi bir puan veya veri kaybı yaşanmaz.
+            </p>
+</div>
+<!-- Canlı Sistem Durum Sayacı -->
+<div class="bg-surface-container border border-outline-variant rounded-md p-3.5 my-4 flex items-center justify-between text-left">
+<div class="flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="text-xs text-on-surface">Sistem yeniden bağlantı denemesi:</span>
+</div>
+<span class="font-mono text-xs text-primary font-semibold tabular-nums">00:04 / 5 sn</span>
+</div>
+<!-- Butonlar (Tek Birincil Kuralı) -->
+<div class="pt-4 flex flex-col sm:flex-row gap-3">
+<button class="h-11 flex-1 rounded-md bg-primary text-on-primary font-semibold text-sm hover:opacity-95 active:opacity-90 transition-opacity flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-base">sync</span>
+              Tekrar Dene
+            </button>
+<button class="h-11 px-5 rounded-md border border-outline-variant hover:border-outline text-on-surface-variant hover:text-on-surface font-medium text-sm transition-colors flex items-center justify-center" type="button">
+              Teknik Rapor İncele
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. BİÇİM 2: KART İÇİ SATIR HATA DURUMLARI (4 Temel Senaryo) -->
+<section class="space-y-6" id="view-inline">
+<div class="flex items-center justify-between border-t border-outline-variant pt-8">
+<div>
+<h2 class="text-lg font-bold text-on-surface">Kart İçi Satır Hata Durumları</h2>
+<p class="text-xs text-on-surface-variant mt-0.5">Kullanıcının çalışma akışını kesintiye uğratmayan yerinde uyarı ve toparlama senaryoları.</p>
+</div>
+<span class="text-xs font-mono text-on-surface-variant bg-surface px-2.5 py-1 rounded border border-outline-variant">4 Senaryo</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- 1. Senaryo: Soru Çözüm Kayıt Uyarısı -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-4">
+<div class="flex items-center justify-between text-xs">
+<span class="font-semibold text-on-surface flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+              Senaryo 1: Soru Kayıt Bildirimi
+            </span>
+<span class="font-mono text-outline bg-surface-container px-2 py-0.5 rounded border border-outline-variant">ERR-SORU-42</span>
+</div>
+<!-- Satır İçi Hata Şeridi -->
+<div class="bg-error-container border border-error/40 rounded-md p-4 flex items-start gap-3">
+<div class="w-5 h-5 rounded-full bg-error flex items-center justify-center flex-shrink-0 text-on-primary font-bold text-xs mt-0.5">
+              ✕
+            </div>
+<div class="flex-1 space-y-1">
+<p class="text-xs font-bold text-error">Soru kaydedilemedi. Yerel koruma devrede.</p>
+<p class="text-xs text-on-surface leading-relaxed">
+                İşaretlemeniz güvenle cihazınızda tutuluyor. Ağ geldiğinde puan tablosuna işlenecektir.
+              </p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="text-xs text-on-surface-variant">Otomatik deneme: <strong class="text-on-surface font-semibold tabular-nums">3 sn sonra</strong></span>
+<button class="h-9 px-3.5 rounded bg-primary text-on-primary text-xs font-semibold hover:opacity-95 transition-opacity flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-sm">send</span>
+              Şimdi Yeniden Gönder
+            </button>
+</div>
+</div>
+<!-- 2. Senaryo: E-posta / Doğrulama Kodu Hatası -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-4">
+<div class="flex items-center justify-between text-xs">
+<span class="font-semibold text-on-surface flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+              Senaryo 2: Kod Doğrulama Girdisi
+            </span>
+<span class="font-mono text-outline bg-surface-container px-2 py-0.5 rounded border border-outline-variant">ERR-DOG-03</span>
+</div>
+<div class="space-y-2">
+<label class="block text-xs font-medium text-on-surface-variant">
+              Kurumsal E-posta Doğrulama Kodu (6 Haneli)
+            </label>
+<!-- 6 Haneli Giriş Kutusu - Tuğla Kenarlık -->
+<div class="flex items-center gap-2">
+<input class="w-full h-11 px-3.5 bg-surface-container rounded-md border border-error text-on-surface font-mono tracking-widest text-center text-sm focus:outline-none" maxlength="6" readonly="" type="text" value="734-901">
+<button class="h-11 px-4 rounded-md bg-surface-container border border-outline-variant text-xs text-on-surface font-semibold hover:border-outline transition-colors" type="button">
+                Onayla
+              </button>
+</div>
+<!-- Hata Açıklaması: ✕ ikonu ve metin -->
+<div class="flex items-center gap-1.5 text-xs text-error font-medium pt-1">
+<span class="material-symbols-outlined text-sm">cancel</span>
+<span>Hatalı doğrulama kodu (Kalan deneme hakkı: 2)</span>
+</div>
+</div>
+<div class="text-xs text-on-surface-variant pt-1 border-t border-outline-variant/60 flex justify-between items-center">
+<span>Kod gelmedi mi?</span>
+<button class="text-primary hover:underline font-medium">Yeni Kod İste (48s)</button>
+</div>
+</div>
+<!-- 3. Senaryo: Yapay Zekâ Öğretmen Yanıt Hatası -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-4">
+<div class="flex items-center justify-between text-xs">
+<span class="font-semibold text-on-surface flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              Senaryo 3: Öğretmen Paneli Yanıtı
+            </span>
+<span class="font-mono text-outline bg-surface-container px-2 py-0.5 rounded border border-outline-variant">ERR-OGR-503</span>
+</div>
+<!-- Öğretmen Sohbet Baloncuğu Hata Formatı -->
+<div class="bg-surface-container border border-outline-variant rounded-md p-4 space-y-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">Ö</div>
+<span class="text-xs font-semibold text-on-surface">ODAK Öğretmen Asistanı</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Öğretmen yanıtı oluşturulamadı. Sorunuz kuyruğa alındı, sistem 5 saniye sonra analizi tekrar deneyecektir.
+            </p>
+<div class="flex items-center justify-between pt-1">
+<span class="text-xs text-outline tabular-nums">Kuyruk sırası: #1</span>
+<button class="h-8 px-3 rounded bg-surface border border-outline-variant hover:border-primary text-xs text-on-surface font-medium transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-xs text-primary">replay</span>
+                Kuyruğu Yenile
+              </button>
+</div>
+</div>
+<div class="text-xs text-on-surface-variant text-right">
+            Soru metni ve çözüm basamakları etkilenmez.
+          </div>
+</div>
+<!-- 4. Senaryo: Kota ve Deneme Sınavı Erişim Uyarısı -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-4">
+<div class="flex items-center justify-between text-xs">
+<span class="font-semibold text-on-surface flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+              Senaryo 4: Sınav Erişim / Ödeme Onayı
+            </span>
+<span class="font-mono text-outline bg-surface-container px-2 py-0.5 rounded border border-outline-variant">ERR-ODEME-51</span>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded-md p-4 space-y-2.5">
+<div class="flex items-center gap-2 text-error text-xs font-semibold">
+<span class="material-symbols-outlined text-base">error</span>
+              Ödeme İşlemi Onaylanamadı
+            </div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Kart limitiniz yetersiz veya banka onayı zaman aşımına uğradı. Kartınızdan herhangi bir tahsilat yapılmamıştır.
+            </p>
+</div>
+<div class="flex flex-col sm:flex-row gap-2 pt-1">
+<button class="h-9 px-3.5 rounded bg-primary text-on-primary text-xs font-semibold hover:opacity-95 transition-opacity flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-sm">credit_card</span>
+              Farklı Kartla Dene
+            </button>
+<button class="h-9 px-3.5 rounded border border-outline-variant hover:border-outline text-on-surface text-xs font-medium transition-colors flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-sm">account_balance</span>
+              Havale / EFT ile Öde
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. GERÇEKÇİ CANLI SINAV ARAYÜZÜ SİMÜLASYONU (Ağ Kesintisi Davranışı) -->
+<section class="space-y-4 border-t border-outline-variant pt-8">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<h2 class="text-lg font-bold text-on-surface">Canlı Sınav Ekranında Ağ Kesintisi Davranışı</h2>
+<p class="text-xs text-on-surface-variant">Sınav esnasında bağlantı koptuğunda adayın karşılaştığı korumalı görünüm simülasyonu.</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-xs px-2.5 py-1 rounded bg-secondary-container text-secondary font-medium border border-secondary/30">
+            Sınav Süresi Donduruldu
+          </span>
+</div>
+</div>
+<!-- Sınav Konteynırı (Optik form standardı, 16px kart, 1px kenar) -->
+<div class="bg-surface rounded-lg border border-outline-variant overflow-hidden">
+<!-- Sınav Durum ve Sayaç Şeridi -->
+<div class="bg-surface-container px-6 py-3.5 border-b border-outline-variant flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-1 rounded bg-surface border border-outline-variant text-xs font-bold text-on-surface">
+              Soru 42 / 80
+            </span>
+<span class="text-xs text-on-surface-variant font-medium">Cümle Tamamlama</span>
+<span class="text-outline">·</span>
+<span class="text-xs text-on-surface-variant">2026-YDS/2 Standart Test</span>
+</div>
+<!-- Kalan Süre Sayacı (Dondurulmuş, Safran gösterge dolgulu) -->
+<div class="flex items-center gap-2 bg-surface px-3 py-1.5 rounded border border-outline-variant">
+<span class="material-symbols-outlined text-secondary text-sm">pause_circle</span>
+<span class="text-xs text-on-surface-variant">Kalan Süre:</span>
+<span class="font-mono text-sm font-bold text-on-surface tabular-nums">01:24:18</span>
+<span class="text-xs text-secondary font-semibold ml-1">(Durduruldu)</span>
+</div>
+</div>
+<!-- HAFİF TUĞLA ZEMİNLİ SAKİN UYARI ŞERİDİ (Alarm kırmızısı yok) -->
+<div class="bg-error-container/80 border-b border-error/40 px-6 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+<div class="flex items-center gap-2.5 text-on-surface">
+<span class="w-4 h-4 rounded-full bg-error text-on-primary flex items-center justify-center text-[10px] font-bold">✕</span>
+<span><strong>Ağ bağlantısı koptu.</strong> Seçiminiz cihazınızın yerel belleğine yazıldı, soru havuzuyla senkronize edilemedi.</span>
+</div>
+<button class="px-3 py-1 rounded bg-surface border border-outline-variant hover:border-primary text-xs font-semibold text-primary transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-xs">sync</span>
+            Yeniden Bağlan
+          </button>
+</div>
+<!-- Sınav İçerik Alanı (Masaüstü İki Kolon: Soru & Bilgi) -->
+<div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Soru Metni ve Seçenekler (Literata Serif Kullanımı) -->
+<div class="lg:col-span-8 space-y-6">
+<div class="space-y-3">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-primary tracking-wide">42. SORU</span>
+<span class="text-xs text-outline">·</span>
+<span class="text-xs text-on-surface-variant">Grammar &amp; Conjunctions</span>
+</div>
+<!-- Literata Soru Metni (17-18px, 1.6 line height, max 680px) -->
+<p class="reading-font text-[17px] leading-[1.65] text-on-surface max-w-[680px]">
+                Although the new vaccine candidate proved remarkably effective in early clinical trials, international regulatory boards delayed its worldwide approval <span class="inline-block border-b-2 border-primary text-primary px-3 mx-1 font-semibold">________</span> lingering safety data could be independently verified.
+              </p>
+</div>
+<!-- Seçenekler Satırı (Dokunma alanı en az 56pt / 56px, 24px optik cevap baloncukları) -->
+<div class="space-y-3 max-w-[680px]">
+<!-- Seçenek A -->
+<label class="flex items-center gap-4 p-3.5 rounded-md border border-outline-variant hover:border-outline cursor-pointer transition-colors bg-surface-container">
+<div class="w-6 h-6 rounded-full border border-outline text-on-surface-variant flex items-center justify-center font-bold text-xs">
+                  A
+                </div>
+<span class="reading-font text-[16px] text-on-surface">as long as</span>
+</label>
+<!-- Seçenek B (Seçili ve Yerel Hafızaya Mühürlü Durum) -->
+<label class="flex items-center justify-between p-3.5 rounded-md border-2 border-primary bg-primary-container/40 cursor-pointer transition-colors">
+<div class="flex items-center gap-4">
+<!-- Dolu Cevap Baloncuğu Motifi -->
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs">
+                    B
+                  </div>
+<span class="reading-font text-[16px] font-medium text-on-surface">until</span>
+</div>
+<!-- Güvenlik Mühür İndikatörü -->
+<div class="flex items-center gap-1.5 text-xs text-primary font-medium">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span>Yerel Mühürlü</span>
+</div>
+</label>
+<!-- Seçenek C -->
+<label class="flex items-center gap-4 p-3.5 rounded-md border border-outline-variant hover:border-outline cursor-pointer transition-colors bg-surface-container">
+<div class="w-6 h-6 rounded-full border border-outline text-on-surface-variant flex items-center justify-center font-bold text-xs">
+                  C
+                </div>
+<span class="reading-font text-[16px] text-on-surface">in case</span>
+</label>
+<!-- Seçenek D -->
+<label class="flex items-center gap-4 p-3.5 rounded-md border border-outline-variant hover:border-outline cursor-pointer transition-colors bg-surface-container">
+<div class="w-6 h-6 rounded-full border border-outline text-on-surface-variant flex items-center justify-center font-bold text-xs">
+                  D
+                </div>
+<span class="reading-font text-[16px] text-on-surface">even if</span>
+</label>
+<!-- Seçenek E -->
+<label class="flex items-center gap-4 p-3.5 rounded-md border border-outline-variant hover:border-outline cursor-pointer transition-colors bg-surface-container">
+<div class="w-6 h-6 rounded-full border border-outline text-on-surface-variant flex items-center justify-center font-bold text-xs">
+                  E
+                </div>
+<span class="reading-font text-[16px] text-on-surface">provided that</span>
+</label>
+</div>
+</div>
+<!-- Sağ Panel: Güvenlik Denetim Özeti (380px masaüstü standardı) -->
+<div class="lg:col-span-4 bg-surface-container rounded-md border border-outline-variant p-5 space-y-5 flex flex-col justify-between">
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<h3 class="text-sm font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">security</span>
+                  Sınav Güvenlik Durumu
+                </h3>
+<span class="text-xs text-primary font-mono font-semibold">GÜVENLİ</span>
+</div>
+<!-- Doğrulama Kontrol Listesi -->
+<div class="space-y-2.5 text-xs">
+<div class="flex items-center justify-between py-1 border-b border-outline-variant/40">
+<span class="text-on-surface-variant">Çözülen Soru Sayısı:</span>
+<span class="font-bold text-on-surface tabular-nums">42 / 80</span>
+</div>
+<div class="flex items-center justify-between py-1 border-b border-outline-variant/40">
+<span class="text-on-surface-variant">Cihazda Korumalı Yanıt:</span>
+<span class="font-bold text-primary tabular-nums">42 Cevap</span>
+</div>
+<div class="flex items-center justify-between py-1 border-b border-outline-variant/40">
+<span class="text-on-surface-variant">Sunucu Eşleşme Oranı:</span>
+<span class="font-bold text-secondary tabular-nums">41 Eşitlendi, 1 Bekliyor</span>
+</div>
+<div class="flex items-center justify-between py-1">
+<span class="text-on-surface-variant">Soru Başına Değer:</span>
+<span class="font-semibold text-on-surface">1,25 Puan</span>
+</div>
+</div>
+<!-- Sakin Bilgilendirme Notu -->
+<div class="p-3 bg-surface rounded border border-outline-variant text-[11px] leading-relaxed text-on-surface-variant">
+<strong>YDS Hatırlatması:</strong> YDS sınavında yanlış cevaplar doğruyu götürmez. Tüm soruları işaretlemeniz akademik menfaatinizedir. Kesinti esnasında işaretleme yapmaya devam edebilirsiniz.
+              </div>
+</div>
+<!-- Doğruluk Bildirimi Rozeti -->
+<div class="pt-3 border-t border-outline-variant">
+<div class="flex items-center gap-2 text-xs text-tertiary">
+<span class="material-symbols-outlined text-base">check_circle</span>
+<span>Son yerel mühürleme: 12 saniye önce</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sınav Alt Kontrol Çubuğu (Dokunma hedefi min 44px) -->
+<div class="bg-surface-container px-6 py-4 border-t border-outline-variant flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<button class="h-11 px-4 rounded-md border border-outline-variant hover:border-outline text-on-surface text-sm font-medium transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-base">arrow_back</span>
+              Önceki Soru
+            </button>
+<button class="h-11 px-4 rounded-md border border-outline-variant hover:border-outline text-on-surface text-sm font-medium transition-colors flex items-center gap-2" type="button">
+              Sonraki Soru
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<button class="h-11 px-5 rounded-md bg-primary text-on-primary font-semibold text-sm hover:opacity-95 transition-opacity flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-base">bookmark_check</span>
+              İşaretlemeyi Onayla
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- 6. SİSTEM HATA VE GÜVENLİK PROTOKOLÜ MATRİSİ (4 Kartlı Güvenlik Mimarisi) -->
+<section class="space-y-6 border-t border-outline-variant pt-8">
+<div>
+<h2 class="text-lg font-bold text-on-surface">ODAK Kesintisiz Sınav Güvenlik Protokolü</h2>
+<p class="text-xs text-on-surface-variant mt-0.5">Sınav bütünlüğünü korumak ve adayın hak kaybını sıfırlamak üzere tasarlanmış 4 kademeli protokol mimarisi.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Durum 01 -->
+<div class="bg-surface p-5 rounded-lg border border-outline-variant space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs font-mono font-bold text-primary">PROTOKOL 01</span>
+<span class="material-symbols-outlined text-primary text-lg">wifi_off</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface">Ağ Kesintisi Mimarisi</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            İnternet koptuğu anda tarayıcı yerel veri depolaması otomatik kilitlenir. Çözülen 80 soruya ait yanıtlar tam tutarlılıkla cihazda saklanır.
+          </p>
+<div class="pt-2 border-t border-outline-variant/60 text-[11px] font-semibold text-on-surface flex items-center gap-1.5">
+<span class="text-tertiary">✓</span> Sıfır Veri Kaybı Garantisi
+          </div>
+</div>
+<!-- Durum 02 -->
+<div class="bg-surface p-5 rounded-lg border border-outline-variant space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs font-mono font-bold text-secondary">PROTOKOL 02</span>
+<span class="material-symbols-outlined text-secondary text-lg">timer_pause</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface">Süre Dondurma Sistemi</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Sunucu gecikmesi veya bağlantı hatası 4 saniyeyi aştığında adayın 180 dakikalık süresi duraklatılır; haksız süre kaybı bütünüyle önlenir.
+          </p>
+<div class="pt-2 border-t border-outline-variant/60 text-[11px] font-semibold text-on-surface flex items-center gap-1.5">
+<span class="text-tertiary">✓</span> Saniye Hassasiyetli Koruma
+          </div>
+</div>
+<!-- Durum 03 -->
+<div class="bg-surface p-5 rounded-lg border border-outline-variant space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs font-mono font-bold text-primary">PROTOKOL 03</span>
+<span class="material-symbols-outlined text-primary text-lg">restart_alt</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface">Kaldığı Yerden Devam</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Tarayıcı veya sekme kazara kapansa dahi, güvenli oturum kurtarma ile aday sınava kaldığı sorudan, aynı süre ve puan durumuyla devam eder.
+          </p>
+<div class="pt-2 border-t border-outline-variant/60 text-[11px] font-semibold text-on-surface flex items-center gap-1.5">
+<span class="text-tertiary">✓</span> Tek Tıklamayla Yeniden Bağlan
+          </div>
+</div>
+<!-- Durum 04 -->
+<div class="bg-surface p-5 rounded-lg border border-outline-variant space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs font-mono font-bold text-outline">PROTOKOL 04</span>
+<span class="material-symbols-outlined text-on-surface-variant text-lg">fact_check</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface">İtiraz ve İnceleme Kaydı</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Teknik bir pürüz yaşayan adaya 10 haneli referans kodu üretilir; adayın oturumu akademik teknik heyet tarafından 24 saat içinde teftiş edilir.
+          </p>
+<div class="pt-2 border-t border-outline-variant/60 text-[11px] font-semibold text-on-surface flex items-center gap-1.5">
+<span class="text-tertiary">✓</span> Kurumsal Destek Denetimi
+          </div>
+</div>
+</div>
+</section>
+</main>
+<!-- 7. KURUMSAL ALT BİLGİ (Footer) -->
+<footer class="w-full bg-background border-t border-outline-variant mt-16">
+<div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-6">
+<!-- Sol: Marka ve Sınav Format Hatırlatması -->
+<div class="space-y-1 text-center md:text-left">
+<div class="flex items-center justify-center md:justify-start gap-2">
+<span class="font-display text-base font-bold text-on-surface">ODAK</span>
+<span class="text-outline">·</span>
+<span class="text-xs font-medium text-on-surface-variant">Akademik Sınav Hazırlık Platformu</span>
+</div>
+<p class="text-xs text-outline">
+          © 2026 ODAK. Tüm hakları saklıdır. Sınav yapısı: 80 Soru · 180 Dakika · Her Doğru 1,25 Puan.
+        </p>
+</div>
+<!-- Sağ: Bağlantılar -->
+<nav class="flex flex-wrap items-center justify-center gap-6 text-xs text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Sistem Durumu</a>
+<a class="hover:text-primary transition-colors" href="#">Kullanım Kılavuzu</a>
+<a class="hover:text-primary transition-colors" href="#">ÖSYM Standartları</a>
+<a class="hover:text-primary transition-colors" href="#">Gizlilik Politikası</a>
+<a class="hover:text-primary transition-colors" href="#">İletişim</a>
+</nav>
+</div>
+</footer>
+<!-- Etkileşim Scripti: Görünüm Değiştirici -->
+<script>
+    function switchView(view) {
+      const fsSection = document.getElementById('view-fullscreen');
+      const inlineSection = document.getElementById('view-inline');
+      const fsBtn = document.getElementById('tab-fullscreen-btn');
+      const inlineBtn = document.getElementById('tab-inline-btn');
+
+      if (view === 'fullscreen') {
+        fsSection.scrollIntoView({ behavior: 'smooth' });
+        fsBtn.className = "h-9 px-4 rounded text-xs font-semibold bg-surface-container text-on-surface border border-outline-highlight flex items-center gap-2 transition-all";
+        inlineBtn.className = "h-9 px-4 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface flex items-center gap-2 transition-all";
+      } else {
+        inlineSection.scrollIntoView({ behavior: 'smooth' });
+        inlineBtn.className = "h-9 px-4 rounded text-xs font-semibold bg-surface-container text-on-surface border border-outline-highlight flex items-center gap-2 transition-all";
+        fsBtn.className = "h-9 px-4 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface flex items-center gap-2 transition-all";
+      }
+    }
+  </script>
+</body></html>

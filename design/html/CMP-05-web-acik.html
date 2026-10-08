@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="tr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>CMP-05 · Katmanlar ve Geri Bildirim | ODAK Tasarım Sistemi</title>
+<!-- Fontlar: Figtree (Arayüz Sans-Serif), Literata (Soru/Okuma Metinleri), Bricolage Grotesque (Ekran Başlığı) -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#F4F6F5',
+            surface: '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            outline: '#77868A',
+            'outline-variant': '#DAE1E0',
+            primary: '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            secondary: '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            tertiary: '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            error: '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+            'chart-1': '#0F9485',
+            'chart-2': '#505AC8',
+            'chart-3': '#BA7F14',
+            'chart-4': '#9E427B',
+          },
+          fontFamily: {
+            "display": ["Bricolage Grotesque"],
+            "headline": ["Bricolage Grotesque"],
+            body: ['Figtree', 'sans-serif'],
+            serif: ['Literata', 'serif'],
+          },
+          borderRadius: {
+            xs: '4px',
+            sm: '8px',
+            DEFAULT: '12px',
+            md: '12px',
+            lg: '16px',
+            xl: '24px',
+            full: '9999px',
+          },
+          boxShadow: {
+            'card': 'none',
+            'subtle': '0 2px 8px rgba(19, 35, 42, 0.04)',
+            'overlay': '0 8px 30px rgba(19, 35, 42, 0.12)',
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Kesin kurallar: Cam/blur yok, süslü gölge yok, düz opak yüzeyler */
+    .flat-border {
+      border: 1px solid #DAE1E0;
+    }
+    .focus-ring:focus-visible {
+      outline: 2px solid #0E6A6E;
+      outline-offset: 2px;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.-bottom-1{bottom:-0.25rem}.-top-1\.5{top:-0.375rem}.bottom-full{bottom:100%}.left-0{left:0px}.left-1\/2{left:50%}.left-2\.5{left:0.625rem}.left-6{left:1.5rem}.top-0{top:0px}.top-2\.5{top:0.625rem}.z-30{z-index:30}.z-50{z-index:50}.col-span-8{grid-column:span 8 / span 8}.col-start-1{grid-column-start:1}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-10{margin-bottom:2.5rem}.mb-14{margin-bottom:3.5rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-auto{margin-top:auto}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-11{height:2.75rem}.h-12{height:3rem}.h-14{height:3.5rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-3{height:0.75rem}.h-4{height:1rem}.h-6{height:1.5rem}.h-7{height:1.75rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.max-h-\[260px\]{max-height:260px}.min-h-\[280px\]{min-height:280px}.min-h-\[40px\]{min-height:40px}.min-h-\[44px\]{min-height:44px}.min-h-screen{min-height:100vh}.w-11\/12{width:91.666667%}.w-12{width:3rem}.w-14{width:3.5rem}.w-16{width:4rem}.w-2{width:0.5rem}.w-2\.5{width:0.625rem}.w-2\/3{width:66.666667%}.w-28{width:7rem}.w-3{width:0.75rem}.w-3\/4{width:75%}.w-4{width:1rem}.w-4\/5{width:80%}.w-56{width:14rem}.w-6{width:1.5rem}.w-7{width:1.75rem}.w-72{width:18rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-full{width:100%}.w-max{width:max-content}.w-px{width:1px}.min-w-\[44px\]{min-width:44px}.max-w-3xl{max-width:48rem}.max-w-7xl{max-width:80rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.rotate-45{--tw-rotate:45deg;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.list-disc{list-style-type:disc}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.grid-cols-8{grid-template-columns:repeat(8, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.items-baseline{align-items:baseline}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-outline-variant > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(218 225 224 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:12px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:16px}.rounded-md{border-radius:12px}.rounded-sm{border-radius:8px}.rounded-r-md{border-top-right-radius:12px;border-bottom-right-radius:12px}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-l{border-left-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-error{--tw-border-opacity:1;border-color:rgb(163 61 39 / var(--tw-border-opacity, 1))}.border-outline{--tw-border-opacity:1;border-color:rgb(119 134 138 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(218 225 224 / var(--tw-border-opacity, 1))}.border-primary{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}.border-secondary{--tw-border-opacity:1;border-color:rgb(233 165 20 / var(--tw-border-opacity, 1))}.border-tertiary{--tw-border-opacity:1;border-color:rgb(31 122 69 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.bg-background{--tw-bg-opacity:1;background-color:rgb(244 246 245 / var(--tw-bg-opacity, 1))}.bg-error{--tw-bg-opacity:1;background-color:rgb(163 61 39 / var(--tw-bg-opacity, 1))}.bg-error-container{--tw-bg-opacity:1;background-color:rgb(248 227 220 / var(--tw-bg-opacity, 1))}.bg-inverse-surface{--tw-bg-opacity:1;background-color:rgb(19 35 42 / var(--tw-bg-opacity, 1))}.bg-outline-variant{--tw-bg-opacity:1;background-color:rgb(218 225 224 / var(--tw-bg-opacity, 1))}.bg-primary{--tw-bg-opacity:1;background-color:rgb(14 106 110 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.bg-secondary{--tw-bg-opacity:1;background-color:rgb(233 165 20 / var(--tw-bg-opacity, 1))}.bg-secondary-container{--tw-bg-opacity:1;background-color:rgb(251 239 210 / var(--tw-bg-opacity, 1))}.bg-surface{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-tertiary-container{--tw-bg-opacity:1;background-color:rgb(223 241 230 / var(--tw-bg-opacity, 1))}.p-1\.5{padding:0.375rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-1\.5{padding-bottom:0.375rem}.pb-2{padding-bottom:0.5rem}.pb-3{padding-bottom:0.75rem}.pb-4{padding-bottom:1rem}.pb-6{padding-bottom:1.5rem}.pl-1{padding-left:0.25rem}.pl-4{padding-left:1rem}.pl-9{padding-left:2.25rem}.pr-3{padding-right:0.75rem}.pt-1\.5{padding-top:0.375rem}.pt-2{padding-top:0.5rem}.pt-4{padding-top:1rem}.pt-6{padding-top:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.font-display{font-family:Bricolage Grotesque}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-sans{font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"}.font-serif{font-family:Literata, serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.text-error{--tw-text-opacity:1;color:rgb(163 61 39 / var(--tw-text-opacity, 1))}.text-on-primary{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-on-primary-container{--tw-text-opacity:1;color:rgb(10 84 88 / var(--tw-text-opacity, 1))}.text-on-secondary{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(70 86 92 / var(--tw-text-opacity, 1))}.text-outline{--tw-text-opacity:1;color:rgb(119 134 138 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.text-secondary{--tw-text-opacity:1;color:rgb(233 165 20 / var(--tw-text-opacity, 1))}.text-surface{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-tertiary{--tw-text-opacity:1;color:rgb(31 122 69 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.opacity-100{opacity:1}.shadow-overlay{--tw-shadow:0 8px 30px rgba(19, 35, 42, 0.12);--tw-shadow-colored:0 8px 30px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-subtle{--tw-shadow:0 2px 8px rgba(19, 35, 42, 0.04);--tw-shadow-colored:0 2px 8px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.placeholder\:text-on-surface-variant::placeholder{--tw-text-opacity:1;color:rgb(70 86 92 / var(--tw-text-opacity, 1))}.hover\:border-primary:hover{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}.hover\:bg-background:hover{--tw-bg-opacity:1;background-color:rgb(244 246 245 / var(--tw-bg-opacity, 1))}.hover\:bg-surface:hover{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.hover\:bg-surface-container-high:hover{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.hover\:bg-opacity-95:hover{--tw-bg-opacity:0.95}.hover\:text-on-surface:hover{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}.focus\:border-primary:focus{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-primary:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(14 106 110 / var(--tw-ring-opacity, 1))}@media (min-width: 640px){.sm\:col-span-10{grid-column:span 10 / span 10}.sm\:grid-cols-10{grid-template-columns:repeat(10, minmax(0, 1fr))}.sm\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}@media (min-width: 768px){.md\:block{display:block}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-end{align-items:flex-end}}@media (min-width: 1024px){.lg\:col-span-5{grid-column:span 5 / span 5}.lg\:col-span-7{grid-column:span 7 / span 7}.lg\:flex{display:flex}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:text-5xl{font-size:3rem;line-height:1}}@media (min-width: 1280px){.xl\:flex{display:flex}}</style></head>
+<body class="min-h-screen bg-background text-on-surface antialiased flex flex-col">
+<!-- 1. ÜST GEZİNME ÇUBUĞU (TopNavBar) -->
+<header class="sticky top-0 z-50 h-16 bg-surface border-b border-outline-variant">
+<div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+<!-- Marka ve Sınav Seçici -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-3 text-primary tracking-tight font-extrabold text-2xl font-display" href="#">
+          ODAK
+        </a>
+<div class="h-6 w-px bg-outline-variant"></div>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-background border border-outline-variant text-body-sm font-medium text-on-surface hover:border-primary transition-colors focus-ring min-h-[44px]" type="button">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>YDS · 22 Kasım</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span>
+</button>
+</div>
+<!-- Bağlantılar -->
+<nav class="hidden lg:flex items-center gap-8 h-full">
+<a class="text-on-surface-variant hover:text-on-surface font-medium text-sm transition-colors flex items-center h-full border-b-2 border-transparent" href="#">Temeller</a>
+<a class="text-primary font-semibold text-sm flex items-center h-full border-b-2 border-primary" href="#">Bileşenler</a>
+<a class="text-on-surface-variant hover:text-on-surface font-medium text-sm transition-colors flex items-center h-full border-b-2 border-transparent" href="#">Kalıplar</a>
+<a class="text-on-surface-variant hover:text-on-surface font-medium text-sm transition-colors flex items-center h-full border-b-2 border-transparent" href="#">Sınav Yönergesi</a>
+</nav>
+<!-- Sağ Eylemler: Arama, Dokümantasyon Rozeti ve Profil -->
+<div class="flex items-center gap-4">
+<div class="relative w-56 hidden md:block">
+<input class="w-full bg-background border border-outline-variant rounded-md py-1.5 pl-9 pr-3 text-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary min-h-[40px]" placeholder="Bileşenlerde ara..." type="text">
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-on-surface-variant text-lg">search</span>
+</div>
+<span class="px-2.5 py-1 rounded bg-primary-container text-on-primary-container text-xs font-semibold tracking-wide">
+          v2.4 Rehber
+        </span>
+<div class="h-6 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-3 pl-1">
+<div class="w-9 h-9 rounded-full bg-primary-container text-primary font-bold text-sm flex items-center justify-center border border-outline-variant">
+            BK
+          </div>
+<div class="hidden xl:flex flex-col text-left">
+<span class="text-xs font-bold text-on-surface leading-tight">Doç. Dr. Bilge Kağan Öztürk</span>
+<span class="text-[11px] text-on-surface-variant">Akademik Aday Danışmanı</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- ANA İÇERİK ALANI -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
+<!-- 2. SAYFA BAŞLIĞI VE ÖZET ŞERİT -->
+<section class="mb-10">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2 py-0.5 rounded bg-primary-container text-primary font-bold text-xs">CMP-05</span>
+<span class="text-xs text-on-surface-variant font-medium">Bileşen Belgelendirme Kütüphanesi</span>
+<span class="text-xs text-outline">•</span>
+<span class="text-xs text-on-surface-variant">Bugün: 2 Ekim 2026 Cuma</span>
+</div>
+<h1 class="font-display text-4xl lg:text-5xl font-bold tracking-tight text-on-surface">
+            Katmanlar ve Geri Bildirim
+          </h1>
+<p class="mt-3 text-base text-on-surface-variant max-w-3xl leading-relaxed">
+            Yetişkin sınav adaylarının odaklanmasını kesintiye uğratmayan, bilişsel yükü hafifleten modal pencereler, alt sayfalar, bağlamsal ipuçları, bildirim şeritleri ve iskelet yükleme mimarisi standartları.
+          </p>
+</div>
+<div class="flex items-center gap-2">
+<div class="text-right">
+<div class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Hedef Sınav</div>
+<div class="text-sm font-bold text-primary">2026-YDS/2 · 22 Kasım 2026</div>
+<div class="text-xs text-secondary font-semibold">52 gün kaldı (Başvuru: 30 Eylül - 8 Ekim)</div>
+</div>
+</div>
+</div>
+<!-- Kriter Rozetleri -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+<div class="p-3 bg-surface border border-outline-variant rounded-md flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-xl">palette</span>
+<div>
+<div class="text-xs font-semibold text-on-surface">Açık Tema</div>
+<div class="text-[11px] text-on-surface-variant">Düz Yüzey, 1px Kenarlık</div>
+</div>
+</div>
+<div class="p-3 bg-surface border border-outline-variant rounded-md flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary text-xl">verified</span>
+<div>
+<div class="text-xs font-semibold text-on-surface">Çift Belirteç Güvencesi</div>
+<div class="text-[11px] text-on-surface-variant">Renk + İkon + Türkçe Metin</div>
+</div>
+</div>
+<div class="p-3 bg-surface border border-outline-variant rounded-md flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-xl">touch_app</span>
+<div>
+<div class="text-xs font-semibold text-on-surface">Dokunma Standardı</div>
+<div class="text-[11px] text-on-surface-variant">Asgari 44px Tıklama Alanı</div>
+</div>
+</div>
+<div class="p-3 bg-surface border border-outline-variant rounded-md flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface text-xl">layers</span>
+<div>
+<div class="text-xs font-semibold text-on-surface">Katman Disiplini</div>
+<div class="text-[11px] text-on-surface-variant">Cam Yok, Opak Hiyerarşi</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. BÖLÜM 01: KALICI VE ETKİLEŞİMLİ PENCERELER (MODALLAR) -->
+<section class="mb-14">
+<div class="flex items-center justify-between mb-5">
+<div>
+<h2 class="text-xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+
+            01 · Kalıcı ve Etkileşimli Pencereler
+          </h2>
+<p class="text-sm text-on-surface-variant mt-0.5">Kullanıcının kritik adımlarda onay vermesini veya resmi bilgilendirmeyi zorunlu kılan kalıcı pencere mimarisi.</p>
+</div>
+<span class="text-xs font-mono bg-background px-2.5 py-1 border border-outline-variant rounded text-on-surface-variant">z-index: 50 · scrim: rgba(19,35,42,0.50)</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Modal 1: Bilgilendirme Penceresi -->
+<div class="bg-surface border border-outline-variant rounded-lg p-6 flex flex-col justify-between relative shadow-subtle">
+<div>
+<div class="flex items-start justify-between pb-4 border-b border-outline-variant mb-4">
+<div class="flex items-center gap-2.5">
+<span class="w-8 h-8 rounded-full bg-primary-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">description</span>
+</span>
+<div>
+<h3 class="font-bold text-base text-on-surface leading-snug">Sınav Yönergesi ve Süre Bilgilendirmesi</h3>
+<span class="text-xs text-on-surface-variant">2026-YDS/2 Resmi Oturum</span>
+</div>
+</div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface rounded min-h-[44px] min-w-[44px]">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div class="space-y-3 text-sm text-on-surface leading-relaxed">
+<p class="font-medium text-xs uppercase tracking-wider text-on-surface-variant">Sınav Kuralları</p>
+<div class="p-3 bg-background border border-outline-variant rounded-md space-y-2 text-xs">
+<div class="flex justify-between py-1 border-b border-outline-variant">
+<span class="text-on-surface-variant">Toplam Süre:</span>
+<span class="font-bold text-on-surface">180 Dakika (3 Saat)</span>
+</div>
+<div class="flex justify-between py-1 border-b border-outline-variant">
+<span class="text-on-surface-variant">Soru Adedi:</span>
+<span class="font-bold text-on-surface">80 Soru Çoktan Seçmeli</span>
+</div>
+<div class="flex justify-between py-1">
+<span class="text-on-surface-variant">Puanlama Esası:</span>
+<span class="font-bold text-primary">Her soru 1,25 Puan</span>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant">
+                YDS sınavında yanlış cevaplar doğru sayısını etkilemez. Adayların tüm soruları işaretlemesi tavsiye olunur.
+              </p>
+</div>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant flex flex-col gap-2">
+<button class="w-full h-11 px-4 bg-primary text-on-primary rounded-md font-semibold text-sm hover:bg-opacity-95 transition-colors flex items-center justify-center gap-2 min-h-[44px]">
+<span>Yönergeyi Okudum, Anladım</span>
+<span class="material-symbols-outlined text-base">check</span>
+</button>
+</div>
+</div>
+<!-- Modal 2: Onay Penceresi (Deneme Tamamlama) -->
+<div class="bg-surface border border-outline-variant rounded-lg p-6 flex flex-col justify-between relative shadow-subtle">
+<div>
+<div class="flex items-start justify-between pb-4 border-b border-outline-variant mb-4">
+<div class="flex items-center gap-2.5">
+<span class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">help</span>
+</span>
+<div>
+<h3 class="font-bold text-base text-on-surface leading-snug">Deneme Sınavını Tamamlama Onayı</h3>
+<span class="text-xs text-on-surface-variant">Oturum Sonlandırma Kontrolü</span>
+</div>
+</div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface rounded min-h-[44px] min-w-[44px]">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div class="space-y-3">
+<!-- Durum Özeti -->
+<div class="grid grid-cols-3 gap-2 text-center">
+<div class="p-2.5 bg-background border border-outline-variant rounded-md">
+<div class="text-lg font-bold text-tertiary">68</div>
+<div class="text-[11px] text-on-surface-variant font-medium">Doğru Yanıtlanan</div>
+</div>
+<div class="p-2.5 bg-background border border-outline-variant rounded-md">
+<div class="text-lg font-bold text-error">9</div>
+<div class="text-[11px] text-on-surface-variant font-medium">Boş Bırakılan</div>
+</div>
+<div class="p-2.5 bg-background border border-outline-variant rounded-md">
+<div class="text-lg font-bold text-secondary">3</div>
+<div class="text-[11px] text-on-surface-variant font-medium">İncelenecek Soru</div>
+</div>
+</div>
+<!-- Uyarı Şeridi -->
+<div class="p-3 bg-secondary-container rounded-md flex items-start gap-2.5 border border-outline-variant">
+<span class="material-symbols-outlined text-base text-on-secondary mt-0.5">info</span>
+<p class="text-xs text-on-secondary font-medium leading-relaxed">
+<strong>Hatırlatma:</strong> YDS'de yanlış doğruyu götürmez, boş bırakılan sorular puan kazandırmaz. 9 boş soruyu işaretlemeniz önerilir.
+                </p>
+</div>
+</div>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant flex flex-col gap-2">
+<button class="w-full h-11 px-4 bg-primary text-on-primary rounded-md font-semibold text-sm hover:bg-opacity-95 transition-colors flex items-center justify-center gap-2 min-h-[44px]">
+<span>Sınavı Bitir ve Puanla</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+</button>
+<button class="w-full h-11 px-4 bg-surface border border-outline text-on-surface rounded-md font-semibold text-sm hover:bg-background transition-colors flex items-center justify-center min-h-[44px]">
+              Sorulara Dön ve İncele
+            </button>
+</div>
+</div>
+<!-- Modal 3: Yıkıcı Eylem Onayı -->
+<div class="bg-surface border border-error rounded-lg p-6 flex flex-col justify-between relative shadow-subtle">
+<div>
+<div class="flex items-start justify-between pb-4 border-b border-outline-variant mb-4">
+<div class="flex items-center gap-2.5">
+<span class="w-8 h-8 rounded-full bg-error-container text-error flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">warning</span>
+</span>
+<div>
+<h3 class="font-bold text-base text-error leading-snug">Sınav Oturumunu İptal Et</h3>
+<span class="text-xs text-on-surface-variant">Kritik Geri Alınamaz İşlem</span>
+</div>
+</div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface rounded min-h-[44px] min-w-[44px]">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div class="space-y-3">
+<div class="p-3 bg-error-container rounded-md border border-error">
+<p class="text-xs text-error font-medium leading-relaxed">
+<strong>İkaz:</strong> Bu işlem geri alınamaz. Çözülen 34 soru ve 54 dakikalık sayaç verisi kaydedilmeden kalıcı olarak silinecektir.
+                </p>
+</div>
+<ul class="text-xs text-on-surface-variant space-y-1.5 pl-4 list-disc">
+<li>Öğrenci gelişim grafiğine dahil edilmez.</li>
+<li>Hata defteri analizi üretilmez.</li>
+<li>Oturum hakkı iade edilmez.</li>
+</ul>
+</div>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant flex flex-col gap-2">
+<button class="w-full h-11 px-4 bg-error text-white rounded-md font-semibold text-sm hover:bg-opacity-95 transition-colors flex items-center justify-center gap-2 min-h-[44px]">
+<span>Oturumu İptal Et ve Sil</span>
+<span class="material-symbols-outlined text-base">delete_forever</span>
+</button>
+<button class="w-full h-11 px-4 bg-surface border border-outline-variant text-on-surface rounded-md font-semibold text-sm hover:bg-background transition-colors flex items-center justify-center min-h-[44px]">
+              Vazgeç ve Devam Et
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. BÖLÜM 02: ALT SAYFALAR VE ÇEKMECELER -->
+<section class="mb-14">
+<div class="flex items-center justify-between mb-5">
+<div>
+<h2 class="text-xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+
+            02 · Alt Sayfalar ve Çekmeceler
+          </h2>
+<p class="text-sm text-on-surface-variant mt-0.5">Soru metninden ayrılmadan terim tahlili yapmayı ve 80 soruluk sınav haritasını görmeyi sağlayan yanaşır paneller.</p>
+</div>
+<span class="text-xs font-mono bg-background px-2.5 py-1 border border-outline-variant rounded text-on-surface-variant">Sağdan / Alttan Açılır Çekmece</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Çekmece 1: Sözlük ve Terim Kartı (4 Kolon) -->
+<div class="lg:col-span-5 bg-surface border border-outline-variant rounded-lg p-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">menu_book</span>
+<span class="text-xs font-bold uppercase tracking-wider text-on-surface">Akademik Okuma Sözlüğü</span>
+</div>
+<span class="text-[11px] px-2 py-0.5 bg-primary-container text-primary font-bold rounded">YDS Sık Çıkan</span>
+</div>
+<!-- Terim Başlığı -->
+<div class="mb-4">
+<div class="flex items-baseline justify-between">
+<h3 class="text-2xl font-bold font-serif text-on-surface">undermine</h3>
+<span class="text-xs text-on-surface-variant font-mono">/ˌʌndəˈmaɪn/ · fiil</span>
+</div>
+<div class="text-xs text-tertiary font-semibold mt-1">Eş Anlamlılar: weaken, sabotage, impair</div>
+</div>
+<!-- Mecazi Anlam ve Örnek Cümle -->
+<div class="space-y-3">
+<div class="p-3 bg-background border border-outline-variant rounded-md">
+<div class="text-xs text-on-surface-variant font-semibold">Mecazi ve Akademik Anlam:</div>
+<div class="text-sm font-semibold text-on-surface mt-0.5">Temelini zayıflatmak, sarsmak, baltalamak</div>
+</div>
+<div>
+<span class="text-xs font-bold text-on-surface-variant block mb-1">Literata Serif Örnek Metin:</span>
+<blockquote class="p-3 bg-surface border-l-4 border-primary rounded-r-md text-sm font-serif italic text-on-surface leading-relaxed">
+                  "Although economic sanctions were reinforced, corrupt distribution networks significantly <u class="text-primary font-bold">undermined</u> the government's long-term stabilization program."
+                </blockquote>
+</div>
+<div class="p-2.5 bg-background border border-outline-variant rounded text-xs text-on-surface-variant">
+<span class="font-bold text-on-surface">Sınav İpucu:</span> 'Although' zıtlık bağlacı ile zıt kutup kurgulamak için ÖSYM tarafından son 10 yılda 8 kez kök seçenek olarak kullanılmıştır.
+              </div>
+</div>
+</div>
+<div class="pt-4 mt-5 border-t border-outline-variant flex gap-2">
+<button class="flex-1 h-11 bg-primary text-white rounded-md text-xs font-semibold flex items-center justify-center gap-2 hover:bg-opacity-95 min-h-[44px]">
+<span class="material-symbols-outlined text-sm">bookmark_add</span>
+<span>Kelime Defterime Ekle</span>
+</button>
+<button class="h-11 px-3 border border-outline-variant rounded-md text-xs font-semibold hover:bg-background text-on-surface flex items-center justify-center min-h-[44px]">
+              Telaffuz Dinle
+            </button>
+</div>
+</div>
+<!-- Çekmece 2: 80 Soruluk Optik Cevap Gezgini Matrisi (7 Kolon) -->
+<div class="lg:col-span-7 bg-surface border border-outline-variant rounded-lg p-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant mb-3">
+<div>
+<h3 class="text-sm font-bold text-on-surface">Cevap Gezgini Matrisi (1-80 Soru)</h3>
+<span class="text-xs text-on-surface-variant">ÖSYM optik form disiplininde tam daire kodlama</span>
+</div>
+<!-- Lejant -->
+<div class="flex items-center gap-3 text-xs">
+<span class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="w-3 h-3 rounded-full bg-primary inline-block"></span> Dolu (68)
+                </span>
+<span class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="w-3 h-3 rounded-full border border-outline inline-block"></span> Boş (9)
+                </span>
+<span class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="w-3 h-3 rounded-full bg-secondary inline-block"></span> Şüpheli (3)
+                </span>
+</div>
+</div>
+<!-- Optik Baloncuk Izgarası (Örnek Temsili 80 Soru Grubu) -->
+<div class="grid grid-cols-8 sm:grid-cols-10 gap-2 p-3 bg-background border border-outline-variant rounded-md max-h-[260px] overflow-y-auto">
+<!-- Soru 1-10: Cevaplanmış -->
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">1</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">A</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">2</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">C</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">3</span>
+<span class="w-6 h-6 rounded-full bg-secondary text-on-secondary text-[11px] font-bold flex items-center justify-center">D</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">4</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">B</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">5</span>
+<span class="w-6 h-6 rounded-full border-2 border-outline text-on-surface-variant text-[11px] font-bold flex items-center justify-center">-</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">6</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">E</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">7</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">A</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">8</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">B</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">9</span>
+<span class="w-6 h-6 rounded-full border-2 border-outline text-on-surface-variant text-[11px] font-bold flex items-center justify-center">-</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">10</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">C</span>
+</button>
+<!-- Soru 11-20 Örneği -->
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">11</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">D</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">12</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">E</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">13</span>
+<span class="w-6 h-6 rounded-full bg-secondary text-on-secondary text-[11px] font-bold flex items-center justify-center">B</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">14</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">C</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">15</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">A</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">16</span>
+<span class="w-6 h-6 rounded-full border-2 border-outline text-on-surface-variant text-[11px] font-bold flex items-center justify-center">-</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">17</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">B</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">18</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">D</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">19</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">E</span>
+</button>
+<button class="flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">20</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">C</span>
+</button>
+<!-- Temsili Diğer Bloklar Bilgilendirmesi -->
+<div class="col-span-8 sm:col-span-10 text-center py-2 text-xs text-on-surface-variant border-t border-dashed border-outline-variant mt-2">
+                ... 21 ile 79. sorular arasındaki yanıtlar kaydedildi ...
+              </div>
+<!-- 80. Soru Örneği -->
+<button class="col-start-1 flex flex-col items-center justify-center p-1.5 rounded hover:bg-surface-container-high transition-colors min-h-[44px]">
+<span class="text-[10px] text-on-surface-variant font-medium">80</span>
+<span class="w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">E</span>
+</button>
+</div>
+</div>
+<div class="pt-4 mt-3 border-t border-outline-variant flex items-center justify-between">
+<span class="text-xs text-on-surface-variant font-medium">Mevcut Doğru Yanıt Sayısı: <strong>68</strong> (Puan Karşılığı: 85,00)</span>
+<div class="flex gap-2">
+<button class="h-10 px-4 bg-background border border-outline-variant rounded-md text-xs font-semibold text-on-surface hover:bg-surface transition-colors min-h-[44px]">
+                Boş Sorulara Odaklan (9)
+              </button>
+<button class="h-10 px-4 bg-primary text-white rounded-md text-xs font-semibold hover:bg-opacity-95 transition-colors min-h-[44px]">
+                Tümünü İncele
+              </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. BÖLÜM 03: BAĞLAMSAL AÇILIR PENCERELER VE İPUÇLARI -->
+<section class="mb-14">
+<div class="flex items-center justify-between mb-5">
+<div>
+<h2 class="text-xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+
+            03 · Bağlamsal Açılır Pencereler ve İpuçları
+          </h2>
+<p class="text-sm text-on-surface-variant mt-0.5">Metin üzeri seçimde veya fare üzerine gelindiğinde zihni dağıtmadan bağlamsal bilgi sunan minör katmanlar.</p>
+</div>
+<span class="text-xs font-mono bg-background px-2.5 py-1 border border-outline-variant rounded text-on-surface-variant">Tıklama &amp; İmleç Katmanı</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Örnek 1: Metin İçi Sözlük Açılır Penceresi -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5">
+<div class="flex items-center justify-between mb-3 pb-2 border-b border-outline-variant">
+<span class="text-xs font-bold text-on-surface">Metin İçi Bağlamsal Sözlük Penceresi</span>
+<span class="text-xs text-on-surface-variant font-mono">Tıklama ile tetiklenir</span>
+</div>
+<!-- Okuma Parçası Simülasyonu -->
+<div class="p-4 bg-background border border-outline-variant rounded-md font-serif text-sm leading-relaxed text-on-surface relative">
+            "The archaeological committee presented their 
+            <span class="inline-block relative">
+<!-- Seçili Kelime Vurgusu -->
+<span class="bg-primary-container text-on-primary-container font-semibold px-1 py-0.5 rounded cursor-pointer border border-primary">
+                preliminary
+              </span>
+<!-- Popover Kutusu (Düz opak 1px kenarlık, blur yok) -->
+<span class="absolute left-0 bottom-full mb-2 w-72 bg-surface border border-outline rounded-md p-3 shadow-overlay z-30 font-sans text-left block">
+<span class="flex items-center justify-between border-b border-outline-variant pb-1.5 mb-1.5">
+<span class="font-bold text-xs text-primary font-serif">preliminary (sıfat)</span>
+<span class="text-[10px] bg-background px-1.5 py-0.5 rounded border border-outline-variant text-on-surface-variant">ÖSYM B2 Seviye</span>
+</span>
+<span class="text-xs text-on-surface font-medium block">İlk, ön, hazırlık niteliğinde</span>
+<span class="text-[11px] text-on-surface-variant mt-1 block">Zıt Anlam: final, concluding</span>
+<span class="mt-2 pt-1.5 border-t border-outline-variant flex items-center justify-between block">
+<span class="text-[10px] text-on-surface-variant">Soru 42 Çözüm İpucu</span>
+<a class="text-[11px] font-bold text-primary hover:underline" href="#">Sözlüğe Git →</a>
+</span>
+</span>
+</span>
+             findings regarding the Bronze Age settlement discovered in central Anatolia."
+          </div>
+<p class="text-xs text-on-surface-variant mt-2">Kullanıcı kelimeye tıkladığında okuma ritmini bozmadan yerinde açıklama sunulur.</p>
+</div>
+<!-- Örnek 2: Mikro Araç İpuçları -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5">
+<div class="flex items-center justify-between mb-3 pb-2 border-b border-outline-variant">
+<span class="text-xs font-bold text-on-surface">Mikro Araç İpuçları (44px Hedef Garantili)</span>
+<span class="text-xs text-on-surface-variant font-mono">Fare üzerine gelindiğinde</span>
+</div>
+<div class="flex flex-wrap items-center gap-6 p-6 bg-background border border-outline-variant rounded-md justify-center">
+<!-- Araç Butonu 1: Soru Frekansı İpucu ile -->
+<div class="relative group">
+<button class="w-12 h-12 rounded-md bg-surface border border-outline-variant hover:border-primary flex items-center justify-center text-on-surface transition-colors min-h-[44px] min-w-[44px]">
+<span class="material-symbols-outlined text-xl">analytics</span>
+</button>
+<!-- Araç İpucu -->
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1.5 bg-inverse-surface text-surface text-xs rounded shadow-overlay pointer-events-none opacity-100 font-medium">
+                Soru Frekansı: Son 5 yılda 14 kez çıktı
+                <div class="w-2 h-2 bg-inverse-surface rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
+</div>
+</div>
+<!-- Araç Butonu 2: Kısayol İpucu ile -->
+<div class="relative group">
+<button class="w-12 h-12 rounded-md bg-surface border border-outline-variant hover:border-primary flex items-center justify-center text-on-surface transition-colors min-h-[44px] min-w-[44px]">
+<span class="material-symbols-outlined text-xl">keyboard</span>
+</button>
+<!-- Araç İpucu -->
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1.5 bg-inverse-surface text-surface text-xs rounded shadow-overlay pointer-events-none opacity-100 font-medium">
+                Sonraki Soru: Klavyeden 'J' tuşuna basınız
+                <div class="w-2 h-2 bg-inverse-surface rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
+</div>
+</div>
+<!-- Araç Butonu 3: Seslendirme İpucu -->
+<div class="relative group">
+<button class="w-12 h-12 rounded-md bg-surface border border-outline-variant hover:border-primary flex items-center justify-center text-on-surface transition-colors min-h-[44px] min-w-[44px]">
+<span class="material-symbols-outlined text-xl">volume_up</span>
+</button>
+<!-- Araç İpucu -->
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1.5 bg-inverse-surface text-surface text-xs rounded shadow-overlay pointer-events-none opacity-100 font-medium">
+                Örnek Cümleyi Dinle (İngiliz Aksanı)
+                <div class="w-2 h-2 bg-inverse-surface rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
+</div>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant mt-2">Düz siyah arka planlı, yüksek kontrastlı ve gecikmesiz araç kutuları.</p>
+</div>
+</div>
+</section>
+<!-- 6. BÖLÜM 04: SİSTEM BİLDİRİMLERİ VE UYARI ŞERİTLERİ -->
+<section class="mb-14">
+<div class="flex items-center justify-between mb-5">
+<div>
+<h2 class="text-xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+
+            04 · Sistem Bildirimleri ve Uyarı Şeritleri
+          </h2>
+<p class="text-sm text-on-surface-variant mt-0.5">Asenkron süreç durumları, zaman sayaçları ve kalıcı sistem duyuruları için çift belirteçli geri bildirimler.</p>
+</div>
+<span class="text-xs font-mono bg-background px-2.5 py-1 border border-outline-variant rounded text-on-surface-variant">Bildirim Şeritleri</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Sol: Sabit/Kayan Anlık Bildirimler -->
+<div class="space-y-3">
+<h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Anlık Bildirimler</h3>
+<!-- Bildirim 1: Otomatik Kayıt -->
+<div class="p-3.5 bg-surface border border-outline-variant rounded-md flex items-center justify-between shadow-subtle">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-tertiary-container text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-base">check</span>
+</span>
+<div>
+<span class="text-xs font-bold text-on-surface block">Otomatik kayıt tamamlandı</span>
+<span class="text-[11px] text-on-surface-variant">Saat 14:32 itibarıyla 68 cevap yerel belleğe işlendi.</span>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-mono">Şimdi</span>
+</div>
+<!-- Bildirim 2: Kelime Defterine Eklendi (Geri Al eylemli) -->
+<div class="p-3.5 bg-surface border border-outline-variant rounded-md flex items-center justify-between shadow-subtle">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-primary-container text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-base">bookmark</span>
+</span>
+<div>
+<span class="text-xs font-bold text-on-surface block">'undermine' kelime defterinize eklendi</span>
+<span class="text-[11px] text-on-surface-variant">Hedef: YDS Akademik Fiiller Havuzu</span>
+</div>
+</div>
+<button class="text-xs font-bold text-primary hover:underline px-2 py-1 min-h-[44px] flex items-center">
+              Geri Al
+            </button>
+</div>
+<!-- Bildirim 3: Şüphe İşareti Kaldırıldı -->
+<div class="p-3.5 bg-surface border border-outline-variant rounded-md flex items-center justify-between shadow-subtle">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-base">flag</span>
+</span>
+<div>
+<span class="text-xs font-bold text-on-surface block">14. Soru üzerindeki inceleme işareti kaldırıldı</span>
+<span class="text-[11px] text-on-surface-variant">Soru kesin yanıtlanmış olarak etiketlendi.</span>
+</div>
+</div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface rounded min-h-[44px] min-w-[44px]">
+<span class="material-symbols-outlined text-base">close</span>
+</button>
+</div>
+</div>
+<!-- Sağ: Kalıcı Sistem Şeritleri -->
+<div class="space-y-3">
+<h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Kalıcı Sistem Şeritleri (Dört Renk Standardı)</h3>
+<!-- Bilgi Şeridi (Petrol Mavi Ton) -->
+<div class="p-3.5 bg-primary-container border border-primary rounded-md flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-xl shrink-0 mt-0.5">info</span>
+<div class="flex-1">
+<div class="text-xs font-bold text-on-primary-container">2026-YDS/2 Başvuru Dönemi Devam Ediyor</div>
+<div class="text-xs text-on-primary-container mt-0.5">ÖSYM sınav başvuruları 30 Eylül - 8 Ekim 2026 tarihleri arasında alınmaktadır. Geç başvuru günü: 16 Ekim 2026.</div>
+</div>
+</div>
+<!-- Uyarı Şeridi (Safran Sarı Ton) -->
+<div class="p-3.5 bg-secondary-container border border-secondary rounded-md flex items-start gap-3">
+<span class="material-symbols-outlined text-on-secondary text-xl shrink-0 mt-0.5">timer</span>
+<div class="flex-1">
+<div class="text-xs font-bold text-on-secondary">Sınavın Bitimine Son 10 Dakika Kaldı</div>
+<div class="text-xs text-on-secondary mt-0.5">Kalan süre: 09:42. Bu aşamadan sonra cevap formu otomatik olarak kapatılacaktır.</div>
+</div>
+</div>
+<!-- Hata Şeridi (Tuğla Kırmızısı) -->
+<div class="p-3.5 bg-error-container border border-error rounded-md flex items-start gap-3">
+<span class="material-symbols-outlined text-error text-xl shrink-0 mt-0.5">signal_disconnected</span>
+<div class="flex-1">
+<div class="text-xs font-bold text-error">Sunucu Bağlantısı Yeniden Deneniyor</div>
+<div class="text-xs text-error mt-0.5">Yanıtlarınız cihazınızın güvenli hafızasında tutulmaktadır. Veri kaybı yaşanmaz.</div>
+</div>
+</div>
+<!-- Başarı Şeridi (Yaprak Yeşili) -->
+<div class="p-3.5 bg-tertiary-container border border-tertiary rounded-md flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-xl shrink-0 mt-0.5">check_circle</span>
+<div class="flex-1">
+<div class="text-xs font-bold text-tertiary">Haftalık Hedef Tamamlandı</div>
+<div class="text-xs text-tertiary mt-0.5">Bu hafta hedeflenen 40 Doğru Sayısı barajı aşıldı. Tebrikler.</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 7. BÖLÜM 05: BOŞ VE HATA DURUMLARI (EMPTY & ERROR STATES) -->
+<section class="mb-14">
+<div class="flex items-center justify-between mb-5">
+<div>
+<h2 class="text-xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+
+            05 · Boş ve Hata Durumları
+          </h2>
+<p class="text-sm text-on-surface-variant mt-0.5">Adayı panikletmeyen, sakin, yapıcı ve bir sonraki adımı net gösteren durum tasarımları.</p>
+</div>
+<span class="text-xs font-mono bg-background px-2.5 py-1 border border-outline-variant rounded text-on-surface-variant">Hata ve Boşluk Şablonları</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Durum 1: Hata Defteri Temiz -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5 flex flex-col items-center text-center justify-between min-h-[280px]">
+<div class="w-14 h-14 rounded-full bg-tertiary-container text-tertiary flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-3xl">auto_stories</span>
+</div>
+<div>
+<h3 class="font-bold text-sm text-on-surface mb-1">Hata Defteri Temiz</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Son alıştırmalarınızda yanılgıya düşülen soru bulunmuyor. Bilgi birikiminiz güçlü ilerliyor.
+            </p>
+</div>
+<button class="mt-4 w-full h-10 bg-primary text-white rounded-md text-xs font-semibold hover:bg-opacity-95 transition-colors min-h-[44px]">
+            Yeni Alıştırma Çöz
+          </button>
+</div>
+<!-- Durum 2: İnternet Bağlantısı Kesildi -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5 flex flex-col items-center text-center justify-between min-h-[280px]">
+<div class="w-14 h-14 rounded-full bg-background border border-outline text-on-surface-variant flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-3xl">wifi_off</span>
+</div>
+<div>
+<h3 class="font-bold text-sm text-on-surface mb-1">İnternet Bağlantısı Kesildi</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Çözümleriniz cihazınızda güvence altındadır. Ağ geri geldiğinde otomatik eşitlenecektir.
+            </p>
+</div>
+<button class="mt-4 w-full h-10 border border-outline text-on-surface rounded-md text-xs font-semibold hover:bg-background transition-colors min-h-[44px]">
+            Yeniden Bağlanmayı Dene
+          </button>
+</div>
+<!-- Durum 3: 500 Sunucu Yanıtı Gecikmesi -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5 flex flex-col items-center text-center justify-between min-h-[280px]">
+<div class="w-14 h-14 rounded-full bg-error-container text-error flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-3xl">dns</span>
+</div>
+<div>
+<h3 class="font-bold text-sm text-on-surface mb-1">Sunucu Yanıtı Gecikmesi</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Merkezi değerlendirme motoru şu an yoğun istek alıyor. Lütfen birkaç saniye sonra tekrar deneyiniz.
+            </p>
+</div>
+<button class="mt-4 w-full h-10 border border-outline text-on-surface rounded-md text-xs font-semibold hover:bg-background transition-colors min-h-[44px]">
+            Sayfayı Yenile
+          </button>
+</div>
+<!-- Durum 4: Kurumsal Lisans Gerekli -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5 flex flex-col items-center text-center justify-between min-h-[280px]">
+<div class="w-14 h-14 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-3xl">lock</span>
+</div>
+<div>
+<h3 class="font-bold text-sm text-on-surface mb-1">Kurumsal Yetki Gerekli</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Bu tahlil modülü yalnızca YDS Akademik Danışman lisansına sahip araştırmacılara açıktır.
+            </p>
+</div>
+<button class="mt-4 w-full h-10 bg-primary text-white rounded-md text-xs font-semibold hover:bg-opacity-95 transition-colors min-h-[44px]">
+            Yetki Talep Et
+          </button>
+</div>
+</div>
+</section>
+<!-- 8. BÖLÜM 06: İSKELET YÜKLEME VE ADAY TANITIM İPUÇLARI -->
+<section class="mb-14">
+<div class="flex items-center justify-between mb-5">
+<div>
+<h2 class="text-xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+
+            06 · İskelet Yükleme ve Aday Tanıtım İpuçları
+          </h2>
+<p class="text-sm text-on-surface-variant mt-0.5">İçerik yüklenirken ekran sıçramalarını önleyen gri nötr bloklar ve ilk kez giren adayı yönlendiren adım balonları.</p>
+</div>
+<span class="text-xs font-mono bg-background px-2.5 py-1 border border-outline-variant rounded text-on-surface-variant">Yükleme &amp; Tanıtım Mimarisi</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Sol: Soru Kartı İskelet Yüklemesi (7 Kolon) -->
+<div class="lg:col-span-7 bg-surface border border-outline-variant rounded-lg p-5">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant mb-4">
+<span class="text-xs font-bold text-on-surface">Soru ve Seçenek Satırı İskeleti</span>
+<span class="text-xs text-on-surface-variant">Arka plan: #E9EDEC / #DAE1E0</span>
+</div>
+<!-- İskelet Bloğu -->
+<div class="space-y-4 animate-pulse">
+<!-- Üst Meta İskeleti -->
+<div class="flex items-center justify-between">
+<div class="h-4 w-28 bg-outline-variant rounded"></div>
+<div class="h-4 w-16 bg-outline-variant rounded"></div>
+</div>
+<!-- Paragraf İskeleti -->
+<div class="space-y-2 py-2">
+<div class="h-4 w-full bg-outline-variant rounded"></div>
+<div class="h-4 w-11/12 bg-outline-variant rounded"></div>
+<div class="h-4 w-4/5 bg-outline-variant rounded"></div>
+</div>
+<!-- Seçenek Satırları İskeleti (A, B, C, D, E) -->
+<div class="space-y-2 pt-2">
+<div class="h-12 w-full bg-background border border-outline-variant rounded-md flex items-center px-4 gap-3">
+<div class="w-6 h-6 rounded-full bg-outline-variant"></div>
+<div class="h-4 w-3/4 bg-outline-variant rounded"></div>
+</div>
+<div class="h-12 w-full bg-background border border-outline-variant rounded-md flex items-center px-4 gap-3">
+<div class="w-6 h-6 rounded-full bg-outline-variant"></div>
+<div class="h-4 w-2/3 bg-outline-variant rounded"></div>
+</div>
+<div class="h-12 w-full bg-background border border-outline-variant rounded-md flex items-center px-4 gap-3">
+<div class="w-6 h-6 rounded-full bg-outline-variant"></div>
+<div class="h-4 w-4/5 bg-outline-variant rounded"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sağ: Aday Tanıtım İpucu / Gezinti Balonu (5 Kolon) -->
+<div class="lg:col-span-5 bg-surface border border-outline-variant rounded-lg p-5 flex flex-col justify-between relative">
+<div>
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant mb-4">
+<span class="text-xs font-bold text-on-surface">İlk Oturum Gezinti İpucu</span>
+<span class="text-xs bg-primary-container text-primary font-bold px-2 py-0.5 rounded">Adım 2 / 3</span>
+</div>
+<div class="p-4 bg-background border border-primary rounded-md relative mt-2">
+<div class="flex items-start gap-3">
+<span class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 text-sm font-bold">2</span>
+<div>
+<h4 class="font-bold text-sm text-on-surface">Cümle Röntgeni ile Analiz Edin</h4>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
+                    Sorudaki karmaşık cümleleri bileşenlerine (özne, fiil, bağlaç) ayırmak için soru kökünün sağ üstündeki <strong>'Röntgen'</strong> simgesine tıklayabilirsiniz.
+                  </p>
+</div>
+</div>
+<!-- İpucu Oku Temsili -->
+<div class="w-3 h-3 bg-background border-t border-l border-primary -top-1.5 left-6 rotate-45 absolute"></div>
+</div>
+<div class="mt-4 p-3 bg-surface border border-outline-variant rounded-md flex items-center justify-between text-xs">
+<span class="text-on-surface-variant font-medium">Bu ipuçlarını bir daha gösterme</span>
+<input class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox">
+</div>
+</div>
+<div class="pt-4 mt-4 border-t border-outline-variant flex items-center justify-between">
+<button class="text-xs font-bold text-on-surface-variant hover:text-on-surface min-h-[44px] px-2 flex items-center">
+              Tanıtımı Atla
+            </button>
+<div class="flex gap-2">
+<button class="px-3 h-10 border border-outline-variant rounded-md text-xs font-semibold text-on-surface hover:bg-background min-h-[44px]">
+                Önceki
+              </button>
+<button class="px-4 h-10 bg-primary text-white rounded-md text-xs font-semibold hover:bg-opacity-95 min-h-[44px]">
+                Sonraki Adım →
+              </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 9. BÖLÜM 07: TASARIM BELİRTEÇLERİ VE KATMAN HİYERARŞİSİ TABLOSU -->
+<section class="mb-14">
+<div class="flex items-center justify-between mb-5">
+<div>
+<h2 class="text-xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+
+            07 · Tasarım Belirteçleri ve Katman Hiyerarşisi
+          </h2>
+<p class="text-sm text-on-surface-variant mt-0.5">ODAK arayüzünde kullanılan z-index basamakları ve WCAG AAA renk kontrast güvencesi tablosu.</p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant rounded-lg overflow-hidden shadow-subtle">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse text-xs">
+<thead>
+<tr class="bg-background border-b border-outline-variant text-on-surface-variant font-bold uppercase tracking-wider">
+<th class="p-3.5">Katman Adı</th>
+<th class="p-3.5">Katman Değeri</th>
+<th class="p-3.5">Kullanım Amacı</th>
+<th class="p-3.5">Yüzey Rengi</th>
+<th class="p-3.5">Kenarlık &amp; Kural</th>
+<th class="p-3.5">Erişilebilirlik</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-on-surface">
+<tr class="hover:bg-background transition-colors">
+<td class="p-3.5 font-bold">Kalıcı Pencereler (Modal)</td>
+<td class="p-3.5 font-mono text-primary font-bold">z-index: 50</td>
+<td class="p-3.5">Yönerge, onay ve oturum sonlandırma</td>
+<td class="p-3.5 font-mono">#FFFFFF (Opak)</td>
+<td class="p-3.5">1px #DAE1E0 + %50 Karartma Perdesi</td>
+<td class="p-3.5"><span class="px-2 py-0.5 bg-tertiary-container text-tertiary font-bold rounded">AAA Geçerli</span></td>
+</tr>
+<tr class="hover:bg-background transition-colors">
+<td class="p-3.5 font-bold">Çekmeceler ve Alt Sayfalar</td>
+<td class="p-3.5 font-mono text-primary font-bold">z-index: 40</td>
+<td class="p-3.5">Akademik sözlük kartı ve 80 soruluk gezgin</td>
+<td class="p-3.5 font-mono">#FFFFFF (Opak)</td>
+<td class="p-3.5">1px Sağ/Sol Kenarlık, Bulanıklık Yok</td>
+<td class="p-3.5"><span class="px-2 py-0.5 bg-tertiary-container text-tertiary font-bold rounded">AAA Geçerli</span></td>
+</tr>
+<tr class="hover:bg-background transition-colors">
+<td class="p-3.5 font-bold">Sabit Üst Gezinme Çubuğu</td>
+<td class="p-3.5 font-mono text-primary font-bold">z-index: 30</td>
+<td class="p-3.5">Global logo, bağlantılar ve kullanıcı alanı</td>
+<td class="p-3.5 font-mono">#FFFFFF (Opak)</td>
+<td class="p-3.5">1px Alt Kenarlık (#DAE1E0)</td>
+<td class="p-3.5"><span class="px-2 py-0.5 bg-tertiary-container text-tertiary font-bold rounded">AAA Geçerli</span></td>
+</tr>
+<tr class="hover:bg-background transition-colors">
+<td class="p-3.5 font-bold">Açılır Pencereler ve İpuçları</td>
+<td class="p-3.5 font-mono text-primary font-bold">z-index: 20</td>
+<td class="p-3.5">Metin içi terim ve klavye kısayolu</td>
+<td class="p-3.5 font-mono">#FFFFFF / #13232A</td>
+<td class="p-3.5">1px Kenarlık + 4px Yön Oku</td>
+<td class="p-3.5"><span class="px-2 py-0.5 bg-tertiary-container text-tertiary font-bold rounded">AAA Geçerli</span></td>
+</tr>
+<tr class="hover:bg-background transition-colors">
+<td class="p-3.5 font-bold">Temel Zemin ve Kartlar</td>
+<td class="p-3.5 font-mono text-on-surface-variant">z-index: 0</td>
+<td class="p-3.5">Okuma metinleri, seçenek satırları, butonlar</td>
+<td class="p-3.5 font-mono">#F4F6F5 / #FFFFFF</td>
+<td class="p-3.5">1px Doğal Kenarlık (#DAE1E0)</td>
+<td class="p-3.5"><span class="px-2 py-0.5 bg-tertiary-container text-tertiary font-bold rounded">AAA Geçerli</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<!-- 10. KURUMSAL ALT BİLGİ (Footer) -->
+<footer class="bg-surface border-t border-outline-variant py-8 mt-auto">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-on-surface-variant">
+<div class="flex items-center gap-3">
+<span class="font-display font-bold text-base text-primary">ODAK</span>
+<span>·</span>
+<span>YDS Hazırlık ve Akademik Yetkinlik Platformu</span>
+<span>·</span>
+<span>© 2026 ODAK Yazılım ve Eğitim Teknolojileri A.Ş.</span>
+</div>
+<div class="flex items-center gap-6">
+<span>2026-YDS/2 Tarihi: <strong>22 Kasım 2026</strong></span>
+<span>ÖSYM Sınav Formatı Uyumluluğu: <strong>%100 Doğrulanmış</strong></span>
+<a class="hover:text-primary transition-colors" href="#">Kullanım Şartları</a>
+<a class="hover:text-primary transition-colors" href="#">Erişilebilirlik Bildirgesi</a>
+</div>
+</div>
+</footer>
+</body></html>

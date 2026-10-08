@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CMP-03 · Navigasyon Bileşenleri | YDS Platformu</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Figtree (Arayüz), Bricolage Grotesque (Başlıklar), Literata (Okuma/Sınav) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#F4F6F5',
+            surface: '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            outline: '#77868A',
+            'outline-variant': '#DAE1E0',
+            primary: '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            secondary: '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            tertiary: '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            error: '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+            'chart-1': '#0F9485',
+            'chart-2': '#505AC8',
+            'chart-3': '#BA7F14',
+            'chart-4': '#9E427B',
+          },
+          borderRadius: {
+            DEFAULT: "0.5rem",
+            xs: "4px",
+            sm: "8px",
+            md: "12px",
+            lg: "16px",
+            xl: "24px",
+            full: "9999px"
+          },
+          fontFamily: {
+            headline: ["Bricolage Grotesque", "sans-serif"],
+            display: ["Bricolage Grotesque", "sans-serif"],
+            body: ["Figtree", "sans-serif"],
+            label: ["Figtree", "sans-serif"],
+            serif: ["Literata", "serif"]
+          },
+          fontSize: {
+            'display-l': ['56px', { lineHeight: '60px', letterSpacing: '-0.02em' }],
+            'display-m': ['40px', { lineHeight: '44px', letterSpacing: '-0.015em' }],
+            'headline-lg': ['32px', { lineHeight: '40px', letterSpacing: '-0.01em' }],
+            'headline-md': ['24px', { lineHeight: '32px' }],
+            'headline-sm': ['20px', { lineHeight: '28px' }],
+            'title': ['16px', { lineHeight: '22px' }],
+            'body-lg': ['18px', { lineHeight: '28px' }],
+            'body-md': ['16px', { lineHeight: '24px' }],
+            'body-sm': ['14px', { lineHeight: '20px' }],
+            'label-lg': ['16px', { lineHeight: '20px' }],
+            'label-md': ['14px', { lineHeight: '18px' }],
+            'caption': ['12px', { lineHeight: '16px' }],
+            'overline': ['11px', { lineHeight: '14px', letterSpacing: '0.08em' }],
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom, 12px);
+    }
+    /* Tablo ve sayı hizalamaları için tablosal rakamlar */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen bg-[#F4F6F5] text-[#13232A] flex justify-center selection:bg-[#DCEDEC] selection:text-[#0E6A6E]">
+<!-- Mobil Çerçeve Taşıyıcı: 390px kesin prototip kanvası -->
+<div class="w-full max-w-[390px] min-h-screen bg-background relative flex flex-col border-x border-outline-variant shadow-sm">
+<!-- 1. ÜST ÇUBUK (TopAppBar Bileşeni) -->
+<header class="bg-surface border-b border-outline-variant flex justify-between items-center h-16 w-full px-4 sticky top-0 z-40">
+<div class="flex items-center space-x-2">
+<button aria-label="Geri" class="flex items-center justify-center w-11 h-11 -ml-2 rounded-full text-on-surface-variant hover:bg-primary-container/40 active:opacity-80 transition-colors" type="button">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<span class="font-headline text-[17px] font-bold text-on-surface tracking-tight truncate">CMP-03 · Navigasyon</span>
+</div>
+<div class="flex items-center space-x-1">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-body bg-primary-container text-on-primary-container">
+          v2.4 Kılavuz
+        </span>
+<button aria-label="Ayarlar ve Filtre" class="flex items-center justify-center w-11 h-11 -mr-2 rounded-full text-on-surface-variant hover:bg-primary-container/40 active:opacity-80 transition-colors" type="button">
+<span class="material-symbols-outlined text-[22px]">tune</span>
+</button>
+</div>
+</header>
+<!-- İçerik Akışı (Dokümantasyon Sayfası) -->
+<main class="flex-1 px-4 pt-4 pb-28 space-y-6">
+<!-- BÖLÜM 1: Kılavuz Özeti & Meta Kartı -->
+<section class="bg-surface rounded-lg p-4 border border-outline-variant">
+<div class="flex items-start justify-between mb-3">
+<div>
+<span class="text-overline uppercase font-bold text-on-surface-variant tracking-wider">Tasarım Standardı</span>
+<h1 class="font-headline text-headline-sm font-bold text-on-surface mt-0.5">Navigasyon Mimarisi</h1>
+</div>
+<span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-primary">
+<span class="material-symbols-outlined text-[20px]">navigation</span>
+</span>
+</div>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">
+          Yetiskin ve akademik adaylar icin tasarlanmis duru Turkce navigasyon yapisi. OSYM optik doluluk hissi, asgari 44 piksel dokunma alanlari ve petrole dayali secili hiyerarsi uygulanir.
+        </p>
+<div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-outline-variant text-center">
+<div class="p-2 bg-background rounded">
+<p class="text-[11px] font-medium text-on-surface-variant">Hedef Alan</p>
+<p class="font-semibold text-body-sm text-primary tabular-nums">≥ 44 px</p>
+</div>
+<div class="p-2 bg-background rounded">
+<p class="text-[11px] font-medium text-on-surface-variant">Cihaz</p>
+<p class="font-semibold text-body-sm text-on-surface tabular-nums">390 pt</p>
+</div>
+<div class="p-2 bg-background rounded">
+<p class="text-[11px] font-medium text-on-surface-variant">Tema</p>
+<p class="font-semibold text-body-sm text-on-surface">Acik (Light)</p>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 2: Alt Sekme Çubuğu Standartları -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-[15px] font-bold text-on-surface flex items-center space-x-1.5">
+<span class="w-1.5 h-4 bg-primary rounded-full inline-block"></span>
+<span>Alt Sekme Çubuğu (Bottom Navigation)</span>
+</h2>
+<span class="text-[11px] font-medium text-on-surface-variant">5 Hedefli Yapı</span>
+</div>
+<div class="bg-surface rounded-lg p-3 border border-outline-variant space-y-4">
+<div class="text-caption text-on-surface-variant">
+            Her hedef dikey duzende simge ve metin icerir. Secili hedef <strong class="text-primary font-semibold">Petrol (#0E6A6E)</strong> rengindedir; bildirimler <strong class="text-on-surface font-semibold">Safran (#E9A514)</strong> rozet noktasi ile belirtilir.
+          </div>
+<!-- Canlı Önizleme Kutusu (Alt Çubuk Anatomisi) -->
+<div class="border border-outline-variant rounded-md overflow-hidden bg-surface">
+<div class="px-3 py-1.5 bg-[#E9EDEC] border-b border-outline-variant flex justify-between items-center text-[11px] text-on-surface-variant font-medium">
+<span>Etkileşimli Durum Simülasyonu</span>
+<span class="text-primary font-semibold">Calis: Aktif</span>
+</div>
+<div class="flex items-center justify-around h-16 px-1 bg-surface">
+<!-- Bugün -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[22px]">calendar_today</span>
+<span class="text-[12px] font-medium tracking-tight mt-0.5">Bugün</span>
+</div>
+<!-- Çalış (Aktif Sekme) -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-semibold relative cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center -mb-1">
+<span class="material-symbols-outlined text-[20px] text-primary" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+</div>
+<span class="text-[12px] font-semibold tracking-tight text-primary mt-0.5">Çalış</span>
+</div>
+<!-- Deneme -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[22px]">assignment</span>
+<span class="text-[12px] font-medium tracking-tight mt-0.5">Deneme</span>
+</div>
+<!-- Öğretmen (Rozetli Durum) -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-primary transition-colors relative cursor-pointer">
+<div class="relative inline-flex">
+<span class="material-symbols-outlined text-[22px]">school</span>
+<!-- Safran rozet noktası: bildirim göstergesi -->
+<span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-secondary border border-surface" title="Yeni Bildirim"></span>
+</div>
+<span class="text-[12px] font-medium tracking-tight mt-0.5">Öğretmen</span>
+</div>
+<!-- Ben -->
+<div class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[22px]">person</span>
+<span class="text-[12px] font-medium tracking-tight mt-0.5">Ben</span>
+</div>
+</div>
+</div>
+<!-- Durum Açıklamaları -->
+<div class="grid grid-cols-3 gap-2 text-[11px] pt-1">
+<div class="p-2 border border-outline-variant rounded bg-background">
+<span class="font-bold text-on-surface block mb-0.5">1. Varsayılan</span>
+<span class="text-on-surface-variant">#46565C gri ton, 400 normal agirlik.</span>
+</div>
+<div class="p-2 border border-primary/30 rounded bg-primary-container/20">
+<span class="font-bold text-primary block mb-0.5">2. Seçili</span>
+<span class="text-on-surface-variant">#0E6A6E petrol dolgu + 600 yazi.</span>
+</div>
+<div class="p-2 border border-secondary/40 rounded bg-secondary-container/30">
+<span class="font-bold text-[#A37000] block mb-0.5">3. Bildirimli</span>
+<span class="text-on-surface-variant">#E9A514 safran 8px dairesel nokta.</span>
+</div>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 3: Üst Çubuk (Top App Bar) Varyasyonları -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-[15px] font-bold text-on-surface flex items-center space-x-1.5">
+<span class="w-1.5 h-4 bg-primary rounded-full inline-block"></span>
+<span>Üst Çubuk (Top App Bar) Tipleri</span>
+</h2>
+<span class="text-[11px] font-medium text-on-surface-variant">3 Mod</span>
+</div>
+<div class="space-y-3">
+<!-- Tip A: Standart Üst Çubuk -->
+<div class="bg-surface rounded-lg border border-outline-variant p-3 space-y-2">
+<div class="flex items-center justify-between text-[11px] font-semibold text-on-surface-variant">
+<span>A. Standart Gezinme Çubuğu (64px)</span>
+<span class="text-primary">Temel Sayfalar</span>
+</div>
+<div class="border border-outline-variant rounded bg-surface h-14 flex items-center justify-between px-3">
+<div class="flex items-center space-x-2">
+<button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-background text-on-surface" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<span class="font-headline font-semibold text-body-md text-on-surface">Kelime Havuzu</span>
+</div>
+<div class="flex items-center space-x-1">
+<button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-background text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+<button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-background text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tip B: Büyük Başlıklı Üst Çubuk (Collapsible / Large) -->
+<div class="bg-surface rounded-lg border border-outline-variant p-3 space-y-2">
+<div class="flex items-center justify-between text-[11px] font-semibold text-on-surface-variant">
+<span>B. Büyük Başlıklı Çubuk</span>
+<span class="text-primary">Giriş / Bölüm Başları</span>
+</div>
+<div class="border border-outline-variant rounded bg-surface p-3">
+<div class="flex items-center justify-between h-9">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-background text-on-surface" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-background text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+</button>
+</div>
+<div class="mt-2 pt-1 border-t border-outline-variant/60">
+<span class="text-overline uppercase text-on-surface-variant font-bold">2024 Sonbahar Oturumu</span>
+<h3 class="font-headline text-headline-sm font-bold text-on-surface tracking-tight mt-0.5">Deneme Sınavı 3</h3>
+<p class="text-caption text-on-surface-variant mt-0.5">Toplam 80 Soru · 180 Dakika Standart Süre</p>
+</div>
+</div>
+</div>
+<!-- Tip C: Odak Modu Üst Çubuğu (Sınav Esnası) -->
+<div class="bg-surface rounded-lg border border-outline-variant p-3 space-y-2">
+<div class="flex items-center justify-between text-[11px] font-semibold text-on-surface-variant">
+<span>C. Odak Modu Çubuğu (Sınav Ortamı)</span>
+<span class="text-tertiary font-medium">Bilişsel Yük Azaltılmış</span>
+</div>
+<div class="border border-outline-variant rounded bg-surface p-2.5 space-y-2">
+<div class="flex items-center justify-between">
+<!-- Sınavdan Çıkış -->
+<button class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-background active:opacity-80" title="Sınavı Bitir veya Çık" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+<!-- Kalan Süre Sayacı (OSYM Standardı) -->
+<div class="flex items-center space-x-1.5 px-3 py-1 bg-background rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+<span class="font-body text-body-sm font-bold text-on-surface tabular-nums">142 : 18</span>
+<span class="text-[11px] text-on-surface-variant font-medium">kaldı</span>
+</div>
+<!-- Soru Bayraklama / İşaretleme -->
+<button class="flex items-center space-x-1 px-2.5 py-1 rounded bg-[#FBEFD2] text-[#8F6105] text-[12px] font-semibold border border-secondary/30" type="button">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">flag</span>
+<span>İşaretle</span>
+</button>
+</div>
+<!-- İnce Doğrusal İlerleme Çubuğu -->
+<div class="pt-1">
+<div class="flex justify-between items-center text-[11px] text-on-surface-variant mb-1 font-medium">
+<span>Soru 42 / 80</span>
+<span class="tabular-nums font-semibold text-primary">%52 Tamamlandı</span>
+</div>
+<div class="w-full h-1.5 bg-[#E9EDEC] rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 52.5%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 4: Sekmeler (Tabs - Segment ve Çizgili) -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-[15px] font-bold text-on-surface flex items-center space-x-1.5">
+<span class="w-1.5 h-4 bg-primary rounded-full inline-block"></span>
+<span>Sekme Denetimleri (Tabs)</span>
+</h2>
+<span class="text-[11px] font-medium text-on-surface-variant">2 Biçim</span>
+</div>
+<div class="bg-surface rounded-lg border border-outline-variant p-3 space-y-4">
+<!-- Tip 1: Alt Çizgili Klasik Sekmeler -->
+<div>
+<p class="text-caption font-semibold text-on-surface-variant mb-2">1. Alt Çizgili Sekmeler (Underline Tabs)</p>
+<div class="flex border-b border-outline-variant justify-between">
+<button class="pb-2.5 px-2 text-body-sm font-bold text-primary border-b-2 border-primary relative -mb-[1px]" type="button">
+                Tümü (140)
+              </button>
+<button class="pb-2.5 px-2 text-body-sm font-medium text-on-surface-variant hover:text-on-surface" type="button">
+                Kelime
+              </button>
+<button class="pb-2.5 px-2 text-body-sm font-medium text-on-surface-variant hover:text-on-surface" type="button">
+                Dilbilgisi
+              </button>
+<button class="pb-2.5 px-2 text-body-sm font-medium text-on-surface-variant hover:text-on-surface" type="button">
+                Okuma
+              </button>
+</div>
+</div>
+<!-- Tip 2: Segment Kapsül Kontrolü -->
+<div>
+<p class="text-caption font-semibold text-on-surface-variant mb-2">2. Kapsül Segment Kontrol (Zorluk / Mod)</p>
+<div class="p-1 bg-background rounded-full border border-outline-variant flex items-center justify-between">
+<button class="flex-1 py-1.5 text-center text-[13px] font-medium text-on-surface-variant hover:text-on-surface rounded-full transition-all" type="button">
+                Temel
+              </button>
+<button class="flex-1 py-1.5 text-center text-[13px] font-bold text-on-primary bg-primary rounded-full shadow-none transition-all" type="button">
+                Orta Düzey
+              </button>
+<button class="flex-1 py-1.5 text-center text-[13px] font-medium text-on-surface-variant hover:text-on-surface rounded-full transition-all" type="button">
+                İleri
+              </button>
+</div>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 5: Adım ve Aşama Göstergeleri (Step Indicators) -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-[15px] font-bold text-on-surface flex items-center space-x-1.5">
+<span class="w-1.5 h-4 bg-primary rounded-full inline-block"></span>
+<span>Adım &amp; Süreç Göstergeleri</span>
+</h2>
+<span class="text-[11px] font-medium text-on-surface-variant">Optik Motif</span>
+</div>
+<div class="bg-surface rounded-lg border border-outline-variant p-3 space-y-4">
+<!-- Noktalı Adım Göstergesi -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-caption font-semibold text-on-surface-variant">Optik Baloncuk Adım Dizisi</span>
+<span class="text-[11px] text-primary font-bold">Adım 3 / 5</span>
+</div>
+<div class="flex items-center justify-between px-2 py-2 bg-background rounded-md border border-outline-variant">
+<!-- Tamamlandı 1 -->
+<div class="flex items-center space-x-1">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-[12px] font-bold">
+<span class="material-symbols-outlined text-[15px]">check</span>
+</span>
+<div class="w-7 h-0.5 bg-primary"></div>
+</div>
+<!-- Tamamlandı 2 -->
+<div class="flex items-center space-x-1">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-[12px] font-bold">
+<span class="material-symbols-outlined text-[15px]">check</span>
+</span>
+<div class="w-7 h-0.5 bg-primary"></div>
+</div>
+<!-- Aktif Adım 3 -->
+<div class="flex items-center space-x-1">
+<span class="w-6 h-6 rounded-full border-2 border-primary bg-surface text-primary flex items-center justify-center text-[12px] font-bold">
+                  3
+                </span>
+<div class="w-7 h-0.5 bg-outline-variant"></div>
+</div>
+<!-- Bekleyen 4 -->
+<div class="flex items-center space-x-1">
+<span class="w-6 h-6 rounded-full bg-outline-variant text-on-surface-variant flex items-center justify-center text-[12px] font-medium">
+                  4
+                </span>
+<div class="w-7 h-0.5 bg-outline-variant"></div>
+</div>
+<!-- Bekleyen 5 -->
+<div>
+<span class="w-6 h-6 rounded-full bg-outline-variant text-on-surface-variant flex items-center justify-center text-[12px] font-medium">
+                  5
+                </span>
+</div>
+</div>
+</div>
+<!-- Sayısal Adım Başlığı -->
+<div class="p-2.5 bg-primary-container/30 border border-primary/20 rounded flex items-center justify-between">
+<div>
+<span class="text-[11px] font-bold uppercase text-primary tracking-wider">Mevcut Aşama</span>
+<p class="font-headline text-body-sm font-bold text-on-surface mt-0.5">Soru Analizi &amp; Kök İncelemesi</p>
+</div>
+<span class="px-2 py-1 rounded bg-surface border border-primary/30 text-[12px] font-bold text-primary tabular-nums">
+              3. Aşama
+            </span>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 6: İlerleme Göstergeleri (Progress Indicators) -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-[15px] font-bold text-on-surface flex items-center space-x-1.5">
+<span class="w-1.5 h-4 bg-primary rounded-full inline-block"></span>
+<span>İlerleme Göstergeleri</span>
+</h2>
+<span class="text-[11px] font-medium text-on-surface-variant">Doğrusal &amp; Halka</span>
+</div>
+<div class="bg-surface rounded-lg border border-outline-variant p-3 space-y-4">
+<!-- Doğrusal İlerleme -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center text-caption font-semibold">
+<span class="text-on-surface">Grammar Modülü İlerlemesi</span>
+<span class="text-primary tabular-nums font-bold">%65</span>
+</div>
+<div class="w-full h-2 bg-[#E9EDEC] rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 65%;"></div>
+</div>
+<span class="text-[11px] text-on-surface-variant block">52 kuraldan 34 tanesi tamamlandı.</span>
+</div>
+<!-- Dairesel SVG İlerleme Halkaları -->
+<div class="pt-2 border-t border-outline-variant">
+<p class="text-caption font-semibold text-on-surface-variant mb-3">Dairesel İlerleme Ölçekleri</p>
+<div class="grid grid-cols-3 gap-3 items-end text-center">
+<!-- Küçük Boy (28px) -->
+<div class="flex flex-col items-center">
+<div class="relative w-8 h-8 flex items-center justify-center">
+<svg class="w-8 h-8 transform -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="14" stroke="#DAE1E0" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="none" r="14" stroke="#0E6A6E" stroke-dasharray="88" stroke-dashoffset="30" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<span class="absolute text-[9px] font-bold text-primary">65%</span>
+</div>
+<span class="text-[11px] text-on-surface-variant mt-1.5">Küçük (32px)</span>
+</div>
+<!-- Orta Boy (48px) -->
+<div class="flex flex-col items-center">
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="w-12 h-12 transform -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="14" stroke="#DAE1E0" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="none" r="14" stroke="#0E6A6E" stroke-dasharray="88" stroke-dashoffset="18" stroke-linecap="round" stroke-width="3.5"></circle>
+</svg>
+<span class="absolute text-[11px] font-bold text-on-surface tabular-nums">78%</span>
+</div>
+<span class="text-[11px] text-on-surface-variant mt-1.5 font-medium">Orta (48px)</span>
+</div>
+<!-- Büyük Boy (68px) -->
+<div class="flex flex-col items-center">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-16 h-16 transform -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="14" stroke="#DAE1E0" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="none" r="14" stroke="#1F7A45" stroke-dasharray="88" stroke-dashoffset="8" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-[13px] font-bold text-tertiary tabular-nums leading-none">88.5</span>
+<span class="text-[8px] text-on-surface-variant uppercase mt-0.5">Net</span>
+</div>
+</div>
+<span class="text-[11px] text-on-surface-variant mt-1.5">Büyük (64px)</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 7: Ekmek Kırıntısı (Breadcrumb) ve Sayfalama (Pagination) -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-[15px] font-bold text-on-surface flex items-center space-x-1.5">
+<span class="w-1.5 h-4 bg-primary rounded-full inline-block"></span>
+<span>Ekmek Kırıntısı &amp; Sayfalama</span>
+</h2>
+<span class="text-[11px] font-medium text-on-surface-variant">Konumlandırma</span>
+</div>
+<div class="bg-surface rounded-lg border border-outline-variant p-3 space-y-4">
+<!-- Ekmek Kırıntısı -->
+<div>
+<p class="text-caption font-semibold text-on-surface-variant mb-2">Ekmek Kırıntısı Yolu (Breadcrumbs)</p>
+<nav aria-label="Gezinme Yolu" class="flex items-center space-x-1.5 text-[13px] overflow-x-auto py-1">
+<a class="text-on-surface-variant hover:text-primary whitespace-nowrap" href="#">Sınavlar</a>
+<span class="text-outline-variant text-[14px]">›</span>
+<a class="text-on-surface-variant hover:text-primary whitespace-nowrap" href="#">2024 İlkbahar</a>
+<span class="text-outline-variant text-[14px]">›</span>
+<span class="text-primary font-bold whitespace-nowrap bg-primary-container px-2 py-0.5 rounded text-[12px]">Paragraf Soruları</span>
+</nav>
+</div>
+<!-- Sayfalama (Pagination) -->
+<div class="pt-2 border-t border-outline-variant">
+<p class="text-caption font-semibold text-on-surface-variant mb-2">Sayfalama Denetimi (44px Hedef)</p>
+<div class="flex items-center justify-between">
+<!-- Önceki Butonu -->
+<button aria-label="Önceki Sayfa" class="min-w-[40px] h-10 px-2 rounded border border-outline-variant flex items-center justify-center text-on-surface hover:bg-background active:opacity-80" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<!-- Sayfa Numaraları -->
+<div class="flex items-center space-x-1">
+<button class="w-9 h-10 rounded border border-outline-variant text-body-sm font-medium text-on-surface hover:bg-background" type="button">
+                  1
+                </button>
+<button class="w-9 h-10 rounded bg-primary text-on-primary text-body-sm font-bold shadow-none" type="button">
+                  2
+                </button>
+<button class="w-9 h-10 rounded border border-outline-variant text-body-sm font-medium text-on-surface hover:bg-background" type="button">
+                  3
+                </button>
+<span class="w-6 text-center text-on-surface-variant text-caption">...</span>
+<button class="w-9 h-10 rounded border border-outline-variant text-body-sm font-medium text-on-surface hover:bg-background" type="button">
+                  16
+                </button>
+</div>
+<!-- Sonraki Butonu -->
+<button aria-label="Sonraki Sayfa" class="min-w-[40px] h-10 px-2 rounded border border-outline-variant flex items-center justify-center text-on-surface hover:bg-background active:opacity-80" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 8: Tablet & Masaüstü Adaptasyon Kartı -->
+<section class="bg-surface rounded-lg border border-outline-variant p-3 space-y-3">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-[20px]">devices</span>
+<h2 class="font-headline text-[15px] font-bold text-on-surface">Masaüstü &amp; Tablet Kuralları</h2>
+</div>
+<p class="text-caption text-on-surface-variant leading-relaxed">
+          Uygulama masaustunde (<span class="font-mono text-[11px] bg-background px-1 border rounded">≥ 1024px</span>) sol kenar cubugu sistemine donusur.
+        </p>
+<div class="space-y-2 text-[12px]">
+<div class="p-2.5 rounded bg-background border border-outline-variant flex items-center justify-between">
+<span class="font-medium text-on-surface">Masaüstü Sol Kenar Çubuğu:</span>
+<span class="font-bold text-primary tabular-nums">248 px Sabit</span>
+</div>
+<div class="p-2.5 rounded bg-background border border-outline-variant flex items-center justify-between">
+<span class="font-medium text-on-surface">Tablet Rayı (Navigation Rail):</span>
+<span class="font-bold text-primary tabular-nums">72 px İkon Modu</span>
+</div>
+<div class="p-2.5 rounded bg-background border border-outline-variant flex items-center justify-between">
+<span class="font-medium text-on-surface">Soru/Sınav Ekranında Sağ Panel:</span>
+<span class="font-bold text-primary tabular-nums">380 px Öğretmen</span>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 9: Tasarım Belirteçleri (Design Tokens) -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-[15px] font-bold text-on-surface flex items-center space-x-1.5">
+<span class="w-1.5 h-4 bg-primary rounded-full inline-block"></span>
+<span>Tasarım Belirteçleri (Tokens)</span>
+</h2>
+<span class="text-[11px] font-mono text-on-surface-variant">CSS / Vars</span>
+</div>
+<div class="bg-surface rounded-lg border border-outline-variant overflow-hidden">
+<table class="w-full text-left text-[12px]">
+<thead class="bg-[#E9EDEC] text-on-surface-variant font-semibold border-b border-outline-variant">
+<tr>
+<th class="py-2 px-3">Değişken</th>
+<th class="py-2 px-3">Değer</th>
+<th class="py-2 px-3">Amaç</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-body-sm font-mono text-[11px]">
+<tr>
+<td class="py-2 px-3 text-primary font-bold">--nav-bottom-h</td>
+<td class="py-2 px-3 text-on-surface tabular-nums">64px</td>
+<td class="py-2 px-3 font-body text-on-surface-variant">Alt sekme yüksekliği</td>
+</tr>
+<tr>
+<td class="py-2 px-3 text-primary font-bold">--nav-touch-min</td>
+<td class="py-2 px-3 text-on-surface tabular-nums">44px</td>
+<td class="py-2 px-3 font-body text-on-surface-variant">Asgari dokunma hedefi</td>
+</tr>
+<tr>
+<td class="py-2 px-3 text-primary font-bold">--nav-active-col</td>
+<td class="py-2 px-3 text-on-surface flex items-center space-x-1.5">
+<span class="w-3 h-3 rounded-full bg-primary inline-block border border-outline"></span>
+<span>#0E6A6E</span>
+</td>
+<td class="py-2 px-3 font-body text-on-surface-variant">Aktif petrol vurgusu</td>
+</tr>
+<tr>
+<td class="py-2 px-3 text-primary font-bold">--nav-badge-col</td>
+<td class="py-2 px-3 text-on-surface flex items-center space-x-1.5">
+<span class="w-3 h-3 rounded-full bg-secondary inline-block border border-outline"></span>
+<span>#E9A514</span>
+</td>
+<td class="py-2 px-3 font-body text-on-surface-variant">Yalnızca rozet/bildirim</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Kalite & Standart Notu -->
+<div class="p-3 bg-surface border border-outline-variant rounded-md flex items-start space-x-2">
+<span class="material-symbols-outlined text-tertiary text-[18px] mt-0.5">verified</span>
+<p class="text-[12px] text-on-surface-variant leading-snug">
+          Bu dokümantasyondaki tüm navigasyon parçaları YDS Aday Arayüz Standartları v2.4 yönergelerine ve WCAG AAA kontrast kriterlerine uygundur.
+        </p>
+</div>
+</main>
+<!-- 2. ALT SEKME ÇUBUĞU (BottomNavBar Bileşeni - JSON Birebir Gerçekleştirimi) -->
+<!-- style_separation_logic: border-t border-outline-variant -->
+<!-- style_shell_layout: fixed bottom-0 left-0 right-0 w-full max-w-[390px] mx-auto z-50 flex justify-around items-center h-16 px-2 pb-safe -->
+<nav aria-label="Ana Navigasyon" class="fixed bottom-0 left-0 right-0 w-full max-w-[390px] mx-auto z-50 flex justify-around items-center h-16 px-2 pb-safe bg-surface border-t border-outline-variant shadow-sm">
+<!-- Sekme 1: Bugün -->
+<button class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" type="button">
+<span class="material-symbols-outlined text-[24px]">calendar_today</span>
+<span class="font-label text-caption font-medium tracking-tight mt-0.5">Bugün</span>
+</button>
+<!-- Sekme 2: Çalış (Aktif Sayfa - style_active_navigation) -->
+<button class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-semibold hover:text-primary transition-colors active:scale-95 duration-100" type="button">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-label text-caption font-semibold tracking-tight mt-0.5 text-primary">Çalış</span>
+</button>
+<!-- Sekme 3: Deneme -->
+<button class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" type="button">
+<span class="material-symbols-outlined text-[24px]">assignment</span>
+<span class="font-label text-caption font-medium tracking-tight mt-0.5">Deneme</span>
+</button>
+<!-- Sekme 4: Öğretmen -->
+<button class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100 relative" type="button">
+<div class="relative inline-flex">
+<span class="material-symbols-outlined text-[24px]">school</span>
+<span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-secondary border border-surface"></span>
+</div>
+<span class="font-label text-caption font-medium tracking-tight mt-0.5">Öğretmen</span>
+</button>
+<!-- Sekme 5: Ben -->
+<button class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" type="button">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span class="font-label text-caption font-medium tracking-tight mt-0.5">Ben</span>
+</button>
+</nav>
+</div>
+</body></html>

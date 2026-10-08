@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>STUDY-14 · Kelime Oturumu | YDS Platformu</title>
+<!-- Google Fonts: Figtree (Arayüz), Literata (Okuma/Sözcük), Bricolage Grotesque (Marka) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#F4F6F5',
+            surface: '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            outline: '#77868A',
+            'outline-variant': '#DAE1E0',
+            primary: '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            secondary: '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            tertiary: '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            error: '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+            'chart-1': '#0F9485',
+            'chart-2': '#505AC8',
+            'chart-3': '#BA7F14',
+            'chart-4': '#9E427B',
+          },
+          fontFamily: {
+            headline: ['Figtree', 'sans-serif'],
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            body: ['Figtree', 'sans-serif'],
+            label: ['Figtree', 'sans-serif'],
+            serif: ['Literata', 'serif'],
+          },
+          borderRadius: {
+            'xs': '4px',
+            'sm': '8px',
+            'DEFAULT': '12px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '24px',
+            'full': '9999px',
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .optical-bubble {
+      width: 14px;
+      height: 14px;
+      border-radius: 9999px;
+      border: 1.5px solid #0E6A6E;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .optical-bubble.filled {
+      background-color: #0E6A6E;
+    }
+    /* Tablo Rakamları */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- ========================================================================= -->
+<!-- 1. ÜST ODAK GEZİNME ÇUBUĞU (TopNavBar - Shared Component Execution) -->
+<!-- ========================================================================= -->
+<header class="bg-surface border-b border-outline-variant sticky top-0 z-50">
+<div class="h-16 w-full px-6 flex justify-between items-center max-w-full mx-auto">
+<!-- Sol: Marka Logosu & Deste Bilgisi -->
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2.5">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-display font-bold text-sm tracking-tight" title="ÖSYM Optik Form Motifi">
+<span class="w-3.5 h-3.5 rounded-full border-2 border-surface bg-primary"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center space-x-2">
+<span class="font-display text-title font-bold text-primary tracking-tight">YDS Platformu</span>
+<span class="text-xs px-2 py-0.5 rounded-xs font-semibold bg-[#E9EDEC] text-on-surface-variant">STUDY-14</span>
+</div>
+<span class="text-xs text-on-surface-variant font-medium">SRS Aralıklı Tekrar Oturumu</span>
+</div>
+</div>
+<div class="hidden lg:block h-6 w-px bg-outline-variant mx-2"></div>
+<div class="hidden lg:flex items-center space-x-2 text-sm text-on-surface font-medium bg-background px-3 py-1.5 rounded-sm border border-outline-variant">
+<span class="material-symbols-outlined text-primary text-[18px]">folder_open</span>
+<span class="font-semibold text-on-surface">Deste:</span>
+<span class="text-on-surface-variant truncate max-w-xs">Son 10 Yılın En Sık Çıkan 500 Akademik Fiili (B2–C1)</span>
+</div>
+</div>
+<!-- Orta: SRS İlerleme Göstergesi ve Önerilen Süre -->
+<div class="hidden md:flex flex-col items-center w-72 max-w-xs">
+<div class="w-full flex justify-between items-center text-xs mb-1.5">
+<span class="font-semibold text-on-surface tabular-nums">Kart: 12 / 32</span>
+<span class="text-on-surface-variant tabular-nums">%37.5 Tamamlandı</span>
+</div>
+<!-- Katı düz ilerleme çubuğu (Gradyansız) -->
+<div aria-valuemax="100" aria-valuemin="0" aria-valuenow="37.5" class="w-full h-2 rounded-full bg-[#DAE1E0] overflow-hidden" role="progressbar">
+<div class="h-full bg-primary rounded-full transition-all duration-300" style="width: 37.5%;"></div>
+</div>
+<div class="w-full flex justify-between items-center text-[11px] text-on-surface-variant mt-1">
+<span class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-[13px] text-on-surface-variant">schedule</span>
+<span>Önerilen: ~8 Dk</span>
+</span>
+<span class="font-medium text-primary">Kalan: 5 Dk</span>
+</div>
+</div>
+<!-- Sağ: Hızlı İşlemler & Seansı Kapat Butonu -->
+<div class="flex items-center space-x-2">
+<!-- Geri Al Butonu (Z) -->
+<button class="min-h-[44px] px-3 flex items-center space-x-1.5 text-sm font-semibold text-on-surface bg-surface border border-outline-variant rounded-sm hover:bg-primary-container hover:text-on-primary-container active:scale-[0.98] transition-colors" id="undo-btn" title="Son değerlendirmeyi geri al (Z)">
+<span class="material-symbols-outlined text-[18px]">undo</span>
+<span class="hidden sm:inline">Geri Al</span>
+<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-xs bg-[#E9EDEC] text-on-surface-variant border border-outline-variant">Z</span>
+</button>
+<!-- Ses Aç/Kapat -->
+<button aria-label="Otomatik Telaffuz" class="min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-sm border border-outline-variant transition-colors" title="Otomatik Telaffuz Açık (S)">
+<span class="material-symbols-outlined text-[20px]">volume_up</span>
+</button>
+<!-- Oturumu Duraklat -->
+<button aria-label="Oturumu Duraklat" class="min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-sm border border-outline-variant transition-colors" title="Oturumu Duraklat">
+<span class="material-symbols-outlined text-[20px]">pause</span>
+</button>
+<!-- Seansı Kapat (Shared Component Trailing Action) -->
+<button class="min-h-[44px] px-4 flex items-center space-x-1.5 text-sm font-semibold bg-surface text-error border border-error rounded-sm hover:bg-error-container active:scale-[0.98] transition-colors" onclick="document.getElementById('exit-modal').classList.remove('hidden')" title="Oturumu kaydet ve kapat">
+<span class="material-symbols-outlined text-[18px]">close</span>
+<span>Seansı Kapat</span>
+</button>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- 2. ANA ÇALIŞMA ALANI (1440px Izgara: Sol Kart Kolonu + Sağ Bilgi Kolonu) -->
+<!-- ========================================================================= -->
+<main class="flex-1 max-w-[1440px] w-full mx-auto px-6 py-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- ===================================================================== -->
+<!-- SOL / ANA KOLON (8 Kolon - 760px İçerik Odak Alanı) -->
+<!-- ===================================================================== -->
+<section class="lg:col-span-8 flex flex-col space-y-6">
+<!-- Kart Durumu Göstergesi & Rozetler -->
+<div class="flex flex-wrap items-center justify-between gap-3 bg-surface p-4 rounded border border-outline-variant">
+<div class="flex items-center space-x-3">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-primary text-on-primary tabular-nums">
+              Kart 12 / 32
+            </span>
+<div class="flex items-center space-x-1.5 text-xs text-on-surface font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>SRS Düzeyi: 3. Kademe (4 Günlük Döngü)</span>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<!-- ÖSYM Frekans Rozeti -->
+<span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xs text-xs font-semibold bg-[#E9EDEC] text-on-surface border border-outline-variant">
+<span class="material-symbols-outlined text-secondary text-[16px]">bolt</span>
+<span>ÖSYM Frekansı: <strong>Son 10 Yılda 14 Kez Çıktı</strong></span>
+</span>
+<!-- Hata Defteri Sabitleme Butonu -->
+<button class="min-h-[36px] px-2.5 flex items-center space-x-1 text-xs font-semibold text-on-surface-variant hover:text-primary border border-outline-variant rounded-xs bg-surface transition-colors" title="Hata Defterine Ekle">
+<span class="material-symbols-outlined text-[16px]">bookmark_border</span>
+<span>Deftere Ekle</span>
+</button>
+</div>
+</div>
+<!-- ANA KELİME KARTI (Fiziksel Öğrenme Sahnesi) -->
+<article class="bg-surface rounded-lg border border-outline-variant p-8 shadow-none relative" id="active-flashcard">
+<!-- Üst Başlık: Sözcük, Fonetik ve Telaffuz -->
+<div class="border-b border-outline-variant pb-6 mb-6">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center space-x-3">
+<h1 class="font-serif text-4xl font-bold text-on-surface tracking-tight" id="target-word">undermine</h1>
+<!-- Telaffuz Butonu (44px) -->
+<button aria-label="Telaffuz Dinle" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary active:scale-[0.98] transition-colors" title="İngilizce Telaffuzu Dinle (Kısayol: S)">
+<span class="material-symbols-outlined text-[22px]">volume_up</span>
+</button>
+</div>
+<div class="flex items-center space-x-3 mt-2 text-sm text-on-surface-variant font-medium">
+<span class="font-serif italic text-base text-on-surface-variant">/ˌʌndərˈmaɪn/</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="px-2 py-0.5 rounded-xs bg-background text-on-surface border border-outline-variant text-xs font-semibold">fiil (geçişli / transitive)</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-xs text-primary font-bold">B2–C1 Akademik Seviye</span>
+</div>
+</div>
+<!-- Kart Durum Etiketi -->
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-primary-container text-on-primary-container border border-outline-variant flex items-center space-x-1" id="card-stage-badge">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>Değerlendirme Aşaması</span>
+</span>
+</div>
+</div>
+<!-- 1. Bölüm: ÖSYM Bağlam Cümlesi (Literata Serif) -->
+<div class="mb-6 bg-background rounded p-5 border border-outline-variant">
+<div class="flex items-center space-x-2 text-xs font-bold text-primary mb-2">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+<span>ÖSYM SINAV BAĞLAMI (2021 YDS/1 Çıkmış Parçadan Alıntı)</span>
+</div>
+<p class="font-serif text-lg leading-[29px] text-on-surface font-normal">
+              "The leaked laboratory report threatens to <span class="font-semibold text-primary underline decoration-2 underline-offset-4">undermine</span> the credibility of the entire research institute and its upcoming clinical trials."
+            </p>
+</div>
+<!-- AÇILIR PANEL / CEVAP KISMI (Durum 2: Açık Kart) -->
+<div class="space-y-6" id="card-answer-section">
+<!-- Türkçe Çeviri ve Temel Anlamlar -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<div class="md:col-span-7 bg-surface p-4 rounded border border-outline-variant">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Cümle Türkçe Karşılığı</span>
+<p class="text-sm font-normal text-on-surface leading-relaxed">
+                  "Sızdırılan laboratuvar raporu, tüm araştırma enstitüsünün ve yaklaşan klinik deneylerinin <strong class="text-primary font-semibold">güvenirliğini zayıflatmakla / temelini oymakla</strong> tehdit ediyor."
+                </p>
+</div>
+<div class="md:col-span-5 bg-surface p-4 rounded border border-outline-variant">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Doğrudan Türkçe Anlamları</span>
+<p class="text-base font-semibold text-on-surface">
+                  zayıflatmak, sarsmak, temellerini oymak, kademeli olarak baltalamak
+                </p>
+</div>
+</div>
+<!-- Akademik Eş Anlamlılar & Kolokasyonlar (Eş Değer Sözcükler) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Eş Anlamlar -->
+<div class="border border-outline-variant rounded p-4 bg-surface">
+<div class="flex items-center space-x-1.5 text-xs font-bold text-on-surface mb-2.5">
+<span class="material-symbols-outlined text-[16px] text-primary">sync_alt</span>
+<span>AKADEMİK EŞ ANLAMLILAR (SYNONYMS)</span>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded-sm bg-background border border-outline-variant text-xs font-medium text-on-surface hover:border-primary cursor-pointer">weaken</span>
+<span class="px-2.5 py-1 rounded-sm bg-background border border-outline-variant text-xs font-medium text-on-surface hover:border-primary cursor-pointer">impair</span>
+<span class="px-2.5 py-1 rounded-sm bg-background border border-outline-variant text-xs font-medium text-on-surface hover:border-primary cursor-pointer">sabotage</span>
+<span class="px-2.5 py-1 rounded-sm bg-background border border-outline-variant text-xs font-medium text-on-surface hover:border-primary cursor-pointer">compromise</span>
+<span class="px-2.5 py-1 rounded-sm bg-background border border-outline-variant text-xs font-medium text-on-surface hover:border-primary cursor-pointer">subvert</span>
+</div>
+</div>
+<!-- Sık Birlikte Kullanımlar (Collocations) -->
+<div class="border border-outline-variant rounded p-4 bg-surface">
+<div class="flex items-center space-x-1.5 text-xs font-bold text-on-surface mb-2.5">
+<span class="material-symbols-outlined text-[16px] text-primary">link</span>
+<span>ÖSYM KALIP DİZİLİMLERİ (COLLOCATIONS)</span>
+</div>
+<ul class="text-xs space-y-1 text-on-surface font-medium">
+<li class="flex items-center space-x-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span><strong>undermine credibility</strong> (güvenilirliği sarsmak)</span>
+</li>
+<li class="flex items-center space-x-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span><strong>undermine authority</strong> (otoriteyi yıpratmak)</span>
+</li>
+<li class="flex items-center space-x-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span><strong>undermine public trust</strong> (kamu güvenini zayıflatmak)</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- ÖSYM Çeldirici Tuzağı Uyarısı (Tuğla Renk, Çift Belirteç: İkon + Metin + Kenar) -->
+<div class="p-4 rounded bg-error-container border border-error text-error">
+<div class="flex items-start space-x-3">
+<span class="material-symbols-outlined text-[20px] text-error flex-shrink-0 mt-0.5">warning</span>
+<div>
+<h4 class="text-xs font-bold text-error uppercase tracking-wider mb-1">
+                    ÖSYM Sınav Tuzağı &amp; Çeldirici Analizi
+                  </h4>
+<p class="text-xs text-[#5C1E11] leading-relaxed">
+                    Sınavlarda sıklıkla ses ve yazım benzerliği nedeniyle <strong class="underline decoration-1">underestimate</strong> (küçümsemek, hafife almak) veya <strong class="underline decoration-1">underline</strong> (altını çizmek, vurgulamak) ile karıştırılır. Sözcüğün etimolojik kökeninde <em>"under + mine"</em> (altını oymak, lağım açmak, temelini çökertmek) mantığı bulunur.
+                  </p>
+</div>
+</div>
+</div>
+</div>
+<!-- KART DEĞERLENDİRME AKSİYONLARI (4 Kademeli SRS Buton Grubu - 44px+) -->
+<div class="mt-8 pt-6 border-t border-outline-variant">
+<div class="flex items-center justify-between mb-3">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                Hafıza Derecelendirmesi Seçin (Aralıklı Tekrar Aralığı)
+              </span>
+<span class="text-xs text-on-surface-variant font-medium">
+                Klavye: [1] [2] [3] [4]
+              </span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<!-- 1: Tekrar (<10 Dk) -->
+<button class="min-h-[52px] p-3 rounded border border-error bg-error-container hover:bg-[#F2D1C7] active:scale-[0.98] transition-transform text-left flex flex-col justify-between group" onclick="handleRating('Tekrar')">
+<div class="flex items-center justify-between w-full">
+<span class="text-xs font-bold text-error flex items-center space-x-1">
+<span class="material-symbols-outlined text-[15px]">replay</span>
+<span>Tekrar</span>
+</span>
+<span class="text-[11px] font-bold px-1.5 py-0.5 rounded-xs bg-surface text-error border border-error">1</span>
+</div>
+<div class="mt-1">
+<span class="text-xs font-bold text-error block">&lt; 10 Dakika</span>
+<span class="text-[11px] text-[#5C1E11] block leading-tight">Hatırlayamadım</span>
+</div>
+</button>
+<!-- 2: Zor (1 Gün) -->
+<button class="min-h-[52px] p-3 rounded border border-outline-variant bg-surface hover:bg-background active:scale-[0.98] transition-transform text-left flex flex-col justify-between group" onclick="handleRating('Zor')">
+<div class="flex items-center justify-between w-full">
+<span class="text-xs font-bold text-on-surface flex items-center space-x-1">
+<span class="material-symbols-outlined text-[15px] text-on-surface-variant">hourglass_empty</span>
+<span>Zor</span>
+</span>
+<span class="text-[11px] font-bold px-1.5 py-0.5 rounded-xs bg-background text-on-surface border border-outline-variant">2</span>
+</div>
+<div class="mt-1">
+<span class="text-xs font-bold text-on-surface block">1 Gün Sonra</span>
+<span class="text-[11px] text-on-surface-variant block leading-tight">Güçlükle çıktı</span>
+</div>
+</button>
+<!-- 3: İyi (3 Gün) - Varsayılan / Odak -->
+<button class="min-h-[52px] p-3 rounded border-2 border-primary bg-primary-container text-on-primary-container hover:bg-[#C9E5E3] active:scale-[0.98] transition-transform text-left flex flex-col justify-between group" onclick="handleRating('İyi')">
+<div class="flex items-center justify-between w-full">
+<span class="text-xs font-bold text-primary flex items-center space-x-1">
+<span class="material-symbols-outlined text-[15px]">done</span>
+<span>İyi</span>
+</span>
+<span class="text-[11px] font-bold px-1.5 py-0.5 rounded-xs bg-surface text-primary border border-primary">3</span>
+</div>
+<div class="mt-1">
+<span class="text-xs font-bold text-primary block">3 Gün Sonra</span>
+<span class="text-[11px] text-on-primary-container block leading-tight">Normal sürede</span>
+</div>
+</button>
+<!-- 4: Kolay (7 Gün) -->
+<button class="min-h-[52px] p-3 rounded border border-tertiary bg-tertiary-container hover:bg-[#CFEBD9] active:scale-[0.98] transition-transform text-left flex flex-col justify-between group" onclick="handleRating('Kolay')">
+<div class="flex items-center justify-between w-full">
+<span class="text-xs font-bold text-tertiary flex items-center space-x-1">
+<span class="material-symbols-outlined text-[15px]">done_all</span>
+<span>Kolay</span>
+</span>
+<span class="text-[11px] font-bold px-1.5 py-0.5 rounded-xs bg-surface text-tertiary border border-tertiary">4</span>
+</div>
+<div class="mt-1">
+<span class="text-xs font-bold text-tertiary block">7 Gün Sonra</span>
+<span class="text-[11px] text-[#0F4726] block leading-tight">Anında bildim</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Kart Altı Yardımcı Gezinme Çubuğu -->
+<div class="mt-6 pt-4 border-t border-outline-variant flex flex-wrap items-center justify-between gap-3 text-xs text-on-surface-variant font-medium">
+<div class="flex items-center space-x-4">
+<span class="flex items-center space-x-1.5">
+<kbd class="px-2 py-0.5 bg-background border border-outline-variant rounded-xs font-bold text-on-surface text-[11px]">Boşluk</kbd>
+<span>Kartı Çevir / Göster</span>
+</span>
+<span class="flex items-center space-x-1.5">
+<kbd class="px-2 py-0.5 bg-background border border-outline-variant rounded-xs font-bold text-on-surface text-[11px]">Z</kbd>
+<span>Geri Al</span>
+</span>
+</div>
+<div class="flex items-center space-x-3">
+<button class="hover:text-primary underline flex items-center space-x-1">
+<span class="material-symbols-outlined text-[16px]">dictionary</span>
+<span>ÖSYM Sözlüğünde Ara</span>
+</button>
+<span>•</span>
+<button class="hover:text-primary underline flex items-center space-x-1">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+<span>Hatalı Soru Bildir</span>
+</button>
+</div>
+</div>
+</article>
+</section>
+<!-- ===================================================================== -->
+<!-- SAĞ KOLON (4 Kolon - Özet, Ritim, Ebbinghaus Göstergeleri) -->
+<!-- ===================================================================== -->
+<aside class="lg:col-span-4 flex flex-col space-y-6">
+<!-- 1. KOTa VE DAĞILIM KARTI (Bento Parçası 1) -->
+<div class="bg-surface rounded border border-outline-variant p-6">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+<h3 class="font-bold text-base text-on-surface flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-[20px]">donut_large</span>
+<span>Bugünkü Kelime Kotası</span>
+</h3>
+<span class="text-xs font-bold px-2 py-0.5 rounded bg-primary-container text-primary">32 Kart</span>
+</div>
+<div class="mt-4 grid grid-cols-2 gap-4">
+<div class="p-3 bg-background rounded border border-outline-variant">
+<span class="text-xs text-on-surface-variant font-medium block">Tamamlanan</span>
+<span class="text-2xl font-bold text-primary font-headline tabular-nums">12</span>
+<span class="text-[11px] text-tertiary flex items-center space-x-1 mt-0.5">
+<span class="material-symbols-outlined text-[12px]">check_circle</span>
+<span>Planlanan tempoda</span>
+</span>
+</div>
+<div class="p-3 bg-background rounded border border-outline-variant">
+<span class="text-xs text-on-surface-variant font-medium block">Kalan Kart</span>
+<span class="text-2xl font-bold text-on-surface font-headline tabular-nums">20</span>
+<span class="text-[11px] text-on-surface-variant block mt-0.5">~5 Dakika sürer</span>
+</div>
+</div>
+<!-- Dağılım Çubukları -->
+<div class="mt-5 space-y-2">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">Oturum İçi Değerlendirme Dağılımı</span>
+<div class="space-y-1.5 text-xs">
+<div class="flex justify-between items-center text-error font-medium">
+<span class="flex items-center space-x-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+<span>Tekrar (&lt;10 Dk)</span>
+</span>
+<span class="font-bold tabular-nums">1 Kart (%8)</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-medium">
+<span class="flex items-center space-x-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+<span>Zor (1 Gün)</span>
+</span>
+<span class="font-bold tabular-nums">2 Kart (%17)</span>
+</div>
+<div class="flex justify-between items-center text-primary font-medium">
+<span class="flex items-center space-x-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<span>İyi (3 Gün)</span>
+</span>
+<span class="font-bold tabular-nums">7 Kart (%58)</span>
+</div>
+<div class="flex justify-between items-center text-tertiary font-medium">
+<span class="flex items-center space-x-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+<span>Kolay (7 Gün)</span>
+</span>
+<span class="font-bold tabular-nums">2 Kart (%17)</span>
+</div>
+</div>
+<!-- Bileşik Düz Renk Şeridi -->
+<div class="w-full h-2.5 rounded-full bg-[#E9EDEC] flex overflow-hidden mt-2">
+<div class="bg-error" style="width: 8%;" title="Tekrar: 1"></div>
+<div class="bg-outline" style="width: 17%;" title="Zor: 2"></div>
+<div class="bg-primary" style="width: 58%;" title="İyi: 7"></div>
+<div class="bg-tertiary" style="width: 17%;" title="Kolay: 2"></div>
+</div>
+</div>
+</div>
+<!-- 2. EBBINGHAUS VE KALICILIK ANALİZİ (Bento Parçası 2) -->
+<div class="bg-surface rounded border border-outline-variant p-6">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+<h3 class="font-bold text-base text-on-surface flex items-center space-x-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">trending_up</span>
+<span>Ebbinghaus Kalıcılık Skoru</span>
+</h3>
+<span class="text-xs font-bold text-on-surface px-2 py-0.5 rounded bg-secondary-container">Aktif SRS</span>
+</div>
+<div class="mt-4 flex items-center justify-between">
+<div>
+<span class="text-3xl font-bold text-primary font-headline tabular-nums">%88</span>
+<span class="text-xs text-on-surface-variant block mt-0.5">Beklenen 7 Günlük Kalıcılık</span>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center space-x-1 text-xs font-bold text-tertiary bg-tertiary-container px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+<span>Yüksek Güven</span>
+</span>
+</div>
+</div>
+<div class="mt-4 p-3 bg-background rounded border border-outline-variant text-xs text-on-surface-variant leading-relaxed">
+<p>
+              Bu deste için belirlenen optimum aralık: <strong class="text-on-surface">1. gün, 3. gün ve 7. gün</strong> tekrarlarıdır. Bugün tamamlanan kartlar 3 gün sonra otomatik olarak kısa test formatında hatırlatılacaktır.
+            </p>
+</div>
+</div>
+<!-- 3. SONRAKİ KART ÖNİZLEMESİ (Bento Parçası 3) -->
+<div class="bg-surface rounded border border-outline-variant p-5">
+<div class="flex items-center justify-between text-xs text-on-surface-variant mb-2">
+<span class="font-semibold uppercase tracking-wider">Sonraki Kart</span>
+<span class="tabular-nums font-bold">Kart #13</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h4 class="font-serif text-xl font-bold text-on-surface">exacerbate</h4>
+<span class="text-xs text-on-surface-variant font-medium">fiil · B2 Düzeyi (kötüleştirmek)</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">arrow_forward</span>
+</div>
+</div>
+<!-- 4. KLAVYE KISAYOLLARI REHBERİ (Bento Parçası 4) -->
+<div class="bg-surface rounded border border-outline-variant p-6">
+<h3 class="font-bold text-sm text-on-surface uppercase tracking-wider mb-3 flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-[18px]">keyboard</span>
+<span>Hızlı Klavye Kısayolları</span>
+</h3>
+<div class="space-y-2 text-xs">
+<div class="flex justify-between items-center py-1 border-b border-outline-variant">
+<span class="text-on-surface-variant">Kartı Çevir / Anlamı Gör</span>
+<kbd class="px-2 py-1 bg-background border border-outline-variant rounded font-bold text-on-surface">Boşluk</kbd>
+</div>
+<div class="flex justify-between items-center py-1 border-b border-outline-variant">
+<span class="text-on-surface-variant">Tekrar Değerlendirmesi (&lt;10 Dk)</span>
+<kbd class="px-2 py-1 bg-background border border-outline-variant rounded font-bold text-on-surface">1</kbd>
+</div>
+<div class="flex justify-between items-center py-1 border-b border-outline-variant">
+<span class="text-on-surface-variant">Zor Değerlendirmesi (1 Gün)</span>
+<kbd class="px-2 py-1 bg-background border border-outline-variant rounded font-bold text-on-surface">2</kbd>
+</div>
+<div class="flex justify-between items-center py-1 border-b border-outline-variant">
+<span class="text-on-surface-variant">İyi Değerlendirmesi (3 Gün)</span>
+<kbd class="px-2 py-1 bg-background border border-outline-variant rounded font-bold text-on-surface">3</kbd>
+</div>
+<div class="flex justify-between items-center py-1 border-b border-outline-variant">
+<span class="text-on-surface-variant">Kolay Değerlendirmesi (7 Gün)</span>
+<kbd class="px-2 py-1 bg-background border border-outline-variant rounded font-bold text-on-surface">4</kbd>
+</div>
+<div class="flex justify-between items-center py-1 border-b border-outline-variant">
+<span class="text-on-surface-variant">Son Hamleyi Geri Al</span>
+<kbd class="px-2 py-1 bg-background border border-outline-variant rounded font-bold text-on-surface">Z</kbd>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="text-on-surface-variant">Telaffuzu Dinle</span>
+<kbd class="px-2 py-1 bg-background border border-outline-variant rounded font-bold text-on-surface">S</kbd>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- ========================================================================= -->
+<!-- 3. SİSTEM DURUM VE SENARYO MATRİSİ (Alt Kısım - 4 Gerçek Senaryo İncelemesi) -->
+<!-- ========================================================================= -->
+<section class="mt-12 pt-8 border-t border-outline-variant">
+<div class="mb-6">
+<div class="flex items-center space-x-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<h2 class="font-display text-xl font-bold text-on-surface">
+            STUDY-14 Sistem Durum Matrisi &amp; Canlı Senaryo Simülasyonu
+          </h2>
+</div>
+<p class="text-sm text-on-surface-variant mt-1">
+          Aşağıdaki sekmeler SRS çalışma akışındaki 4 kritik durumu görselleştirir. Tasarım sistemi ve arayüz tutarlılığını test etmek için inceleyebilirsiniz.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+<button class="p-3 text-left border-2 border-primary bg-primary-container rounded transition-colors" id="tab-state-1" onclick="setSystemState(1)">
+<div class="text-xs font-bold text-primary mb-1">DURUM 1</div>
+<div class="text-sm font-bold text-on-surface">Kart Kapalı (Hatırlama)</div>
+<div class="text-xs text-on-surface-variant mt-1">Sadece soru &amp; bağlam</div>
+</button>
+<button class="p-3 text-left border border-outline-variant bg-surface rounded hover:bg-background transition-colors" id="tab-state-2" onclick="setSystemState(2)">
+<div class="text-xs font-bold text-on-surface-variant mb-1">DURUM 2 (Şu Anki)</div>
+<div class="text-sm font-bold text-on-surface">Kart Açık (Değerlendirme)</div>
+<div class="text-xs text-on-surface-variant mt-1">Tüm açıklamalar ve butonlar</div>
+</button>
+<button class="p-3 text-left border border-outline-variant bg-surface rounded hover:bg-background transition-colors" id="tab-state-3" onclick="setSystemState(3)">
+<div class="text-xs font-bold text-on-surface-variant mb-1">DURUM 3</div>
+<div class="text-sm font-bold text-on-surface">Geri Alma Bildirimi</div>
+<div class="text-xs text-on-surface-variant mt-1">Hatalı basılan değerlendirme</div>
+</button>
+<button class="p-3 text-left border border-outline-variant bg-surface rounded hover:bg-background transition-colors" id="tab-state-4" onclick="setSystemState(4)">
+<div class="text-xs font-bold text-on-surface-variant mb-1">DURUM 4</div>
+<div class="text-sm font-bold text-on-surface">Oturum Sonu Özeti</div>
+<div class="text-xs text-on-surface-variant mt-1">32/32 Kart bittiğinde</div>
+</button>
+</div>
+<!-- Durum İzah Kartı (Dinamik Bilgi Kutusu) -->
+<div class="bg-surface rounded border border-outline-variant p-6" id="state-detail-box">
+<div class="flex items-start space-x-4">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">info</span>
+</div>
+<div>
+<h4 class="font-bold text-base text-on-surface" id="state-title">Aktif Durum: Durum 2 - Kart Açık ve Değerlendirme Yapılıyor</h4>
+<p class="text-sm text-on-surface-variant mt-1" id="state-description">
+              Kullanıcı "Boşluk" tuşuna bastığında veya "Kartı Çevir" e tıkladığında Türkçe çeviri, eş anlamlılar ve ÖSYM tuzağı gösterilir. 4 kademeli SRS aralık butonları (1 Tekrar, 2 Zor, 3 İyi, 4 Kolay) aktif hale gelir.
+            </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ========================================================================= -->
+<!-- 4. SEANSI KAPAT ONAY MODALI (Gizli - Butonla Tetiklenir) -->
+<!-- ========================================================================= -->
+<div class="hidden fixed inset-0 z-50 bg-[#13232A]/50 flex items-center justify-center p-4" id="exit-modal">
+<div class="bg-surface rounded-lg border border-outline-variant max-w-md w-full p-6 shadow-xl">
+<div class="flex items-center space-x-3 text-error mb-4">
+<span class="material-symbols-outlined text-[28px]">pause_circle</span>
+<h3 class="font-display font-bold text-lg text-on-surface">Oturumu Kapatmak İstiyor Musunuz?</h3>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-6">
+        Şu ana kadar tamamladığınız <strong class="text-on-surface">12 kartlık ilerleme</strong> veritabanına kaydedildi. Kalan 20 kart bugünkü çalışma planınızda beklemeye devam edecektir.
+      </p>
+<div class="flex items-center justify-end space-x-3">
+<button class="min-h-[44px] px-4 rounded border border-outline-variant text-sm font-semibold text-on-surface hover:bg-background" onclick="document.getElementById('exit-modal').classList.add('hidden')">
+          Çalışmaya Devam Et
+        </button>
+<button class="min-h-[44px] px-4 rounded bg-error text-on-primary text-sm font-semibold hover:bg-[#8B3421]" onclick="window.location.reload()">
+          Kaydet ve Çık
+        </button>
+</div>
+</div>
+</div>
+<!-- GERİ ALMA BİLDİRİM TOASTI (Sistem Geri Bildirimi) -->
+<div class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-50 bg-inverse-surface text-surface px-5 py-3 rounded-full border border-outline flex items-center space-x-3 shadow-lg" id="toast-undo">
+<span class="material-symbols-outlined text-secondary text-[20px]">undo</span>
+<span class="text-sm font-medium">Önceki kart ("undermine") değerlendirmesi geri alındı.</span>
+<button class="text-xs underline text-primary-container font-semibold ml-2" onclick="document.getElementById('toast-undo').classList.add('hidden')">Tamam</button>
+</div>
+<!-- ========================================================================= -->
+<!-- 5. KURUMSAL AKADEMİK ALT BİLGİ (Footer) -->
+<!-- ========================================================================= -->
+<footer class="bg-surface border-t border-outline-variant mt-12 py-8 text-xs text-on-surface-variant">
+<div class="max-w-[1440px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center space-x-3">
+<div class="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary text-[10px] font-bold">Ö</div>
+<span class="font-semibold text-on-surface">YDS &amp; YÖKDİL Akademik Kelime Motoru</span>
+<span>•</span>
+<span>SuperMemo SM-2 &amp; Ebbinghaus Standart Algoritması</span>
+</div>
+<div class="flex items-center space-x-4">
+<span>WCAG 2.1 AAA Erişilebilirlik Seviyesi</span>
+<span>•</span>
+<span>Açık Tema (Kurumsal 1440px)</span>
+<span>•</span>
+<span>Tüm Hakları Saklıdır © 2025</span>
+</div>
+</div>
+</footer>
+<!-- ========================================================================= -->
+<!-- İNTERAKTİF MİKRO KODLAR (Klavye Dinleyicisi ve Senaryo Değiştirici) -->
+<!-- ========================================================================= -->
+<script>
+    // Klavye kısayolları dinleyicisi
+    document.addEventListener('keydown', function(e) {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        toggleCardDetails();
+      } else if (e.key === '1') {
+        handleRating('Tekrar');
+      } else if (e.key === '2') {
+        handleRating('Zor');
+      } else if (e.key === '3') {
+        handleRating('İyi');
+      } else if (e.key === '4') {
+        handleRating('Kolay');
+      } else if (e.key.toLowerCase() === 'z') {
+        triggerUndo();
+      }
+    });
+
+    function toggleCardDetails() {
+      const section = document.getElementById('card-answer-section');
+      const badge = document.getElementById('card-stage-badge');
+      if (section.classList.contains('hidden')) {
+        section.classList.remove('hidden');
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-primary"></span><span>Değerlendirme Aşaması</span>';
+        badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-primary-container text-on-primary-container border border-outline-variant flex items-center space-x-1';
+      } else {
+        section.classList.add('hidden');
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-secondary"></span><span>Hatırlama Aşaması (Kapalı)</span>';
+        badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-secondary-container text-on-secondary border border-outline-variant flex items-center space-x-1';
+      }
+    }
+
+    function handleRating(level) {
+      // Bir sonraki adıma geçiş simülasyonu
+      const toast = document.getElementById('toast-undo');
+      toast.querySelector('span.text-sm').innerText = `Değerlendirme kaydedildi: ${level}. Sıradaki karta geçiliyor...`;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2500);
+    }
+
+    function triggerUndo() {
+      const toast = document.getElementById('toast-undo');
+      toast.querySelector('span.text-sm').innerText = 'Son değerlendirme (Z tuşu ile) geri alındı. Kart sıfırlandı.';
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    document.getElementById('undo-btn').addEventListener('click', triggerUndo);
+
+    // Senaryo Matrisi Denetleyicisi
+    function setSystemState(stateNum) {
+      // Tab stillerini sıfırla
+      for (let i = 1; i <= 4; i++) {
+        const tab = document.getElementById(`tab-state-${i}`);
+        tab.className = 'p-3 text-left border border-outline-variant bg-surface rounded hover:bg-background transition-colors';
+        tab.querySelector('div:first-child').className = 'text-xs font-bold text-on-surface-variant mb-1';
+      }
+
+      const activeTab = document.getElementById(`tab-state-${stateNum}`);
+      activeTab.className = 'p-3 text-left border-2 border-primary bg-primary-container rounded transition-colors';
+      activeTab.querySelector('div:first-child').className = 'text-xs font-bold text-primary mb-1';
+
+      const title = document.getElementById('state-title');
+      const desc = document.getElementById('state-description');
+      const answerSection = document.getElementById('card-answer-section');
+
+      if (stateNum === 1) {
+        title.innerText = 'Durum 1: Kart Kapalı (Hatırlama / Soru Aşaması)';
+        desc.innerText = 'Kullanıcı sözcüğü tek başına ve ÖSYM örnek cümlesi içinde görür. Henüz anlam açılmamıştır. Zihinsel geri çağırma (active recall) mekanizması devrededir. [Boşluk] tuşuna basılarak anlam açılır.';
+        answerSection.classList.add('hidden');
+      } else if (stateNum === 2) {
+        title.innerText = 'Durum 2: Kart Açık (Değerlendirme Aşaması)';
+        desc.innerText = 'Tüm Türkçe açıklamalar, eş anlamlar, ÖSYM tuzağı ve 4 değerlendirme butonu hazırdır. Kullanıcı 1-4 arasındaki bir derecelendirmeyi seçerek kartı ileri bir tarihe öteler.';
+        answerSection.classList.remove('hidden');
+      } else if (stateNum === 3) {
+        title.innerText = 'Durum 3: Son Değerlendirmeyi Geri Alma (Z Kısayolu)';
+        desc.innerText = 'Kullanıcı yanlışlıkla "Kolay" veya "Tekrar" butonuna bastığında Z tuşu veya üst menüdeki Geri Al butonu ile önceki karta ve hafıza sayacına tam dönüş sağlar.';
+        triggerUndo();
+        answerSection.classList.remove('hidden');
+      } else if (stateNum === 4) {
+        title.innerText = 'Durum 4: Oturum Sonu Başarı Özeti (32/32 Kart)';
+        desc.innerText = '32 kart tamamlandığında kart alanı yerini başarı özetine bırakır. Kalıcılık skoru güncellenir ve öğrenciye "10 Kartlık Hızlı Pekiştirme" veya "Bugün Panosuna Dönüş" seçenekleri sunulur.';
+        answerSection.classList.remove('hidden');
+      }
+    }
+  </script>
+</body></html>

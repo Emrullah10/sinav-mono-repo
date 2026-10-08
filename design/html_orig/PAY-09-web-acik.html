@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ODAK · Abonelik ve Paket Yönetimi</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#F4F6F5',
+            surface: '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            outline: '#77868A',
+            'outline-variant': '#DAE1E0',
+            primary: '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            secondary: '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            tertiary: '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            error: '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+            'chart-1': '#0F9485',
+            'chart-2': '#505AC8',
+            'chart-3': '#BA7F14',
+            'chart-4': '#9E427B',
+          },
+          fontFamily: {
+            headline: ["Figtree", "sans-serif"],
+            display: ["Bricolage Grotesque", "sans-serif"],
+            body: ["Figtree", "sans-serif"],
+            reading: ["Literata", "serif"],
+            label: ["Figtree", "sans-serif"]
+          },
+          borderRadius: {
+            xs: '4px',
+            sm: '8px',
+            DEFAULT: '12px',
+            md: '12px',
+            lg: '16px',
+            xl: '24px',
+            full: '9999px'
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1;
+    }
+    /* Tabular numbers for clean stats */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col justify-between selection:bg-primary-container selection:text-on-primary-container">
+<!-- TOP APP BAR (Shared Component: TopNavBar) -->
+<header class="w-full bg-surface border-b border-outline-variant sticky top-0 z-50">
+<div class="w-full h-16 flex items-center justify-between px-8 max-w-7xl mx-auto">
+<!-- Brand & Exam Chip -->
+<div class="flex items-center gap-6">
+<a class="font-display text-2xl font-bold tracking-tight text-primary" href="#">ODAK</a>
+<!-- Dropdown Exam Chip -->
+<div class="hidden lg:flex items-center gap-2 bg-background border border-outline-variant px-3 py-1.5 rounded-full text-xs font-semibold text-on-surface tracking-wide">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>2026-YDS/2 · 22 Kasım 2026 · 52 Gün Kaldı</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer">arrow_drop_down</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-8 h-full">
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface transition-colors duration-150" href="#">Bugün</a>
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface transition-colors duration-150" href="#">Çalış</a>
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface transition-colors duration-150" href="#">Deneme</a>
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface transition-colors duration-150" href="#">Öğretmen</a>
+<a class="text-primary font-semibold border-b-2 border-primary py-5" href="#">Ben</a>
+</nav>
+<!-- Trailing Action Badges & Profile -->
+<div class="flex items-center gap-4">
+<!-- Streak Badge -->
+<div class="flex items-center gap-1.5 bg-secondary-container px-3 py-1.5 rounded-full border border-secondary/30">
+<span class="material-symbols-outlined text-secondary fill text-lg">local_fire_department</span>
+<span class="text-xs font-bold text-on-secondary">14 Gün Seri</span>
+</div>
+<!-- Notification Icon -->
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-background border border-transparent hover:border-outline-variant transition-colors" title="Bildirimler">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<!-- Profile Avatar & Details -->
+<div class="flex items-center gap-3 pl-2 border-l border-outline-variant">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container font-semibold flex items-center justify-center text-xs border border-primary/20">
+            BK
+          </div>
+<div class="hidden xl:flex flex-col text-left">
+<span class="text-xs font-bold text-on-surface leading-tight">Doç. Dr. Bilge Kağan Ö.</span>
+<span class="text-[11px] text-on-surface-variant leading-tight">Akademik Paket</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN WRAPPER -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-6 lg:px-8 py-8">
+<!-- Breadcrumb & Back Navigation -->
+<div class="flex items-center gap-2 text-xs text-on-surface-variant mb-4">
+<a class="hover:text-primary transition-colors" href="#">Hesabım</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Abonelik ve Paket Yönetimi</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-semibold">İptal Talebi</span>
+</div>
+<!-- Page Title & Subtitle -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<h1 class="font-display text-3xl font-bold text-on-surface tracking-tight">Abonelik İptal Talebi</h1>
+<p class="text-sm text-on-surface-variant mt-1">Görüşleriniz sistemimizin pedagojik kalitesini artırmamız için değerlidir. Süreci dilediğiniz zaman durdurabilirsiniz.</p>
+</div>
+<div class="inline-flex items-center gap-2 bg-surface px-3 py-1.5 rounded-lg border border-outline-variant text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary">calendar_today</span>
+<span>Bugün: <strong>2 Ekim 2026 Cuma</strong></span>
+</div>
+</div>
+<!-- Stepper (3-Step Progress Indicator) -->
+<div class="w-full bg-surface border border-outline-variant rounded-xl p-5 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
+<!-- Step 1 (Active) -->
+<div class="flex items-center gap-3.5">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs shrink-0">
+            1
+          </div>
+<div>
+<span class="block text-xs font-bold text-primary uppercase tracking-wider">1. Adım</span>
+<span class="text-sm font-semibold text-on-surface">İptal Nedeni ve Görüş</span>
+</div>
+</div>
+<!-- Step 2 (Pending) -->
+<div class="flex items-center gap-3.5 opacity-60">
+<div class="w-8 h-8 rounded-full bg-background border border-outline-variant text-on-surface-variant flex items-center justify-center font-bold text-xs shrink-0">
+            2
+          </div>
+<div>
+<span class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider">2. Adım</span>
+<span class="text-sm font-medium text-on-surface-variant">Alternatif Çözüm ve Haklar</span>
+</div>
+</div>
+<!-- Step 3 (Pending) -->
+<div class="flex items-center gap-3.5 opacity-60">
+<div class="w-8 h-8 rounded-full bg-background border border-outline-variant text-on-surface-variant flex items-center justify-center font-bold text-xs shrink-0">
+            3
+          </div>
+<div>
+<span class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider">3. Adım</span>
+<span class="text-sm font-medium text-on-surface-variant">Son Onay ve Dönem Sonu</span>
+</div>
+</div>
+</div>
+</div>
+<!-- MAIN TWO-COLUMN WORKFLOW -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+<!-- LEFT COLUMN: Cancel Reasons & Direct Actions (7 Cols) -->
+<section class="lg:col-span-7 bg-surface border border-outline-variant rounded-xl p-6 sm:p-7">
+<div class="border-b border-outline-variant pb-4 mb-6">
+<h2 class="text-lg font-bold text-on-surface">Ayrılma gerekçenizi belirtir misiniz?</h2>
+<p class="text-xs text-on-surface-variant mt-1">Platform deneyiminizi en uygun çözümlerle desteklemek ve sistemimizi geliştirmek istiyoruz.</p>
+</div>
+<!-- Reason Selection Radio Form -->
+<fieldset class="space-y-3 mb-6" id="cancellation-reasons">
+<legend class="sr-only">İptal Gerekçesi Seçimi</legend>
+<!-- Option 1 -->
+<label class="group relative flex items-start p-3.5 rounded-lg border border-outline-variant hover:border-primary cursor-pointer transition-all bg-surface hover:bg-background">
+<input checked="" class="mt-1 h-4 w-4 text-primary border-outline focus:ring-primary focus:ring-offset-2" name="cancel_reason" type="radio" value="exam_completed"/>
+<div class="ml-3 flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+<span class="text-sm font-medium text-on-surface">Sınavım bitti / Hedef puanıma ulaştım</span>
+<span class="inline-flex items-center self-start sm:self-auto px-2 py-0.5 rounded text-[11px] font-semibold bg-primary-container text-on-primary-container">
+                Önerilen Çözüm Var
+              </span>
+</div>
+</label>
+<!-- Option 2 -->
+<label class="group relative flex items-start p-3.5 rounded-lg border border-outline-variant hover:border-primary cursor-pointer transition-all bg-surface hover:bg-background">
+<input class="mt-1 h-4 w-4 text-primary border-outline focus:ring-primary focus:ring-offset-2" name="cancel_reason" type="radio" value="price_high"/>
+<div class="ml-3 flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+<span class="text-sm font-medium text-on-surface">Ücret / Bütçeme yüksek geldi</span>
+<span class="inline-flex items-center self-start sm:self-auto px-2 py-0.5 rounded text-[11px] font-semibold bg-secondary-container text-on-secondary">
+                İndirim Teklifi
+              </span>
+</div>
+</label>
+<!-- Option 3 -->
+<label class="group relative flex items-start p-3.5 rounded-lg border border-outline-variant hover:border-primary cursor-pointer transition-all bg-surface hover:bg-background">
+<input class="mt-1 h-4 w-4 text-primary border-outline focus:ring-primary focus:ring-offset-2" name="cancel_reason" type="radio" value="time_constraint"/>
+<div class="ml-3 flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+<span class="text-sm font-medium text-on-surface">Yeterince vakit ayıramadım / Az kullandım</span>
+<span class="inline-flex items-center self-start sm:self-auto px-2 py-0.5 rounded text-[11px] font-semibold bg-tertiary-container text-tertiary">
+                Esnek Plan
+              </span>
+</div>
+</label>
+<!-- Option 4 -->
+<label class="group relative flex items-start p-3.5 rounded-lg border border-outline-variant hover:border-primary cursor-pointer transition-all bg-surface hover:bg-background">
+<input class="mt-1 h-4 w-4 text-primary border-outline focus:ring-primary focus:ring-offset-2" name="cancel_reason" type="radio" value="content_mismatch"/>
+<div class="ml-3 flex-1">
+<span class="text-sm font-medium text-on-surface">İçerik ve soru havuzu ihtiyacımı karşılamadı</span>
+</div>
+</label>
+<!-- Option 5 -->
+<label class="group relative flex items-start p-3.5 rounded-lg border border-outline-variant hover:border-primary cursor-pointer transition-all bg-surface hover:bg-background">
+<input class="mt-1 h-4 w-4 text-primary border-outline focus:ring-primary focus:ring-offset-2" name="cancel_reason" type="radio" value="technical_issue"/>
+<div class="ml-3 flex-1">
+<span class="text-sm font-medium text-on-surface">Teknik aksaklık veya arayüz zorluğu yaşadım</span>
+</div>
+</label>
+<!-- Option 6 -->
+<label class="group relative flex items-start p-3.5 rounded-lg border border-outline-variant hover:border-primary cursor-pointer transition-all bg-surface hover:bg-background">
+<input class="mt-1 h-4 w-4 text-primary border-outline focus:ring-primary focus:ring-offset-2" name="cancel_reason" type="radio" value="other"/>
+<div class="ml-3 flex-1">
+<span class="text-sm font-medium text-on-surface">Diğer bir gerekçe</span>
+</div>
+</label>
+</fieldset>
+<!-- Optional Feedback Textarea -->
+<div class="mb-6">
+<label class="block text-xs font-semibold text-on-surface mb-1.5" for="cancellation_feedback">
+            Eklemek istediğiniz öneri veya eleştiri (İsteğe bağlı)
+          </label>
+<textarea class="w-full rounded-lg border border-outline-variant bg-surface p-3 text-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-outline" id="cancellation_feedback" placeholder="Arayüz, soru kalitesi veya çalışma süreci hakkında düşüncelerinizi paylaşabilirsiniz..." rows="3"></textarea>
+</div>
+<!-- No Dark Patterns: Symmetric, Transparent CTAs -->
+<div class="pt-4 border-t border-outline-variant flex flex-col sm:flex-row items-center gap-3">
+<button class="w-full sm:w-1/2 min-h-[48px] px-5 py-2.5 rounded-lg border border-primary text-primary hover:bg-primary/5 font-semibold text-sm transition-colors text-center" type="button">
+            Vazgeç ve Paketime Dön
+          </button>
+<button class="w-full sm:w-1/2 min-h-[48px] px-5 py-2.5 rounded-lg bg-error hover:bg-error/90 text-white font-semibold text-sm transition-colors text-center" type="button">
+            Aboneliği İptal Etmeye Devam Et
+          </button>
+</div>
+</section>
+<!-- RIGHT COLUMN: User Retention Assets & Contextual Solutions (5 Cols) -->
+<section class="lg:col-span-5 space-y-6">
+<!-- User Portfolio & Preserved Rights (Bento Mini-Grid) -->
+<div class="bg-surface border border-outline-variant rounded-xl p-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-sm font-bold text-on-surface tracking-wide">Mevcut Çalışma Portföyünüz</h3>
+<span class="text-[11px] font-semibold text-tertiary bg-tertiary-container px-2 py-0.5 rounded">Kaybedilmeyecek Haklar</span>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-4">
+<div class="p-3 bg-background rounded-lg border border-outline-variant/60">
+<span class="block text-xs text-on-surface-variant">Çözülen Soru</span>
+<span class="text-xl font-bold text-on-surface tabular-nums">320</span>
+<span class="text-[11px] text-on-surface-variant">Kayıtlı soru geçmişi</span>
+</div>
+<div class="p-3 bg-background rounded-lg border border-outline-variant/60">
+<span class="block text-xs text-on-surface-variant">Tam Deneme</span>
+<span class="text-xl font-bold text-on-surface tabular-nums">2 Karne</span>
+<span class="text-[11px] text-on-surface-variant">Sınav raporu hazır</span>
+</div>
+<div class="p-3 bg-background rounded-lg border border-outline-variant/60">
+<span class="block text-xs text-on-surface-variant">Kurtarılan Çeldirici</span>
+<span class="text-xl font-bold text-primary tabular-nums">18 Soru</span>
+<span class="text-[11px] text-on-surface-variant">Hata defterinde</span>
+</div>
+<div class="p-3 bg-background rounded-lg border border-outline-variant/60">
+<span class="block text-xs text-on-surface-variant">Öğretmen İncelemesi</span>
+<span class="text-xl font-bold text-on-surface tabular-nums">4 Adet</span>
+<span class="text-[11px] text-on-surface-variant">Geri bildirim notu</span>
+</div>
+</div>
+<div class="flex items-start gap-2 bg-surface-container-high/40 p-3 rounded-lg border border-outline-variant text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">verified_user</span>
+<span>Aboneliğinizi iptal etseniz dahi çözdüğünüz sorular, karneleriniz ve kelime defteriniz hesabınızda <strong>süresiz</strong> olarak güvenle saklanır.</span>
+</div>
+</div>
+<!-- Dynamic Contextual Solutions based on user intent -->
+<div class="bg-surface border border-outline-variant rounded-xl p-6 space-y-4">
+<div class="border-b border-outline-variant pb-3">
+<span class="text-xs font-bold text-primary uppercase tracking-wider">Adaya Özel Alternatif Çözümler</span>
+<h4 class="text-base font-bold text-on-surface mt-0.5">İptal Etmek Yerine Değerlendirebilirsiniz</h4>
+</div>
+<!-- Proposal A (Free Pause) -->
+<div class="p-4 rounded-lg border border-primary/30 bg-primary-container/20 hover:border-primary transition-all">
+<div class="flex items-start justify-between gap-2 mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">pause_circle</span>
+<span class="text-xs font-bold text-on-surface">Bir Sonraki Sınava Kadar Ücretsiz Dondurma</span>
+</div>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-primary text-on-primary">Popüler</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-3 leading-relaxed">
+              Hedef puanınıza ulaştıysanız veya bu dönem ara vermek istiyorsanız, kalan 48 gününüzü sonraki YDS veya YÖKDİL dönemine kadar dondurun, hakkınız yanmasın.
+            </p>
+<button class="w-full min-h-[40px] px-3 py-2 bg-primary hover:bg-primary/90 text-on-primary text-xs font-semibold rounded-lg transition-colors" type="button">
+              Paketi Ücretsiz Dondur (48 Gün Sakla)
+            </button>
+</div>
+<!-- Proposal B (Financial Support) -->
+<div class="p-4 rounded-lg border border-outline-variant bg-surface hover:border-outline transition-all">
+<div class="flex items-center gap-2 mb-1.5">
+<span class="material-symbols-outlined text-secondary text-[20px]">payments</span>
+<span class="text-xs font-bold text-on-surface">Akademisyen Teşvik İndirimi</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-3 leading-relaxed">
+              Yıllık planda %40 ek indirimle aylık 124 TL dengi taksitle platforma kesintisiz devam edebilirsiniz.
+            </p>
+<button class="w-full min-h-[40px] px-3 py-2 border border-outline text-on-surface hover:bg-background text-xs font-semibold rounded-lg transition-colors" type="button">
+              %40 İndirimli Plana Geçiş Yap
+            </button>
+</div>
+<!-- Proposal C (Micro Learning) -->
+<div class="p-4 rounded-lg border border-outline-variant bg-surface hover:border-outline transition-all">
+<div class="flex items-center gap-2 mb-1.5">
+<span class="material-symbols-outlined text-tertiary text-[20px]">timer</span>
+<span class="text-xs font-bold text-on-surface">Günde 15 Dakikalık Mikro Çalışma Modu</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-3 leading-relaxed">
+              Yoğun çalışma temposundaysanız haftalık 10 saatlik ağır müfredat yerine günde yalnızca 15 dakikalık soru haplarıyla formunuzu koruyun.
+            </p>
+<button class="w-full min-h-[40px] px-3 py-2 border border-outline text-on-surface hover:bg-background text-xs font-semibold rounded-lg transition-colors" type="button">
+              Mikro Çalışma Modunu Etkinleştir
+            </button>
+</div>
+</div>
+<!-- Transparent Billing Terms Card -->
+<div class="bg-background border border-outline-variant rounded-xl p-4">
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-outline text-[20px] mt-0.5">info</span>
+<div>
+<h5 class="text-xs font-bold text-on-surface">Önemli Hak Bilgilendirmesi</h5>
+<p class="text-xs text-on-surface-variant mt-1 leading-normal">
+                İptal etseniz dahi Premium haklarınız <strong>1 Kasım 2026</strong> tarihine kadar kesintisiz devam eder. 1 Kasım 2026 sonrasında kartınızdan kesinlikle çekim yapılmaz, hesabınız otomatik olarak <strong>Ücretsiz Temel Plana</strong> geçer.
+              </p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- PEDAGOGICAL SAMPLE SECTION: Academic Question Experience & Teacher Ladder -->
+<section class="bg-surface border border-outline-variant rounded-xl p-6 sm:p-8 mb-12">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant pb-5 mb-6">
+<div>
+<span class="inline-flex items-center gap-1.5 text-xs font-bold text-primary uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">school</span>
+            Örnek YDS Deneyimi ve Pedagojik Metot
+          </span>
+<h3 class="text-xl font-bold text-on-surface mt-1">Öğretmen İpucu Merdiveni ile Çeldirici Analizi</h3>
+</div>
+<div class="text-xs text-on-surface-variant bg-background px-3 py-1.5 rounded-lg border border-outline-variant">
+          Format: <strong>Cümle Tamamlama (C1 Seviye)</strong> · YDS Standartı
+        </div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left: Reading Stem & Choices (7 Cols) -->
+<div class="lg:col-span-7 space-y-5">
+<div class="bg-background/70 p-5 rounded-lg border border-outline-variant">
+<div class="flex items-center justify-between text-xs font-semibold text-on-surface-variant mb-2">
+<span>Soru No: 28</span>
+<span>1 Doğru = 1,25 Puan</span>
+</div>
+<!-- Serif Question Stem -->
+<p class="font-reading text-base leading-relaxed text-on-surface">
+              Although ancient metallurgical techniques were initially thought to have developed independently in disparate regions of Anatolia, recent isotopic analyses of slag deposits suggest that -------.
+            </p>
+</div>
+<!-- Answer Options in Literata (Bubbles format) -->
+<div class="space-y-2.5">
+<!-- Option A -->
+<div class="flex items-center gap-3 p-3.5 rounded-lg border border-outline-variant bg-surface hover:border-primary cursor-pointer transition-colors">
+<span class="w-6 h-6 rounded-full border border-outline flex items-center justify-center text-xs font-bold text-on-surface-variant shrink-0">A</span>
+<span class="font-reading text-sm text-on-surface leading-snug">smelting traditions were abandoned altogether following climatic anomalies</span>
+</div>
+<!-- Option B (Selected / Correct Showcase) -->
+<div class="flex items-center gap-3 p-3.5 rounded-lg border-2 border-primary bg-primary-container/20 cursor-pointer">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-xs font-bold shrink-0">B</span>
+<div class="flex-1 flex items-center justify-between">
+<span class="font-reading text-sm text-on-surface font-medium leading-snug">a sophisticated, inter-regional network of raw copper exchange had been established far earlier</span>
+<span class="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-tertiary bg-tertiary-container px-2 py-0.5 rounded ml-2">
+<span class="material-symbols-outlined text-[14px]">check</span>
+                  Doğru Seçenek
+                </span>
+</div>
+</div>
+<!-- Option C -->
+<div class="flex items-center gap-3 p-3.5 rounded-lg border border-outline-variant bg-surface hover:border-primary cursor-pointer transition-colors">
+<span class="w-6 h-6 rounded-full border border-outline flex items-center justify-center text-xs font-bold text-on-surface-variant shrink-0">C</span>
+<span class="font-reading text-sm text-on-surface leading-snug">local craftsmen lacked the furnace technology required to reach adequate smelting heat</span>
+</div>
+<!-- Option D -->
+<div class="flex items-center gap-3 p-3.5 rounded-lg border border-outline-variant bg-surface hover:border-primary cursor-pointer transition-colors">
+<span class="w-6 h-6 rounded-full border border-outline flex items-center justify-center text-xs font-bold text-on-surface-variant shrink-0">D</span>
+<span class="font-reading text-sm text-on-surface leading-snug">archaeologists have misdated the majority of strata belonging to the Early Bronze Age</span>
+</div>
+<!-- Option E -->
+<div class="flex items-center gap-3 p-3.5 rounded-lg border border-outline-variant bg-surface hover:border-primary cursor-pointer transition-colors">
+<span class="w-6 h-6 rounded-full border border-outline flex items-center justify-center text-xs font-bold text-on-surface-variant shrink-0">E</span>
+<span class="font-reading text-sm text-on-surface leading-snug">tin imports were universally prohibited across central plateau settlements</span>
+</div>
+</div>
+</div>
+<!-- Right: Teacher Scaffold Ladder (5 Cols) -->
+<div class="lg:col-span-5 bg-background p-5 rounded-lg border border-outline-variant space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">psychology</span>
+<h4 class="text-sm font-bold text-on-surface">Öğretmen İpucu Merdiveni</h4>
+</div>
+<span class="text-[11px] font-semibold text-primary bg-primary-container px-2 py-0.5 rounded">4 Basamak</span>
+</div>
+<div class="space-y-3">
+<!-- Step 1: Odak -->
+<div class="p-3 bg-surface rounded-lg border-l-4 border-l-primary border border-outline-variant">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-bold text-primary">1. Odak Basamağı</span>
+<span class="text-[10px] text-on-surface-variant">Bağlaç Tespiti</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                Cümle başında yer alan <strong>"Although"</strong> zıtlık bağlacına odaklanın. İlk kısım "bağımsız geliştiği düşünülüyordu" diyerek tekillik vurgular.
+              </p>
+</div>
+<!-- Step 2: Kural -->
+<div class="p-3 bg-surface rounded-lg border-l-4 border-l-chart-2 border border-outline-variant">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-bold text-chart-2">2. Kural Basamağı</span>
+<span class="text-[10px] text-on-surface-variant">Anlamsal Simetri</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                "Disparate regions" (ayrık/bağımsız bölgeler) ifadesinin zıt karşılığı ana cümlecikte ortak bir ağ veya etkileşim yapısı olmalıdır.
+              </p>
+</div>
+<!-- Step 3: Eleme -->
+<div class="p-3 bg-surface rounded-lg border-l-4 border-l-chart-3 border border-outline-variant">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-bold text-chart-3">3. Eleme Basamağı</span>
+<span class="text-[10px] text-on-surface-variant">Çeldiriciler</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                A ve C seçenekleri zıtlığı karşılamayan olumsuz teknik yetersizliklere odaklanır. E şıkkı ise aşırı genelleme (universally prohibited) içerir.
+              </p>
+</div>
+<!-- Step 4: Çözüm -->
+<div class="p-3 bg-surface rounded-lg border-l-4 border-l-tertiary border border-outline-variant">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-bold text-tertiary">4. Çözüm Basamağı</span>
+<span class="text-[10px] text-on-surface-variant">Sonuç</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<strong>Doğru Yanıt: B.</strong> "Inter-regional network of raw copper exchange" ifadesi ilk kısımdaki bağımsızlık iddiasını eksiksiz şekilde çürütür.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SYSTEM DECISION MATRIX: Transparent Technical Contract (4 States) -->
+<section class="bg-surface border border-outline-variant rounded-xl p-6 sm:p-7 mb-12">
+<div class="border-b border-outline-variant pb-4 mb-6">
+<h3 class="text-base font-bold text-on-surface">Şeffaf Sistem Karar Matrisi</h3>
+<p class="text-xs text-on-surface-variant mt-1">ODAK platformunda hiçbir gizli şart veya belirsiz kesinti uygulanmaz. Tüm süreç adayın tam kontrolündedir.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Case 1 -->
+<div class="p-4 bg-background rounded-lg border border-outline-variant">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+<h4 class="text-xs font-bold text-on-surface">Durum 1: İptal Talebi Alındı</h4>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Otomatik yenileme derhal kapatılır. Kredi kartınızdan bir sonraki dönem için hiçbir çekim yapılmaz.
+          </p>
+<div class="mt-3 text-[11px] font-semibold text-on-surface">Erişim: 1 Kasım 2026'ya kadar aktif</div>
+</div>
+<!-- Case 2 -->
+<div class="p-4 bg-background rounded-lg border border-outline-variant">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<h4 class="text-xs font-bold text-on-surface">Durum 2: Dönem Dondurma</h4>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Kalan 48 gününüz sistemde beklemeye alınır. 2027 İlkbahar YDS veya YÖKDİL döneminde tek tıkla devam eder.
+          </p>
+<div class="mt-3 text-[11px] font-semibold text-primary">Süre Kaybı: Sıfır gün kayıp</div>
+</div>
+<!-- Case 3 -->
+<div class="p-4 bg-background rounded-lg border border-outline-variant">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<h4 class="text-xs font-bold text-on-surface">Durum 3: 14 Gün Koşulsuz Cayma</h4>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Satın alma üzerinden 14 gün geçmediyse mevzuat uyarınca tam tutar iadesi 3 iş gününde bankanıza iletilir.
+          </p>
+<div class="mt-3 text-[11px] font-semibold text-on-surface">İade: Kesintisiz tam ücret</div>
+</div>
+<!-- Case 4 -->
+<div class="p-4 bg-background rounded-lg border border-outline-variant">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+<h4 class="text-xs font-bold text-on-surface">Durum 4: Ücretsiz Plana Geçiş</h4>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Premium süre bitse bile çözdüğünüz 320 soru, kelime defteriniz ve geçmiş deneme karneleriniz daima açıktır.
+          </p>
+<div class="mt-3 text-[11px] font-semibold text-tertiary">Veri Güvencesi: Süresiz Saklama</div>
+</div>
+</div>
+</section>
+</main>
+<!-- DESKTOP FOOTER (Shared Component: Footer) -->
+<footer class="w-full bg-surface border-t border-outline-variant">
+<div class="w-full py-8 px-8 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex flex-col gap-1 text-center md:text-left">
+<span class="font-headline text-title font-semibold text-on-surface">ODAK</span>
+<p class="font-body text-body-sm text-on-surface-variant">
+          © 2026 ODAK Akademik Sınav Hazırlık Platformu. ÖSYM formatı ve standartları doğrultusunda hazırlanmıştır. Tüm hakları saklıdır.
+        </p>
+</div>
+<nav class="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-2 text-xs font-medium">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Sınav Formatı ve Kuralları</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Çalışma Esasları</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Soru Dağılımı ve Kılavuz</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Gizlilik ve Güvenlik</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">İletişim</a>
+</nav>
+</div>
+</footer>
+<!-- Micro-interactions Script for Responsive Selection & Transparency -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const radioInputs = document.querySelectorAll('input[name="cancel_reason"]');
+      radioInputs.forEach(input => {
+        input.addEventListener('change', () => {
+          // Highlight active label border cleanly
+          radioInputs.forEach(r => {
+            const parentLabel = r.closest('label');
+            if (r.checked) {
+              parentLabel.classList.add('border-primary', 'bg-primary-container/10');
+            } else {
+              parentLabel.classList.remove('border-primary', 'bg-primary-container/10');
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body></html>

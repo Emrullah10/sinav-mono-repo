@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMP-02 · Form Alanları ve Girdi Bileşenleri (Koyu Masaüstü 1440px)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0E6A6E',
+              light: '#4DB6B0',
+              surface: '#16363A',
+              container: '#1B2B32'
+            },
+            amber: {
+              vivid: '#E9A514',
+              soft: '#F0B43A'
+            },
+            correct: {
+              dark: '#1F7A45',
+              light: '#4CC27D'
+            },
+            error: {
+              dark: '#A33D27',
+              light: '#EE8A6E'
+            },
+            neutral: {
+              950: '#0E171B',
+              900: '#142127',
+              850: '#1B2B32',
+              800: '#24343A',
+              400: '#A9B8BA',
+              100: '#E4ECEC',
+              50: '#F4F6F5'
+            }
+          },
+          fontFamily: {
+            sans: ['Figtree', 'sans-serif'],
+            serif: ['Literata', 'serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #0E171B;
+      color: #E4ECEC;
+      font-family: 'Figtree', sans-serif;
+    }
+    .font-reading {
+      font-family: 'Literata', serif;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #4DB6B0;
+      cursor: pointer;
+      border: 2px solid #0E171B;
+    }
+    input[type=range]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #4DB6B0;
+      cursor: pointer;
+      border: 2px solid #0E171B;
+    }
+  </style>
+</head>
+<body class="bg-[#0E171B] text-[#E4ECEC] antialiased selection:bg-[#4DB6B0]/20 selection:text-[#4DB6B0]">
+
+  <!-- Üst Bilgi / Navigasyon -->
+  <header class="w-full bg-[#142127] border-b border-[#24343A] sticky top-0 z-50">
+    <div class="max-w-[1440px] mx-auto px-8 h-16 flex items-center justify-between">
+      
+      <!-- Sol: Marka ve Sınav Seçici Çip -->
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-[#4DB6B0] text-[#0E171B] font-bold flex items-center justify-center text-base tracking-tight shadow-none">
+            O
+          </span>
+          <span class="font-bold text-xl tracking-tight text-[#E4ECEC]">ODAK</span>
+        </div>
+
+        <div class="h-5 w-[1px] bg-[#24343A]"></div>
+
+        <!-- Aktif Sınav Çipi & Seçici -->
+        <div class="flex items-center gap-2 bg-[#1B2B32] px-3 py-1.5 rounded-lg border border-[#24343A] text-xs">
+          <span class="w-2 h-2 rounded-full bg-[#F0B43A]"></span>
+          <span class="text-[#A9B8BA]">Aktif Oturum:</span>
+          <span class="font-semibold text-[#E4ECEC]">2026-YDS/2 · 22 Kasım 2026</span>
+          <span class="bg-[#0E6A6E]/30 text-[#4DB6B0] px-2 py-0.5 rounded text-[11px] font-medium border border-[#4DB6B0]/20">52 Gün Kaldı</span>
+          <button class="ml-1 text-[#A9B8BA] hover:text-[#E4ECEC] flex items-center" title="Sınavı Değiştir">
+            <span class="material-symbols-outlined text-[16px]">expand_more</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Orta: Modül Navigasyonu -->
+      <nav class="hidden md:flex items-center gap-8 text-sm">
+        <a href="#" class="text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors">Temeller</a>
+        <a href="#" class="text-[#4DB6B0] font-semibold flex items-center gap-1.5 border-b-2 border-[#4DB6B0] py-5">
+          <span>Bileşenler</span>
+          <span class="text-[10px] bg-[#4DB6B0]/15 text-[#4DB6B0] px-1.5 py-0.5 rounded font-mono">CMP-02</span>
+        </a>
+        <a href="#" class="text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors">Kalıplar</a>
+        <a href="#" class="text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors">Sınav Rehberi</a>
+      </nav>
+
+      <!-- Sağ: Sistem Bilgisi ve Kullanıcı Profili -->
+      <div class="flex items-center gap-4">
+        <div class="text-right text-xs">
+          <div class="text-[#E4ECEC] font-medium">Doç. Dr. Bilge Kağan Öztürk</div>
+          <div class="text-[#A9B8BA]">2 Ekim 2026 Cuma · Başvuru Dönemi</div>
+        </div>
+        <div class="w-9 h-9 rounded-full bg-[#1B2B32] border border-[#24343A] flex items-center justify-center text-xs font-semibold text-[#4DB6B0]">
+          BK
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Ana İçerik Kapsayıcı -->
+  <main class="max-w-[1440px] mx-auto px-8 py-10 space-y-12">
+
+    <!-- Sayfa Başlığı ve Meta Kartı -->
+    <div class="bg-[#142127] border border-[#24343A] rounded-2xl p-8">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#1B2B32] text-[#4DB6B0] text-xs font-semibold uppercase tracking-wider mb-3 border border-[#4DB6B0]/20">
+            <span>Bileşen Kılavuzu</span>
+            <span>·</span>
+            <span>Form &amp; Girdi Mimarisi</span>
+          </div>
+          <h1 class="text-3xl font-bold tracking-tight text-[#E4ECEC]">CMP-02 · Form Alanları ve Girdi Bileşenleri</h1>
+          <p class="text-[#A9B8BA] mt-2 text-sm max-w-3xl leading-relaxed">
+            Yetişkin sınav adaylarının bilişsel yükünü azaltan, sakin ve göz yormayan form öğeleri. 
+            Doğruluk ve hata durumları asla yalnızca renkle değil; metin, simge ve sınır birlikteliğiyle aktarılır.
+            Asgari 44px dokunma hedefi ve 1px kurumsal kenarlık disiplini korunur.
+          </p>
+        </div>
+
+        <!-- Standart ve ÖSYM Kuralları Rozetleri -->
+        <div class="grid grid-cols-2 gap-3 min-w-[320px]">
+          <div class="bg-[#1B2B32] p-3 rounded-xl border border-[#24343A]">
+            <div class="text-xs text-[#A9B8BA]">ÖSYM Puan Prensibi</div>
+            <div class="text-sm font-semibold text-[#E4ECEC] mt-0.5">Yanlış Doğruyu Götürmez</div>
+            <div class="text-[11px] text-[#4CC27D] mt-1 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">check_circle</span>
+              <span>1 Doğru = 1,25 Puan</span>
+            </div>
+          </div>
+          <div class="bg-[#1B2B32] p-3 rounded-xl border border-[#24343A]">
+            <div class="text-xs text-[#A9B8BA]">Erişilebilirlik Garantisi</div>
+            <div class="text-sm font-semibold text-[#E4ECEC] mt-0.5">WCAG AAA Standardı</div>
+            <div class="text-[11px] text-[#4DB6B0] mt-1 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">touch_app</span>
+              <span>En az 44px Dokunma Hedefi</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BÖLÜM 1: Metin Alanı Türleri -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-[#1B2B32] text-[#4DB6B0] text-xs font-bold flex items-center justify-center border border-[#24343A]">1</span>
+          <h2 class="text-lg font-bold text-[#E4ECEC]">Metin Alanı Türleri</h2>
+        </div>
+        <span class="text-xs text-[#A9B8BA]">Tek satır, şifre, sözlük araması ve çok satırlı çeviri alanı</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- 1.1 Standart Tek Satır Metin Alanı -->
+        <div class="bg-[#142127] p-5 rounded-xl border border-[#24343A] space-y-2">
+          <label class="block text-xs font-semibold text-[#E4ECEC]">
+            Ad Soyad <span class="text-[#EE8A6E]">*</span>
+          </label>
+          <div class="relative">
+            <input type="text" value="Dr. Bilge Kağan Öztürk" class="w-full h-11 px-3.5 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] focus:outline-none focus:border-[#4DB6B0] focus:ring-1 focus:ring-[#4DB6B0] transition-colors" placeholder="Adınızı ve soyadınızı giriniz">
+          </div>
+          <p class="text-[11px] text-[#A9B8BA]">ÖSYM Aday İşlemleri Sistemi ile eşleşen resmi ad.</p>
+        </div>
+
+        <!-- 1.2 Şifre Alanı (Gizle / Göster) -->
+        <div class="bg-[#142127] p-5 rounded-xl border border-[#24343A] space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-[#E4ECEC]">
+              Aday Şifresi <span class="text-[#EE8A6E]">*</span>
+            </label>
+            <button type="button" class="text-[11px] text-[#4DB6B0] hover:underline">Şifremi Unuttum</button>
+          </div>
+          <div class="relative flex items-center">
+            <input type="password" value="Akademik2026!Yds" class="w-full h-11 pl-3.5 pr-10 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] tracking-widest focus:outline-none focus:border-[#4DB6B0] focus:ring-1 focus:ring-[#4DB6B0] transition-colors">
+            <button type="button" class="absolute right-3 text-[#A9B8BA] hover:text-[#E4ECEC] flex items-center justify-center w-6 h-6" title="Şifreyi Göster">
+              <span class="material-symbols-outlined text-[18px]">visibility</span>
+            </button>
+          </div>
+          <div class="flex items-center justify-between text-[11px] pt-1">
+            <div class="flex items-center gap-1 w-24">
+              <div class="h-1 flex-1 bg-[#4CC27D] rounded"></div>
+              <div class="h-1 flex-1 bg-[#4CC27D] rounded"></div>
+              <div class="h-1 flex-1 bg-[#4CC27D] rounded"></div>
+            </div>
+            <span class="text-[#4CC27D] font-medium">Güçlü Şifre</span>
+          </div>
+        </div>
+
+        <!-- 1.3 Sözlük ve Kural Arama Alanı -->
+        <div class="bg-[#142127] p-5 rounded-xl border border-[#24343A] space-y-2">
+          <label class="block text-xs font-semibold text-[#E4ECEC]">
+            Sözlük ve Dil Bilgisi Arama
+          </label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3 text-[#A9B8BA] text-[18px]">search</span>
+            <input type="text" value="although" class="w-full h-11 pl-9 pr-9 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] focus:outline-none focus:border-[#4DB6B0] focus:ring-1 focus:ring-[#4DB6B0] transition-colors" placeholder="Bağlaç, deyim veya kural ara...">
+            <button type="button" class="absolute right-3 text-[#A9B8BA] hover:text-[#E4ECEC] flex items-center justify-center w-5 h-5 rounded-full hover:bg-[#1B2B32]" title="Temizle">
+              <span class="material-symbols-outlined text-[14px]">close</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-[#A9B8BA]">İngilizce bağlaçlar ve zıtlık kalıpları indeksinde arar.</p>
+        </div>
+
+        <!-- 1.4 Sayısal / T.C. Kimlik Giriş Alanı -->
+        <div class="bg-[#142127] p-5 rounded-xl border border-[#24343A] space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-[#E4ECEC]">
+              T.C. Kimlik Numarası <span class="text-[#EE8A6E]">*</span>
+            </label>
+            <span class="text-[11px] text-[#A9B8BA]">11 Hane</span>
+          </div>
+          <div class="relative flex items-center">
+            <input type="text" maxlength="11" value="28491048291" class="w-full h-11 px-3.5 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm font-mono text-[#E4ECEC] focus:outline-none focus:border-[#4DB6B0] focus:ring-1 focus:ring-[#4DB6B0] transition-colors">
+            <span class="material-symbols-outlined absolute right-3 text-[#4CC27D] text-[18px]">check_circle</span>
+          </div>
+          <p class="text-[11px] text-[#4CC27D] flex items-center gap-1">
+            <span>Doğrulandı ve mühürlendi.</span>
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Çok Satırlı Çeviri ve Metin Alanı (Karakter Sayaçlı) -->
+      <div class="bg-[#142127] p-6 rounded-xl border border-[#24343A] space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-semibold text-[#E4ECEC]">
+              Çok Satırlı Metin ve Çeviri Çalışma Alanı
+            </label>
+            <span class="text-[10px] bg-[#1B2B32] text-[#A9B8BA] px-2 py-0.5 rounded border border-[#24343A]">Özgün Okuma Fontu: Literata Serif</span>
+          </div>
+          <div class="text-xs text-[#A9B8BA] font-mono">
+            <span class="text-[#4DB6B0] font-semibold">142</span> / 500 Sözcük
+          </div>
+        </div>
+
+        <div class="relative">
+          <textarea rows="3" class="w-full p-4 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm font-reading text-[#E4ECEC] leading-relaxed focus:outline-none focus:border-[#4DB6B0] focus:ring-1 focus:ring-[#4DB6B0] transition-colors resize-none">Although substantial progress has been made in understanding the neurological mechanisms of language acquisition, researchers still debate the precise critical period during which second language acquisition is effortless.</textarea>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-[#A9B8BA] pt-1">
+          <span>YDS okuma parçası analizi, çeviri alıştırmaları ve cümle yapı sökümü için özel tipografik alan.</span>
+          <button type="button" class="text-[#4DB6B0] hover:underline flex items-center gap-1 font-medium">
+            <span class="material-symbols-outlined text-[16px]">spellcheck</span>
+            <span>Dil Bilgisi Kurallarını Denetle</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 2: Girdi Etkileşim Durum Matrisi -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-[#1B2B32] text-[#4DB6B0] text-xs font-bold flex items-center justify-center border border-[#24343A]">2</span>
+          <h2 class="text-lg font-bold text-[#E4ECEC]">Girdi Etkileşim Durum Matrisi</h2>
+        </div>
+        <span class="text-xs text-[#A9B8BA]">Boş, Odaklı, Dolu ve Geçerli, Hata Durumu ve Pasif / Kilitli</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        
+        <!-- Durum 1: Boş (Varsayılan) -->
+        <div class="bg-[#142127] p-4 rounded-xl border border-[#24343A] space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[#A9B8BA]">1. Boş (Varsayılan)</span>
+            <span class="text-[10px] bg-[#1B2B32] text-[#A9B8BA] px-1.5 py-0.5 rounded">Nötr</span>
+          </div>
+          <label class="block text-xs text-[#E4ECEC]">E-posta Adresi</label>
+          <input type="text" class="w-full h-11 px-3 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] placeholder-[#46565C] focus:outline-none" placeholder="ornek@kurum.edu.tr">
+          <p class="text-[10px] text-[#A9B8BA]">İnce nötr kenarlık (#24343A). Kullanıcı henüz odaklanmadı.</p>
+        </div>
+
+        <!-- Durum 2: Odaklı (Focus) -->
+        <div class="bg-[#142127] p-4 rounded-xl border border-[#4DB6B0]/40 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[#4DB6B0]">2. Odaklı</span>
+            <span class="text-[10px] bg-[#0E6A6E]/30 text-[#4DB6B0] px-1.5 py-0.5 rounded border border-[#4DB6B0]/30">2px Petrol</span>
+          </div>
+          <label class="block text-xs text-[#E4ECEC]">E-posta Adresi</label>
+          <input type="text" value="bilge.ozturk@" class="w-full h-11 px-3 bg-[#0E171B] border-2 border-[#4DB6B0] rounded-lg text-sm text-[#E4ECEC] focus:outline-none">
+          <p class="text-[10px] text-[#4DB6B0]">2px Petrol kenarlık ve belirgin odak çerçevesi devrede.</p>
+        </div>
+
+        <!-- Durum 3: Dolu ve Geçerli (Valid) -->
+        <div class="bg-[#142127] p-4 rounded-xl border border-[#24343A] space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[#4CC27D]">3. Dolu ve Geçerli</span>
+            <span class="text-[10px] bg-[#1F7A45]/30 text-[#4CC27D] px-1.5 py-0.5 rounded border border-[#4CC27D]/30">Onaylandı</span>
+          </div>
+          <label class="block text-xs text-[#E4ECEC]">E-posta Adresi</label>
+          <div class="relative flex items-center">
+            <input type="text" value="bilge@hacettepe.edu.tr" class="w-full h-11 pl-3 pr-8 bg-[#0E171B] border border-[#4CC27D]/60 rounded-lg text-sm text-[#E4ECEC] focus:outline-none">
+            <span class="material-symbols-outlined absolute right-2.5 text-[#4CC27D] text-[16px]">check_circle</span>
+          </div>
+          <p class="text-[10px] text-[#4CC27D] flex items-center gap-1">
+            <span>Kurumsal adres doğrulandı.</span>
+          </p>
+        </div>
+
+        <!-- Durum 4: Hata Durumu (Error) -->
+        <div class="bg-[#142127] p-4 rounded-xl border border-[#EE8A6E]/30 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[#EE8A6E]">4. Hata Durumu</span>
+            <span class="text-[10px] bg-[#A33D27]/30 text-[#EE8A6E] px-1.5 py-0.5 rounded border border-[#EE8A6E]/30">Tuğla</span>
+          </div>
+          <label class="block text-xs text-[#E4ECEC]">E-posta Adresi</label>
+          <div class="relative flex items-center">
+            <input type="text" value="bilge.ozturk" class="w-full h-11 pl-3 pr-8 bg-[#0E171B] border border-[#EE8A6E] rounded-lg text-sm text-[#E4ECEC] focus:outline-none">
+            <span class="material-symbols-outlined absolute right-2.5 text-[#EE8A6E] text-[16px]">cancel</span>
+          </div>
+          <p class="text-[10px] text-[#EE8A6E] flex items-center gap-1">
+            <span class="material-symbols-outlined text-[12px]">error</span>
+            <span>Geçerli e-posta giriniz (ör. ad@kurum.edu.tr).</span>
+          </p>
+        </div>
+
+        <!-- Durum 5: Pasif / Kilitli (Disabled) -->
+        <div class="bg-[#142127] p-4 rounded-xl border border-[#24343A] space-y-2 opacity-70">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[#A9B8BA]">5. Pasif / Kilitli</span>
+            <span class="text-[10px] bg-[#1B2B32] text-[#A9B8BA] px-1.5 py-0.5 rounded">Salt Okunur</span>
+          </div>
+          <label class="block text-xs text-[#A9B8BA]">Aday Statüsü</label>
+          <div class="relative flex items-center">
+            <input type="text" value="Öğretim Üyesi / Doçent Adayı" disabled class="w-full h-11 pl-3 pr-8 bg-[#1B2B32] border border-[#24343A] rounded-lg text-sm text-[#A9B8BA] cursor-not-allowed">
+            <span class="material-symbols-outlined absolute right-2.5 text-[#A9B8BA] text-[16px]">lock</span>
+          </div>
+          <p class="text-[10px] text-[#A9B8BA]">YÖKSİS entegrasyonuyla kilitlenmiş, değiştirilemez veri.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BÖLÜM 3: Açılır Seçim ve Tarih/Saat Seçiciler -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-[#1B2B32] text-[#4DB6B0] text-xs font-bold flex items-center justify-center border border-[#24343A]">3</span>
+          <h2 class="text-lg font-bold text-[#E4ECEC]">Açılır Seçim ve Tarih Seçiciler</h2>
+        </div>
+        <span class="text-xs text-[#A9B8BA]">ÖSYM sınav oturumu belirleme, akademik hedef puan baremleri ve günlük hatırlatıcı saatleri</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Sınav Oturumu Seçici (Dropdown) -->
+        <div class="bg-[#142127] p-6 rounded-xl border border-[#24343A] space-y-3">
+          <label class="block text-xs font-semibold text-[#E4ECEC]">
+            Hedef Sınav Oturumu
+          </label>
+          <div class="relative">
+            <select class="w-full h-11 pl-3.5 pr-10 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] appearance-none focus:outline-none focus:border-[#4DB6B0] focus:ring-1 focus:ring-[#4DB6B0] transition-colors cursor-pointer">
+              <option selected>2026-YDS/2 Sonbahar (22 Kasım 2026)</option>
+              <option>2026-e-YDS/11 (17 Ekim 2026)</option>
+              <option>2026-YÖKDİL/2 Sağlık (13 Aralık 2026)</option>
+              <option>2026-YÖKDİL/2 Sosyal (13 Aralık 2026)</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-3 top-3 text-[#A9B8BA] pointer-events-none text-[20px]">expand_more</span>
+          </div>
+          <div class="p-3 bg-[#1B2B32] rounded-lg border border-[#24343A] text-xs space-y-1">
+            <div class="flex justify-between">
+              <span class="text-[#A9B8BA]">Başvuru Durumu:</span>
+              <span class="text-[#4CC27D] font-medium">Başvurular Açık (30 Eylül – 8 Ekim)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#A9B8BA]">Kalan Süre:</span>
+              <span class="text-[#F0B43A] font-semibold">52 Gün (7 Hafta)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hedef Puan Seviyesi Seçici -->
+        <div class="bg-[#142127] p-6 rounded-xl border border-[#24343A] space-y-3">
+          <label class="block text-xs font-semibold text-[#E4ECEC]">
+            Hedef Puan Seviyesi
+          </label>
+          <div class="relative">
+            <select class="w-full h-11 pl-3.5 pr-10 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] appearance-none focus:outline-none focus:border-[#4DB6B0] focus:ring-1 focus:ring-[#4DB6B0] transition-colors cursor-pointer">
+              <option>55,00 Puan · Doçentlik ve Doktora Asgari Barajı</option>
+              <option>65,00 Puan · Kamu ve Yurt Dışı Görev Barajı</option>
+              <option>70,00 Puan · C Seviyesi Dil Tazminatı</option>
+              <option selected>85,00 Puan · A Seviyesi / Üst Düzey Akademik Yetkinlik</option>
+              <option>90,00+ Puan · Mükemmeliyet Derecesi</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-3 top-3 text-[#A9B8BA] pointer-events-none text-[20px]">expand_more</span>
+          </div>
+          <p class="text-xs text-[#A9B8BA] leading-relaxed">
+            YDS'de yanlış cevaplar doğru sayısını etkilemez. Her soru tam 1,25 puan değerindedir.
+          </p>
+        </div>
+
+        <!-- Saat Seçici (Zaman Ayarı) -->
+        <div class="bg-[#142127] p-6 rounded-xl border border-[#24343A] space-y-3">
+          <label class="block text-xs font-semibold text-[#E4ECEC]">
+            Günlük Çalışma Hatırlatıcı Saati
+          </label>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="relative">
+              <input type="text" value="20:30" class="w-full h-11 px-3 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] font-mono text-center focus:outline-none focus:border-[#4DB6B0]">
+              <span class="material-symbols-outlined absolute right-2.5 top-3 text-[#A9B8BA] text-[18px]">schedule</span>
+            </div>
+            <div class="relative">
+              <select class="w-full h-11 px-3 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] appearance-none focus:outline-none focus:border-[#4DB6B0] cursor-pointer">
+                <option selected>Hergün</option>
+                <option>Hafta İçi</option>
+                <option>Hafta Sonu</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-2.5 top-3 text-[#A9B8BA] pointer-events-none text-[18px]">calendar_today</span>
+            </div>
+          </div>
+          <p class="text-xs text-[#A9B8BA] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[15px] text-[#F0B43A]">notifications_active</span>
+            <span>Her akşam 20:30 seansı için bildirim gönderilir.</span>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BÖLÜM 4: Kaydırıcı ve Segment Kontrolleri -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-[#1B2B32] text-[#4DB6B0] text-xs font-bold flex items-center justify-center border border-[#24343A]">4</span>
+          <h2 class="text-lg font-bold text-[#E4ECEC]">Kaydırıcı ve Segment Kontrolleri</h2>
+        </div>
+        <span class="text-xs text-[#A9B8BA]">Adayın günlük çalışma süresini ayarladığı doğrusal kaydırıcılar ve sınav zorluk düzeyi seçim segmentleri</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Günlük Odak Süresi Kaydırıcısı -->
+        <div class="bg-[#142127] p-6 rounded-xl border border-[#24343A] space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold text-[#E4ECEC] block">Günlük Odak Süresi Hedefi</span>
+              <span class="text-xs text-[#A9B8BA]">Düzenli çalışma disiplini için önerilen süre</span>
+            </div>
+            <div class="flex items-baseline gap-1">
+              <span class="text-2xl font-bold text-[#4DB6B0]">45</span>
+              <span class="text-xs text-[#A9B8BA]">Dakika</span>
+            </div>
+          </div>
+
+          <!-- Slider -->
+          <div class="space-y-2">
+            <input type="range" min="10" max="120" value="45" step="5" class="w-full h-2 bg-[#1B2B32] rounded-lg appearance-none cursor-pointer accent-[#4DB6B0]">
+            <div class="flex justify-between text-[11px] text-[#A9B8BA] font-mono">
+              <span>10 dk</span>
+              <span>30 dk</span>
+              <span class="text-[#4DB6B0] font-semibold">45 dk (Önerilen)</span>
+              <span>60 dk</span>
+              <span>90 dk</span>
+              <span>120 dk</span>
+            </div>
+          </div>
+
+          <div class="p-3 bg-[#1B2B32] rounded-lg border border-[#24343A] flex items-center gap-2.5 text-xs text-[#A9B8BA]">
+            <span class="material-symbols-outlined text-[#4DB6B0] text-[18px]">verified</span>
+            <span><strong>Akademik Verim:</strong> 45 dakikalık oturum, bilişsel yorgunluk oluşmadan 1 tam okuma parçası ve 15 dilbilgisi sorusu çözümü için idealdir.</span>
+          </div>
+        </div>
+
+        <!-- Segment Kontrol (Zorluk & Kapsam) -->
+        <div class="bg-[#142127] p-6 rounded-xl border border-[#24343A] space-y-4">
+          <div>
+            <span class="text-xs font-semibold text-[#E4ECEC] block">Soru Çözüm Zorluk Derecesi</span>
+            <span class="text-xs text-[#A9B8BA]">Alıştırma seansında soruların zorluk dağılımını belirler</span>
+          </div>
+
+          <!-- 3'lü Segment Kontrolü -->
+          <div class="grid grid-cols-3 p-1 bg-[#0E171B] border border-[#24343A] rounded-xl text-xs font-medium text-center">
+            <button type="button" class="py-2.5 rounded-lg text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors">
+              Temel Düzey
+            </button>
+            <button type="button" class="py-2.5 rounded-lg bg-[#16363A] text-[#4DB6B0] font-semibold border border-[#4DB6B0]/30 shadow-none">
+              ÖSYM Seviyesi
+            </button>
+            <button type="button" class="py-2.5 rounded-lg text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors">
+              İleri Çeldiriciler
+            </button>
+          </div>
+
+          <!-- Modül Filtresi Segmenti -->
+          <div class="pt-2">
+            <span class="text-xs text-[#A9B8BA] block mb-2">Aktif Çalışma Modülü</span>
+            <div class="grid grid-cols-4 p-1 bg-[#0E171B] border border-[#24343A] rounded-xl text-xs font-medium text-center">
+              <button type="button" class="py-2 rounded-lg bg-[#16363A] text-[#4DB6B0] font-semibold">Tüm Alanlar</button>
+              <button type="button" class="py-2 rounded-lg text-[#A9B8BA] hover:text-[#E4ECEC]">Dilbilgisi</button>
+              <button type="button" class="py-2 rounded-lg text-[#A9B8BA] hover:text-[#E4ECEC]">Kelime</button>
+              <button type="button" class="py-2 rounded-lg text-[#A9B8BA] hover:text-[#E4ECEC]">Okuma</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BÖLÜM 5: Etiket Çipleri (Filtre / Seçim / Silinebilir) -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-[#1B2B32] text-[#4DB6B0] text-xs font-bold flex items-center justify-center border border-[#24343A]">5</span>
+          <h2 class="text-lg font-bold text-[#E4ECEC]">Etiket Çipleri (Filtre ve Seçim Elemanları)</h2>
+        </div>
+        <span class="text-xs text-[#A9B8BA]">Soru havuzunda filtreleme yapmak, aktif filtreleri kaldırmak ve başarı serilerini işaretlemek için</span>
+      </div>
+
+      <div class="bg-[#142127] p-6 rounded-xl border border-[#24343A] space-y-6">
+        
+        <!-- Seçilebilir Konu Çipleri -->
+        <div class="space-y-2">
+          <div class="text-xs font-semibold text-[#E4ECEC]">Seçilebilir Konu Filtreleri</div>
+          <div class="flex flex-wrap gap-2.5">
+            <button type="button" class="min-h-[44px] px-4 py-2 rounded-lg bg-[#16363A] text-[#4DB6B0] border border-[#4DB6B0]/50 text-xs font-semibold flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#4DB6B0]"></span>
+              <span>Zıtlık Bağlaçları</span>
+              <span class="text-[10px] bg-[#0E6A6E]/40 px-1.5 py-0.5 rounded text-[#4DB6B0]">142</span>
+            </button>
+            <button type="button" class="min-h-[44px] px-4 py-2 rounded-lg bg-[#1B2B32] text-[#A9B8BA] hover:text-[#E4ECEC] border border-[#24343A] text-xs font-medium flex items-center gap-2">
+              <span>Zaman Uyumu</span>
+              <span class="text-[10px] bg-[#0E171B] px-1.5 py-0.5 rounded text-[#A9B8BA]">88</span>
+            </button>
+            <button type="button" class="min-h-[44px] px-4 py-2 rounded-lg bg-[#1B2B32] text-[#A9B8BA] hover:text-[#E4ECEC] border border-[#24343A] text-xs font-medium flex items-center gap-2">
+              <span>Edat Öbekleri</span>
+              <span class="text-[10px] bg-[#0E171B] px-1.5 py-0.5 rounded text-[#A9B8BA]">94</span>
+            </button>
+            <button type="button" class="min-h-[44px] px-4 py-2 rounded-lg bg-[#1B2B32] text-[#A9B8BA] hover:text-[#E4ECEC] border border-[#24343A] text-xs font-medium flex items-center gap-2">
+              <span>Cümle Tamamlama</span>
+              <span class="text-[10px] bg-[#0E171B] px-1.5 py-0.5 rounded text-[#A9B8BA]">120</span>
+            </button>
+            <button type="button" class="min-h-[44px] px-4 py-2 rounded-lg bg-[#1B2B32] text-[#A9B8BA] hover:text-[#E4ECEC] border border-[#24343A] text-xs font-medium flex items-center gap-2">
+              <span>Paragraf Anlam Bütünlüğü</span>
+              <span class="text-[10px] bg-[#0E171B] px-1.5 py-0.5 rounded text-[#A9B8BA]">65</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Aktif ve Silinebilir Filtreler -->
+        <div class="space-y-2 pt-2 border-t border-[#24343A]">
+          <div class="text-xs font-semibold text-[#E4ECEC]">Aktif Silinebilir Filtreler (Kaldırılabilir Çipler)</div>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <span class="min-h-[36px] px-3 py-1.5 rounded-lg bg-[#1B2B32] text-[#E4ECEC] border border-[#24343A] text-xs flex items-center gap-2">
+              <span>Hatalı Çözdüğüm Sorular</span>
+              <button type="button" class="text-[#A9B8BA] hover:text-[#EE8A6E] flex items-center" title="Kaldır">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+              </button>
+            </span>
+            <span class="min-h-[36px] px-3 py-1.5 rounded-lg bg-[#1B2B32] text-[#E4ECEC] border border-[#24343A] text-xs flex items-center gap-2">
+              <span>Son 5 Yılın Çıkmış Soruları</span>
+              <button type="button" class="text-[#A9B8BA] hover:text-[#EE8A6E] flex items-center" title="Kaldır">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+              </button>
+            </span>
+            <span class="min-h-[36px] px-3 py-1.5 rounded-lg bg-[#1B2B32] text-[#E4ECEC] border border-[#24343A] text-xs flex items-center gap-2">
+              <span>Akademik Makale Kaynaklı</span>
+              <button type="button" class="text-[#A9B8BA] hover:text-[#EE8A6E] flex items-center" title="Kaldır">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+              </button>
+            </span>
+            <button type="button" class="text-xs text-[#EE8A6E] hover:underline font-medium ml-2">
+              Tüm Filtreleri Temizle
+            </button>
+          </div>
+        </div>
+
+        <!-- Rozet ve Durum Çipleri (Gamification & Vurgu - Safran Dolgu) -->
+        <div class="space-y-2 pt-2 border-t border-[#24343A]">
+          <div class="text-xs font-semibold text-[#E4ECEC]">Sınav Hazırlık İlerleme Rozetleri (Yalnızca Dolgu/İkon Safran Kuralı)</div>
+          <div class="flex flex-wrap gap-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#1B2B32] border border-[#24343A] text-xs text-[#E4ECEC]">
+              <span class="w-5 h-5 rounded-full bg-[#E9A514] text-[#0E171B] flex items-center justify-center text-[12px] font-bold">14</span>
+              <span>Gün Kesintisiz Çalışma Serisi</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#1B2B32] border border-[#24343A] text-xs text-[#E4ECEC]">
+              <span class="w-5 h-5 rounded-full bg-[#4CC27D]/20 text-[#4CC27D] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[14px]">done_all</span>
+              </span>
+              <span>80 Soru Tam Deneme Tamamlandı</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#1B2B32] border border-[#24343A] text-xs text-[#E4ECEC]">
+              <span class="w-5 h-5 rounded-full bg-[#4DB6B0]/20 text-[#4DB6B0] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[14px]">flag</span>
+              </span>
+              <span>Hedef: 85,00 Puan (A Seviyesi)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BÖLÜM 6: Örnek Kayıt ve Sınav Yapılandırma Formu (Bütünleşik Canlı Senaryo) -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-[#1B2B32] text-[#4DB6B0] text-xs font-bold flex items-center justify-center border border-[#24343A]">6</span>
+          <h2 class="text-lg font-bold text-[#E4ECEC]">Örnek Kayıt ve Sınav Yapılandırma Formu</h2>
+        </div>
+        <span class="text-xs text-[#4CC27D] flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-[#4CC27D]"></span>
+          <span>Bütünleşik Form Doğrulaması</span>
+        </span>
+      </div>
+
+      <div class="bg-[#142127] border border-[#24343A] rounded-2xl p-8 max-w-4xl mx-auto shadow-none">
+        <div class="border-b border-[#24343A] pb-5 mb-6">
+          <h3 class="text-lg font-bold text-[#E4ECEC]">Aday Kayıt ve Akademik Çalışma Başlatma</h3>
+          <p class="text-xs text-[#A9B8BA] mt-1">ÖSYM 80 soru formatına göre hedefinize özel günlük plan ve deneme takvimi oluşturulur.</p>
+        </div>
+
+        <form class="space-y-6" onsubmit="event.preventDefault();">
+          
+          <!-- İsim ve E-posta -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <label class="block text-xs font-semibold text-[#E4ECEC]">
+                Aday Adı Soyadı <span class="text-[#EE8A6E]">*</span>
+              </label>
+              <input type="text" value="Dr. Bilge Kağan Öztürk" class="w-full h-11 px-3.5 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] focus:border-[#4DB6B0] focus:outline-none">
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-xs font-semibold text-[#E4ECEC]">
+                Kurumsal / Akademik E-posta <span class="text-[#EE8A6E]">*</span>
+              </label>
+              <input type="email" value="bilge.ozturk@hacettepe.edu.tr" class="w-full h-11 px-3.5 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] focus:border-[#4DB6B0] focus:outline-none">
+            </div>
+          </div>
+
+          <!-- Sınav Oturumu ve Hedef Puan -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <label class="block text-xs font-semibold text-[#E4ECEC]">
+                Hazırlanılan Sınav Oturumu <span class="text-[#EE8A6E]">*</span>
+              </label>
+              <div class="relative">
+                <select class="w-full h-11 pl-3.5 pr-10 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] appearance-none focus:border-[#4DB6B0] focus:outline-none cursor-pointer">
+                  <option selected>2026-YDS/2 Sonbahar · 22 Kasım 2026</option>
+                  <option>2026-e-YDS/11 · 17 Ekim 2026</option>
+                  <option>2026-YÖKDİL/2 · 13 Aralık 2026</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-3 top-3 text-[#A9B8BA] pointer-events-none text-[20px]">expand_more</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-xs font-semibold text-[#E4ECEC]">
+                Hedeflenen Puan Seviyesi <span class="text-[#EE8A6E]">*</span>
+              </label>
+              <div class="relative">
+                <select class="w-full h-11 pl-3.5 pr-10 bg-[#0E171B] border border-[#24343A] rounded-lg text-sm text-[#E4ECEC] appearance-none focus:border-[#4DB6B0] focus:outline-none cursor-pointer">
+                  <option selected>85 Puan · A Seviyesi (68 Doğru)</option>
+                  <option>70 Puan · C Seviyesi (56 Doğru)</option>
+                  <option>55 Puan · Doçentlik Tabanı (44 Doğru)</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-3 top-3 text-[#A9B8BA] pointer-events-none text-[20px]">expand_more</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Yasal İzinler ve KVKK Onay Çentikleri (Checkboxes) -->
+          <div class="space-y-3 pt-3 border-t border-[#24343A]">
+            
+            <label class="flex items-start gap-3 cursor-pointer group min-h-[44px]">
+              <div class="relative flex items-center justify-center mt-0.5">
+                <input type="checkbox" checked class="w-5 h-5 rounded bg-[#0E171B] border border-[#24343A] checked:bg-[#4DB6B0] checked:border-[#4DB6B0] focus:outline-none transition-colors appearance-none cursor-pointer">
+                <span class="material-symbols-outlined text-[15px] text-[#0E171B] absolute pointer-events-none font-bold">check</span>
+              </div>
+              <div class="text-xs text-[#A9B8BA] leading-relaxed select-none">
+                <strong class="text-[#E4ECEC]">Kişisel Verilerin Korunması ve Sınav İstatistiği Bildirimi:</strong> 
+                Deneme sonuçlarımın ve çalışma analizlerimin akademik gelişim raporum için anonimleştirilerek işlenmesini onaylıyorum.
+              </div>
+            </label>
+
+            <label class="flex items-start gap-3 cursor-pointer group min-h-[44px]">
+              <div class="relative flex items-center justify-center mt-0.5">
+                <input type="checkbox" checked class="w-5 h-5 rounded bg-[#0E171B] border border-[#24343A] checked:bg-[#4DB6B0] checked:border-[#4DB6B0] focus:outline-none transition-colors appearance-none cursor-pointer">
+                <span class="material-symbols-outlined text-[15px] text-[#0E171B] absolute pointer-events-none font-bold">check</span>
+              </div>
+              <div class="text-xs text-[#A9B8BA] leading-relaxed select-none">
+                <strong class="text-[#E4ECEC]">2026-YDS/2 Sınav Takvimi Hatırlatıcıları:</strong> 
+                Başvuru son günü (8 Ekim 2026), sınav giriş belgesi ilanı ve sınav sabahı bildirimlerini e-posta ile almayı kabul ediyorum.
+              </div>
+            </label>
+
+          </div>
+
+          <!-- Aksiyon Butonları -->
+          <div class="pt-4 border-t border-[#24343A] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-xs text-[#A9B8BA]">
+              <span class="material-symbols-outlined text-[16px] text-[#4DB6B0]">verified_user</span>
+              <span>ÖSYM kurallarına tam uyumlu ve güvenli kayıt.</span>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+              <button type="reset" class="min-h-[44px] px-5 py-2.5 rounded-lg border border-[#24343A] text-xs font-semibold text-[#A9B8BA] hover:text-[#E4ECEC] hover:bg-[#1B2B32] transition-colors w-full sm:w-auto">
+                Temizle
+              </button>
+              <button type="submit" class="min-h-[44px] px-6 py-2.5 rounded-lg bg-[#4DB6B0] hover:bg-[#4DB6B0]/90 text-[#0E171B] text-xs font-bold transition-transform active:scale-[0.98] flex items-center justify-center gap-2 w-full sm:w-auto shadow-none">
+                <span>Kaydı Tamamla ve Çalışmaya Başla</span>
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 7: Tasarım Belirteçleri ve Erişilebilirlik Tablosu -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[#24343A] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-[#1B2B32] text-[#4DB6B0] text-xs font-bold flex items-center justify-center border border-[#24343A]">7</span>
+          <h2 class="text-lg font-bold text-[#E4ECEC]">Tasarım Belirteçleri ve Erişilebilirlik Standartları</h2>
+        </div>
+        <span class="text-xs text-[#A9B8BA]">Girdi elemanlarının ölçü, köşe yarıçapı, renk kodları ve kontrast doğrulama tablosu</span>
+      </div>
+
+      <div class="bg-[#142127] border border-[#24343A] rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#1B2B32] text-[#A9B8BA] border-b border-[#24343A]">
+              <tr>
+                <th class="p-3.5 font-semibold">Belirteç Adı</th>
+                <th class="p-3.5 font-semibold">Değer / Ölçü</th>
+                <th class="p-3.5 font-semibold">Kullanım Amacı</th>
+                <th class="p-3.5 font-semibold">Erişilebilirlik Kuralı</th>
+                <th class="p-3.5 font-semibold">Doğrulama Durumu</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#24343A] font-mono text-[11px]">
+              <tr class="hover:bg-[#1B2B32]/40 transition-colors">
+                <td class="p-3.5 text-[#4DB6B0]">--odak-input-height</td>
+                <td class="p-3.5 text-[#E4ECEC]">44px (Masaüstü) / 48px (Mobil)</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">Form alanları ve buton dokunma yüksekliği</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">WCAG 2.5.5 Asgari Dokunma Hedefi</td>
+                <td class="p-3.5 font-sans text-[#4CC27D] flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  <span>Uyumlu (44px)</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#1B2B32]/40 transition-colors">
+                <td class="p-3.5 text-[#4DB6B0]">--odak-input-radius</td>
+                <td class="p-3.5 text-[#E4ECEC]">8px (0.5rem)</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">Metin kutusu ve seçim listesi köşe yuvarlaklığı</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">Sakin, ciddiyeti koruyan geometri</td>
+                <td class="p-3.5 font-sans text-[#4CC27D] flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  <span>Standart</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#1B2B32]/40 transition-colors">
+                <td class="p-3.5 text-[#4DB6B0]">--odak-color-primary</td>
+                <td class="p-3.5 text-[#E4ECEC]">#4DB6B0 (Koyu Mod Petrol)</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">Odak halkaları, birincil buton, seçili radyo/çentik</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">Koyu zeminde 7.4:1 kontrast oranı</td>
+                <td class="p-3.5 font-sans text-[#4CC27D] flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">verified</span>
+                  <span>WCAG AAA</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#1B2B32]/40 transition-colors">
+                <td class="p-3.5 text-[#4DB6B0]">--odak-color-error</td>
+                <td class="p-3.5 text-[#E4ECEC]">#EE8A6E (Koyu Mod Tuğla)</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">Form hata kenarlıkları ve uyarı metinleri</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">Metin + ikon birlikte sunumu</td>
+                <td class="p-3.5 font-sans text-[#4CC27D] flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  <span>Çift Belirteç</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#1B2B32]/40 transition-colors">
+                <td class="p-3.5 text-[#4DB6B0]">--odak-color-success</td>
+                <td class="p-3.5 text-[#E4ECEC]">#4CC27D (Koyu Mod Yeşil)</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">Doğrulanmış alanlar ve geçerli girdi simgesi</td>
+                <td class="p-3.5 font-sans text-[#A9B8BA]">Koyu zeminde 8.4:1 kontrast + onay ikonu</td>
+                <td class="p-3.5 font-sans text-[#4CC27D] flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  <span>Çift Belirteç</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Alt Bilgi / Footer -->
+  <footer class="w-full bg-[#142127] border-t border-[#24343A] py-8 text-xs text-[#A9B8BA] mt-12">
+    <div class="max-w-[1440px] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-6 rounded-full bg-[#4DB6B0] text-[#0E171B] font-bold flex items-center justify-center text-xs">O</span>
+        <span class="font-bold text-[#E4ECEC]">ODAK</span>
+        <span>·</span>
+        <span>Yabancı Dil Sınavı Akademik Hazırlık ve Değerlendirme Sistemi</span>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <a href="#" class="hover:text-[#E4ECEC] transition-colors">Bileşen Kütüphanesi</a>
+        <a href="#" class="hover:text-[#E4ECEC] transition-colors">ÖSYM Sınav Standartları</a>
+        <a href="#" class="hover:text-[#E4ECEC] transition-colors">Erişilebilirlik Raporu (WCAG AAA)</a>
+        <a href="#" class="hover:text-[#E4ECEC] transition-colors">KVKK Aydınlatma Metni</a>
+      </div>
+
+      <div class="text-[11px] text-[#A9B8BA]">
+        © 2026 ODAK. Tüm hakları saklıdır.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

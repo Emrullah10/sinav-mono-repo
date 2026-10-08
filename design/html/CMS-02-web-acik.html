@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html class="light" lang="tr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ODAK · CMS-02 Akademik Soru Editörü ve Çeldirici Doğrulama</title>
+<!-- Google Fonts: Literata (Serif) & Hanken Grotesk (Sans) -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&amp;family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-container": "#0e6a6e",
+            "primary-fixed-dim": "#87d3d7",
+            "on-secondary": "#ffffff",
+            "on-error": "#ffffff",
+            "tertiary-fixed-dim": "#82d99a",
+            "secondary-fixed-dim": "#ffba38",
+            "secondary-container": "#feb72b",
+            "surface": "#f3faff",
+            "tertiary-container": "#0b6e3a",
+            "on-tertiary-container": "#95edad",
+            "tertiary-fixed": "#9df6b4",
+            "surface-dim": "#cbdde6",
+            "inverse-on-surface": "#e2f3fd",
+            "secondary": "#7e5700",
+            "on-surface": "#0d1e24",
+            "background": "#f3faff",
+            "surface-container-high": "#daebf4",
+            "on-secondary-fixed": "#281900",
+            "on-primary-container": "#9be7eb",
+            "on-tertiary-fixed": "#00210d",
+            "on-primary": "#ffffff",
+            "surface-tint": "#0b696d",
+            "on-background": "#0d1e24",
+            "error": "#ba1a1a",
+            "primary": "#005054",
+            "on-primary-fixed-variant": "#004f52",
+            "on-tertiary-fixed-variant": "#005229",
+            "surface-container-low": "#e6f6ff",
+            "inverse-primary": "#87d3d7",
+            "surface-variant": "#d4e5ef",
+            "on-surface-variant": "#3f4949",
+            "on-error-container": "#93000a",
+            "tertiary": "#00532a",
+            "surface-bright": "#f3faff",
+            "on-secondary-container": "#6c4a00",
+            "surface-container": "#dff1fa",
+            "primary-fixed": "#a3eff4",
+            "surface-container-lowest": "#ffffff",
+            "outline-variant": "#bec8c9",
+            "on-secondary-fixed-variant": "#604100",
+            "on-primary-fixed": "#002021",
+            "inverse-surface": "#23333a",
+            "surface-container-highest": "#d4e5ef",
+            "outline": "#6f7979",
+            "on-tertiary": "#ffffff",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#ffdeac"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-2xl": "3rem",
+            "margin": "2rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "question-stem": ["Literata", "serif"],
+            "headline-lg": ["Bricolage Grotesque"],
+            "body-lg": ["Figtree"],
+            "body-md": ["Figtree"],
+            "headline-sm": ["Bricolage Grotesque"],
+            "display-lg": ["Bricolage Grotesque"],
+            "label-lg": ["Figtree"],
+            "headline-md": ["Bricolage Grotesque"],
+            "question-passage": ["Literata", "serif"],
+            "label-md": ["Figtree"],
+            "display-lg-mobile": ["Bricolage Grotesque"],
+            "question-option": ["Literata", "serif"],
+            "label-sm": ["Figtree"],
+            "timer-display": ["Bricolage Grotesque"]
+          },
+          "fontSize": {
+            "question-stem": ["18px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-sm": ["17px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "question-passage": ["17px", { "lineHeight": "28px", "letterSpacing": "0.005em", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "question-option": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "timer-display": ["22px", { "lineHeight": "26px", "letterSpacing": "0.05em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Architectural subtle academic styles */
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .bubble-btn {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+    }
+    /* Hairline border accents */
+    .border-subtle {
+      border-color: #DAE1E0;
+    }
+    .text-secondary-label {
+      color: #46565C;
+    }
+    .editorial-shadow {
+      box-shadow: 0 1px 3px rgba(19, 35, 42, 0.05);
+    }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&amp;family=Bricolage+Grotesque:wght@600;700;800&amp;family=Literata:wght@400;500;600&amp;display=swap" rel="stylesheet"><style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border-width:0}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.-top-3{top:-0.75rem}.right-3{right:0.75rem}.top-0{top:0px}.top-20{top:5rem}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-space-lg{margin-bottom:1.5rem}.mb-space-md{margin-bottom:1rem}.ml-1{margin-left:0.25rem}.mt-0\.5{margin-top:0.125rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.mt-space-2xl{margin-top:3rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-11{height:2.75rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-5{height:1.25rem}.h-7{height:1.75rem}.min-h-screen{min-height:100vh}.w-2{width:0.5rem}.w-2\.5{width:0.625rem}.w-7{width:1.75rem}.w-auto{width:auto}.w-full{width:100%}.w-px{width:1px}.max-w-7xl{max-width:80rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-0\.5{gap:0.125rem}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-space-lg{gap:1.5rem}.gap-space-md{gap:1rem}.gap-space-sm{gap:0.5rem}.gap-space-xs{gap:0.25rem}.gap-x-6{column-gap:1.5rem}.gap-y-2{row-gap:0.5rem}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-space-md > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.self-end{align-self:flex-end}.rounded{border-radius:0.125rem}.rounded-full{border-radius:0.75rem}.rounded-lg{border-radius:0.25rem}.rounded-xl{border-radius:0.5rem}.border{border-width:1px}.border-0{border-width:0px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-\[\#0E6A6E\]{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}.border-\[\#1F7A45\]{--tw-border-opacity:1;border-color:rgb(31 122 69 / var(--tw-border-opacity, 1))}.border-\[\#A33D27\]{--tw-border-opacity:1;border-color:rgb(163 61 39 / var(--tw-border-opacity, 1))}.border-\[\#DAE1E0\]{--tw-border-opacity:1;border-color:rgb(218 225 224 / var(--tw-border-opacity, 1))}.border-\[\#feb72b\]{--tw-border-opacity:1;border-color:rgb(254 183 43 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(190 200 201 / var(--tw-border-opacity, 1))}.border-primary{--tw-border-opacity:1;border-color:rgb(0 80 84 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.bg-\[\#094B4E\]{--tw-bg-opacity:1;background-color:rgb(9 75 78 / var(--tw-bg-opacity, 1))}.bg-\[\#0E6A6E\]{--tw-bg-opacity:1;background-color:rgb(14 106 110 / var(--tw-bg-opacity, 1))}.bg-\[\#1F7A45\]{--tw-bg-opacity:1;background-color:rgb(31 122 69 / var(--tw-bg-opacity, 1))}.bg-\[\#F4F6F5\]{--tw-bg-opacity:1;background-color:rgb(244 246 245 / var(--tw-bg-opacity, 1))}.bg-\[\#FFFFFF\]{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-\[\#f3faff\]{--tw-bg-opacity:1;background-color:rgb(243 250 255 / var(--tw-bg-opacity, 1))}.bg-\[\#feb72b\]\/20{background-color:rgb(254 183 43 / 0.2)}.bg-outline-variant{--tw-bg-opacity:1;background-color:rgb(190 200 201 / var(--tw-bg-opacity, 1))}.bg-surface-container{--tw-bg-opacity:1;background-color:rgb(223 241 250 / var(--tw-bg-opacity, 1))}.bg-surface-container-low{--tw-bg-opacity:1;background-color:rgb(230 246 255 / var(--tw-bg-opacity, 1))}.bg-surface-container-lowest{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-transparent{background-color:transparent}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.p-0{padding:0px}.p-0\.5{padding:0.125rem}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-space-lg{padding:1.5rem}.p-space-md{padding:1rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-margin{padding-left:2rem;padding-right:2rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-space-lg{padding-top:1.5rem;padding-bottom:1.5rem}.py-space-sm{padding-top:0.5rem;padding-bottom:0.5rem}.py-space-xl{padding-top:2rem;padding-bottom:2rem}.pb-1{padding-bottom:0.25rem}.pb-3{padding-bottom:0.75rem}.pb-space-md{padding-bottom:1rem}.pr-2{padding-right:0.5rem}.pt-2{padding-top:0.5rem}.pt-space-md{padding-top:1rem}.text-center{text-align:center}.font-body-md{font-family:Figtree}.font-headline-lg{font-family:Bricolage Grotesque}.font-headline-md{font-family:Bricolage Grotesque}.font-headline-sm{font-family:Bricolage Grotesque}.font-label-md{font-family:Figtree}.font-label-sm{font-family:Figtree}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-question-option{font-family:Literata, serif}.font-question-passage{font-family:Literata, serif}.font-question-stem{font-family:Literata, serif}.text-\[10px\]{font-size:10px}.text-\[14px\]{font-size:14px}.text-\[16px\]{font-size:16px}.text-\[18px\]{font-size:18px}.text-\[20px\]{font-size:20px}.text-body-md{font-size:14px;line-height:20px;font-weight:400}.text-headline-lg{font-size:24px;line-height:32px;letter-spacing:-0.01em;font-weight:600}.text-headline-md{font-size:20px;line-height:28px;font-weight:600}.text-headline-sm{font-size:17px;line-height:24px;font-weight:600}.text-label-md{font-size:13px;line-height:18px;font-weight:500}.text-label-sm{font-size:11px;line-height:16px;letter-spacing:0.04em;font-weight:600}.text-question-option{font-size:16px;line-height:24px;font-weight:400}.text-question-stem{font-size:18px;line-height:28px;font-weight:600}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.leading-normal{line-height:1.5}.leading-relaxed{line-height:1.625}.tracking-tight{letter-spacing:-0.025em}.text-\[\#0E6A6E\]{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.text-\[\#13232A\]{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.text-\[\#1F7A45\]{--tw-text-opacity:1;color:rgb(31 122 69 / var(--tw-text-opacity, 1))}.text-\[\#46565C\]{--tw-text-opacity:1;color:rgb(70 86 92 / var(--tw-text-opacity, 1))}.text-\[\#7e5700\]{--tw-text-opacity:1;color:rgb(126 87 0 / var(--tw-text-opacity, 1))}.text-\[\#9be7eb\]{--tw-text-opacity:1;color:rgb(155 231 235 / var(--tw-text-opacity, 1))}.text-\[\#A33D27\]{--tw-text-opacity:1;color:rgb(163 61 39 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(13 30 36 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(63 73 73 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(0 80 84 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:bg-\[\#094B4E\]:hover{--tw-bg-opacity:1;background-color:rgb(9 75 78 / var(--tw-bg-opacity, 1))}.hover\:bg-\[\#F4F6F5\]:hover{--tw-bg-opacity:1;background-color:rgb(244 246 245 / var(--tw-bg-opacity, 1))}.hover\:text-\[\#13232A\]:hover{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.hover\:text-on-surface:hover{--tw-text-opacity:1;color:rgb(13 30 36 / var(--tw-text-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(0 80 84 / var(--tw-text-opacity, 1))}.focus\:border-\[\#0E6A6E\]:focus{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}.focus\:ring-0:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.group:hover .group-hover\:border-\[\#0E6A6E\]{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}@media (min-width: 640px){.sm\:flex{display:flex}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 768px){.md\:flex{display:flex}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:self-auto{align-self:auto}.md\:text-left{text-align:left}}@media (min-width: 1024px){.lg\:col-span-5{grid-column:span 5 / span 5}.lg\:col-span-7{grid-column:span 7 / span 7}.lg\:inline-block{display:inline-block}.lg\:flex{display:flex}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}}@media (min-width: 1280px){.xl\:inline-block{display:inline-block}}</style></head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md text-on-surface">
+<!-- ========================================== -->
+<!-- 1. TOP GLOBAL SHELL: ODAK TOPNAVBAR        -->
+<!-- ========================================== -->
+<header class="bg-surface-container-lowest border-b border-subtle shadow-sm sticky top-0 z-50">
+<div class="w-full max-w-7xl mx-auto px-margin flex items-center justify-between h-16">
+<!-- Brand + Academic Context Chips -->
+<div class="flex items-center gap-space-lg">
+<a class="font-headline-lg text-headline-lg font-bold tracking-tight text-primary flex items-center gap-space-xs" href="#">
+<span>ODAK</span>
+</a>
+<div class="h-5 w-px bg-outline-variant"></div>
+<!-- Persistent Exam Context Selector Chip -->
+<div class="hidden sm:flex items-center gap-space-sm bg-[#F4F6F5] border border-subtle px-3 py-1.5 rounded-lg text-body-md">
+<span class="font-label-md text-label-md font-semibold text-primary">YDS · 22 Kasım 2026</span>
+<span class="text-secondary-label font-label-sm text-label-sm">· 52 gün kaldı</span>
+<span class="material-symbols-outlined text-[18px] text-secondary-label">arrow_drop_down</span>
+</div>
+<div class="hidden lg:flex items-center gap-2 text-label-sm text-secondary-label">
+<span class="w-2 h-2 rounded-full bg-[#1F7A45]"></span>
+<span>80 Soru · 180 dk · Soru Başına 1,25 Puan</span>
+</div>
+</div>
+<!-- Navigation Links from Shared Components JSON -->
+<nav class="hidden md:flex items-center gap-space-lg">
+<a class="text-on-surface-variant font-medium hover:text-on-surface pb-1 text-label-md" href="#">Sınavlar</a>
+<a class="text-primary font-semibold border-b-2 border-primary pb-1 text-label-md" href="#">Soru Bankası</a>
+<a class="text-on-surface-variant font-medium hover:text-on-surface pb-1 text-label-md" href="#">Denemeler</a>
+<a class="text-on-surface-variant font-medium hover:text-on-surface pb-1 text-label-md" href="#">Blog &amp; Rehber</a>
+<a class="text-on-surface-variant font-medium hover:text-on-surface pb-1 text-label-md" href="#">Hakkımızda</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-space-md">
+<span class="hidden xl:inline-block font-label-sm text-label-sm px-2.5 py-1 bg-surface-container text-[#46565C] border border-subtle rounded">
+          CMS Editör Modu v1.3
+        </span>
+<button class="h-10 px-4 rounded font-label-md text-label-md border border-subtle text-primary bg-surface-container-lowest hover:bg-[#F4F6F5] transition-colors" type="button">
+          Giriş Yap
+        </button>
+<button class="h-10 px-4 rounded font-label-md text-label-md font-semibold bg-[#0E6A6E] text-white hover:bg-[#094B4E] transition-colors" type="button">
+          Seviye Tespiti
+        </button>
+</div>
+</div>
+</header>
+<!-- ========================================== -->
+<!-- 2. EDITORIAL ACTION & BREADCRUMB BAR      -->
+<!-- ========================================== -->
+<section class="bg-surface-container-lowest border-b border-subtle py-space-sm">
+<div class="w-full max-w-7xl mx-auto px-margin flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<!-- Breadcrumb and Context -->
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-1.5 text-secondary-label font-label-sm text-label-sm">
+<span>İçerik Yönetimi</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>Soru ve Metin Kütüphanesi</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="font-semibold text-primary">CMS-02 Soru Editörü (Soru No: Q-YDS-2026-0844)</span>
+</div>
+<div class="flex items-center gap-3">
+<h1 class="font-headline-md text-headline-md text-[#13232A]">
+            CMS-02 · Akademik Soru Editörü ve Çeldirici Doğrulama
+          </h1>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#F4F6F5] text-primary border border-subtle">
+            Taslak Düzenleniyor
+          </span>
+</div>
+</div>
+<!-- Live Sync and Primary Action Triggers -->
+<div class="flex items-center gap-3 self-end md:self-auto">
+<!-- Autosave Indicator -->
+<div class="hidden sm:flex items-center gap-1.5 text-secondary-label font-label-sm text-label-sm pr-2">
+<span class="material-symbols-outlined text-[16px] text-[#1F7A45]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Son kayıt: 14:38:12 (Yerel ve Sunucu Senkron)</span>
+</div>
+<!-- Secondary: Taslak Kaydet -->
+<button class="bubble-btn h-11 px-4 w-auto flex items-center justify-center gap-2 rounded border border-subtle bg-white text-[#13232A] font-label-md text-label-md hover:bg-[#F4F6F5] transition-colors editorial-shadow" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Taslak Kaydet</span>
+<kbd class="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-[#F4F6F5] text-secondary-label border border-subtle rounded">Ctrl+S</kbd>
+</button>
+<!-- Primary: İncelemeye Gönder -->
+<button class="bubble-btn h-11 px-5 w-auto flex items-center justify-center gap-2 rounded bg-[#0E6A6E] text-white font-label-md text-label-md font-semibold hover:bg-[#094B4E] transition-colors editorial-shadow" type="button">
+<span class="material-symbols-outlined text-[18px]">rule</span>
+<span>İncelemeye Gönder</span>
+<kbd class="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-[#094B4E] text-[#9be7eb] rounded">Ctrl+Enter</kbd>
+</button>
+</div>
+</div>
+</section>
+<!-- ========================================== -->
+<!-- 3. MAIN WORKSPACE: DUAL-PANE DESKTOP GRID  -->
+<!-- ========================================== -->
+<main class="w-full max-w-7xl mx-auto px-margin py-space-lg flex-1">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- ======================================================== -->
+<!-- LEFT COLUMN (7 COLS): PEDAGOGICAL EDIT & DISTRACTOR FORM -->
+<!-- ======================================================== -->
+<div class="lg:col-span-7 flex flex-col gap-space-lg">
+<!-- Bölüm 1: Sınav ve Taksonomi Üst Bilgileri -->
+<div class="bg-surface-container-lowest border border-subtle rounded-xl p-space-lg editorial-shadow">
+<div class="flex items-center justify-between pb-space-md border-b border-subtle mb-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#0E6A6E]"></span>
+<h2 class="font-headline-sm text-headline-sm text-[#13232A]">1. Sınav ve Taksonomi Üst Bilgileri</h2>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-label">ÖSYM Format Tanımı</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Hedef Sınav -->
+<div>
+<label class="block font-label-md text-label-md text-[#13232A] mb-1.5">Hedef Sınav</label>
+<div class="relative">
+<select class="w-full h-11 px-3 bg-white border border-subtle rounded font-body-md text-body-md text-[#13232A] focus:border-[#0E6A6E] focus:ring-0">
+<option selected="">2026-YDS/2 (Sonbahar)</option>
+<option>2026-YÖKDİL Sosyal Bilimler</option>
+<option>2026-YÖKDİL Sağlık Bilimleri</option>
+<option>2026-YÖKDİL Fen Bilimleri</option>
+<option>2026 e-YDS Dönemsel</option>
+</select>
+</div>
+</div>
+<!-- Soru Tipi (Salt Türkçe) -->
+<div>
+<label class="block font-label-md text-label-md text-[#13232A] mb-1.5">Soru Tipi</label>
+<div class="h-11 px-3 bg-[#F4F6F5] border border-subtle rounded flex items-center justify-between font-body-md text-body-md text-[#13232A]">
+<span class="font-semibold text-primary">Cümle Tamamlama</span>
+<span class="text-xs text-secondary-label">Sorular: 27-36</span>
+</div>
+</div>
+<!-- Ölçülen Beceri & Dilbilgisi Kuralı -->
+<div>
+<label class="block font-label-md text-label-md text-[#13232A] mb-1.5">Ölçülen Beceri &amp; Gramer İlkesi</label>
+<input class="w-full h-11 px-3 bg-white border border-subtle rounded font-body-md text-body-md text-[#13232A] focus:border-[#0E6A6E] focus:ring-0" type="text" value="Zıtlık ve Neden-Sonuç Bağlaçları">
+</div>
+<!-- Tahmini Zorluk & Puan Değeri -->
+<div>
+<label class="block font-label-md text-label-md text-[#13232A] mb-1.5">Zorluk Seviyesi ve Değerleme</label>
+<div class="flex items-center gap-2">
+<span class="h-11 px-3.5 inline-flex items-center justify-center rounded bg-[#0E6A6E] text-white font-label-md text-label-md">
+                  İleri Düzey (A Düzeyi)
+                </span>
+<div class="h-11 px-3 bg-[#F4F6F5] border border-subtle rounded flex-1 flex items-center justify-center font-label-sm text-label-sm text-secondary-label">
+                  1,25 Puan (80 Soru Sabiti)
+                </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bölüm 2: Bağlam Paragrafı ve Soru Kökü (Literata Serif) -->
+<div class="bg-surface-container-lowest border border-subtle rounded-xl p-space-lg editorial-shadow">
+<div class="flex items-center justify-between pb-space-md border-b border-subtle mb-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#0E6A6E]"></span>
+<h2 class="font-headline-sm text-headline-sm text-[#13232A]">2. Bağlam Paragrafı ve Soru Kökü Metni</h2>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-label">Okuma Metni: Literata Serif</span>
+</div>
+<!-- Opsiyonel Ön Metin / Öncül -->
+<div class="mb-space-md">
+<div class="flex items-center justify-between mb-1.5">
+<label class="font-label-md text-label-md text-[#13232A]">Ön Metin / Okuma Parçası</label>
+<span class="text-xs text-secondary-label">Tek cümlelik sorularda boş bırakılabilir</span>
+</div>
+<textarea class="w-full p-3 bg-[#F4F6F5] border border-subtle rounded font-question-passage text-body-md text-secondary-label focus:border-[#0E6A6E] focus:ring-0 resize-none" placeholder="Cümle tamamlama için öncül gerektirmez. Doğrudan soru kökünü kullanınız." rows="2"></textarea>
+</div>
+<!-- Soru Kökü (İngilizce Metin) -->
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="font-label-md text-label-md text-[#13232A]">Soru Kökü Metni (Literata Serif 18px)</label>
+<span class="font-label-sm text-label-sm text-[#0E6A6E]">İngilizce Akademik Cümle</span>
+</div>
+<div class="p-4 bg-white border-2 border-[#0E6A6E] rounded-lg">
+<textarea class="w-full p-0 border-0 bg-transparent font-question-stem text-question-stem text-[#13232A] focus:ring-0 resize-none" rows="3">Although the initial architectural excavations in the Indus Valley indicated a strictly egalitarian social structure, subsequent stratigraphical analyses have revealed that -------.</textarea>
+<div class="mt-2 pt-2 border-t border-subtle flex items-center justify-between text-xs text-secondary-label">
+<span>Kelime Sayısı: 21 | Vurgulanan Bağlaç: <strong>Although</strong> (Zıtlık)</span>
+<span class="text-[#0E6A6E] font-medium">Bitiş formatı: "-------."</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bölüm 3: Seçenekler (A, B, C, D, E) ve Çeldirici Gerekçeleri -->
+<div class="bg-surface-container-lowest border border-subtle rounded-xl p-space-lg editorial-shadow">
+<div class="flex items-center justify-between pb-space-md border-b border-subtle mb-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#0E6A6E]"></span>
+<h2 class="font-headline-sm text-headline-sm text-[#13232A]">3. Seçenekler ve Çeldirici Doğrulama Matrisi</h2>
+</div>
+<span class="font-label-sm text-label-sm text-[#1F7A45] font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+              1 Doğru / 4 Çeldirici Tanımlı
+            </span>
+</div>
+<div class="space-y-space-md">
+<!-- Seçenek A (Çeldirici) -->
+<div class="border border-subtle rounded-lg p-3 bg-white">
+<div class="flex items-start gap-3">
+<button class="bubble-btn rounded-full bg-[#FFFFFF] border-2 border-subtle text-[#13232A] font-headline-sm text-headline-sm flex items-center justify-center" type="button">
+                  A
+                </button>
+<div class="flex-1">
+<div class="font-question-option text-question-option text-[#13232A] mb-2 leading-relaxed">
+                    religious ceremonies were completely absent from the daily routines of the early citizens
+                  </div>
+<!-- Çeldirici Analizi: Tuğla Rengi -->
+<div class="p-2.5 bg-[#F4F6F5] border-l-4 border-[#A33D27] rounded text-body-md text-[#13232A]">
+<div class="flex items-center gap-1.5 font-label-md text-label-md text-[#A33D27] font-semibold mb-1">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span>Çeldirici Türü: Aşırı Genelleme (Extreme Words)</span>
+</div>
+<p class="text-secondary-label text-xs leading-normal">
+<strong>Neden Yanlış:</strong> Pasajdaki temkinli akademik üslubu "completely absent" mutlak ifadesiyle ihlal etmektedir. Arkeolojik delil eksikliği kesin yokluk anlamına gelmez.
+                    </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Seçenek B (DOĞRU CEVAP) -->
+<div class="border-2 border-[#1F7A45] bg-[#FFFFFF] rounded-lg p-3 relative shadow-sm">
+<div class="absolute -top-3 right-3 bg-[#1F7A45] text-white px-2.5 py-0.5 rounded text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check</span>
+<span>Doğru Cevap (Anahtar)</span>
+</div>
+<div class="flex items-start gap-3">
+<button class="bubble-btn rounded-full bg-[#1F7A45] border-2 border-[#1F7A45] text-white font-headline-sm text-headline-sm flex items-center justify-center shadow-sm" type="button">
+                  B
+                </button>
+<div class="flex-1">
+<div class="font-question-option text-question-option font-semibold text-[#13232A] mb-2 leading-relaxed">
+                    most urban centres developed distinct administrative hierarchies over time
+                  </div>
+<!-- Doğrulama Gerekçesi: Koyu Yeşil Vurgusu -->
+<div class="p-2.5 bg-[#f3faff] border-l-4 border-[#1F7A45] rounded text-body-md text-[#13232A]">
+<div class="flex items-center gap-1.5 font-label-md text-label-md text-[#1F7A45] font-semibold mb-1">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Doğru Seçenek Gerekçesi (Sentaktik ve Semantik Uygunluk)</span>
+</div>
+<p class="text-[#13232A] text-xs leading-normal">
+<strong>Neden Doğru:</strong> "Although egalitarian..." (eşitlikçi görünmesine rağmen) yan cümlesi, "developed distinct administrative hierarchies" (zamanla idari hiyerarşiler gelişti) ana cümlesiyle kusursuz zıtlık oluşturur. Zaman ve özne uyumu tamdır.
+                    </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Seçenek C (Çeldirici) -->
+<div class="border border-subtle rounded-lg p-3 bg-white">
+<div class="flex items-start gap-3">
+<button class="bubble-btn rounded-full bg-[#FFFFFF] border-2 border-subtle text-[#13232A] font-headline-sm text-headline-sm flex items-center justify-center" type="button">
+                  C
+                </button>
+<div class="flex-1">
+<div class="font-question-option text-question-option text-[#13232A] mb-2 leading-relaxed">
+                    the geographic expanse of the Harappan network will have expanded rapidly during the bronze age
+                  </div>
+<!-- Çeldirici Analizi: Tuğla Rengi -->
+<div class="p-2.5 bg-[#F4F6F5] border-l-4 border-[#A33D27] rounded text-body-md text-[#13232A]">
+<div class="flex items-center gap-1.5 font-label-md text-label-md text-[#A33D27] font-semibold mb-1">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span>Çeldirici Türü: Zaman ve Tense Uyumsuzluğu</span>
+</div>
+<p class="text-secondary-label text-xs leading-normal">
+<strong>Neden Yanlış:</strong> "will have expanded" yapısı geçmiş tarihsel bağlamda zıtlık cümlesini bağlayamaz; ayrıca eşitlikçi yapı ile coğrafi genişleme doğrudan bir çelişki oluşturmaz.
+                    </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Seçenek D (Çeldirici) -->
+<div class="border border-subtle rounded-lg p-3 bg-white">
+<div class="flex items-start gap-3">
+<button class="bubble-btn rounded-full bg-[#FFFFFF] border-2 border-subtle text-[#13232A] font-headline-sm text-headline-sm flex items-center justify-center" type="button">
+                  D
+                </button>
+<div class="flex-1">
+<div class="font-question-option text-question-option text-[#13232A] mb-2 leading-relaxed">
+                    maritime trade agreements with Mesopotamian kingdoms were thoroughly documented in cuneiform tablets
+                  </div>
+<!-- Çeldirici Analizi: Tuğla Rengi -->
+<div class="p-2.5 bg-[#F4F6F5] border-l-4 border-[#A33D27] rounded text-body-md text-[#13232A]">
+<div class="flex items-center gap-1.5 font-label-md text-label-md text-[#A33D27] font-semibold mb-1">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span>Çeldirici Türü: Yanıltıcı Odak ve Kapsam Kayması</span>
+</div>
+<p class="text-secondary-label text-xs leading-normal">
+<strong>Neden Yanlış:</strong> Sosyal yapıdaki eşitlikçilik tartışmasını alakasız bir dış ticaret konusuna saptırmaktadır.
+                    </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Seçenek E (Çeldirici) -->
+<div class="border border-subtle rounded-lg p-3 bg-white">
+<div class="flex items-start gap-3">
+<button class="bubble-btn rounded-full bg-[#FFFFFF] border-2 border-subtle text-[#13232A] font-headline-sm text-headline-sm flex items-center justify-center" type="button">
+                  E
+                </button>
+<div class="flex-1">
+<div class="font-question-option text-question-option text-[#13232A] mb-2 leading-relaxed">
+                    every settlement strictly maintained identical residential footprints without any central palace
+                  </div>
+<!-- Çeldirici Analizi: Tuğla Rengi -->
+<div class="p-2.5 bg-[#F4F6F5] border-l-4 border-[#A33D27] rounded text-body-md text-[#13232A]">
+<div class="flex items-center gap-1.5 font-label-md text-label-md text-[#A33D27] font-semibold mb-1">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span>Çeldirici Türü: Zıt Anlam / Mantıksal Çelişki</span>
+</div>
+<p class="text-secondary-label text-xs leading-normal">
+<strong>Neden Yanlış:</strong> İlk bulguyu doğrular niteliktedir ("without central palace"). Oysa "Although" bağlacı zıt yönde bir sonuca geçilmesini zorunlu kılar.
+                    </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bölüm 4: Dört Basamaklı İpucu Merdiveni (Pedagojik Algoritma) -->
+<div class="bg-surface-container-lowest border border-subtle rounded-xl p-space-lg editorial-shadow">
+<div class="flex items-center justify-between pb-space-md border-b border-subtle mb-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#0E6A6E]"></span>
+<h2 class="font-headline-sm text-headline-sm text-[#13232A]">4. Dört Basamaklı İpucu Merdiveni</h2>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-label">Öğretmen İpucu Algoritması</span>
+</div>
+<p class="text-xs text-secondary-label mb-4">
+            Aday bu soruda zorlandığında sırasıyla açılacak ipucu adımlarıdır. Asla doğrudan cevabı söylemez; pedagojik düşünme basamakları kazandırır.
+          </p>
+<div class="space-y-3">
+<div class="flex items-start gap-3 p-3 bg-[#F4F6F5] border border-subtle rounded">
+<div class="w-7 h-7 rounded bg-[#0E6A6E] text-white flex items-center justify-center font-bold text-xs shrink-0">1</div>
+<div>
+<h4 class="font-label-md text-label-md font-semibold text-[#13232A]">1. Basamak: Kural Teşhisi ve Bağlaç Analizi</h4>
+<p class="text-secondary-label text-xs mt-0.5">Cümle başındaki "Although" bağlacını ve "egalitarian" (eşitlikçi) kelimesini tespit edin; ana cümlede zıtlık (hiyerarşi, farklılaşma) aranacağını belirleyin.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 bg-[#F4F6F5] border border-subtle rounded">
+<div class="w-7 h-7 rounded bg-[#0E6A6E] text-white flex items-center justify-center font-bold text-xs shrink-0">2</div>
+<div>
+<h4 class="font-label-md text-label-md font-semibold text-[#13232A]">2. Basamak: Zaman ve Tense Uyumu Kontrolü</h4>
+<p class="text-secondary-label text-xs mt-0.5">Yan cümledeki "indicated" ve "have revealed" kiplerine dikkat edin; ana cümlede tarihsel arkeolojik süreç geçmiş zamanda ifade edilmelidir.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 bg-[#F4F6F5] border border-subtle rounded">
+<div class="w-7 h-7 rounded bg-[#0E6A6E] text-white flex items-center justify-center font-bold text-xs shrink-0">3</div>
+<div>
+<h4 class="font-label-md text-label-md font-semibold text-[#13232A]">3. Basamak: Belirgin Çeldiricileri Eleme</h4>
+<p class="text-secondary-label text-xs mt-0.5">Zaman kayması yaşayan C seçeneğini ve zıtlık sunmayıp ilk yargıyı tekrarlayan E seçeneğini eleyin.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 bg-[#F4F6F5] border border-subtle rounded">
+<div class="w-7 h-7 rounded bg-[#0E6A6E] text-white flex items-center justify-center font-bold text-xs shrink-0">4</div>
+<div>
+<h4 class="font-label-md text-label-md font-semibold text-[#13232A]">4. Basamak: Nihai Anlamsal Doğrulama</h4>
+<p class="text-secondary-label text-xs mt-0.5">B seçeneğindeki "administrative hierarchies" (idari hiyerarşiler) kavramının eşitlikçi yapı ile tezat oluşturduğunu teyit ederek işaretleyin.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bölüm 5: Çözüm Açıklaması, Kaynak ve Lisans -->
+<div class="bg-surface-container-lowest border border-subtle rounded-xl p-space-lg editorial-shadow">
+<div class="flex items-center justify-between pb-space-md border-b border-subtle mb-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#0E6A6E]"></span>
+<h2 class="font-headline-sm text-headline-sm text-[#13232A]">5. Çözüm Açıklaması ve Akademik Kaynakça</h2>
+</div>
+</div>
+<div class="space-y-space-md">
+<div>
+<label class="block font-label-md text-label-md text-[#13232A] mb-1.5">Detaylı Çözüm Açıklaması (Adaylara Sınav Sonrası Gösterilir)</label>
+<textarea class="w-full p-3 bg-[#FFFFFF] border border-subtle rounded font-body-md text-body-md text-[#13232A] focus:border-[#0E6A6E] focus:ring-0" rows="3">Soru kökünde yer alan 'Although' bağlacı iki zıt kutup gerektirir. Girişte İndus Vadisi'nin 'katı şekilde eşitlikçi' (strictly egalitarian) olduğu zannedildiği belirtilmiştir. Dolayısıyla boşluğa bu durumun aksini, yani 'idari hiyerarşilerin ve sınıfsal farklılıkların' bulunduğunu ifade eden B seçeneği gelmelidir.</textarea>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div>
+<label class="block font-label-md text-label-md text-[#13232A] mb-1.5">Metin Kaynağı &amp; Dergi</label>
+<input class="w-full h-11 px-3 bg-[#FFFFFF] border border-subtle rounded text-body-md text-[#13232A]" type="text" value="Akademik Arkeoloji Bülteni, Sayı 44 (2024)">
+</div>
+<div>
+<label class="block font-label-md text-label-md text-[#13232A] mb-1.5">Telif ve Lisans Durumu</label>
+<input class="w-full h-11 px-3 bg-[#F4F6F5] border border-subtle rounded text-body-md text-[#46565C]" readonly="" type="text" value="ODAK Telifli Özgün Soru (Kurul Onaylı)">
+</div>
+</div>
+</div>
+</div>
+<!-- Bölüm 6: Gerçek Zamanlı Doğrulama ve Uyarı Paneli -->
+<div class="bg-surface-container-lowest border border-subtle rounded-xl p-space-lg editorial-shadow">
+<div class="flex items-center justify-between pb-space-md border-b border-subtle mb-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#0E6A6E]"></span>
+<h2 class="font-headline-sm text-headline-sm text-[#13232A]">6. Gerçek Zamanlı Doğrulama ve Standart Denetimi</h2>
+</div>
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-surface-container text-primary">Sistem Analitiği</span>
+</div>
+<div class="space-y-2.5">
+<!-- Yeşil Başarılı 1 -->
+<div class="flex items-center gap-2.5 p-2.5 rounded bg-[#f3faff] border border-[#DAE1E0] text-body-md">
+<span class="material-symbols-outlined text-[18px] text-[#1F7A45]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-semibold text-[#13232A]">Tek Doğru Cevap Tanımlandı:</span>
+<span class="text-secondary-label">B Seçeneği geçerli anahtar olarak işaretlendi.</span>
+</div>
+<!-- Yeşil Başarılı 2 -->
+<div class="flex items-center gap-2.5 p-2.5 rounded bg-[#f3faff] border border-[#DAE1E0] text-body-md">
+<span class="material-symbols-outlined text-[18px] text-[#1F7A45]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-semibold text-[#13232A]">Seçenek Bütünlüğü:</span>
+<span class="text-secondary-label">5 Seçenek (A, B, C, D, E) eksiksiz girildi ve harflendirildi.</span>
+</div>
+<!-- Safran İkaz Dolgusu 1 (METİN ASLA SAFRAN DEĞİL) -->
+<div class="flex items-start gap-2.5 p-3 rounded bg-[#feb72b]/20 border border-[#feb72b] text-body-md">
+<!-- İkon Safran -->
+<span class="material-symbols-outlined text-[20px] text-[#7e5700] shrink-0 mt-0.5">warning</span>
+<div>
+<span class="font-semibold text-[#13232A]">Seçenek Uzunluk Dengesi Uyarısı:</span>
+<span class="text-[#13232A] ml-1">C seçeneği (42 kelime) ortalama uzunluktan %35 daha uzun. ÖSYM standartlarında adayların uzunluğa göre tahminde bulunmasını engellemek için seçenek boyları dengeli olmalıdır.</span>
+</div>
+</div>
+<!-- Safran İkaz Dolgusu 2 -->
+<div class="flex items-start gap-2.5 p-3 rounded bg-[#feb72b]/20 border border-[#feb72b] text-body-md">
+<span class="material-symbols-outlined text-[20px] text-[#7e5700] shrink-0 mt-0.5">info</span>
+<div>
+<span class="font-semibold text-[#13232A]">Benzer Soru Uyarısı:</span>
+<span class="text-[#13232A] ml-1">Soru havuzunda benzer zıtlık bağlacı köküne sahip 1 soru tespit edildi (<code class="bg-white/80 px-1 py-0.5 rounded text-xs font-mono text-[#13232A]">Q-YDS-2024-0412</code>).</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ======================================================== -->
+<!-- RIGHT COLUMN (5 COLS): STICKY CANDIDATE PREVIEW CONSOLE  -->
+<!-- ======================================================== -->
+<div class="lg:col-span-5 sticky top-20 flex flex-col gap-space-md">
+<!-- Console Header Controls -->
+<div class="bg-surface-container-lowest border border-subtle rounded-xl p-space-md editorial-shadow">
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-md text-label-md font-semibold text-[#13232A] flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-[#0E6A6E]">visibility</span>
+              Adayın Ekranında Nasıl Görünecek?
+            </span>
+<span class="text-xs text-secondary-label">Canlı Aday Simülatörü</span>
+</div>
+<div class="flex items-center justify-between gap-2 pt-2 border-t border-subtle">
+<!-- Viewport toggle -->
+<div class="flex items-center bg-[#F4F6F5] p-0.5 rounded border border-subtle text-xs font-medium">
+<button class="px-2.5 py-1 rounded bg-white text-[#13232A] font-semibold editorial-shadow flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">desktop_windows</span>
+                Masaüstü
+              </button>
+<button class="px-2.5 py-1 text-secondary-label hover:text-[#13232A] flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">smartphone</span>
+                Mobil
+              </button>
+</div>
+<!-- Theme Toggle -->
+<div class="flex items-center bg-[#F4F6F5] p-0.5 rounded border border-subtle text-xs font-medium">
+<button class="px-2.5 py-1 rounded bg-white text-primary font-semibold editorial-shadow" type="button">
+                Açık Tema
+              </button>
+<button class="px-2.5 py-1 text-secondary-label hover:text-[#13232A]" type="button">
+                Koyu Tema
+              </button>
+</div>
+</div>
+</div>
+<!-- Realistic Candidate Question Card Preview -->
+<div class="bg-surface-container-lowest border border-subtle rounded-xl p-space-lg editorial-shadow">
+<!-- Exam Metric Bar -->
+<div class="flex items-center justify-between pb-3 border-b border-subtle mb-space-md">
+<div>
+<span class="font-label-md text-label-md font-bold text-primary">Soru 28 / 80</span>
+<span class="text-xs text-secondary-label ml-1">· Cümle Tamamlama</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm px-2 py-0.5 bg-[#F4F6F5] text-primary border border-subtle rounded">
+                1,25 Puan
+              </span>
+<div class="flex items-center gap-1 text-secondary-label text-xs">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span>Önerilen: 01:30</span>
+</div>
+</div>
+</div>
+<!-- Academic Question Stem in Literata -->
+<div class="mb-space-lg">
+<p class="font-question-stem text-question-stem text-[#13232A] leading-relaxed">
+              Although the initial architectural excavations in the Indus Valley indicated a strictly egalitarian social structure, subsequent stratigraphical analyses have revealed that -------.
+            </p>
+</div>
+<!-- Interactive Candidate Options List (A-E Full Circle 44px) -->
+<div class="space-y-2.5 mb-space-lg">
+<!-- A Row -->
+<label class="group flex items-start gap-3 p-2 rounded hover:bg-[#F4F6F5] cursor-pointer transition-colors border border-transparent hover:border-subtle">
+<input class="sr-only" name="preview_choice" type="radio">
+<span class="bubble-btn rounded-full bg-[#FFFFFF] border-2 border-subtle text-[#13232A] group-hover:border-[#0E6A6E] font-headline-sm text-headline-sm flex items-center justify-center shrink-0">
+                A
+              </span>
+<span class="font-question-option text-question-option text-[#13232A] pt-2 leading-relaxed">
+                religious ceremonies were completely absent from the daily routines of the early citizens
+              </span>
+</label>
+<!-- B Row (Simulated Selected State) -->
+<label class="group flex items-start gap-3 p-2 rounded bg-[#f3faff] border border-[#0E6A6E] cursor-pointer">
+<input checked="" class="sr-only" name="preview_choice" type="radio">
+<span class="bubble-btn rounded-full bg-[#0E6A6E] border-2 border-[#0E6A6E] text-white font-headline-sm text-headline-sm flex items-center justify-center shrink-0 shadow-sm">
+                B
+              </span>
+<span class="font-question-option text-question-option font-medium text-[#13232A] pt-2 leading-relaxed">
+                most urban centres developed distinct administrative hierarchies over time
+              </span>
+</label>
+<!-- C Row -->
+<label class="group flex items-start gap-3 p-2 rounded hover:bg-[#F4F6F5] cursor-pointer transition-colors border border-transparent hover:border-subtle">
+<input class="sr-only" name="preview_choice" type="radio">
+<span class="bubble-btn rounded-full bg-[#FFFFFF] border-2 border-subtle text-[#13232A] group-hover:border-[#0E6A6E] font-headline-sm text-headline-sm flex items-center justify-center shrink-0">
+                C
+              </span>
+<span class="font-question-option text-question-option text-[#13232A] pt-2 leading-relaxed">
+                the geographic expanse of the Harappan network will have expanded rapidly during the bronze age
+              </span>
+</label>
+<!-- D Row -->
+<label class="group flex items-start gap-3 p-2 rounded hover:bg-[#F4F6F5] cursor-pointer transition-colors border border-transparent hover:border-subtle">
+<input class="sr-only" name="preview_choice" type="radio">
+<span class="bubble-btn rounded-full bg-[#FFFFFF] border-2 border-subtle text-[#13232A] group-hover:border-[#0E6A6E] font-headline-sm text-headline-sm flex items-center justify-center shrink-0">
+                D
+              </span>
+<span class="font-question-option text-question-option text-[#13232A] pt-2 leading-relaxed">
+                maritime trade agreements with Mesopotamian kingdoms were thoroughly documented in cuneiform tablets
+              </span>
+</label>
+<!-- E Row -->
+<label class="group flex items-start gap-3 p-2 rounded hover:bg-[#F4F6F5] cursor-pointer transition-colors border border-transparent hover:border-subtle">
+<input class="sr-only" name="preview_choice" type="radio">
+<span class="bubble-btn rounded-full bg-[#FFFFFF] border-2 border-subtle text-[#13232A] group-hover:border-[#0E6A6E] font-headline-sm text-headline-sm flex items-center justify-center shrink-0">
+                E
+              </span>
+<span class="font-question-option text-question-option text-[#13232A] pt-2 leading-relaxed">
+                every settlement strictly maintained identical residential footprints without any central palace
+              </span>
+</label>
+</div>
+<!-- Aday İpucu ve İşlem Düğmeleri -->
+<div class="pt-space-md border-t border-subtle flex items-center justify-between">
+<button class="h-10 px-3 rounded border border-subtle bg-white text-[#13232A] font-label-md text-label-md flex items-center gap-1.5 hover:bg-[#F4F6F5]" type="button">
+<span class="material-symbols-outlined text-[16px] text-[#0E6A6E]">lightbulb</span>
+<span>İpucu İste (1/4)</span>
+</button>
+<button class="h-10 px-4 rounded bg-[#0E6A6E] text-white font-label-md text-label-md font-semibold hover:bg-[#094B4E]" type="button">
+              Sonraki Soru
+            </button>
+</div>
+<!-- Sınav Kuralı Hatırlatması: 'Net' sözcüğü kesinlikle yok -->
+<div class="mt-4 p-2 bg-[#F4F6F5] rounded text-center text-xs text-secondary-label">
+            Bu soru ÖSYM YDS formatında yanlış doğruyu götürmez esasına göre değerlendirilir.
+          </div>
+</div>
+</div>
+</div>
+</main>
+<!-- ========================================== -->
+<!-- 4. WEB FOOTER (Shared Components Blueprint) -->
+<!-- ========================================== -->
+<footer class="bg-surface-container-low border-t border-outline-variant mt-space-2xl">
+<div class="w-full max-w-7xl mx-auto px-margin py-space-xl flex flex-col md:flex-row justify-between items-center gap-space-md">
+<!-- Brand & Copyright -->
+<div class="flex flex-col md:flex-row items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary">ODAK</span>
+<span class="text-body-md text-secondary-label text-center md:text-left">
+          © 2026 ODAK Akademik Dil Sınavları Hazırlık Platformu. Tüm hakları saklıdır.
+        </span>
+</div>
+<!-- Footer Navigation Links from JSON -->
+<nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-label-md font-label-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Kullanım Koşulları</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Gizlilik Politikası</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">KVKK Aydınlatma Metni</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">İletişim</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Akademik Danışma Kurulu</a>
+</nav>
+</div>
+</footer>
+<!-- Micro-interactions: Minimal Keyboard and Preview Synchronizer -->
+<script>
+    document.addEventListener('keydown', function(event) {
+      if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+        event.preventDefault();
+        alert('Taslak başarıyla kaydedildi. (Yerel ve Sunucu Senkron: 14:38:12)');
+      }
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        event.preventDefault();
+        alert('Soru akademik denetim kuruluna inceleme için iletildi.');
+      }
+    });
+  </script>
+</body></html>

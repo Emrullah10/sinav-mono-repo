@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>YDS Tasarım Sistemi · FND-02 Tipografi ve Metin Hiyerarşisi</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "background": "#0E171B",
+            "surface": "#142127",
+            "surface-container": "#1B2B32",
+            "surface-container-high": "#16363A",
+            "on-surface": "#E4ECEC",
+            "on-surface-variant": "#A9B8BA",
+            "outline": "#71838A",
+            "outline-variant": "#24343A",
+            "primary": "#4DB6B0",
+            "on-primary": "#0E171B",
+            "primary-container": "#16363A",
+            "on-primary-container": "#87CDC8",
+            "secondary": "#F0B43A",
+            "on-secondary": "#0E171B",
+            "secondary-container": "#3A2E12",
+            "tertiary": "#4CC27D",
+            "tertiary-container": "#163524",
+            "error": "#EE8A6E",
+            "error-container": "#3D211A",
+            "inverse-surface": "#E4ECEC",
+            "chart-1": "#04A19B",
+            "chart-2": "#7483E0",
+            "chart-3": "#C0851F",
+            "chart-4": "#C06099",
+          },
+          borderRadius: {
+            "DEFAULT": "12px",
+            "xs": "4px",
+            "sm": "8px",
+            "md": "12px",
+            "lg": "16px",
+            "xl": "24px",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "sans": ["Figtree", "sans-serif"],
+            "figtree": ["Figtree", "sans-serif"],
+            "literata": ["Literata", "serif"],
+            "bricolage": ["Bricolage Grotesque", "sans-serif"],
+            "headline": ["Public Sans", "Figtree", "sans-serif"],
+            "display": ["Public Sans", "Bricolage Grotesque", "sans-serif"],
+            "body": ["DM Sans", "Figtree", "sans-serif"],
+            "label": ["DM Sans", "Figtree", "sans-serif"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0E171B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #24343A;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #71838A;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-sans antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-primary">
+<!-- TopNavBar (Shared Component Execution) -->
+<header class="w-full h-16 px-6 flex items-center justify-between sticky top-0 z-50 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-background font-bold text-base">
+          Y
+        </div>
+<span class="font-display text-headline-sm font-bold tracking-tight text-primary dark:text-primary text-lg">YDS Tasarım Sistemi</span>
+</div>
+<div class="hidden md:flex items-center relative w-64">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-lg">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 bg-surface-container border border-outline-variant rounded-DEFAULT text-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary transition-colors" placeholder="Dokümantasyonda ara (⌘K)" type="text"/>
+</div>
+<nav class="hidden lg:flex items-center gap-6 text-sm">
+<a class="text-primary dark:text-primary font-semibold border-b-2 border-primary dark:border-primary pb-1" href="#">Kılavuz</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface font-medium transition-colors" href="#">Bileşenler</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface font-medium transition-colors" href="#">Şablonlar</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface font-medium transition-colors" href="#">Kaynaklar</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant border border-outline-variant tabular-nums">v2.4.0</span>
+<div class="h-4 w-px bg-outline-variant mx-1"></div>
+<button aria-label="Koyu Tema" class="w-10 h-10 flex items-center justify-center rounded-DEFAULT text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]">dark_mode</span>
+</button>
+<button aria-label="Kaynak Kod" class="w-10 h-10 flex items-center justify-center rounded-DEFAULT text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</button>
+<button aria-label="Bildirimler" class="w-10 h-10 flex items-center justify-center rounded-DEFAULT text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+</div>
+</header>
+<!-- Shell Container -->
+<div class="flex flex-1 w-full min-h-[calc(100vh-4rem)]">
+<!-- SideNavBar (Shared Component Execution) -->
+<aside class="w-64 h-[calc(100vh-4rem)] sticky top-16 flex flex-col justify-between p-4 overflow-y-auto shrink-0 bg-surface dark:bg-surface border-r border-outline-variant dark:border-outline-variant">
+<div class="space-y-6">
+<!-- Sub-header branding -->
+<div class="px-3 py-2 border-b border-outline-variant">
+<div class="text-xs uppercase tracking-wider font-semibold text-primary">Temel İlkeler</div>
+<div class="font-headline text-sm font-bold text-on-surface mt-0.5">YDS Design System</div>
+<div class="text-xs text-on-surface-variant">v2.4 Koyu Mod</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">foundation</span>
+<span>Temeller (FND)</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">palette</span>
+<span>Renk Paleti &amp; Roller</span>
+</a>
+<!-- Active Item: Tipografi & Metin (Semantic match to FND-02 page intent) -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-DEFAULT bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container font-semibold text-sm" href="#">
+<span class="material-symbols-outlined text-[20px] text-primary">text_fields</span>
+<span>Tipografi &amp; Metin</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span>Boşluk &amp; Grid Düzeni</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">shapes</span>
+<span>İkonografi &amp; Şekiller</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">widgets</span>
+<span>Bileşen Kütüphanesi</span>
+</a>
+</nav>
+</div>
+<!-- Footer & Auxiliary Action -->
+<div class="pt-4 border-t border-outline-variant space-y-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:bg-surface-container text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">accessibility_new</span>
+<span>Erişilebilirlik</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:bg-surface-container text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">history_toggle_off</span>
+<span>Sürüm Notları</span>
+</a>
+<button class="w-full mt-2 h-11 px-3 py-2 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface text-xs font-semibold rounded-DEFAULT flex items-center justify-center gap-2 transition-colors" type="button">
+<span class="material-symbols-outlined text-sm text-primary">rate_review</span>
+<span>Geri Bildirim Bildir</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 max-w-7xl px-8 py-10 space-y-14 overflow-y-auto">
+<!-- Section 1: Page Header & Meta Status -->
+<section class="border-b border-outline-variant pb-8">
+<div class="flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-primary mb-2">
+<span>Temeller Kılavuzu</span>
+<span>/</span>
+<span>FND-02</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h1 class="font-bricolage text-3xl md:text-4xl font-bold tracking-tight text-on-surface">
+              Tipografi ve Metin Hiyerarşisi
+            </h1>
+<p class="text-on-surface-variant text-base mt-2 max-w-3xl font-figtree">
+              YDS (Yabancı Dil Bilgisi Seviye Tespit Sınavı) hazırlığındaki yetişkin adaylar için bilişsel yükü azaltan, ÖSYM optik ergonomisini ekran deneyimine aktaran akademik tipografi sistemi.
+            </p>
+</div>
+<div class="flex flex-wrap items-center gap-2 self-start md:self-auto">
+<span class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full text-xs font-medium text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+              v1.2 Koyu Tema
+            </span>
+<span class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full text-xs font-medium text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-primary">verified</span>
+              WCAG AAA Uyumlu
+            </span>
+<span class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full text-xs font-medium text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-secondary">language</span>
+              Türkçe Tam Destek
+            </span>
+</div>
+</div>
+</section>
+<!-- Section 2: Three Font Families Bento Grid -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-figtree text-xl font-bold text-on-surface">1. Üç Temel Yazı Tipi Ailesi</h2>
+<p class="text-on-surface-variant text-sm mt-0.5">Rol odaklı ayrıştırılmış tipografik yapı taşları.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Card 1: Figtree -->
+<div class="bg-surface border border-outline-variant rounded-lg p-6 flex flex-col justify-between space-y-5">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2.5 py-1 rounded bg-surface-container text-xs font-semibold text-primary border border-outline-variant">Arayüz Sans-Serif</span>
+<span class="text-xs text-on-surface-variant">UI &amp; Formlar</span>
+</div>
+<h3 class="font-figtree text-2xl font-bold text-on-surface tracking-tight">Figtree</h3>
+<p class="text-on-surface-variant text-sm mt-2 font-figtree">
+                Sistem düğmeleri, navigasyon, etiketler, veri tabloları ve form girişleri için yüksek taranabilirlik sunan net geometrik sans-serif.
+              </p>
+</div>
+<div class="p-4 bg-surface-container rounded-DEFAULT border border-outline-variant space-y-3 font-figtree">
+<div class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold">Türkçe Karakter Kümesi</div>
+<div class="text-base text-on-surface font-medium tracking-wide">
+                Ğ ğ, Ü ü, Ş ş, İ ı, Ö ö, Ç ç, â, î
+              </div>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between text-xs text-on-surface-variant">
+<span>Rakamlar:</span>
+<span class="font-mono text-on-surface tabular-nums">0 1 2 3 4 5 6 7 8 9</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 text-xs text-on-surface-variant">
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">Regular 400</span>
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">Medium 500</span>
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">SemiBold 600</span>
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">Bold 700</span>
+</div>
+</div>
+<!-- Card 2: Literata -->
+<div class="bg-surface border-2 border-primary-container rounded-lg p-6 flex flex-col justify-between space-y-5 relative">
+<div class="absolute -top-3 right-4 px-2.5 py-0.5 bg-primary text-on-primary text-[11px] font-bold uppercase tracking-wider rounded-full">
+              Sınav &amp; Okuma Omurgası
+            </div>
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2.5 py-1 rounded bg-primary-container text-xs font-semibold text-on-primary-container border border-outline-variant">Soru &amp; Okuma Serif</span>
+<span class="text-xs text-on-surface-variant">ÖSYM Formatı</span>
+</div>
+<h3 class="font-literata text-2xl font-bold text-on-surface tracking-tight">Literata</h3>
+<p class="text-on-surface-variant text-sm mt-2 font-figtree">
+                ÖSYM kitapçık ergonomisi, uzun İngilizce okuma paragrafları, soru kökleri ve çeviri metinlerinde göz yorgunluğunu önleyen editoryal serif.
+              </p>
+</div>
+<div class="p-4 bg-surface-container rounded-DEFAULT border border-outline-variant space-y-3 font-literata">
+<div class="text-xs uppercase tracking-wider text-on-surface-variant font-sans font-semibold">Türkçe Karakter Kümesi</div>
+<div class="text-base text-on-surface font-medium tracking-wide">
+                Ğ ğ, Ü ü, Ş ş, İ ı, Ö ö, Ç ç, â, î
+              </div>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between text-xs text-on-surface-variant font-sans">
+<span>Rakamlar (Tabular):</span>
+<span class="font-literata text-on-surface tabular-nums">0 1 2 3 4 5 6 7 8 9</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 text-xs text-on-surface-variant">
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">Book 400</span>
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">Medium 500</span>
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">SemiBold 600</span>
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant italic">Italic 400</span>
+</div>
+</div>
+<!-- Card 3: Bricolage Grotesque -->
+<div class="bg-surface border border-outline-variant rounded-lg p-6 flex flex-col justify-between space-y-5">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2.5 py-1 rounded bg-surface-container text-xs font-semibold text-secondary border border-outline-variant">Marka &amp; Başlık</span>
+<span class="text-xs text-on-surface-variant">Ekran Başına 1</span>
+</div>
+<h3 class="font-bricolage text-2xl font-bold text-on-surface tracking-tight">Bricolage Grotesque</h3>
+<p class="text-on-surface-variant text-sm mt-2 font-figtree">
+                Modül girişleri, seviye tespit sonuç ekranları, deneme sınavı kapakları ve karşılama başlıkları için özgün ve güven veren modern karakter.
+              </p>
+</div>
+<div class="p-4 bg-surface-container rounded-DEFAULT border border-outline-variant space-y-3 font-bricolage">
+<div class="text-xs uppercase tracking-wider text-on-surface-variant font-sans font-semibold">Türkçe Karakter Kümesi</div>
+<div class="text-base text-on-surface font-bold tracking-tight">
+                Ğ ğ, Ü ü, Ş ş, İ ı, Ö ö, Ç ç, â, î
+              </div>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between text-xs text-on-surface-variant font-sans">
+<span>Rakamlar:</span>
+<span class="font-bricolage text-on-surface tabular-nums">0 1 2 3 4 5 6 7 8 9</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 text-xs text-on-surface-variant">
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">SemiBold 600</span>
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">Bold 700</span>
+<span class="px-2 py-0.5 bg-background rounded border border-outline-variant">ExtraBold 800</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Comprehensive Typography Scale Table -->
+<section class="space-y-6">
+<div>
+<h2 class="font-figtree text-xl font-bold text-on-surface">2. Kapsamlı Tipografi Ölçek Tablosu &amp; CSS Tokenleri</h2>
+<p class="text-on-surface-variant text-sm mt-0.5">Tüm ölçek basamakları, satır yükseklikleri, font aileleri ve canlı Türkçe örnekler.</p>
+</div>
+<div class="bg-surface border border-outline-variant rounded-lg overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse text-sm">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant text-on-surface-variant text-xs font-semibold uppercase tracking-wider">
+<th class="py-3 px-4 w-36">Token Adı</th>
+<th class="py-3 px-4 w-40">Yazı Tipi</th>
+<th class="py-3 px-4 w-32">Boyut / LH</th>
+<th class="py-3 px-4 w-28">Ağırlık</th>
+<th class="py-3 px-6">Canlı Örnek Metin</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-on-surface">
+<!-- display-l -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">display-l</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Bricolage Grotesque</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">56px / 60px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Bold (700)</td>
+<td class="py-4 px-6">
+<span class="font-bricolage text-[56px] leading-[60px] font-bold tracking-tight text-on-surface block truncate max-w-2xl">
+                      YDS 2025 Hazırlıkta Akademik Başarı ve Dil Yeterliliği
+                    </span>
+</td>
+</tr>
+<!-- display-m -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">display-m</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Bricolage Grotesque</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">40px / 44px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Bold (700)</td>
+<td class="py-4 px-6">
+<span class="font-bricolage text-[40px] leading-[44px] font-bold tracking-tight text-on-surface block truncate max-w-2xl">
+                      80 Soruluk Optik Deneme Simülasyonu
+                    </span>
+</td>
+</tr>
+<!-- heading-1 / headline-lg -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">heading-1</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">32px / 40px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Bold (700)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[32px] leading-[40px] font-bold text-on-surface block truncate max-w-2xl">
+                      Kelime Bilgisi ve Prepositional Phrase Analizleri
+                    </span>
+</td>
+</tr>
+<!-- heading-2 / headline-md -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">heading-2</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">24px / 32px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Bold (700)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[24px] leading-[32px] font-bold text-on-surface block truncate max-w-2xl">
+                      Paragraf Tamamlama ve Anlam Bütünlüğü Kuralları
+                    </span>
+</td>
+</tr>
+<!-- heading-3 / headline-sm -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">heading-3</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">20px / 28px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">SemiBold (600)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[20px] leading-[28px] font-semibold text-on-surface block truncate max-w-2xl">
+                      Cümle Tamamlama Soru Tiplerinde Bağlaç Stratejileri
+                    </span>
+</td>
+</tr>
+<!-- title -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">title</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">16px / 22px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">SemiBold (600)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[16px] leading-[22px] font-semibold text-on-surface">
+                      Gramer Notları ve İpucu Kartları
+                    </span>
+</td>
+</tr>
+<!-- body-l -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">body-l</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">18px / 28px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Regular (400)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[18px] leading-[28px] text-on-surface">
+                      Sınav süresince adayların bilişsel yorgunluğunu en aza indiren ferah metin akışı.
+                    </span>
+</td>
+</tr>
+<!-- body-m -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">body-m</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">16px / 24px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Regular (400)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[16px] leading-[24px] text-on-surface">
+                      Öğretmen değerlendirme raporu ve haftalık net gelişim grafiği açıklamaları.
+                    </span>
+</td>
+</tr>
+<!-- body-s -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">body-s</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">14px / 20px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Regular (400)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[14px] leading-[20px] text-on-surface-variant">
+                      Soru çözüm süresi ortalama 1.5 dakika olarak hedeflenmiştir.
+                    </span>
+</td>
+</tr>
+<!-- label-l -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">label-l</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">14px / 18px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Medium (500)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[14px] leading-[18px] font-medium text-on-surface">
+                      SEÇENEK DOĞRULA
+                    </span>
+</td>
+</tr>
+<!-- label-m -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">label-m</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">12px / 16px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Medium (500)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[12px] leading-[16px] font-medium text-on-surface">
+                      DOĞRU YANIT
+                    </span>
+</td>
+</tr>
+<!-- caption -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">caption</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">12px / 16px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Regular (400)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[12px] leading-[16px] text-on-surface-variant">
+                      Son güncelleme: ÖSYM 2024 Sonbahar oturumu kılavuzu.
+                    </span>
+</td>
+</tr>
+<!-- overline -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">overline</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">11px / 14px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Bold (700)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[11px] leading-[14px] font-bold uppercase tracking-wider text-on-surface-variant">
+                      ÖSYM STANDART FORMATI
+                    </span>
+</td>
+</tr>
+<!-- reading-l -->
+<tr class="bg-surface-container/20 hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-on-primary-container font-semibold">reading-l</td>
+<td class="py-4 px-4 text-xs text-on-primary-container font-medium">Literata (Serif)</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">18px / 29px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Regular (400)</td>
+<td class="py-4 px-6">
+<span class="font-literata text-[18px] leading-[29px] text-on-surface">
+                      The discovery of subterranean aquifers in arid environments fundamentally altered long-standing archaeological theories.
+                    </span>
+</td>
+</tr>
+<!-- reading-m -->
+<tr class="bg-surface-container/20 hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-on-primary-container font-semibold">reading-m</td>
+<td class="py-4 px-4 text-xs text-on-primary-container font-medium">Literata (Serif)</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">17px / 27px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Regular (400)</td>
+<td class="py-4 px-6">
+<span class="font-literata text-[17px] leading-[27px] text-on-surface">
+                      According to the passage, what distinguishes the gravitational canal system from earlier methods?
+                    </span>
+</td>
+</tr>
+<!-- reading-s -->
+<tr class="bg-surface-container/20 hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-on-primary-container font-semibold">reading-s</td>
+<td class="py-4 px-4 text-xs text-on-primary-container font-medium">Literata (Serif)</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">16px / 25px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Regular (400)</td>
+<td class="py-4 px-6">
+<span class="font-literata text-[16px] leading-[25px] text-on-surface-variant">
+                      Not: Metinde geçen 'isotopic analysis' tabiri, toprağın kimyasal element katmanlarının incelenmesini ifade eder.
+                    </span>
+</td>
+</tr>
+<!-- numeric-xl -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-4 px-4 font-mono text-xs text-primary font-semibold">numeric-xl</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Figtree Tabular</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant tabular-nums">48px / 52px</td>
+<td class="py-4 px-4 text-xs text-on-surface-variant">Bold (700)</td>
+<td class="py-4 px-6">
+<span class="font-figtree text-[48px] leading-[52px] font-bold text-on-surface tabular-nums">
+                      78.75 <span class="text-xl text-on-surface-variant font-normal">Net / 80 Soru</span>
+</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Section 4: Live YDS Reading & Question Simulation -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-figtree text-xl font-bold text-on-surface">3. Canlı Soru ve Okuma Metni Simülasyonu</h2>
+<p class="text-on-surface-variant text-sm mt-0.5">Literata 17-18px satır akışı ve ÖSYM optik baloncuk durumu entegrasyonu.</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 bg-surface-container border border-outline-variant text-xs text-on-surface rounded-full">
+              Soru Sütun Genişliği: Maks 680px
+            </span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Question Canvas (Left 8 Cols) -->
+<div class="lg:col-span-8 bg-surface border border-outline-variant rounded-lg p-7 space-y-6">
+<!-- Meta Bar -->
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant">
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-1 rounded bg-surface-container border border-outline-variant text-xs font-bold text-on-surface tabular-nums">SORU 42</span>
+<span class="text-xs text-on-surface-variant font-medium">İngilizce Paragraf Anlama (Reading Comprehension)</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span class="tabular-nums">Önerilen Süre: 1:30 dk</span>
+</div>
+</div>
+<!-- Reading Passage (Literata Serif) -->
+<div class="max-w-[680px] space-y-3">
+<div class="text-[11px] uppercase font-bold tracking-wider text-primary">Paragraf Metni</div>
+<p class="font-literata text-[18px] leading-[29px] text-on-surface text-left">
+                The discovery of subterranean aquifers in arid environments has fundamentally altered long-standing assumptions regarding ancient agricultural settlements. Historical records previously suggested that these societies relied exclusively on seasonal rainfall; however, isotopic analysis of core soil samples conclusively demonstrates that a sophisticated gravitational canal network was maintained across several centuries.
+              </p>
+</div>
+<!-- Question Stem -->
+<div class="max-w-[680px] pt-3 border-t border-outline-variant">
+<p class="font-literata text-[17px] leading-[27px] font-medium text-on-surface">
+                It can be inferred from the passage that modern discoveries regarding ancient desert settlements —
+              </p>
+</div>
+<!-- Options List (A-E) -->
+<div class="space-y-3 max-w-[680px]">
+<!-- Option A: Standard / Default -->
+<div class="min-h-[56px] px-4 py-3 rounded-DEFAULT border border-outline-variant bg-surface-container flex items-center justify-between gap-4 cursor-pointer hover:border-outline transition-colors">
+<div class="flex items-center gap-4">
+<!-- Empty Optic Bubble -->
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center text-xs font-semibold text-on-surface shrink-0">
+                    A
+                  </div>
+<span class="font-literata text-[16px] text-on-surface leading-snug">
+                    were entirely consistent with the narrative established in initial historical texts
+                  </span>
+</div>
+<span class="text-xs text-on-surface-variant shrink-0">Boş</span>
+</div>
+<!-- Option B: Wrong Choice / Distractor (Brick Red) -->
+<div class="min-h-[56px] px-4 py-3 rounded-DEFAULT border border-error bg-error-container/40 flex items-center justify-between gap-4 cursor-pointer">
+<div class="flex items-center gap-4">
+<!-- Optic Bubble: Error -->
+<div class="w-6 h-6 rounded-full bg-error text-surface font-bold text-xs flex items-center justify-center shrink-0">
+                    B
+                  </div>
+<span class="font-literata text-[16px] text-on-surface leading-snug line-through decoration-error/70">
+                    proved that ancient communities abandoned agriculture during long seasonal droughts
+                  </span>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-error font-medium shrink-0">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span>Çeldirici Yanıt</span>
+</div>
+</div>
+<!-- Option C: Correct Answer (Green tertiary + Fill bubble) -->
+<div class="min-h-[56px] px-4 py-3 rounded-DEFAULT border-2 border-tertiary bg-tertiary-container/40 flex items-center justify-between gap-4 cursor-pointer">
+<div class="flex items-center gap-4">
+<!-- Optic Bubble: Correct -->
+<div class="w-6 h-6 rounded-full bg-tertiary text-surface font-bold text-xs flex items-center justify-center shrink-0">
+                    C
+                  </div>
+<span class="font-literata text-[16px] font-semibold text-on-surface leading-snug">
+                    invalidated the belief that farming was dependent solely on rain precipitation
+                  </span>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-tertiary font-bold shrink-0">
+<span class="material-symbols-outlined text-[16px] material-symbols-fill">check_circle</span>
+<span>Doğru Cevap</span>
+</div>
+</div>
+<!-- Option D: Default -->
+<div class="min-h-[56px] px-4 py-3 rounded-DEFAULT border border-outline-variant bg-surface-container flex items-center justify-between gap-4 cursor-pointer hover:border-outline transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center text-xs font-semibold text-on-surface shrink-0">
+                    D
+                  </div>
+<span class="font-literata text-[16px] text-on-surface leading-snug">
+                    indicated that subterranean water supplies were depleted within one generation
+                  </span>
+</div>
+<span class="text-xs text-on-surface-variant shrink-0">Boş</span>
+</div>
+<!-- Option E: Eliminated by User (Strikethrough) -->
+<div class="min-h-[56px] px-4 py-3 rounded-DEFAULT border border-outline-variant bg-surface-container/50 opacity-60 flex items-center justify-between gap-4 cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded-full border border-outline-variant text-on-surface-variant flex items-center justify-center text-xs font-semibold shrink-0">
+                    E
+                  </div>
+<span class="font-literata text-[16px] text-on-surface-variant leading-snug line-through">
+                    showed that gravitational canal networks were unsuccessful in sustaining soil quality
+                  </span>
+</div>
+<span class="text-xs text-on-surface-variant shrink-0">Elendi</span>
+</div>
+</div>
+<!-- Action Area (Min 44px touch targets) -->
+<div class="pt-4 border-t border-outline-variant flex items-center justify-between">
+<button class="h-11 px-4 border border-outline-variant rounded-DEFAULT text-sm font-semibold text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span>Önceki Soru</span>
+</button>
+<div class="flex items-center gap-3">
+<button class="h-11 px-5 border border-outline-variant rounded-DEFAULT text-sm font-semibold text-on-surface hover:bg-surface-container transition-colors" type="button">
+                  İpucu Merdivenini Aç
+                </button>
+<button class="h-11 px-6 bg-primary text-on-primary rounded-DEFAULT text-sm font-bold hover:brightness-110 active:scale-95 transition duration-150 flex items-center gap-2" type="button">
+<span>Sonraki Soruya Geç</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Teacher Panel / Optical Anatomy (Right 4 Cols) -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Tip Ladder Card -->
+<div class="bg-surface border border-outline-variant rounded-lg p-6 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">psychology</span>
+<h3 class="font-figtree text-base font-bold text-on-surface">Öğretmen İpucu Merdiveni</h3>
+</div>
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container text-xs font-semibold">4 Seviye</span>
+</div>
+<p class="text-xs text-on-surface-variant">
+                Yetişkin sınav stratejisinde doğrudan cevabı vermek yerine zihinsel bağlaç analizini adım adım inşa eder.
+              </p>
+<div class="space-y-3 pt-2">
+<!-- Level 1 -->
+<div class="p-3 bg-surface-container rounded-DEFAULT border-l-2 border-primary space-y-1">
+<div class="text-[11px] font-bold text-primary uppercase tracking-wide">1. Odaklanma</div>
+<div class="text-xs text-on-surface font-figtree">
+                    Paragraftaki zıtlık bağlacı <span class="font-literata italic text-primary">"however"</span> ifadesine dikkat edin.
+                  </div>
+</div>
+<!-- Level 2 -->
+<div class="p-3 bg-surface-container rounded-DEFAULT border-l-2 border-outline space-y-1">
+<div class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wide">2. Kural Eşleme</div>
+<div class="text-xs text-on-surface font-figtree">
+<span class="font-literata">"exclusively on seasonal rainfall"</span> ile seçeneklerdeki <span class="font-literata">"solely on rain"</span> sinonim eşleşmesidir.
+                  </div>
+</div>
+<!-- Level 3 -->
+<div class="p-3 bg-surface-container rounded-DEFAULT border-l-2 border-outline space-y-1">
+<div class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wide">3. Eleme Stratejisi</div>
+<div class="text-xs text-on-surface font-figtree">
+                    B şıkkında terk etme (abandoned) bilgisi geçmediği için doğrudan elenir.
+                  </div>
+</div>
+</div>
+</div>
+<!-- Optical Answer Bubble Micro-Spec -->
+<div class="bg-surface border border-outline-variant rounded-lg p-6 space-y-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<h3 class="font-figtree text-base font-bold text-on-surface">Optik Baloncuk Anatomisi</h3>
+</div>
+<p class="text-xs text-on-surface-variant">
+                ÖSYM kağıt formunun ekrana uyarlaması: 24px tam yuvarlak daire, koyu zemin üzerinde 12px yüksek kontrastlı harf.
+              </p>
+<div class="p-4 bg-background rounded-DEFAULT border border-outline-variant flex items-center justify-around">
+<div class="text-center space-y-1">
+<div class="w-8 h-8 rounded-full border border-outline flex items-center justify-center text-xs font-semibold mx-auto">A</div>
+<div class="text-[10px] text-on-surface-variant">Boş</div>
+</div>
+<div class="text-center space-y-1">
+<div class="w-8 h-8 rounded-full bg-primary text-background font-bold text-xs flex items-center justify-center mx-auto">B</div>
+<div class="text-[10px] text-primary">Seçildi</div>
+</div>
+<div class="text-center space-y-1">
+<div class="w-8 h-8 rounded-full bg-tertiary text-background font-bold text-xs flex items-center justify-center mx-auto">C</div>
+<div class="text-[10px] text-tertiary">Doğru</div>
+</div>
+<div class="text-center space-y-1">
+<div class="w-8 h-8 rounded-full bg-error text-background font-bold text-xs flex items-center justify-center mx-auto">D</div>
+<div class="text-[10px] text-error">Yanlış</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 5: Pedagogical & Accessibility Principles -->
+<section class="space-y-6 pb-12">
+<div>
+<h2 class="font-figtree text-xl font-bold text-on-surface">4. Pedagojik ve Erişilebilirlik İlkeleri</h2>
+<p class="text-on-surface-variant text-sm mt-0.5">Metin hiyerarşisi ve arayüz uygulamasında taviz verilmez 4 kural.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Principle 1: Double Indicator -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5 space-y-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">flaky</span>
+</div>
+<h3 class="font-figtree text-base font-bold text-on-surface">Çift Belirteç Kuralı</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Durum hiçbir zaman yalnızca renkle aktarılmaz. Doğru cevapta yeşile onay simgesi (✓) ve "Doğru" etiketi; çeldiricide tuğla rengine (✕) ikonu eşlik eder. Renk körlüğü erişilebilirliği garantilenir.
+            </p>
+</div>
+<!-- Principle 2: Line Length -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5 space-y-3">
+<div class="w-10 h-10 rounded-full bg-surface-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">format_align_left</span>
+</div>
+<h3 class="font-figtree text-base font-bold text-on-surface">60-75 Karakter Sınırı</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Uzun İngilizce okuma metinleri en çok 680px genişlikte sınırlandırılır. Satır başına 60-75 karakter kuralı, adayların satır başını gözle kaçırmasını ve bilişsel hız kaybını önler.
+            </p>
+</div>
+<!-- Principle 3: Contrast AAA -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5 space-y-3">
+<div class="w-10 h-10 rounded-full bg-surface-container text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">contrast</span>
+</div>
+<h3 class="font-figtree text-base font-bold text-on-surface">WCAG AAA Kontrast</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Zemin Gece 950 (#0E171B) ve birincil metin (#E4ECEC) arasında 14.8:1 oranında mükemmel kontrast mevcuttur. Safran rengi (#F0B43A) metin için asla kullanılmaz; sadece dolgu ve ikondur.
+            </p>
+</div>
+<!-- Principle 4: Tabular Numbers -->
+<div class="bg-surface border border-outline-variant rounded-lg p-5 space-y-3">
+<div class="w-10 h-10 rounded-full bg-surface-container text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">pin</span>
+</div>
+<h3 class="font-figtree text-base font-bold text-on-surface">Tablo Rakamları (Tabular)</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Sınav süre sayaçları (01:29), 80 soruluk soru matrisi ve net hesaplama tablolarında sabit genişlikli rakamlar kullanılır. Sayı güncellenirken arayüzde titreme ve kayma yaşanmaz.
+            </p>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

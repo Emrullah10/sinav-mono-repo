@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONB-05 · Seviye Tespitine Giriş (Açık Masaüstü 1440px)</title>
+  <!-- Google Fonts: Figtree (Arayüz Sans) & Literata (Okuma/Soru Serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+  <!-- Google Material Symbols Outlined -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // ODAK Kurumsal Paleti (Açık Tema)
+            petrol: {
+              DEFAULT: '#0E6A6E',
+              dark: '#0A5255',
+              light: '#E6F3F3',
+              hover: '#094B4E'
+            },
+            safran: {
+              DEFAULT: '#E9A514',
+              soft: '#FEF6E7',
+              border: '#F8D89B'
+            },
+            dogru: {
+              DEFAULT: '#1F7A45',
+              soft: '#EDF7F1',
+              border: '#BFE4CE'
+            },
+            tugla: {
+              DEFAULT: '#A33D27',
+              soft: '#FBF0ED',
+              border: '#F2C8BF'
+            },
+            notr: {
+              bg: '#F4F6F5',
+              kart: '#FFFFFF',
+              yazi: '#13232A',
+              ikincil: '#46565C',
+              kenar: '#DAE1E0'
+            }
+          },
+          fontFamily: {
+            sans: ['Figtree', 'sans-serif'],
+            serif: ['Literata', 'serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-reading {
+      font-family: 'Literata', serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Tam daire optik cevap baloncuğu */
+    .optik-baloncuk {
+      width: 24px;
+      height: 24px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-notr-bg text-notr-yazi">
+
+  <!-- ÜST GEZİNME VE BAŞLIK ÇUBUĞU (TopNavBar) -->
+  <header class="w-full bg-notr-kart border-b border-notr-kenar sticky top-0 z-30">
+    <div class="max-w-[1440px] mx-auto px-8 h-16 flex items-center justify-between">
+      
+      <!-- Sol: Marka ve Sınav Seçici Çipi -->
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-petrol flex items-center justify-center text-white font-bold text-lg tracking-wider">
+            O
+          </div>
+          <span class="font-bold text-xl tracking-tight text-notr-yazi">ODAK</span>
+        </div>
+
+        <div class="h-6 w-px bg-notr-kenar"></div>
+
+        <!-- Çoklu Sınav Seçici ve Aktif Sınav Çipi -->
+        <div class="flex items-center gap-2">
+          <button type="button" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-notr-bg hover:bg-slate-200/70 border border-notr-kenar text-xs font-semibold text-notr-yazi transition-colors min-h-[36px]">
+            <span class="w-2 h-2 rounded-full bg-petrol"></span>
+            <span>2026-YDS/2 · 22 Kasım 2026</span>
+            <span class="material-symbols-outlined text-[16px] text-notr-ikincil">expand_more</span>
+          </button>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-safran-soft text-safran text-xs font-bold border border-safran-border">
+            52 Gün Kaldı
+          </span>
+        </div>
+      </div>
+
+      <!-- Orta: Oryantasyon Adım İlerlemesi (Stepper) -->
+      <nav aria-label="Kayıt ve Tanı Adımları" class="hidden md:flex items-center gap-4 text-xs font-medium">
+        <div class="flex items-center gap-1.5 text-dogru">
+          <span class="material-symbols-outlined text-[18px]">check_circle</span>
+          <span>1. Sınav Seçimi</span>
+        </div>
+        <span class="text-notr-kenar">—</span>
+        <div class="flex items-center gap-1.5 text-dogru">
+          <span class="material-symbols-outlined text-[18px]">check_circle</span>
+          <span>2. Hedef Puan</span>
+        </div>
+        <span class="text-notr-kenar">—</span>
+        <div class="flex items-center gap-1.5 text-dogru">
+          <span class="material-symbols-outlined text-[18px]">check_circle</span>
+          <span>3. Sınav Tarihi</span>
+        </div>
+        <span class="text-notr-kenar">—</span>
+        <div class="flex items-center gap-1.5 text-dogru">
+          <span class="material-symbols-outlined text-[18px]">check_circle</span>
+          <span>4. Çalışma Planı</span>
+        </div>
+        <span class="text-notr-kenar">—</span>
+        <div class="flex items-center gap-1.5 text-petrol font-bold">
+          <span class="w-5 h-5 rounded-full bg-petrol text-white flex items-center justify-center text-[11px] font-bold">5</span>
+          <span>Seviye Tespiti</span>
+        </div>
+      </nav>
+
+      <!-- Sağ: Yardım ve Giriş Aksiyonları -->
+      <div class="flex items-center gap-4">
+        <button type="button" class="inline-flex items-center gap-1.5 text-xs text-notr-ikincil hover:text-notr-yazi font-medium py-2 px-2 rounded min-h-[44px]">
+          <span class="material-symbols-outlined text-[18px]">help</span>
+          <span>Rehber ve Destek</span>
+        </button>
+        <button type="button" class="inline-flex items-center gap-1 text-xs font-semibold text-petrol hover:text-petrol-hover border border-notr-kenar px-3.5 py-2 rounded-lg bg-notr-kart min-h-[44px]">
+          <span>Giriş Yap</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ANA İÇERİK KAPSAYICISI (1440px Izgara) -->
+  <main class="flex-1 w-full max-w-[1440px] mx-auto px-8 py-8">
+
+    <!-- Üst Bilgilendirme Bandı / Sınav Kuralı Hatırlatması -->
+    <div class="w-full mb-6 bg-notr-kart border border-notr-kenar rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 rounded-lg bg-petrol-light text-petrol flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-[20px]">verified</span>
+        </span>
+        <div>
+          <span class="text-xs font-bold text-petrol uppercase tracking-wider">ÖSYM Ölçme Standartları</span>
+          <p class="text-xs text-notr-ikincil">Sınavda yanlış yanıtlar doğruyu götürmez; her soru 1,25 puan değerindedir. Toplam 80 soru / 100 puan esastır.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 self-end sm:self-auto text-xs text-notr-ikincil bg-notr-bg px-3 py-1.5 rounded-lg border border-notr-kenar">
+        <span class="material-symbols-outlined text-[16px] text-petrol">calendar_today</span>
+        <span>Başvuru Dönemi: <strong>30 Eylül – 8 Ekim 2026</strong></span>
+      </div>
+    </div>
+
+    <!-- İKİ KOLONLU ANA YERLEŞİM (8 Sütun Sol + 4 Sütun Sağ) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- SOL KOLON: Giriş Metni, 3 Temel İlke ve Eylem Butonları (7-8 Sütun) -->
+      <section class="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
+
+        <!-- Başlık Bölümü -->
+        <div class="bg-notr-kart border border-notr-kenar rounded-2xl p-8">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-petrol-light text-petrol text-xs font-semibold mb-4 border border-petrol/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-petrol"></span>
+            <span>Adım 5 / 5 · Akademik Seviye Belirleme</span>
+          </div>
+
+          <h1 class="text-3xl font-bold tracking-tight text-notr-yazi leading-tight mb-3">
+            Akademik seviye tespitine hazır mısın?
+          </h1>
+          <p class="text-base text-notr-ikincil leading-relaxed">
+            Hedeflediğin çalışma temposunu ve eksik olduğun soru tiplerini netleştirmek için 15 soruluk kısa bir seviye belirleme adımı hazırladık. Bu adım, sana özel çalışma planının temelini oluşturacaktır.
+          </p>
+
+          <!-- 3 TEMEL İLKE KARTLARI (Yönergeler) -->
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <!-- Madde 1: Yaklaşık 20 Dakika -->
+            <div class="p-5 rounded-xl border border-notr-kenar bg-notr-bg flex flex-col justify-between">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-notr-kart border border-notr-kenar text-petrol flex items-center justify-center mb-3">
+                  <span class="material-symbols-outlined text-[22px]">schedule</span>
+                </div>
+                <h3 class="font-bold text-sm text-notr-yazi mb-1">Yaklaşık 20 Dakika</h3>
+                <p class="text-xs text-notr-ikincil leading-normal">
+                  15 odaklı soru ile kelime bilgisi, dilbilgisi, bağlaçlar ve paragraf hakimiyetin ölçülür.
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-notr-kenar/60 flex items-center gap-1.5 text-[11px] font-semibold text-petrol">
+                <span class="material-symbols-outlined text-[15px]">check</span>
+                <span>15 Seçilmiş Soru</span>
+              </div>
+            </div>
+
+            <!-- Madde 2: Süre Baskısı Yok -->
+            <div class="p-5 rounded-xl border border-notr-kenar bg-notr-bg flex flex-col justify-between">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-notr-kart border border-notr-kenar text-petrol flex items-center justify-center mb-3">
+                  <span class="material-symbols-outlined text-[22px]">hourglass_empty</span>
+                </div>
+                <h3 class="font-bold text-sm text-notr-yazi mb-1">Süre Baskısı Yok</h3>
+                <p class="text-xs text-notr-ikincil leading-normal">
+                  Süre sınırlaması olmadan, metinleri rahatça okuyabilir ve kendi hızında düşünebilirsin.
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-notr-kenar/60 flex items-center gap-1.5 text-[11px] font-semibold text-petrol">
+                <span class="material-symbols-outlined text-[15px]">check</span>
+                <span>Rahat Tempolu Çözüm</span>
+              </div>
+            </div>
+
+            <!-- Madde 3: Bilmediğini Geçebilirsin -->
+            <div class="p-5 rounded-xl border border-notr-kenar bg-notr-bg flex flex-col justify-between">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-notr-kart border border-notr-kenar text-petrol flex items-center justify-center mb-3">
+                  <span class="material-symbols-outlined text-[22px]">quiz</span>
+                </div>
+                <h3 class="font-bold text-sm text-notr-yazi mb-1">Bilmediğini Geçebilirsin</h3>
+                <p class="text-xs text-notr-ikincil leading-normal">
+                  Emin olmadığın sorularda tahmin yürütmek yerine boş bırakarak gerçek seviyeni görebilirsin.
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-notr-kenar/60 flex items-center gap-1.5 text-[11px] font-semibold text-petrol">
+                <span class="material-symbols-outlined text-[15px]">check</span>
+                <span>Doğru Eksik Tespiti</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Kapsam Özeti Bilgi Bloğu -->
+          <div class="mt-6 p-4 rounded-xl bg-notr-bg border border-notr-kenar flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-safran-soft text-safran border border-safran-border flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">lightbulb</span>
+              </span>
+              <p class="text-xs text-notr-yazi">
+                <strong>Bu bir sınav değil, kişiselleştirme aracıdır:</strong> Sonuçlar puanınızı düşürmez; eksik olduğunuz konulara göre ilk haftalık planınızı dengeler.
+              </p>
+            </div>
+            <div class="text-xs text-notr-ikincil whitespace-nowrap">
+              Kalan Soru: <strong>15 / 15</strong>
+            </div>
+          </div>
+
+          <!-- BİRİNCİL VE İKİNCİL EYLEM BUTONLARI (Min 44px Dokunma Hedefi) -->
+          <div class="mt-8 pt-6 border-t border-notr-kenar flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <button type="button" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-petrol text-white hover:bg-petrol-hover font-semibold text-sm transition-all min-h-[48px] shadow-sm">
+              <span>Seviye Tespitine Başla</span>
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </button>
+            <button type="button" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-notr-kenar text-notr-ikincil hover:text-notr-yazi hover:bg-notr-bg font-semibold text-sm transition-colors min-h-[48px]">
+              <span class="material-symbols-outlined text-[18px]">history</span>
+              <span>Sonra Yap</span>
+            </button>
+            <div class="sm:ml-auto flex items-center gap-2 text-xs text-notr-ikincil">
+              <span class="material-symbols-outlined text-[16px] text-dogru">check</span>
+              <span>Dilediğiniz an ara verebilirsiniz</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Soru Dağılımı ve Beceri Kapsamı -->
+        <div class="bg-notr-kart border border-notr-kenar rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-bold text-notr-yazi flex items-center gap-2">
+              <span class="material-symbols-outlined text-petrol text-[20px]">bar_chart</span>
+              <span>15 Soruluk Seviye Tespit Dağılımı</span>
+            </h2>
+            <span class="text-xs text-notr-ikincil">ÖSYM Soru Havuzundan Seçilmiş</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div class="p-3 rounded-lg border border-notr-kenar bg-notr-bg">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-notr-yazi">Kelime ve Deyimler</span>
+                <span class="font-bold text-petrol">4 Soru</span>
+              </div>
+              <p class="text-notr-ikincil text-[11px]">Akademik sıfat, fiil ve edat kombinasyonları</p>
+            </div>
+            <div class="p-3 rounded-lg border border-notr-kenar bg-notr-bg">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-notr-yazi">Dilbilgisi ve Bağlaçlar</span>
+                <span class="font-bold text-petrol">6 Soru</span>
+              </div>
+              <p class="text-notr-ikincil text-[11px]">Zaman uyumu, zıtlık ve sebep-sonuç bağlaçları</p>
+            </div>
+            <div class="p-3 rounded-lg border border-notr-kenar bg-notr-bg">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-notr-yazi">Okuma ve Anlam</span>
+                <span class="font-bold text-petrol">5 Soru</span>
+              </div>
+              <p class="text-notr-ikincil text-[11px]">Kısa akademik parça analizi ve çıkarım</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- SAĞ KOLON: Örnek Soru Önizlemesi ve Süreç Güvenceleri (4-5 Sütun) -->
+      <aside class="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+
+        <!-- Örnek Soru Kartı (Literata Serif ile Soru ve Seçenekler) -->
+        <div class="bg-notr-kart border border-notr-kenar rounded-2xl p-6">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-notr-kenar">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-safran"></span>
+              <span class="text-xs font-bold uppercase tracking-wider text-notr-yazi">Örnek Soru Deneyimi</span>
+            </div>
+            <span class="text-xs text-notr-ikincil">Cümle Tamamlama</span>
+          </div>
+
+          <!-- Soru Metni (Literata Serif) -->
+          <div class="mb-5">
+            <p class="font-reading text-sm text-notr-yazi leading-relaxed">
+              "Although the initial clinical trial results appeared promising, the research committee hesitated to authorize emergency clinical use <span class="border-b-2 border-petrol text-petrol font-semibold px-1">______</span> in the absence of robust pharmacokinetic data."
+            </p>
+            <p class="mt-2 text-xs text-notr-ikincil">
+              Yukarıdaki cümlede altı çizili boşluğa anlam ve dilbilgisi bakımından en uygun seçeneği belirleyiniz.
+            </p>
+          </div>
+
+          <!-- Seçenekler Listesi (Tam Daire Optik Baloncuklar, Çift Belirteç) -->
+          <div class="space-y-2.5 text-xs">
+            
+            <!-- Seçenek A -->
+            <div class="p-3 rounded-xl border border-notr-kenar bg-notr-bg/50 flex items-center justify-between min-h-[44px]">
+              <div class="flex items-center gap-3">
+                <span class="optik-baloncuk border border-notr-kenar text-notr-ikincil bg-notr-kart">A</span>
+                <span class="font-reading text-notr-yazi">unless preliminary safety metrics had been confirmed</span>
+              </div>
+            </div>
+
+            <!-- Seçenek B (Doğru Yanıt Örneği: Yeşil + ✓ İkon + Metin) -->
+            <div class="p-3 rounded-xl border border-dogru bg-dogru-soft flex items-center justify-between min-h-[44px]">
+              <div class="flex items-center gap-3">
+                <span class="optik-baloncuk bg-dogru text-white">B</span>
+                <span class="font-reading font-medium text-dogru">until conclusive therapeutic outcomes were independently verified</span>
+              </div>
+              <span class="inline-flex items-center gap-1 text-[11px] font-bold text-dogru shrink-0 pl-2">
+                <span class="material-symbols-outlined text-[15px]">check</span>
+                <span>Doğru</span>
+              </span>
+            </div>
+
+            <!-- Seçenek C -->
+            <div class="p-3 rounded-xl border border-notr-kenar bg-notr-bg/50 flex items-center justify-between min-h-[44px]">
+              <div class="flex items-center gap-3">
+                <span class="optik-baloncuk border border-notr-kenar text-notr-ikincil bg-notr-kart">C</span>
+                <span class="font-reading text-notr-yazi">because regulatory oversight remained exceptionally rigorous</span>
+              </div>
+            </div>
+
+            <!-- Seçenek D -->
+            <div class="p-3 rounded-xl border border-notr-kenar bg-notr-bg/50 flex items-center justify-between min-h-[44px]">
+              <div class="flex items-center gap-3">
+                <span class="optik-baloncuk border border-notr-kenar text-notr-ikincil bg-notr-kart">D</span>
+                <span class="font-reading text-notr-yazi">as long as peer-reviewed publications satisfied standard protocol</span>
+              </div>
+            </div>
+
+            <!-- Seçenek E -->
+            <div class="p-3 rounded-xl border border-notr-kenar bg-notr-bg/50 flex items-center justify-between min-h-[44px]">
+              <div class="flex items-center gap-3">
+                <span class="optik-baloncuk border border-notr-kenar text-notr-ikincil bg-notr-kart">E</span>
+                <span class="font-reading text-notr-yazi">once financial subsidies were disbursed by the federal board</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Soru İçi Rehberlik Notu -->
+          <div class="mt-4 p-3 rounded-xl bg-petrol-light border border-petrol/20 flex items-start gap-2 text-xs text-notr-yazi">
+            <span class="material-symbols-outlined text-petrol text-[18px] shrink-0 mt-0.5">school</span>
+            <div>
+              <span class="font-bold text-petrol">Öğretmen İpucu Modeli:</span>
+              <p class="text-[11px] text-notr-ikincil mt-0.5">
+                Cümle başındaki "Although" zıtlık yapısı ile ana cümledeki tereddüt eylemi ("hesitated") arasındaki mantıksal zaman sınırını "until" bağlacı kurar.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Seviye Tespiti Sonrası Kazanımlar Kartı -->
+        <div class="bg-notr-kart border border-notr-kenar rounded-2xl p-6">
+          <h3 class="text-sm font-bold text-notr-yazi mb-3 flex items-center gap-2">
+            <span class="material-symbols-outlined text-petrol text-[20px]">assignment_turned_in</span>
+            <span>Tespit Sonrası Ne Elde Edeceksin?</span>
+          </h3>
+
+          <ul class="space-y-3 text-xs text-notr-ikincil">
+            <li class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-dogru-soft text-dogru flex items-center justify-center shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[14px]">check</span>
+              </span>
+              <span><strong>Tahmini Puan Aralığı:</strong> 80 soru üzerinden mevcut seviyenizi ve hedef puana olan mesafenizi gösterir.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-dogru-soft text-dogru flex items-center justify-center shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[14px]">check</span>
+              </span>
+              <span><strong>Eksik Konu Haritası:</strong> En çok yanılgıya düştüğünüz çeldirici kalıpları tespit eder.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-dogru-soft text-dogru flex items-center justify-center shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[14px]">check</span>
+              </span>
+              <span><strong>Kişiselleştirilmiş Çalışma Planı:</strong> Günlük 15 ila 45 dakikalık dengeli mikro seanslar üretir.</span>
+            </li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- SİSTEM DURUM VE ETKİLEŞİM SENARYOLARI MATRİSİ (Açık ve Sade) -->
+    <section class="mt-12 pt-8 border-t border-notr-kenar">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-sm font-bold text-notr-yazi">Seviye Tespiti Süreç ve Güvence Durumları</h2>
+          <p class="text-xs text-notr-ikincil">Adayın sınav hazırlık başlangıcında karşılaşabileceği durum modelleri</p>
+        </div>
+        <span class="text-xs font-semibold px-2.5 py-1 rounded bg-notr-kart border border-notr-kenar text-notr-ikincil">
+          ONB-05 Standart Akışı
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Durum 1: Hazır Aday -->
+        <div class="p-4 rounded-xl border border-notr-kenar bg-notr-kart">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold text-petrol uppercase">Durum 01</span>
+            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-dogru bg-dogru-soft px-2 py-0.5 rounded border border-dogru-border">
+              <span class="material-symbols-outlined text-[13px]">play_circle</span>
+              <span>Hemen Başlama</span>
+            </span>
+          </div>
+          <h4 class="text-xs font-bold text-notr-yazi mb-1">Doğrudan Test Oturumu</h4>
+          <p class="text-xs text-notr-ikincil leading-relaxed">
+            Aday "Başla" butonuna bastığında süre baskısı olmadan 1. soru doğrudan ekrana gelir.
+          </p>
+        </div>
+
+        <!-- Durum 2: Sonra Yap / Erteleme -->
+        <div class="p-4 rounded-xl border border-notr-kenar bg-notr-kart">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold text-notr-ikincil uppercase">Durum 02</span>
+            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-notr-ikincil bg-notr-bg px-2 py-0.5 rounded border border-notr-kenar">
+              <span class="material-symbols-outlined text-[13px]">schedule</span>
+              <span>Ertelendi</span>
+            </span>
+          </div>
+          <h4 class="text-xs font-bold text-notr-yazi mb-1">Varsayılan Plan ile Devam</h4>
+          <p class="text-xs text-notr-ikincil leading-relaxed">
+            "Sonra yap" seçilirse başlangıç seviyesi atanır, ana panelde seviye tespiti kartı hatırlatıcı olarak kalır.
+          </p>
+        </div>
+
+        <!-- Durum 3: Boş Bırakma Kararı -->
+        <div class="p-4 rounded-xl border border-notr-kenar bg-notr-kart">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold text-safran uppercase">Durum 03</span>
+            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-safran bg-safran-soft px-2 py-0.5 rounded border border-safran-border">
+              <span class="material-symbols-outlined text-[13px]">help_outline</span>
+              <span>Bilmiyorum</span>
+            </span>
+          </div>
+          <h4 class="text-xs font-bold text-notr-yazi mb-1">Pedagojik Boş Bırakma</h4>
+          <p class="text-xs text-notr-ikincil leading-relaxed">
+            Aday tereddüt ettiğinde tahmin yürütmek yerine soruyu boş geçerek eksik konusunu netleştirir.
+          </p>
+        </div>
+
+        <!-- Durum 4: Oturum Koruma -->
+        <div class="p-4 rounded-xl border border-notr-kenar bg-notr-kart">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold text-dogru uppercase">Durum 04</span>
+            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-dogru bg-dogru-soft px-2 py-0.5 rounded border border-dogru-border">
+              <span class="material-symbols-outlined text-[13px]">cloud_done</span>
+              <span>Kesintisiz</span>
+            </span>
+          </div>
+          <h4 class="text-xs font-bold text-notr-yazi mb-1">Kayıp Önleme Güvencesi</h4>
+          <p class="text-xs text-notr-ikincil leading-relaxed">
+            Tarayıcı kapansa veya bağlantı kesilse dahi işaretlenen yanıtlar korunur, kalınan sorudan devam edilir.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ALT BİLGİ ALANI (Footer) -->
+  <footer class="w-full bg-notr-kart border-t border-notr-kenar mt-auto">
+    <div class="max-w-[1440px] mx-auto px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-notr-ikincil">
+      <div class="flex items-center gap-3">
+        <span class="font-bold text-notr-yazi">ODAK</span>
+        <span>© 2026 ODAK Akademik Hazırlık Platformu. ÖSYM YDS standartlarına uygun değerlendirme altyapısı.</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="#" class="hover:text-notr-yazi transition-colors">Sınav Takvimi (2026-YDS/2)</a>
+        <a href="#" class="hover:text-notr-yazi transition-colors">Kullanım Koşulları</a>
+        <a href="#" class="hover:text-notr-yazi transition-colors">Gizlilik Politikası</a>
+        <a href="#" class="hover:text-notr-yazi transition-colors">Destek</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

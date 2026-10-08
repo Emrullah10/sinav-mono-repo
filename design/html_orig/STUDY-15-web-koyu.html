@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ODAK | STUDY-15 · Kelime Ayrıntısı (undermine)</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#0E171B',
+            surface: '#142127',
+            'surface-container': '#1B2B32',
+            'surface-container-high': '#16363A',
+            'on-surface': '#E4ECEC',
+            'on-surface-variant': '#A9B8BA',
+            outline: '#71838A',
+            'outline-variant': '#24343A',
+            primary: '#4DB6B0',
+            'on-primary': '#0E171B',
+            'primary-container': '#16363A',
+            'on-primary-container': '#87CDC8',
+            secondary: '#F0B43A',
+            'on-secondary': '#0E171B',
+            'secondary-container': '#3A2E12',
+            tertiary: '#4CC27D',
+            'tertiary-container': '#163524',
+            error: '#EE8A6E',
+            'error-container': '#3D211A',
+            'inverse-surface': '#E4ECEC',
+            'chart-1': '#04A19B',
+            'chart-2': '#7483E0',
+            'chart-3': '#C0851F',
+            'chart-4': '#C06099'
+          },
+          fontFamily: {
+            sans: ['Figtree', 'sans-serif'],
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            serif: ['Literata', 'serif']
+          },
+          borderRadius: {
+            DEFAULT: '12px',
+            'xs': '4px',
+            'sm': '8px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '24px',
+            'full': '9999px'
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Tabular figures for academic counts & statistics */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-sans antialiased min-h-screen flex flex-col selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar (Shared Component JSON Source of Truth) -->
+<header class="fixed top-0 left-0 w-full z-50 h-16 px-6 flex items-center justify-between bg-surface border-b border-outline-variant">
+<!-- Sol Logo ve Sınav Seçim Çipi -->
+<div class="flex items-center gap-4">
+<a class="font-display font-bold text-2xl tracking-tight text-primary" href="#">ODAK</a>
+<!-- Sınav Bağlam Çipi -->
+<div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container border border-outline-variant text-xs text-on-surface-variant">
+<span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-medium text-on-surface">2026-YDS/2</span>
+<span class="text-outline">·</span>
+<span>22 Kasım 2026</span>
+<span class="text-outline">·</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-secondary text-[11px] font-semibold tracking-wide">52 Gün Kaldı</span>
+</div>
+</div>
+<!-- Orta Gezinme (Çalış aktif) -->
+<nav class="hidden md:flex items-center gap-8 text-sm">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-150 font-medium" href="#">Bugün</a>
+<a class="text-primary border-b-2 border-primary font-semibold pb-1" href="#">Çalış</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-150 font-medium" href="#">Deneme</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-150 font-medium" href="#">Öğretmen</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-150 font-medium" href="#">İstatistik</a>
+</nav>
+<!-- Sağ Aksiyonlar -->
+<div class="flex items-center gap-3">
+<!-- 14 Gün Seri Rozeti -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant text-xs font-semibold text-on-surface">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span>
+<span>14 Gün Seri</span>
+</div>
+<!-- Kılavuz / Yardım -->
+<button aria-label="Kılavuz ve Yardım" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">help_outline</span>
+</button>
+<!-- Bildirimler -->
+<button aria-label="Bildirimler" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors relative" type="button">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-secondary"></span>
+</button>
+<!-- Kullanıcı Profili -->
+<div class="flex items-center gap-2 pl-2 border-l border-outline-variant">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs">
+          BK
+        </div>
+<span class="hidden lg:inline text-xs font-medium text-on-surface truncate max-w-[150px]">Doç. Dr. Bilge Kağan Ö.</span>
+</div>
+</div>
+</header>
+<!-- Ana İçerik Taşıyıcı -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+<!-- Üst Kırıntı (Breadcrumb) ve Geri Dön -->
+<div class="py-3 flex flex-wrap items-center justify-between gap-3 text-xs border-b border-outline-variant mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Çalış Merkezi</a>
+<span class="text-outline">/</span>
+<a class="hover:text-primary transition-colors" href="#">Kelime Dağarcığı</a>
+<span class="text-outline">/</span>
+<a class="hover:text-primary transition-colors" href="#">Kelime Merkezi</a>
+<span class="text-outline">/</span>
+<span class="text-on-surface font-semibold">Kelime Ayrıntısı (#0482)</span>
+</div>
+<a class="inline-flex items-center gap-1 text-xs font-medium text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+<span>Kelime Merkezine Dön</span>
+</a>
+</div>
+<!-- KELİME BAŞLIĞI VE ANA AKSİYON ALANI (Hero Header) -->
+<section class="bg-surface rounded-lg p-6 lg:p-8 border border-outline-variant mb-8 shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+<!-- Sol Başlık ve Fonetik Blok -->
+<div class="space-y-4">
+<!-- Etiketler / Çipler -->
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2.5 py-1 rounded bg-primary-container text-on-primary-container text-xs font-medium border border-primary/20">
+              Fiil (Geçişli Fiil / Transitive)
+            </span>
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface-variant text-xs font-medium border border-outline-variant">
+              CEFR B2–C1 İleri Düzey Akademik
+            </span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container text-on-surface text-xs font-medium border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>14 Kez Çıktı (Son 10 Yılda)</span>
+</span>
+</div>
+<!-- İncelenen Sözcük ve Telaffuz -->
+<div class="flex flex-wrap items-baseline gap-4 pt-1">
+<h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-on-surface">
+              undermine
+            </h1>
+<!-- Fonetik Çubuk -->
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-full border border-outline-variant">
+<span class="font-mono text-sm text-on-surface-variant">/ˌʌndərˈmaɪn/</span>
+<button class="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-on-primary-container transition-colors pl-1 border-l border-outline-variant" type="button">
+<span class="material-symbols-outlined text-[18px]">volume_up</span>
+<span class="hidden sm:inline">Telaffuzu Dinle</span>
+</button>
+</div>
+</div>
+<!-- Kısa Vurgu ve Tematik Alanlar -->
+<p class="text-sm text-on-surface-variant leading-relaxed max-w-3xl">
+            ÖSYM'nin cümle tamamlama, okuma parçası ana fikri ve çeldirici seçeneklerde zayıflatma ve sarsma bağlamında en çok başvurduğu üst düzey akademik fiil.
+          </p>
+<!-- Tematik Alan Etiketleri -->
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="text-xs text-outline pr-1">Alanlar:</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-surface-container border border-outline-variant text-on-surface-variant">Sosyal Bilimler</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-surface-container border border-outline-variant text-on-surface-variant">Uluslararası İlişkiler</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-surface-container border border-outline-variant text-on-surface-variant">İktisat ve Politika</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-surface-container border border-outline-variant text-on-surface-variant">Tıp ve Halk Sağlığı</span>
+</div>
+</div>
+<!-- Sağ Hızlı Aksiyon Grubu -->
+<div class="flex flex-row lg:flex-col items-stretch gap-2.5 min-w-[220px]">
+<button class="h-11 px-4 rounded-md bg-primary text-on-primary font-semibold text-sm flex items-center justify-center gap-2 hover:brightness-105 active:opacity-90 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]">bookmark_add</span>
+<span>Kartlarıma Ekle</span>
+</button>
+<button class="h-11 px-4 rounded-md bg-surface-container border border-outline-variant text-on-surface font-medium text-sm flex items-center justify-center gap-2 hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px] text-outline">push_pin</span>
+<span>Hata Defterine Sabitle</span>
+</button>
+<button class="h-11 px-4 rounded-md bg-surface-container border border-outline-variant text-on-surface font-medium text-sm flex items-center justify-center gap-2 hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px] text-outline">calendar_today</span>
+<span>Çalışma Planına Ekle</span>
+</button>
+</div>
+</div>
+</section>
+<!-- İKİ SÜTUNLU AYRINTILI ANALİZ DÜZENİ -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- SOL / GENİŞ SÜTUN (760px maks okuma akışı / col-span-8) -->
+<div class="lg:col-span-8 space-y-8">
+<!-- 1. Sıralı Akademik Anlamlar -->
+<div class="bg-surface rounded-lg p-6 border border-outline-variant space-y-6">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<h2 class="text-lg font-semibold text-on-surface flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+              Sıralı Akademik Anlamlar
+            </h2>
+<span class="text-xs text-on-surface-variant">ÖSYM Öncelik Sırasıyla</span>
+</div>
+<!-- 1. Anlam Kartı (ÖSYM Mecazi) -->
+<div class="p-4 rounded-md bg-surface-container border border-outline-variant/60 space-y-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container text-xs font-bold flex items-center justify-center">1</span>
+<span class="text-xs font-semibold text-primary uppercase tracking-wide">ÖSYM Sınavlarında En Sık Karşılaşılan Anlam</span>
+</div>
+<p class="text-base font-semibold text-on-surface pl-8">
+              Zayıflatmak, sarsmak, altını oymak, temelini baltalamak
+            </p>
+<p class="text-sm text-on-surface-variant pl-8 leading-relaxed">
+              Otorite, güvenilirlik, toplumsal refah, kurumsal yapı, müzakere zemini veya bilimsel kanıtı gizlice, dolaylı yoldan veya aşama aşama sarsma eylemidir.
+            </p>
+</div>
+<!-- 2. Anlam Kartı (Somut) -->
+<div class="p-4 rounded-md bg-surface-container/60 border border-outline-variant/40 space-y-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-bold flex items-center justify-center">2</span>
+<span class="text-xs font-medium text-outline uppercase tracking-wide">Somut ve Jeolojik Bağlam</span>
+</div>
+<p class="text-base font-medium text-on-surface pl-8">
+              Bir yapının veya toprağın altını oyup kazarak çökme tehlikesi yaratmak
+            </p>
+<p class="text-sm text-on-surface-variant pl-8 leading-relaxed">
+              Nehir erozyonu, madencilik veya temel kazısı nedeniyle bir zeminin veya binanın taşıyıcı alt tabakasını yıpratmak.
+            </p>
+</div>
+</div>
+<!-- 2. Örnek Cümleler ve Sınav Bağlamları (Literata Serif Odaklı) -->
+<div class="bg-surface rounded-lg p-6 border border-outline-variant space-y-6">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<h2 class="text-lg font-semibold text-on-surface flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+              Örnek Cümleler ve Sentaktik Çözümleme
+            </h2>
+<span class="text-xs text-on-surface-variant">Özgün Literatür &amp; Sınav Kurguları</span>
+</div>
+<!-- Örnek Cümle 1 -->
+<div class="space-y-3 pb-6 border-b border-outline-variant">
+<div class="flex items-center justify-between text-xs">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">
+                2022-YDS/1 Çıkmış Benzeri Soru Kurgusu · Cümle Tamamlama
+              </span>
+<span class="text-outline">Sosyal / İktisat</span>
+</div>
+<!-- İngilizce Cümle -->
+<blockquote class="font-serif text-lg text-on-surface leading-relaxed pl-4 border-l-2 border-primary py-1">
+              "Although comprehensive economic sanctions were reinforced, they ultimately failed to 
+              <span class="font-semibold text-primary underline decoration-primary/50 underline-offset-4">undermine</span> 
+              the domestic manufacturing capacity of the regional bloc."
+            </blockquote>
+<!-- Çözümleme & Türkçe Çeviri -->
+<div class="bg-surface-container p-4 rounded-md space-y-2 text-sm">
+<div class="flex items-start gap-2">
+<span class="font-semibold text-on-surface whitespace-nowrap">Türkçe Çeviri:</span>
+<span class="text-on-surface-variant leading-relaxed font-serif">
+                  "Kapsamlı ekonomik yaptırımlar pekiştirilmesine rağmen, nihayetinde bölgesel bloğun yerel üretim kapasitesini zayıflatmakta başarısız oldu."
+                </span>
+</div>
+<div class="flex items-start gap-2 pt-1 border-t border-outline-variant/60 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary shrink-0">lightbulb</span>
+<p>
+<strong class="text-on-surface">Sınav İpucu:</strong> <code class="text-on-surface bg-surface-container-high px-1 rounded">failed to undermine</code> kalıbı, ÖSYM'nin 'zıtlık bağlacı (Although / Even though)' kurgularında sonuca olumsuzluk/yetersizlik yüklemek için kullandığı tipik bir yapıdır.
+                </p>
+</div>
+</div>
+</div>
+<!-- Örnek Cümle 2 -->
+<div class="space-y-3">
+<div class="flex items-center justify-between text-xs">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">
+                Özgün Akademik Literatür · Klinik &amp; Halk Sağlığı
+              </span>
+<span class="text-outline">Sağlık Bilimleri</span>
+</div>
+<!-- İngilizce Cümle -->
+<blockquote class="font-serif text-lg text-on-surface leading-relaxed pl-4 border-l-2 border-outline-variant py-1">
+              "Recent methodological flaws in the clinical trial significantly 
+              <span class="font-semibold text-primary underline decoration-primary/50 underline-offset-4">undermine</span> 
+              the credibility of the published epidemiological data."
+            </blockquote>
+<!-- Çeviri -->
+<div class="bg-surface-container p-4 rounded-md space-y-2 text-sm">
+<div class="flex items-start gap-2">
+<span class="font-semibold text-on-surface whitespace-nowrap">Türkçe Çeviri:</span>
+<span class="text-on-surface-variant leading-relaxed font-serif">
+                  "Klinik deneydeki son metodolojik kusurlar, yayımlanan epidemiyolojik verilerin güvenilirliğini önemli ölçüde zedelemektedir."
+                </span>
+</div>
+<div class="flex items-start gap-2 pt-1 border-t border-outline-variant/60 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary shrink-0">info</span>
+<p>
+<strong class="text-on-surface">Kullanım Notu:</strong> Sağlık ve Fen metinlerinde bilimsel güvenilirlik (credibility) ve veri tutarlılığı söz konusu olduğunda zayıflatma fiili olarak undermine tercih edilir.
+                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. Akademik Eşdizimler (Collocations) -->
+<div class="bg-surface rounded-lg p-6 border border-outline-variant space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<h2 class="text-lg font-semibold text-on-surface flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+              Akademik Eşdizimler (Sık Kullanılan Birliktelikler)
+            </h2>
+<span class="text-xs text-on-surface-variant">YDS Soru Öbekleri</span>
+</div>
+<p class="text-xs text-on-surface-variant">
+            ÖSYM sınavlarında boşluk doldurma ve kelime sorularında "undermine" genellikle doğrudan aşağıdaki isim öbeklerini nesne olarak alır:
+          </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+<!-- Collocation 1 -->
+<div class="p-3.5 rounded-md bg-surface-container border border-outline-variant hover:border-primary/40 transition-colors">
+<div class="font-serif text-base font-semibold text-primary">undermine credibility</div>
+<div class="text-xs text-on-surface-variant mt-1">güvenilirliği zedelemek / sarsmak</div>
+<div class="text-[11px] text-outline mt-1.5 font-sans">Örnek: bilimsel veri, tanıklık, araştırma</div>
+</div>
+<!-- Collocation 2 -->
+<div class="p-3.5 rounded-md bg-surface-container border border-outline-variant hover:border-primary/40 transition-colors">
+<div class="font-serif text-base font-semibold text-primary">undermine authority</div>
+<div class="text-xs text-on-surface-variant mt-1">otoriteyi yıpratmak / altını oymak</div>
+<div class="text-[11px] text-outline mt-1.5 font-sans">Örnek: meşru idare, yasa, kurumsal düzen</div>
+</div>
+<!-- Collocation 3 -->
+<div class="p-3.5 rounded-md bg-surface-container border border-outline-variant hover:border-primary/40 transition-colors">
+<div class="font-serif text-base font-semibold text-primary">undermine confidence</div>
+<div class="text-xs text-on-surface-variant mt-1">kamuoyu güvenini azaltmak</div>
+<div class="text-[11px] text-outline mt-1.5 font-sans">Örnek: yatırımcı güveni, piyasa dengesi</div>
+</div>
+<!-- Collocation 4 -->
+<div class="p-3.5 rounded-md bg-surface-container border border-outline-variant hover:border-primary/40 transition-colors">
+<div class="font-serif text-base font-semibold text-primary">undermine efforts</div>
+<div class="text-xs text-on-surface-variant mt-1">çabaları baltalamak / boşa çıkarmak</div>
+<div class="text-[11px] text-outline mt-1.5 font-sans">Örnek: barış görüşmeleri, reform adımları</div>
+</div>
+<!-- Collocation 5 (Tam Genişlik) -->
+<div class="sm:col-span-2 p-3.5 rounded-md bg-surface-container border border-outline-variant hover:border-primary/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<div class="font-serif text-base font-semibold text-primary">undermine stability</div>
+<div class="text-xs text-on-surface-variant mt-0.5">istikrarı bozmak / sekteye uğratmak</div>
+</div>
+<span class="text-xs px-2 py-1 rounded bg-surface text-outline border border-outline-variant self-start sm:self-auto">
+                Bölgesel Politika &amp; Güvenlik
+              </span>
+</div>
+</div>
+</div>
+</div>
+<!-- SAĞ SÜTUN / ÇELDİRİCİ VE BİLGİ PANELİ (col-span-4) -->
+<div class="lg:col-span-4 space-y-6">
+<!-- 1. Eş ve Zıt Anlamlılar Kartı -->
+<div class="bg-surface rounded-lg p-5 border border-outline-variant space-y-4">
+<h3 class="text-sm font-semibold text-on-surface flex items-center justify-between">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">swap_horiz</span>
+              Eş ve Zıt Anlamlılar
+            </span>
+<span class="text-[11px] text-outline">B2-C1 Akademik</span>
+</h3>
+<!-- Eş Anlamlılar -->
+<div class="space-y-2">
+<span class="text-xs font-semibold text-on-surface-variant block uppercase tracking-wider">
+              Eş Anlamlılar (Synonyms)
+            </span>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">weaken</span>
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">impair</span>
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">sabotage</span>
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">compromise</span>
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">subvert</span>
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">erode</span>
+</div>
+</div>
+<div class="border-t border-outline-variant/60 my-2"></div>
+<!-- Zıt Anlamlılar -->
+<div class="space-y-2">
+<span class="text-xs font-semibold text-on-surface-variant block uppercase tracking-wider">
+              Zıt Anlamlılar (Antonyms)
+            </span>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">reinforce</span>
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">bolster</span>
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">strengthen</span>
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">consolidate</span>
+<span class="px-2.5 py-1 rounded text-xs bg-surface-container font-serif text-on-surface border border-outline-variant hover:border-primary/40">fortify</span>
+</div>
+</div>
+</div>
+<!-- 2. ÖSYM Sınav Çeldirici Tuzağı (Öğretmen İpucu Merdiveni) -->
+<div class="bg-surface rounded-lg p-5 border border-outline-variant space-y-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<h3 class="text-sm font-semibold text-on-surface">ÖSYM Çeldirici Tuzağı</h3>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Sınav hazırlığında en sık birbirine karıştırılan ve seçeneklerde peş peşe sunulan 'under-' ön ekli sözcükler:
+          </p>
+<div class="space-y-2.5">
+<!-- Çeldirici 1 -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant/70 text-xs space-y-1">
+<div class="flex items-center justify-between font-serif">
+<span class="text-primary font-semibold">undermine</span>
+<span class="text-outline">≠</span>
+<span class="text-error font-semibold">underline</span>
+</div>
+<p class="text-on-surface-variant font-sans pt-0.5">
+<strong class="text-on-surface">underline:</strong> altını çizmek, önemle vurgulamak (olumlu eylem).
+              </p>
+</div>
+<!-- Çeldirici 2 -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant/70 text-xs space-y-1">
+<div class="flex items-center justify-between font-serif">
+<span class="text-primary font-semibold">undermine</span>
+<span class="text-outline">≠</span>
+<span class="text-error font-semibold">undertake</span>
+</div>
+<p class="text-on-surface-variant font-sans pt-0.5">
+<strong class="text-on-surface">undertake:</strong> bir sorumluluğu üstlenmek, girişmek.
+              </p>
+</div>
+<!-- Çeldirici 3 -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant/70 text-xs space-y-1">
+<div class="flex items-center justify-between font-serif">
+<span class="text-primary font-semibold">undermine</span>
+<span class="text-outline">≠</span>
+<span class="text-error font-semibold">underestimate</span>
+</div>
+<p class="text-on-surface-variant font-sans pt-0.5">
+<strong class="text-on-surface">underestimate:</strong> hafife almak, sayısal/oransal eksik tahmin yapmak.
+              </p>
+</div>
+</div>
+<!-- Öğretmen Çözüm Kuralı Kutusu -->
+<div class="p-3 rounded bg-primary-container/40 border border-primary/30 text-xs space-y-1.5">
+<div class="flex items-center gap-1.5 text-on-primary-container font-semibold">
+<span class="material-symbols-outlined text-[16px]">school</span>
+<span>Öğretmen Çözüm Kuralı</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">
+              Cümlede meşru bir otoriteyi, kurumu veya toplumsal güveni koruma çabası varken özne bunu aşındırıyorsa seçeneklerde mutlaka <span class="text-primary font-semibold">undermine</span> aranmalıdır.
+            </p>
+</div>
+</div>
+<!-- 3. Bu Kelimenin Geçtiği ÖSYM Soru Arşivi -->
+<div class="bg-surface rounded-lg p-5 border border-outline-variant space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2.5">
+<h3 class="text-sm font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">history_edu</span>
+              ÖSYM Soru Arşivi
+            </h3>
+<span class="text-[11px] text-outline">3 Kayıt</span>
+</div>
+<div class="space-y-3">
+<!-- Soru 1 -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant space-y-2">
+<div class="flex items-center justify-between text-xs">
+<span class="font-semibold text-on-surface">2023-YDS/2 · Soru 24</span>
+<!-- Doğru Durumu (DS Kuralı: Yeşil + Onay İkonu + Türkçe Metin) -->
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-semibold bg-tertiary-container text-tertiary">
+<span class="material-symbols-outlined text-[13px]">check</span>
+<span>Doğru Cevap</span>
+</span>
+</div>
+<p class="text-xs text-on-surface-variant">Soru Türü: Cümle Tamamlama (Zıtlık Bağlacı)</p>
+<div class="pt-1 flex items-center justify-between border-t border-outline-variant/60 text-xs">
+<a class="text-primary hover:underline font-medium inline-flex items-center gap-1" href="#">
+<span>Soruyu İncele</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+<span class="text-[11px] text-outline">1,25 Puan</span>
+</div>
+</div>
+<!-- Soru 2 -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant space-y-2">
+<div class="flex items-center justify-between text-xs">
+<span class="font-semibold text-on-surface">2021-YDS/1 · Soru 42</span>
+<!-- Yanlış/Çeldirici Durumu (DS Kuralı: Tuğla + Çarpı İkonu + Türkçe Metin) -->
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-semibold bg-error-container text-error">
+<span class="material-symbols-outlined text-[13px]">close</span>
+<span>Çeldirici Seçenek</span>
+</span>
+</div>
+<p class="text-xs text-on-surface-variant">Soru Türü: Paragraf Okuma (Sosyal Bilimler)</p>
+<div class="pt-1 flex items-center justify-between border-t border-outline-variant/60 text-xs">
+<a class="text-primary hover:underline font-medium inline-flex items-center gap-1" href="#">
+<span>Çözüme Git</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+<span class="text-[11px] text-outline">D Seçeneği</span>
+</div>
+</div>
+<!-- Soru 3 -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant space-y-2">
+<div class="flex items-center justify-between text-xs">
+<span class="font-semibold text-on-surface">2019-YDS/3 · Soru 04</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-semibold bg-tertiary-container text-tertiary">
+<span class="material-symbols-outlined text-[13px]">check</span>
+<span>Doğru Cevap</span>
+</span>
+</div>
+<p class="text-xs text-on-surface-variant">Soru Türü: Doğrudan Kelime Bilgisi (Fiil Grubu)</p>
+<div class="pt-1 flex items-center justify-between border-t border-outline-variant/60 text-xs">
+<a class="text-primary hover:underline font-medium inline-flex items-center gap-1" href="#">
+<span>Soruyu İncele</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+<span class="text-[11px] text-outline">1,25 Puan</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ALT PANEL: PEDAGOJİK GÜVENCE VE BELLEK TAKİBİ -->
+<section class="mt-8 bg-surface rounded-lg p-5 border border-outline-variant">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Aralık Tekrarı -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">update</span>
+</div>
+<div>
+<div class="text-xs font-semibold text-on-surface">Aralıklı Tekrar Durumu</div>
+<div class="text-xs text-on-surface-variant mt-0.5">3 gün sonra tekrar kutusuna planlandı</div>
+</div>
+</div>
+<!-- Fonetik Doğrulama -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">graphic_eq</span>
+</div>
+<div>
+<div class="text-xs font-semibold text-on-surface">Fonetik ve Dinleme Kaydı</div>
+<div class="text-xs text-on-surface-variant mt-0.5">Doğal akademik telaffuz kaydı hazır</div>
+</div>
+</div>
+<!-- Eşdeğerlik Değeri -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[20px] text-secondary">verified</span>
+</div>
+<div>
+<div class="text-xs font-semibold text-on-surface">Sınav Puan Katkısı</div>
+<div class="text-xs text-on-surface-variant mt-0.5">Bu sözcüğün tam kavranması sınavda doğrudan +1,25 puan katkı sağlar</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component JSON Source of Truth) -->
+<footer class="w-full py-6 px-8 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-outline-variant bg-background text-caption text-on-surface-variant">
+<div class="text-center md:text-left">
+<p>© 2026 ODAK Akademik Dil Hazırlık Platformu. ÖSYM format ve telif standartlarına tam uyumludur. Tüm hakları saklıdır.</p>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-6 text-xs">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Kullanım Koşulları</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Gizlilik Politikası</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">ÖSYM Mevzuat Uyumu</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Sınav Takvimi</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Destek ve Kılavuz</a>
+</div>
+</footer>
+</body></html>

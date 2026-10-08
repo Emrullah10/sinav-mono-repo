@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AUTH-05 · E-posta Doğrulama - ODAK</title>
+<!-- Google Fonts: Public Sans (Headline), DM Sans (Body/Label), Literata (Reading/Serif) -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&amp;family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration matching Design System Tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "background": "#F4F6F5",
+            "surface": "#FFFFFF",
+            "surface-container": "#FFFFFF",
+            "surface-container-high": "#DCEDEC",
+            "on-surface": "#13232A",
+            "on-surface-variant": "#46565C",
+            "outline": "#77868A",
+            "outline-variant": "#DAE1E0",
+            "primary": "#0E6A6E",
+            "on-primary": "#FFFFFF",
+            "primary-container": "#DCEDEC",
+            "on-primary-container": "#0A5458",
+            "secondary": "#E9A514",
+            "on-secondary": "#13232A",
+            "secondary-container": "#FBEFD2",
+            "tertiary": "#1F7A45",
+            "tertiary-container": "#DFF1E6",
+            "error": "#A33D27",
+            "error-container": "#F8E3DC",
+            "inverse-surface": "#13232A",
+            "chart-1": "#0F9485",
+            "chart-2": "#505AC8",
+            "chart-3": "#BA7F14",
+            "chart-4": "#9E427B"
+          },
+          borderRadius: {
+            "xs": "4px",
+            "sm": "8px",
+            "DEFAULT": "12px",
+            "md": "12px",
+            "lg": "16px",
+            "xl": "24px",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Bricolage Grotesque"],
+            "display": ["Bricolage Grotesque"],
+            "body": ["DM Sans", "sans-serif"],
+            "label": ["DM Sans", "sans-serif"],
+            "reading": ["Literata", "serif"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .blinking-caret {
+      animation: cursor-blink 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;display=swap" rel="stylesheet"><style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.fixed{position:fixed}.relative{position:relative}.sticky{position:sticky}.bottom-0{bottom:0px}.left-0{left:0px}.right-0{right:0px}.top-0{top:0px}.z-40{z-index:40}.z-50{z-index:50}.mx-2{margin-left:0.5rem;margin-right:0.5rem}.mx-auto{margin-left:auto;margin-right:auto}.mt-0\.5{margin-top:0.125rem}.mt-1\.5{margin-top:0.375rem}.mt-2{margin-top:0.5rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-1\.5{height:0.375rem}.h-14{height:3.5rem}.h-16{height:4rem}.h-4{height:1rem}.h-6{height:1.5rem}.h-\[1px\]{height:1px}.h-\[52px\]{height:52px}.min-h-\[44px\]{min-height:44px}.min-h-\[52px\]{min-height:52px}.min-h-screen{min-height:100vh}.w-1\.5{width:0.375rem}.w-12{width:3rem}.w-4{width:1rem}.w-6{width:1.5rem}.w-\[2px\]{width:2px}.w-full{width:100%}.min-w-\[44px\]{min-width:44px}.max-w-\[390px\]{max-width:390px}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.grid-cols-6{grid-template-columns:repeat(6, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.justify-around{justify-content:space-around}.justify-items-center{justify-items:center}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.space-y-0\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.125rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.125rem * var(--tw-space-y-reverse))}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:12px}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:16px}.rounded-xl{border-radius:24px}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-l-2{border-left-width:2px}.border-t{border-top-width:1px}.border-error\/30{border-color:rgb(163 61 39 / 0.3)}.border-outline{--tw-border-opacity:1;border-color:rgb(119 134 138 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(218 225 224 / var(--tw-border-opacity, 1))}.border-primary{--tw-border-opacity:1;border-color:rgb(14 106 110 / var(--tw-border-opacity, 1))}.border-secondary\/40{border-color:rgb(233 165 20 / 0.4)}.border-tertiary\/30{border-color:rgb(31 122 69 / 0.3)}.bg-background{--tw-bg-opacity:1;background-color:rgb(244 246 245 / var(--tw-bg-opacity, 1))}.bg-background\/50{background-color:rgb(244 246 245 / 0.5)}.bg-error{--tw-bg-opacity:1;background-color:rgb(163 61 39 / var(--tw-bg-opacity, 1))}.bg-error-container\/40{background-color:rgb(248 227 220 / 0.4)}.bg-outline-variant{--tw-bg-opacity:1;background-color:rgb(218 225 224 / var(--tw-bg-opacity, 1))}.bg-primary{--tw-bg-opacity:1;background-color:rgb(14 106 110 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.bg-primary-container\/20{background-color:rgb(220 237 236 / 0.2)}.bg-secondary{--tw-bg-opacity:1;background-color:rgb(233 165 20 / var(--tw-bg-opacity, 1))}.bg-secondary-container\/40{background-color:rgb(251 239 210 / 0.4)}.bg-surface{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-tertiary{--tw-bg-opacity:1;background-color:rgb(31 122 69 / var(--tw-bg-opacity, 1))}.bg-tertiary-container{--tw-bg-opacity:1;background-color:rgb(223 241 230 / var(--tw-bg-opacity, 1))}.bg-tertiary-container\/50{background-color:rgb(223 241 230 / 0.5)}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-4{padding-left:1rem;padding-right:1rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.pb-24{padding-bottom:6rem}.pb-6{padding-bottom:1.5rem}.pt-1{padding-top:0.25rem}.pt-2{padding-top:0.5rem}.pt-4{padding-top:1rem}.text-center{text-align:center}.font-body{font-family:DM Sans, sans-serif}.font-headline{font-family:Bricolage Grotesque}.font-label{font-family:DM Sans, sans-serif}.font-reading{font-family:Literata, serif}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[12px\]{font-size:12px}.text-\[13px\]{font-size:13px}.text-\[14px\]{font-size:14px}.text-\[15px\]{font-size:15px}.text-\[16px\]{font-size:16px}.text-\[17px\]{font-size:17px}.text-\[18px\]{font-size:18px}.text-\[20px\]{font-size:20px}.text-\[22px\]{font-size:22px}.text-\[24px\]{font-size:24px}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-5{line-height:1.25rem}.leading-7{line-height:1.75rem}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-error{--tw-text-opacity:1;color:rgb(163 61 39 / var(--tw-text-opacity, 1))}.text-on-primary{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-on-primary-container{--tw-text-opacity:1;color:rgb(10 84 88 / var(--tw-text-opacity, 1))}.text-on-secondary{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(70 86 92 / var(--tw-text-opacity, 1))}.text-outline{--tw-text-opacity:1;color:rgb(119 134 138 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.text-secondary{--tw-text-opacity:1;color:rgb(233 165 20 / var(--tw-text-opacity, 1))}.text-tertiary{--tw-text-opacity:1;color:rgb(31 122 69 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.underline-offset-2{text-underline-offset:2px}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-none{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-100{transition-duration:100ms}.duration-150{transition-duration:150ms}.selection\:bg-primary-container *::selection{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary-container *::selection{--tw-text-opacity:1;color:rgb(10 84 88 / var(--tw-text-opacity, 1))}.selection\:bg-primary-container::selection{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary-container::selection{--tw-text-opacity:1;color:rgb(10 84 88 / var(--tw-text-opacity, 1))}.hover\:bg-on-primary-container:hover{--tw-bg-opacity:1;background-color:rgb(10 84 88 / var(--tw-bg-opacity, 1))}.hover\:bg-primary-container\/40:hover{background-color:rgb(220 237 236 / 0.4)}.hover\:text-on-primary-container:hover{--tw-text-opacity:1;color:rgb(10 84 88 / var(--tw-text-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-\[0\.99\]:active{--tw-scale-x:0.99;--tw-scale-y:0.99;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}</style></head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col justify-between selection:bg-primary-container selection:text-on-primary-container">
+<!-- WRAPPER: Mobile Frame 390px Max Width centered -->
+<div class="w-full max-w-[390px] mx-auto min-h-screen bg-background flex flex-col relative pb-24 shadow-sm">
+<!-- 1. TOP APP BAR (Shared Components JSON execution) -->
+<header class="w-full h-14 max-w-[390px] mx-auto px-4 flex items-center justify-between bg-surface border-b border-outline-variant sticky top-0 z-40">
+<!-- Leading: arrow_back with 44px hit target -->
+<button aria-label="Geri Dön" class="min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface hover:bg-primary-container/40 transition-all duration-150 active:scale-95 rounded-full" type="button">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<!-- Center Title -->
+<h1 class="font-headline font-semibold text-[17px] leading-tight text-on-surface tracking-tight">
+        E-posta Doğrulama
+      </h1>
+<!-- Trailing Action: Giriş Yap -->
+<a class="min-h-[44px] min-w-[44px] flex items-center justify-center font-label font-medium text-[14px] text-primary hover:bg-primary-container/40 transition-all duration-150 active:scale-95 rounded px-2" href="#giris">
+        Giriş Yap
+      </a>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<main class="flex-1 px-4 pt-4 pb-6 space-y-5">
+<!-- 2. STEPPER & SECURITY BADGE SECTION -->
+<div class="space-y-3">
+<!-- Metadata Pill Badge -->
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container text-on-primary-container text-[11px] font-headline font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[14px]">verified_user</span>
+<span>AUTH-05 · GÜVENLİK ADIMI</span>
+</div>
+<!-- Headline & Explanation -->
+<div>
+<h2 class="font-headline font-bold text-[22px] leading-7 text-on-surface">
+            Doğrulama Kodunu Girin
+          </h2>
+<p class="font-body text-[14px] leading-5 text-on-surface-variant mt-1.5">
+<span class="font-semibold text-on-surface">selin.kaya@hacettepe.edu.tr</span> adresine tek kullanımlık 6 haneli güvenlik kodu gönderilmiştir. Hesabınızı aktifleştirmek için kodu giriniz.
+          </p>
+</div>
+<!-- Change Email Action Chip (44px touch height) -->
+<button class="min-h-[44px] inline-flex items-center gap-1.5 text-primary text-[13px] font-label font-semibold hover:text-on-primary-container transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>E-postayı Değiştir</span>
+</button>
+<!-- 3-Step Compact Stepper Indicator -->
+<div class="bg-surface rounded-xl p-3 border border-outline-variant space-y-2">
+<div class="flex items-center justify-between text-[12px] font-label">
+<div class="flex items-center gap-1.5 text-tertiary font-semibold">
+<span class="w-4 h-4 rounded-full bg-tertiary-container text-tertiary flex items-center justify-center text-[10px]">
+<span class="material-symbols-outlined text-[12px]">check</span>
+</span>
+<span>1. E-posta</span>
+</div>
+<div class="h-[1px] flex-1 mx-2 bg-primary"></div>
+<div class="flex items-center gap-1.5 text-primary font-bold">
+<span class="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-[10px]">2</span>
+<span>2. Kod Onayı</span>
+</div>
+<div class="h-[1px] flex-1 mx-2 bg-outline-variant"></div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="w-4 h-4 rounded-full bg-background text-on-surface-variant border border-outline-variant flex items-center justify-center text-[10px]">3</span>
+<span>3. Hazır</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. SIX-DIGIT PIN INPUT CARD -->
+<section class="bg-surface rounded-2xl p-4 border border-outline-variant space-y-4">
+<div class="flex items-center justify-between">
+<label class="text-[13px] font-label font-semibold text-on-surface">
+            Güvenlik Kodu (6 Hane)
+          </label>
+<div class="flex items-center gap-1 text-[11px] font-label text-on-surface-variant bg-background px-2 py-0.5 rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-[13px] text-primary">content_paste</span>
+<span>Panodan yapıştır aktif</span>
+</div>
+</div>
+<!-- 6 OTP Boxes: [4] [8] [2] [1] [ | ] [   ] -->
+<div aria-label="6 haneli doğrulama kodu giriş alanları" class="grid grid-cols-6 gap-2 justify-items-center" role="group">
+<!-- Box 1: Filled '4' -->
+<div class="w-12 h-[52px] rounded-xl border border-primary bg-primary-container/20 flex items-center justify-center font-headline text-[22px] font-bold text-on-surface shadow-none">
+            4
+          </div>
+<!-- Box 2: Filled '8' -->
+<div class="w-12 h-[52px] rounded-xl border border-primary bg-primary-container/20 flex items-center justify-center font-headline text-[22px] font-bold text-on-surface shadow-none">
+            8
+          </div>
+<!-- Box 3: Filled '2' -->
+<div class="w-12 h-[52px] rounded-xl border border-primary bg-primary-container/20 flex items-center justify-center font-headline text-[22px] font-bold text-on-surface shadow-none">
+            2
+          </div>
+<!-- Box 4: Filled '1' -->
+<div class="w-12 h-[52px] rounded-xl border border-primary bg-primary-container/20 flex items-center justify-center font-headline text-[22px] font-bold text-on-surface shadow-none">
+            1
+          </div>
+<!-- Box 5: Active Focus with blinking cursor -->
+<div class="w-12 h-[52px] rounded-xl border-2 border-primary bg-surface flex items-center justify-center shadow-none relative">
+<span class="w-[2px] h-6 bg-primary blinking-caret"></span>
+</div>
+<!-- Box 6: Empty awaiting input -->
+<div class="w-12 h-[52px] rounded-xl border border-outline-variant bg-background/50 flex items-center justify-center text-outline shadow-none">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
+</div>
+</div>
+<!-- Timer & Resend Strip -->
+<div class="flex items-center justify-between pt-1 border-t border-outline-variant text-[13px]">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-label">
+<span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+<span><strong class="text-on-surface font-semibold">00:48</strong> içinde geçerli</span>
+</div>
+<button class="min-h-[44px] min-w-[44px] flex items-center text-primary hover:text-on-primary-container font-label font-semibold text-[13px] active:scale-95 transition-all" type="button">
+            Kodu Yeniden Gönder
+          </button>
+</div>
+</section>
+<!-- 4. PRIMARY ACTION BUTTON -->
+<div>
+<button class="w-full min-h-[52px] rounded-xl bg-primary text-on-primary font-label font-bold text-[15px] flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.99] hover:bg-on-primary-container" type="button">
+<span>Kodu Onayla ve Devam Et</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<p class="text-center text-[12px] font-body text-on-surface-variant mt-2">
+          SMS ile almak isterseniz <button class="text-primary font-semibold underline underline-offset-2" type="button">SMS Kodunu İste</button>
+</p>
+</div>
+<!-- 5. FEEDBACK & INTERACTION SCENARIO MATRIX -->
+<section class="space-y-3 pt-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">rule</span>
+<h3 class="font-headline font-semibold text-[14px] text-on-surface">
+            Doğrulama ve Geri Bildirim Senaryoları
+          </h3>
+</div>
+<div class="space-y-2.5">
+<!-- Durum A: Hatalı / Geçersiz Kod -->
+<div class="bg-error-container/40 rounded-xl p-3 border border-error/30 flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-full bg-error text-white flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</div>
+<div class="space-y-0.5">
+<p class="font-label font-semibold text-[13px] text-error">
+                Hata: Geçersiz Kod
+              </p>
+<p class="font-body text-[12px] text-on-surface leading-snug">
+                Girdiğiniz 6 haneli kod hatalıdır. Kalan deneme hakkı: <strong>2</strong>
+</p>
+</div>
+</div>
+<!-- Durum B: Kodun Süresi Doldu -->
+<div class="bg-secondary-container/40 rounded-xl p-3 border border-secondary/40 flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[15px] fill-icon">history_toggle_off</span>
+</div>
+<div class="space-y-0.5">
+<p class="font-label font-semibold text-[13px] text-on-surface">
+                  Kodun Süresi Doldu
+                </p>
+<p class="font-body text-[12px] text-on-surface-variant leading-snug">
+                  Güvenliğiniz için kod geçerliliğini yitirdi. Lütfen yeni bir kod isteyiniz.
+                </p>
+</div>
+</div>
+<button class="min-h-[44px] px-2.5 rounded-lg border border-outline-variant bg-surface text-primary font-label text-[12px] font-semibold whitespace-nowrap active:scale-95" type="button">
+              Yeni Kod
+            </button>
+</div>
+<!-- Durum C: Başarılı Doğrulama -->
+<div class="bg-tertiary-container/50 rounded-xl p-3 border border-tertiary/30 flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-full bg-tertiary text-white flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[15px]">check</span>
+</div>
+<div class="space-y-0.5">
+<p class="font-label font-semibold text-[13px] text-tertiary">
+                Doğrulandı: E-posta Başarıyla Eşleşti
+              </p>
+<p class="font-body text-[12px] text-on-surface-variant leading-snug">
+                YDS hazırlık profilinize ve seviye tespit testine aktarılıyorsunuz...
+              </p>
+</div>
+</div>
+<!-- Durum D: Ağ Bağlantısı Hatası -->
+<div class="bg-surface rounded-xl p-3 border border-outline-variant flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-full bg-background border border-outline text-on-surface-variant flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[15px]">wifi_off</span>
+</div>
+<div class="space-y-0.5">
+<p class="font-label font-semibold text-[13px] text-on-surface">
+                  Sunucu Bağlantısı Kurulamadı
+                </p>
+<p class="font-body text-[12px] text-on-surface-variant leading-snug">
+                  ÖSYM doğrulama ağında geçici gecikme. Lütfen tekrar deneyin.
+                </p>
+</div>
+</div>
+<button class="min-h-[44px] px-2.5 rounded-lg bg-surface text-primary border border-outline-variant font-label text-[12px] font-semibold active:scale-95" type="button">
+              Yeniden Dene
+            </button>
+</div>
+</div>
+</section>
+<!-- 6. PEDAGOGIC SECURITY & READING NOTIFICATION -->
+<section class="bg-surface rounded-xl p-3.5 border border-outline-variant space-y-3">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary">lock</span>
+<h4 class="font-headline font-semibold text-[13px]">ÖSYM Akreditasyon ve KVKK Güvencesi</h4>
+</div>
+
+<!-- Mini Reading & Vocabulary Warm-Up Tip (Literata Serif) -->
+<div class="p-2.5 rounded-lg bg-background border-l-2 border-primary space-y-1">
+<span class="text-[11px] font-label font-bold uppercase tracking-wider text-primary">Günün Sınav Cümlesi</span>
+<p class="font-reading text-[14px] leading-relaxed text-on-surface italic">
+            “Although time is strictly limited in standardized exams, consistent daily practice ensures long-term accuracy.”
+          </p>
+<p class="text-[11px] font-body text-on-surface-variant">
+<strong>İpucu:</strong> ‘Although’ bağlacı zıtlık bildirir ve YDS Paragraf Tamamlama sorularında anahtar belirleyicidir.
+          </p>
+</div>
+</section>
+</main>
+<!-- 7. BOTTOM NAVIGATION BAR (Shared Components JSON execution) -->
+<!-- Destination count: 5 | Labels: Bugün, Çalış, Deneme, Öğretmen, Ben -->
+<nav class="fixed bottom-0 left-0 right-0 w-full max-w-[390px] mx-auto h-16 z-50 flex items-center justify-around px-2 pb-safe bg-surface border-t border-outline-variant">
+<!-- Tab 1: Bugün (Active authentication/daily start context) -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-primary font-semibold py-1 active:scale-95 transition-transform duration-100" href="#bugun">
+<span class="material-symbols-outlined text-[22px] fill-icon">calendar_today</span>
+<span class="font-label text-[11px] font-semibold text-primary mt-0.5">Bugün</span>
+</a>
+<!-- Tab 2: Çalış -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 active:scale-95 transition-transform duration-100 hover:text-primary" href="#calis">
+<span class="material-symbols-outlined text-[22px]">menu_book</span>
+<span class="font-label text-[11px] text-on-surface-variant mt-0.5">Çalış</span>
+</a>
+<!-- Tab 3: Deneme -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 active:scale-95 transition-transform duration-100 hover:text-primary" href="#deneme">
+<span class="material-symbols-outlined text-[22px]">assignment</span>
+<span class="font-label text-[11px] text-on-surface-variant mt-0.5">Deneme</span>
+</a>
+<!-- Tab 4: Öğretmen -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 active:scale-95 transition-transform duration-100 hover:text-primary" href="#ogretmen">
+<span class="material-symbols-outlined text-[22px]">school</span>
+<span class="font-label text-[11px] text-on-surface-variant mt-0.5">Öğretmen</span>
+</a>
+<!-- Tab 5: Ben -->
+<a class="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center text-on-surface-variant font-normal py-1 active:scale-95 transition-transform duration-100 hover:text-primary" href="#ben">
+<span class="material-symbols-outlined text-[22px]">person</span>
+<span class="font-label text-[11px] text-on-surface-variant mt-0.5">Ben</span>
+</a>
+</nav>
+</div>
+</body></html>

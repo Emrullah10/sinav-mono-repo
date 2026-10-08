@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CMS-07 · Soru ve Madde İstatistikleri | ODAK Akademik Değerlendirme</title>
+<!-- Fonts: Literata (Serif) & Work Sans (Sans-Serif) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface": "#dae4e9",
+            "outline-variant": "#3d4948",
+            "on-primary-container": "#004441",
+            "on-primary-fixed-variant": "#00504d",
+            "inverse-surface": "#dae4e9",
+            "on-primary": "#003735",
+            "surface-variant": "#2d363b",
+            "tertiary-fixed-dim": "#68dd95",
+            "primary-container": "#4db6b0",
+            "inverse-primary": "#006a66",
+            "surface-container-low": "#141d21",
+            "secondary-fixed-dim": "#f9bc42",
+            "on-primary-fixed": "#00201e",
+            "secondary-container": "#bd8700",
+            "on-secondary": "#422d00",
+            "tertiary-fixed": "#85faaf",
+            "tertiary-container": "#44bb77",
+            "on-secondary-fixed": "#271900",
+            "inverse-on-surface": "#293236",
+            "tertiary": "#68dd95",
+            "surface-container": "#182125",
+            "outline": "#879392",
+            "primary": "#71d7d1",
+            "surface-container-highest": "#2d363b",
+            "on-secondary-container": "#392600",
+            "on-surface-variant": "#bdc9c7",
+            "background": "#0c1519",
+            "primary-fixed": "#8ef4ed",
+            "primary-fixed-dim": "#71d7d1",
+            "on-tertiary-container": "#004525",
+            "surface-bright": "#313b3f",
+            "error-container": "#93000a",
+            "surface-tint": "#71d7d1",
+            "error": "#ffb4ab",
+            "on-tertiary-fixed": "#00210f",
+            "on-secondary-fixed-variant": "#5e4200",
+            "on-tertiary-fixed-variant": "#00522c",
+            "surface": "#0c1519",
+            "on-background": "#dae4e9",
+            "surface-container-lowest": "#070f13",
+            "on-tertiary": "#00391d",
+            "on-error": "#690005",
+            "secondary-fixed": "#ffdea8",
+            "secondary": "#f9bc42",
+            "surface-dim": "#0c1519",
+            "on-error-container": "#ffdad6",
+            "surface-container-high": "#222b30"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          spacing: {
+            "margin": "2rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem"
+          },
+          fontFamily: {
+            "legal-code": ["Work Sans"],
+            "label-sm": ["Work Sans"],
+            "body-lg": ["Literata"],
+            "label-lg": ["Work Sans"],
+            "body-sm": ["Literata"],
+            "body-md": ["Literata"],
+            "headline-sm": ["Literata"],
+            "headline-md": ["Literata"],
+            "display-lg": ["Literata"],
+            "label-md": ["Work Sans"],
+            "display-lg-mobile": ["Literata"]
+          },
+          fontSize: {
+            "legal-code": ["12px", { lineHeight: "18px", fontWeight: "400" }],
+            "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.06em", fontWeight: "500" }],
+            "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }],
+            "label-lg": ["14px", { lineHeight: "20px", fontWeight: "600" }],
+            "body-sm": ["13px", { lineHeight: "20px", fontWeight: "400" }],
+            "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }],
+            "headline-sm": ["18px", { lineHeight: "26px", fontWeight: "600" }],
+            "headline-md": ["22px", { lineHeight: "30px", fontWeight: "500" }],
+            "display-lg": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+            "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.04em", fontWeight: "600" }],
+            "display-lg-mobile": ["26px", { lineHeight: "34px", fontWeight: "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Absolute Flat Minimalist Rules - Zero Gradients, Zero Blur */
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      background-color: #0c1519;
+      color: #dae4e9;
+      margin: 0;
+      padding: 0;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .min-touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+<!-- TOP BAR (Institutional Standard) -->
+<header class="w-full bg-surface-container border-b border-outline-variant">
+<div class="w-full px-space-lg max-w-[1440px] mx-auto flex items-center justify-between h-16">
+<!-- Brand & Exam Chip Cluster -->
+<div class="flex items-center gap-space-lg">
+<span class="text-headline-md font-headline-md font-semibold tracking-wider text-primary">ODAK</span>
+<div class="h-6 w-[1px] bg-outline-variant hidden md:block"></div>
+<!-- Sınav Seçici Çip -->
+<div class="min-touch-target flex items-center gap-2 px-3 py-1.5 bg-surface-container-high border border-outline-variant text-on-surface text-label-md font-label-md rounded">
+<span class="material-symbols-outlined text-outline" data-icon="event_note">event_note</span>
+<span>2026-YDS/2 · 22 Kasım</span>
+<span class="px-1.5 py-0.5 bg-surface-variant text-outline rounded text-label-sm font-label-sm">52 gün kaldı</span>
+<span class="material-symbols-outlined text-outline" data-icon="arrow_drop_down">arrow_drop_down</span>
+</div>
+</div>
+<!-- Navigation Tabs (Desktop) -->
+<nav class="hidden lg:flex items-center gap-6 h-16">
+<a class="h-16 flex items-center text-on-surface-variant hover:text-on-surface font-label-md transition-colors" href="#havuz">Soru Havuzu</a>
+<a class="h-16 flex items-center text-primary border-b-2 border-primary font-label-lg" href="#madde-analizi">Madde Analizi</a>
+<a class="h-16 flex items-center text-on-surface-variant hover:text-on-surface font-label-md transition-colors" href="#kalibrasyon">Test Kalibrasyonu</a>
+<a class="h-16 flex items-center text-on-surface-variant hover:text-on-surface font-label-md transition-colors" href="#denemeler">Deneme Sınavları</a>
+<a class="h-16 flex items-center text-on-surface-variant hover:text-on-surface font-label-md transition-colors" href="#akademik-kurul">Akademik Kurul Denetimi</a>
+</nav>
+<!-- Right Action & Profile Cluster -->
+<div class="flex items-center gap-space-md">
+<!-- Notification Bell with Dot Badge -->
+<button aria-label="Bildirimler" class="min-touch-target relative flex items-center justify-center p-2 rounded text-outline hover:text-on-surface hover:bg-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-secondary"></span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<!-- Academic Specialist Profile -->
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded bg-surface-variant border border-outline-variant flex items-center justify-center text-primary font-label-lg">
+            MT
+          </div>
+<div class="hidden sm:flex flex-col text-left">
+<span class="text-label-md font-label-md text-on-surface">Doç. Dr. Murat Taner</span>
+<span class="text-label-sm font-label-sm text-outline">Ölçme Uzmanı</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-space-lg py-space-lg flex flex-col gap-space-lg">
+<!-- Screen Title & Top Metadata Strip -->
+<section class="flex flex-col gap-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-sm border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-outline tracking-wider">ÖLÇME VE DEĞERLENDİRME ANALİTİĞİ</span>
+<span class="text-outline">·</span>
+<span class="text-label-sm font-label-sm text-primary">KLASİK TEST TEORİSİ</span>
+</div>
+<h1 class="text-headline-md font-headline-md text-on-surface mt-1">CMS-07 · Soru ve Madde İstatistikleri</h1>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">
+            Ölçme-değerlendirme kalibrasyonu, klasik test teorisi parametreleri, çeldirici işlerliği ve aday yanıt dağılımları.
+          </p>
+</div>
+<!-- Top Right Actions -->
+<div class="flex flex-wrap items-center gap-3">
+<button class="min-touch-target px-4 py-2 border border-outline-variant text-on-surface text-label-md font-label-md hover:border-primary hover:bg-surface-variant transition-colors flex items-center gap-2 rounded" type="button">
+<span class="material-symbols-outlined text-outline" data-icon="flag">flag</span>
+            Gözden Geçirme Talep Et
+          </button>
+<button class="min-touch-target px-4 py-2 border border-outline-variant text-on-surface text-label-md font-label-md hover:border-primary hover:bg-surface-variant transition-colors flex items-center gap-2 rounded" type="button">
+<span class="material-symbols-outlined text-outline" data-icon="edit_note">edit_note</span>
+            Soru Metnini Düzenle
+          </button>
+<button class="min-touch-target px-4 py-2 bg-primary-container text-on-primary-container font-label-md text-label-md hover:bg-primary transition-colors flex items-center gap-2 rounded" type="button">
+<span class="material-symbols-outlined" data-icon="file_download">file_download</span>
+            Madde Raporunu Dışa Aktar
+          </button>
+</div>
+</div>
+<!-- Item Specification Strip -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-space-md p-space-md bg-surface-container-low border border-outline-variant rounded">
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Soru Kodu</span>
+<span class="text-label-lg font-label-lg text-on-surface font-mono">YDS-2026-SB-0418</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Soru Türü</span>
+<span class="text-label-lg font-label-lg text-on-surface">Cümle Tamamlama</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Hedef Seviye</span>
+<span class="text-label-lg font-label-lg text-primary">C1 İleri Akademik</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Çözüm Sayısı</span>
+<span class="text-label-lg font-label-lg text-on-surface">1.420 Aday</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Son Güncelleme</span>
+<span class="text-label-lg font-label-lg text-on-surface">2 Ekim 2026</span>
+</div>
+</div>
+</section>
+<!-- CRITICAL THRESHOLD WARNING PANEL (GÖZDEN GEÇİR DURUMU) -->
+<section class="bg-surface-container-low border-2 border-secondary p-space-md rounded flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md" role="alert">
+<div class="flex items-start gap-4">
+<!-- Safran Icon Badge (Icon fill only, text in dark or outline) -->
+<div class="w-11 h-11 min-w-[44px] bg-secondary-container text-on-secondary rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 bg-secondary-container text-on-secondary text-label-sm font-label-sm rounded uppercase tracking-wider">
+              Gözden Geçir
+            </span>
+<span class="text-label-md font-label-md text-secondary">
+              Ayırt Edicilik Eşiği Uyarısı: r_pb &lt; 0,20 ve D Seçeneği Pozitif Çeldirici Riski
+            </span>
+</div>
+<p class="text-body-md font-body-md text-on-surface">
+            Madde Ayırt Edicilik İndeksi <strong>0,18</strong> olarak hesaplanmıştır (Kritik Eşik: 0,20). Üst grup ve alt grup adaylar arasında yeterli ayrım sağlanamamaktadır. D seçeneği üst grup adaylar tarafından beklenenden yüksek oranda işaretlenmiştir.
+          </p>
+</div>
+</div>
+<button class="min-touch-target shrink-0 px-5 py-2.5 bg-surface-container-high border-2 border-secondary text-on-surface text-label-md font-label-md hover:bg-surface-variant transition-colors rounded" type="button">
+        Revizyon Kuyruğuna Gönder
+      </button>
+</section>
+<!-- 4-COLUMN SUMMARY STATISTICAL CARDS -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Card 1: Madde Güçlüğü (p) -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-outline">DOĞRU ORANI (MADDE GÜÇLÜĞÜ - p)</span>
+<span class="px-2 py-0.5 text-label-sm font-label-sm text-primary bg-surface-variant border border-outline-variant rounded">Dengeli</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="text-display-lg font-display-lg text-on-surface">0,42</span>
+<span class="text-label-md font-label-md text-outline">Orta Güçlük</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between text-legal-code font-legal-code text-outline">
+<span>Hedef Aralık: 0,30 - 0,70</span>
+<span class="text-primary">Kabul Edilebilir</span>
+</div>
+</div>
+<!-- Card 2: Madde Ayırt Ediciliği (r_pb) -->
+<div class="bg-surface-container-low border-2 border-[#A33D27] p-space-md rounded flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-outline">MADDE AYIRT EDİCİLİĞİ (r_pb)</span>
+<span class="px-2 py-0.5 text-label-sm font-label-sm text-[#EE8A6E] bg-surface-variant border border-[#A33D27] rounded">Kritik Eşik Altı</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="text-display-lg font-display-lg text-[#EE8A6E]">0,18</span>
+<span class="text-label-md font-label-md text-[#EE8A6E]">Yetersiz Ayırt Edicilik</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between text-legal-code font-legal-code text-outline">
+<span>Kritik Eşik: 0,20 altı</span>
+<span class="text-[#EE8A6E]">Revizyon Zorunlu</span>
+</div>
+</div>
+<!-- Card 3: Ortalama Yanıtlama Süresi -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-outline">ORTALAMA YANITLAMA SÜRESİ</span>
+<span class="px-2 py-0.5 text-label-sm font-label-sm text-outline bg-surface-variant border border-outline-variant rounded">Standart</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="text-display-lg font-display-lg text-on-surface">88</span>
+<span class="text-body-md font-body-md text-on-surface-variant">Saniye</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between text-legal-code font-legal-code text-outline">
+<span>Önerilen: 110 sn</span>
+<span>Hızlı terk oranı: %4,2</span>
+</div>
+</div>
+<!-- Card 4: Yardım ve Kalite Bildirimleri -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-outline">YARDIM VE KALİTE BİLDİRİMLERİ</span>
+<span class="px-2 py-0.5 text-label-sm font-label-sm text-secondary bg-surface-variant border border-outline-variant rounded">6 İtiraz</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="text-display-lg font-display-lg text-on-surface">%14</span>
+<span class="text-label-md font-label-md text-outline">İpucu Talebi</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between text-legal-code font-legal-code text-outline">
+<span>Soru kökü itirazı: 4</span>
+<span>İmla/Bağlam: 2</span>
+</div>
+</div>
+</section>
+<!-- MAIN TWO-COLUMN CONTENT GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT WIDE COLUMN: QUESTION STEM & CHOICES ANALYSIS (7 Cols) -->
+<section class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Soru Kökü Kutusu -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded">
+<div class="flex items-center justify-between pb-space-sm mb-space-md border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="article">article</span>
+<span class="text-label-lg font-label-lg text-on-surface">İncelenen Soru Kökü</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline font-mono">Madde ID: 418</span>
+</div>
+<!-- Academic Literata Stem -->
+<div class="p-space-md bg-surface-container rounded border border-outline-variant">
+<p class="text-body-lg font-body-lg text-on-surface leading-relaxed selection:bg-primary-container">
+              Although quantum computational models demonstrate extraordinary theoretical efficiency, <span class="text-primary font-semibold tracking-wide">__________________________________________________</span> .
+            </p>
+</div>
+<p class="text-label-sm font-label-sm text-outline mt-3">
+            * Cümle Tamamlama: Karşıtlık bağlacı ("Although") ile başlayan ana cümlecik için anlamsal ve sentaktik tamamlama beklenir.
+          </p>
+</div>
+<!-- Seçenekler ve Seçilme Dağılımları -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="checklist">checklist</span>
+<span class="text-label-lg font-label-lg text-on-surface">Seçenekler ve Çeldirici Dağılım Analizi</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Toplam: 1.420 Aday</span>
+</div>
+<!-- OPTION A -->
+<div class="p-4 bg-surface-container rounded border border-outline-variant flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-surface-variant text-on-surface-variant border border-outline-variant flex items-center justify-center font-label-lg shrink-0">
+                A
+              </div>
+<div class="flex-grow pt-1">
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  they have already supplanted classical microprocessors in ubiquitous consumer electronics
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-on-surface">%8</span>
+<span class="text-legal-code font-legal-code text-outline block">114 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-outline h-2" style="width: 8%"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Zayıf çeldirici · Beklenen düzeyde işlev gördü.</span>
+</div>
+<!-- OPTION B -->
+<div class="p-4 bg-surface-container rounded border border-outline-variant flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-surface-variant text-on-surface-variant border border-outline-variant flex items-center justify-center font-label-lg shrink-0">
+                B
+              </div>
+<div class="flex-grow pt-1">
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  the architectural paradigms remained fundamentally indistinguishable from mechanical calculators
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-on-surface">%12</span>
+<span class="text-legal-code font-legal-code text-outline block">170 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-outline h-2" style="width: 12%"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Normal çeldirici · Alt grup dağılımı stabil.</span>
+</div>
+<!-- OPTION C (DOĞRU SEÇENEK) -->
+<div class="p-4 bg-surface-container rounded border-2 border-[#1F7A45] flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-[#142127] text-[#4CC27D] border-2 border-[#1F7A45] flex items-center justify-center font-label-lg shrink-0">
+<span class="material-symbols-outlined" data-icon="check">check</span>
+</div>
+<div class="flex-grow pt-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-sm font-label-sm px-2 py-0.5 bg-surface-variant text-[#4CC27D] border border-[#1F7A45] rounded font-semibold">
+                    Doğru Seçenek
+                  </span>
+<span class="text-label-sm font-label-sm text-outline">C Seçeneği</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  their practical physical deployment remains severely hindered by thermodynamic decoherence and fault-tolerance thresholds
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-[#4CC27D] font-bold">%42</span>
+<span class="text-legal-code font-legal-code text-outline block">596 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-[#4CC27D] h-2" style="width: 42%"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm font-label-sm text-outline">
+<span class="text-[#4CC27D]">Madde Güçlüğü Doğrulandı (p = 0,42)</span>
+<span>1 Doğru = 1,25 Puan</span>
+</div>
+</div>
+<!-- OPTION D (KRİTİK UYARILI ÇELDİRİCİ) -->
+<div class="p-4 bg-surface-container rounded border-2 border-[#A33D27] flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-[#142127] text-[#EE8A6E] border-2 border-[#A33D27] flex items-center justify-center font-label-lg shrink-0">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</div>
+<div class="flex-grow pt-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-sm font-label-sm px-2 py-0.5 bg-surface-variant text-[#EE8A6E] border border-[#A33D27] rounded font-semibold">
+                    Kuvvetli / Tehlikeli Çeldirici
+                  </span>
+<span class="text-label-sm font-label-sm text-secondary">Pozitif Çeldirici Riski</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  whereas silicon wafer fabrication has encountered an absolute physical impasse in sub-nanometer lithography
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-[#EE8A6E] font-bold">%31</span>
+<span class="text-legal-code font-legal-code text-outline block">440 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-[#EE8A6E] h-2" style="width: 31%"></div>
+</div>
+<div class="p-2.5 bg-surface-container-low border border-[#A33D27] rounded text-label-sm font-label-sm text-on-surface">
+<span class="text-[#EE8A6E] font-semibold">Kritik Sapma:</span> Üst grubun %28'i bu seçeneğe yöneldi. Cümle başındaki "whereas" bağlacı zıtlık yanılsaması yaratarak üst düzey adayları çeldirmiştir.
+            </div>
+</div>
+<!-- OPTION E -->
+<div class="p-4 bg-surface-container rounded border border-outline-variant flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-surface-variant text-on-surface-variant border border-outline-variant flex items-center justify-center font-label-lg shrink-0">
+                E
+              </div>
+<div class="flex-grow pt-1">
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  so that contemporary cryptography algorithms could definitively safeguard global banking infrastructures indefinitely
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-on-surface">%7</span>
+<span class="text-legal-code font-legal-code text-outline block">100 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-outline h-2" style="width: 7%"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Zayıf çeldirici · Revizyon gerektirmez.</span>
+</div>
+</div>
+</section>
+<!-- RIGHT COLUMN: DETAILED PSYCHOMETRIC ANALYTICS (5 Cols) -->
+<section class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- ÜST / ALT %27 ÇEYREKLİK ANALİZİ GRAFİĞİ -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="leaderboard">leaderboard</span>
+<span class="text-label-lg font-label-lg text-on-surface">Üst / Alt %27 Çeyreklik Dağılımı</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline font-mono">Kelley Yöntemi</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Test toplam puanına göre en başarılı %27'lik dilim (383 aday) ile en düşük %27'lik dilimin (383 aday) seçenek tercihlerinin karşılaştırması.
+          </p>
+<!-- Karşılaştırmalı Çubuklar -->
+<div class="flex flex-col gap-4 mt-2">
+<!-- C SEÇENEĞİ (Doğru) Karşılaştırma -->
+<div class="p-3 bg-surface-container rounded border border-outline-variant">
+<div class="flex justify-between items-center text-label-sm font-label-sm mb-2">
+<span class="text-[#4CC27D] font-semibold">C Seçeneği (Doğru Yanıt)</span>
+<span class="text-outline">Ayırt Edicilik Katkısı</span>
+</div>
+<!-- Üst Grup -->
+<div class="flex items-center gap-3 text-legal-code font-legal-code text-on-surface mb-1.5">
+<span class="w-16 shrink-0 text-outline">Üst Grup:</span>
+<div class="flex-grow bg-surface-variant h-4 rounded overflow-hidden flex">
+<div class="bg-[#4CC27D] h-4" style="width: 54%"></div>
+</div>
+<span class="w-10 text-right font-mono">%54</span>
+</div>
+<!-- Alt Grup -->
+<div class="flex items-center gap-3 text-legal-code font-legal-code text-on-surface">
+<span class="w-16 shrink-0 text-outline">Alt Grup:</span>
+<div class="flex-grow bg-surface-variant h-4 rounded overflow-hidden flex">
+<div class="bg-[#1F7A45] h-4" style="width: 36%"></div>
+</div>
+<span class="w-10 text-right font-mono">%36</span>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-outline text-right">
+                Fark (r_pb payı): +%18 (Yetersiz makas)
+              </div>
+</div>
+<!-- D SEÇENEĞİ (Kritik Çeldirici) Karşılaştırma -->
+<div class="p-3 bg-surface-container rounded border-2 border-[#A33D27]">
+<div class="flex justify-between items-center text-label-sm font-label-sm mb-2">
+<span class="text-[#EE8A6E] font-semibold">D Seçeneği (Ters Çeldirici)</span>
+<span class="text-[#EE8A6E]">Ayırt Edicilik Bozucu</span>
+</div>
+<!-- Üst Grup -->
+<div class="flex items-center gap-3 text-legal-code font-legal-code text-on-surface mb-1.5">
+<span class="w-16 shrink-0 text-outline">Üst Grup:</span>
+<div class="flex-grow bg-surface-variant h-4 rounded overflow-hidden flex">
+<div class="bg-[#EE8A6E] h-4" style="width: 28%"></div>
+</div>
+<span class="w-10 text-right font-mono text-[#EE8A6E] font-bold">%28</span>
+</div>
+<!-- Alt Grup -->
+<div class="flex items-center gap-3 text-legal-code font-legal-code text-on-surface">
+<span class="w-16 shrink-0 text-outline">Alt Grup:</span>
+<div class="flex-grow bg-surface-variant h-4 rounded overflow-hidden flex">
+<div class="bg-[#A33D27] h-4" style="width: 22%"></div>
+</div>
+<span class="w-10 text-right font-mono">%22</span>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-[#EE8A6E]">
+                * Üst grubun alt gruptan daha yüksek oranda bu çeldiriciye gitmesi ayırt ediciliği doğrudan 0,20 altına düşürmüştür.
+              </div>
+</div>
+</div>
+</div>
+<!-- İPUCU VE SÜRE DAĞILIM MATRİSİ -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="timer">timer</span>
+<span class="text-label-lg font-label-lg text-on-surface">İpucu ve Süre Dağılım Matrisi</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Zaman Eğrisi</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-outline">İlk 30 saniyede işaretleyenler</span>
+<span class="text-on-surface font-mono font-semibold">%18 (Hızlı Yanıt)</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden">
+<div class="bg-primary h-2" style="width: 18%"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm font-label-sm pt-1">
+<span class="text-outline">30 - 90 saniye arası (Önerilen Aralık)</span>
+<span class="text-on-surface font-mono font-semibold">%62 (Optimal Aralık)</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden">
+<div class="bg-primary h-2" style="width: 62%"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm font-label-sm pt-1">
+<span class="text-outline">120 saniye üzeri (Zaman tüketenler)</span>
+<span class="text-secondary font-mono font-semibold">%20 (Aşırı Süre)</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden">
+<div class="bg-secondary h-2" style="width: 20%"></div>
+</div>
+</div>
+</div>
+<!-- ADAY HATA BİLDİRİMLERİ MASASI -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="report_problem">report_problem</span>
+<span class="text-label-lg font-label-lg text-on-surface">Aday Hata Bildirimleri Masası</span>
+</div>
+<span class="text-label-sm font-label-sm px-2 py-0.5 bg-surface-variant text-secondary border border-outline-variant rounded">6 Kayıt</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Notification 1 -->
+<div class="p-3 bg-surface-container rounded border border-outline-variant flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-secondary font-semibold">Bağlaç ve Kök İtirazı</span>
+<span class="text-outline">3 Aday</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface">
+                "D seçeneğindeki 'whereas' bağlacı soru kökündeki tezatlıkla örtüşüyor gibi algılanıyor."
+              </p>
+<div class="flex items-center justify-between text-legal-code font-legal-code text-outline mt-1 pt-1 border-t border-outline-variant">
+<span>Durum: <strong class="text-primary">İnceleniyor</strong></span>
+<span>Referans: #TK-8812</span>
+</div>
+</div>
+<!-- Notification 2 -->
+<div class="p-3 bg-surface-container rounded border border-outline-variant flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline font-semibold">Terminoloji Düzeyi</span>
+<span class="text-outline">2 Aday</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface">
+                "Metin bilimsel terminoloji açısından C1 üstü düzeyde."
+              </p>
+<div class="flex items-center justify-between text-legal-code font-legal-code text-outline mt-1 pt-1 border-t border-outline-variant">
+<span>Durum: <strong class="text-primary">İnceleniyor</strong></span>
+<span>Referans: #TK-8819</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- BOTTOM PANEL: ACADEMIC MEASUREMENT THRESHOLDS & NORMS -->
+<section class="bg-surface-container-low border border-outline-variant p-space-lg rounded">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary" data-icon="gavel">gavel</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Akademik Ölçme Eşikleri ve Standartları Özeti</h2>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed">
+<strong>ODAK Ölçme Kuralları:</strong> Madde güçlüğü 0,20 altı (aşırı zor) ya da 0,95 üstü (aşırı kolay) olan sorular ile ayırt edicilik katsayısı (r_pb) 0,20 altında kalan sorular canlı deneme sınav havuzundan otomatik olarak revizyon kuruluna sevk edilir. YDS puanlamasında her doğru soru <strong>1,25 puan</strong> değerindedir; yanlış cevaplar doğruyu eksiltmez.
+      </p>
+</section>
+</main>
+<!-- FOOTER (Institutional Blueprint Compliance) -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant mt-space-xl">
+<div class="w-full px-space-lg max-w-[1440px] mx-auto py-space-md flex flex-col md:flex-row justify-between items-center text-legal-code font-legal-code text-outline gap-4">
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-outline">ODAK</span>
+<span>·</span>
+<span>© 2026 ODAK Akademik Değerlendirme ve Sınav Hazırlık Sistemleri A.Ş. Tüm hakları saklıdır. Madde Kalibrasyon Sürümü 4.2.</span>
+</div>
+<div class="flex flex-wrap items-center gap-4 text-legal-code font-legal-code">
+<a class="hover:text-primary transition-colors" href="#mevzuat">Mevzuat ve Standartlar</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#kvkk">KVKK Aydınlatma Metni</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#telif">Soru Telif Kuralları</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#protokol">Senkronizasyon Protokolü</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#destek">Destek</a>
+</div>
+</div>
+</footer>
+</body></html>

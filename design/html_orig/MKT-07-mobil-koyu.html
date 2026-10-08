@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ODAK · Seviye Tespiti ve Zayıf Alan Analizi</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-highest": "#2d363b",
+            "on-secondary-container": "#00302d",
+            "on-secondary-fixed": "#00201e",
+            "primary-fixed-dim": "#87d3d7",
+            "inverse-on-surface": "#293236",
+            "surface": "#0c1519",
+            "on-primary-fixed-variant": "#004f52",
+            "surface-container-low": "#141d21",
+            "tertiary-fixed": "#ffdeac",
+            "tertiary-container": "#805800",
+            "primary-container": "#0e6a6e",
+            "on-error": "#690005",
+            "tertiary-fixed-dim": "#ffba38",
+            "on-secondary-fixed-variant": "#00504d",
+            "on-tertiary": "#432c00",
+            "error": "#ffb4ab",
+            "on-primary": "#003739",
+            "surface-container-lowest": "#070f13",
+            "surface-tint": "#87d3d7",
+            "on-tertiary-fixed-variant": "#604100",
+            "primary": "#87d3d7",
+            "on-surface": "#dae4e9",
+            "surface-variant": "#2d363b",
+            "inverse-primary": "#0b696d",
+            "on-primary-container": "#9be7eb",
+            "background": "#0c1519",
+            "tertiary": "#ffba38",
+            "on-background": "#dae4e9",
+            "surface-container-high": "#222b30",
+            "surface-bright": "#313b3f",
+            "on-error-container": "#ffdad6",
+            "on-tertiary-fixed": "#281900",
+            "secondary-fixed": "#8ef4ed",
+            "on-surface-variant": "#bec8c9",
+            "on-tertiary-container": "#ffd491",
+            "on-secondary": "#003735",
+            "on-primary-fixed": "#002021",
+            "error-container": "#93000a",
+            "secondary-fixed-dim": "#71d7d1",
+            "secondary-container": "#32a09a",
+            "secondary": "#71d7d1",
+            "inverse-surface": "#dae4e9",
+            "surface-dim": "#0c1519",
+            "primary-fixed": "#a3eff4",
+            "outline-variant": "#3f4949",
+            "outline": "#889393",
+            "surface-container": "#182125"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "space-xl": "2.25rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "margin": "2rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Inter"],
+            "display-lg": ["Inter"],
+            "reading-lg": ["Literata"],
+            "metric-display": ["Inter"],
+            "label-caps": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "reading-md": ["Literata"],
+            "label-md": ["Inter"],
+            "body-default": ["Inter"]
+          },
+          "fontSize": {
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "display-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "reading-lg": ["19px", { "lineHeight": "32px", "fontWeight": "400" }],
+            "metric-display": ["28px", { "lineHeight": "34px", "fontWeight": "600" }],
+            "label-caps": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+            "reading-md": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "body-default": ["15px", { "lineHeight": "22px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#0E171B] text-[#E4ECEC] antialiased min-h-screen flex flex-col justify-between selection:bg-[#0E6A6E] selection:text-[#E4ECEC]">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 h-14 w-full z-40 flex items-center justify-between px-4 bg-[#0E171B] border-b border-[#24343A] max-w-md mx-auto">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded border border-[#24343A] bg-[#142127] flex items-center justify-center">
+<span class="w-2.5 h-2.5 rounded-full border border-[#4DB6B0] bg-[#0E6A6E]"></span>
+</div>
+<span class="font-headline-md text-headline-md font-bold tracking-tight text-[#E4ECEC]">ODAK</span>
+</div>
+<!-- Exam Switcher Chip -->
+<button class="h-8 px-2.5 rounded bg-[#142127] border border-[#24343A] flex items-center gap-1.5 text-[#E4ECEC] active:opacity-80 transition-opacity" type="button">
+<span class="font-label-caps text-label-caps text-[#A9B8BA] uppercase tracking-wider">Hedef</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC]">2026-YDS/2 · 22 Kas (52g)</span>
+<span class="material-symbols-outlined text-[#A9B8BA] text-base" data-icon="expand_more">expand_more</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="w-full max-w-md mx-auto pt-16 pb-24 px-4 flex flex-col gap-6">
+<!-- ÖSYM Başvuru Dönemi Hatırlatma Şeridi -->
+<div class="p-3 bg-[#142127] border border-[#24343A] rounded flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-[#E9A514] shrink-0"></span>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-[#E9A514] tracking-wider uppercase">ÖSYM Resmi Başvuru Dönemi</span>
+<span class="font-body-sm text-body-sm text-[#E4ECEC]">30 Eylül – 8 Ekim 2026 · Son 6 gün</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-[#A9B8BA] text-lg" data-icon="calendar_month">calendar_month</span>
+</div>
+<!-- Giriş ve Açılış Alanı -->
+<section class="flex flex-col gap-3.5">
+<div class="inline-flex items-center gap-1.5 self-start px-2 py-1 bg-[#142127] border border-[#24343A] rounded">
+<span class="material-symbols-outlined text-[#4DB6B0] text-sm" data-icon="verified">verified</span>
+<span class="font-label-caps text-label-caps tracking-widest text-[#4DB6B0] uppercase">Kayıtsız & Ücretsiz Akademik Teşhis · 20 Soru · 30 Dakika</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg font-bold text-[#E4ECEC] tracking-tight">
+        20 Soruda Seviye Tespiti ve Zayıf Alan Analizi
+      </h1>
+<p class="font-body-default text-body-default text-[#A9B8BA] leading-relaxed">
+        Giriş yapmadan ve kredi kartı tanımlamadan hemen başlayın. ÖSYM YDS formatında dengelenmiş 10 temel soru tipinden seçilmiş 20 soruyla mevcut puanınızı öğrenin, eksik olduğunuz konulara özel 52 günlük çalışma planınızı çıkarın.
+      </p>
+<!-- Birincil CTA -->
+<button class="mt-2 w-full min-h-[48px] px-5 py-3 rounded bg-[#0E6A6E] text-[#E4ECEC] font-label-md text-label-md font-semibold tracking-wide flex items-center justify-center gap-2 hover:bg-[#127A7F] active:opacity-90 transition-colors" type="button">
+<span>Ücretsiz Teşhis Testini Başlat</span>
+<span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Alt Güvence Maddeleri -->
+<div class="grid grid-cols-3 gap-2 pt-1">
+<div class="flex items-center gap-1.5 text-[#A9B8BA]">
+<span class="material-symbols-outlined text-[#4DB6B0] text-sm" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm">Kayıt gerektirmez</span>
+</div>
+<div class="flex items-center gap-1.5 text-[#A9B8BA]">
+<span class="material-symbols-outlined text-[#4DB6B0] text-sm" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm">Anında rapor</span>
+</div>
+<div class="flex items-center gap-1.5 text-[#A9B8BA]">
+<span class="material-symbols-outlined text-[#4DB6B0] text-sm" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm">100 Puan projeksiyonu</span>
+</div>
+</div>
+</section>
+<!-- Test Formatı ve Kuralları (Bento / 4'lü Panel) -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h2 class="font-label-caps text-label-caps tracking-widest text-[#A9B8BA] uppercase">Metodoloji ve Sınav Koşulları</h2>
+<span class="font-label-caps text-label-caps text-[#4DB6B0]">ÖSYM Birebir Uyum</span>
+</div>
+<div class="grid grid-cols-2 gap-2.5">
+<div class="p-3.5 bg-[#142127] border border-[#24343A] rounded flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-[#4DB6B0]">
+<span class="material-symbols-outlined text-xl" data-icon="quiz">quiz</span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA]">10 Soru Tipi</span>
+</div>
+<div class="font-headline-md text-headline-md font-semibold text-[#E4ECEC]">20 Özgün Soru</div>
+<p class="font-body-sm text-body-sm text-[#A9B8BA]">Sınavın tüm soru tiplerini temsil eden dengeli örneklem.</p>
+</div>
+<div class="p-3.5 bg-[#142127] border border-[#24343A] rounded flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-[#4DB6B0]">
+<span class="material-symbols-outlined text-xl" data-icon="timer">timer</span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA]">90 sn / Soru</span>
+</div>
+<div class="font-headline-md text-headline-md font-semibold text-[#E4ECEC]">30 Dakika</div>
+<p class="font-body-sm text-body-sm text-[#A9B8BA]">Standart sınav temposu; süre dolduğunda test kesilmez.</p>
+</div>
+<div class="p-3.5 bg-[#142127] border border-[#24343A] rounded flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-[#E9A514]">
+<span class="material-symbols-outlined text-xl" data-icon="rule">rule</span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA]">1,25 Katsayı</span>
+</div>
+<div class="font-headline-md text-headline-md font-semibold text-[#E4ECEC]">Boş Bırakmayınız</div>
+<p class="font-body-sm text-body-sm text-[#A9B8BA]">Yanlış doğruyu götürmez; tahmin yürütülmesi lehinizedir.</p>
+</div>
+<div class="p-3.5 bg-[#142127] border border-[#24343A] rounded flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-[#4DB6B0]">
+<span class="material-symbols-outlined text-xl" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA]">Eksik Teşhisi</span>
+</div>
+<div class="font-headline-md text-headline-md font-semibold text-[#E4ECEC]">Beceri Haritası</div>
+<p class="font-body-sm text-body-sm text-[#A9B8BA]">Soru tipi bazında puan kaybettiğiniz alanların dökümü.</p>
+</div>
+</div>
+</section>
+<!-- 20 Soruluk Teşhis Testi Dağılım Matrisi -->
+<section class="p-4 bg-[#142127] border border-[#24343A] rounded flex flex-col gap-3.5">
+<div class="flex items-center justify-between border-b border-[#24343A] pb-2.5">
+<div>
+<h2 class="font-headline-md text-headline-md font-semibold text-[#E4ECEC]">Test Dağılım Matrisi</h2>
+<p class="font-body-sm text-body-sm text-[#A9B8BA]">YDS soru tiplerinin ağırlıklı simülasyonu</p>
+</div>
+<div class="text-right">
+<span class="font-metric-display text-metric-display text-[#E4ECEC]">25,00</span>
+<span class="block font-label-caps text-label-caps text-[#A9B8BA]">Puan Değeri</span>
+</div>
+</div>
+<div class="flex flex-col divide-y divide-[#24343A]">
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Kelime Bilgisi</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">2 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">2,50 Puan</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Dilbilgisi ve Zamanlar</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">3 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">3,75 Puan</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Kapatma Testi (Cloze Test)</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">2 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">2,50 Puan</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Cümle Tamamlama</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">3 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">3,75 Puan</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Çeviri (İngilizce-Türkçe / Türkçe-İngilizce)</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">2 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">2,50 Puan</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Paragraf Okuma ve Anlama</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">4 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">5,00 Puan</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Diyalog Tamamlama</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">1 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">1,25 Puan</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Anlamca En Yakın Cümle</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">1 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">1,25 Puan</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Paragrafta Anlam Bütünlüğü</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">1 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">1,25 Puan</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4DB6B0]"></span>
+<span class="font-body-default text-body-default text-[#E4ECEC]">Akışı Bozan Cümle</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">1 Soru</span>
+<span class="font-label-md text-label-md font-medium text-[#E4ECEC] w-14 text-right">1,25 Puan</span>
+</div>
+</div>
+</div>
+<div class="pt-2 border-t border-[#24343A] flex items-center justify-between text-[#A9B8BA] font-body-sm text-body-sm">
+<span>Toplam 20 Soru / 25,00 Puan</span>
+<span class="text-[#4DB6B0]">×4 Katsayı ile 100 Puan Tahmini</span>
+</div>
+</section>
+<!-- Gerçek Soru Deneyimi Canlı Önizlemesi -->
+<section class="p-4 bg-[#142127] border border-[#24343A] rounded flex flex-col gap-3">
+<div class="flex items-center justify-between border-b border-[#24343A] pb-2">
+<span class="font-label-caps text-label-caps text-[#4DB6B0] uppercase">Örnek Soru Önizlemesi · Cümle Tamamlama</span>
+<span class="font-body-sm text-body-sm text-[#A9B8BA]">Soru 7 / 20</span>
+</div>
+<p class="font-reading-md text-reading-md text-[#E4ECEC] leading-relaxed">
+        Although archaeological excavations in the fertile crescent have yielded extensive evidence regarding early agricultural settlements, -------.
+      </p>
+<div class="flex flex-col gap-2 pt-1">
+<div class="min-h-[44px] px-3 py-2 bg-[#0E171B] border border-[#24343A] rounded flex items-center gap-3">
+<span class="w-6 h-6 rounded-full border border-[#24343A] text-xs font-semibold flex items-center justify-center text-[#A9B8BA]">A</span>
+<span class="font-reading-md text-reading-md text-[#A9B8BA]">scholars still debate the exact chronology of climatic shifts</span>
+</div>
+<div class="min-h-[44px] px-3 py-2 bg-[#1A2A32] border border-[#4DB6B0] rounded flex items-center gap-3">
+<span class="w-6 h-6 rounded-full border border-[#4DB6B0] text-xs font-semibold flex items-center justify-center text-[#4DB6B0]">B</span>
+<span class="font-reading-md text-reading-md text-[#E4ECEC]">much remains uncertain concerning their complex social stratification</span>
+</div>
+<div class="min-h-[44px] px-3 py-2 bg-[#0E171B] border border-[#24343A] rounded flex items-center gap-3">
+<span class="w-6 h-6 rounded-full border border-[#24343A] text-xs font-semibold flex items-center justify-center text-[#A9B8BA]">C</span>
+<span class="font-reading-md text-reading-md text-[#A9B8BA]">they have documented widespread trade networks across Mesopotamia</span>
+</div>
+</div>
+<div class="p-2.5 bg-[#0E171B] border border-[#24343A] rounded flex items-start gap-2">
+<span class="material-symbols-outlined text-[#E9A514] text-base shrink-0 mt-0.5" data-icon="lightbulb">lightbulb</span>
+<p class="font-body-sm text-body-sm text-[#A9B8BA]">
+          Test esnasında çeldirici analizi ve zıtlık bağlacı kurgusu birebir ÖSYM standartlarında test edilir.
+        </p>
+</div>
+</section>
+<!-- Test Sonunda Elde Edilecek Çıktılar -->
+<section class="p-4 bg-[#142127] border border-[#24343A] rounded flex flex-col gap-3">
+<h2 class="font-headline-md text-headline-md font-semibold text-[#E4ECEC]">Test Sonunda Ne Elde Edeceksiniz?</h2>
+<p class="font-body-sm text-body-sm text-[#A9B8BA]">Test bittiğinde anında oluşturulan kişiselleştirilmiş akademik rapor:</p>
+<div class="flex flex-col gap-2.5 pt-1">
+<div class="p-3 bg-[#0E171B] border border-[#24343A] rounded flex items-start gap-3">
+<div class="w-7 h-7 rounded border border-[#24343A] bg-[#142127] flex items-center justify-center shrink-0 text-[#4DB6B0] font-semibold text-xs">
+            1
+          </div>
+<div>
+<h3 class="font-label-md text-label-md font-medium text-[#E4ECEC]">Soru Tipi Bazlı Başarı Analizi</h3>
+<p class="font-body-sm text-body-sm text-[#A9B8BA] mt-0.5">Hangi soru tiplerinde hata yapıldığını ve soru bazlı süre kullanımınızı gösteren detaylı grafik.</p>
+</div>
+</div>
+<div class="p-3 bg-[#0E171B] border border-[#24343A] rounded flex items-start gap-3">
+<div class="w-7 h-7 rounded border border-[#24343A] bg-[#142127] flex items-center justify-center shrink-0 text-[#4DB6B0] font-semibold text-xs">
+            2
+          </div>
+<div>
+<h3 class="font-label-md text-label-md font-medium text-[#E4ECEC]">80 Soru Üzerinden ÖSYM Puan Projeksiyonu</h3>
+<p class="font-body-sm text-body-sm text-[#A9B8BA] mt-0.5">20 soruluk başarı oranınız 80 soruluk tam sınav ölçeğine yansıtılarak tahmini taban puanınız hesaplanır.</p>
+</div>
+</div>
+<div class="p-3 bg-[#0E171B] border border-[#24343A] rounded flex items-start gap-3">
+<div class="w-7 h-7 rounded border border-[#24343A] bg-[#142127] flex items-center justify-center shrink-0 text-[#4DB6B0] font-semibold text-xs">
+            3
+          </div>
+<div>
+<h3 class="font-label-md text-label-md font-medium text-[#E4ECEC]">52 Günlük Öncelikli Çalışma Rotası</h3>
+<p class="font-body-sm text-body-sm text-[#A9B8BA] mt-0.5">22 Kasım 2026 sınavına kadar hangi gramer ve kelime bloklarına odaklanmanız gerektiğini bildiren reçete.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Başlamadan Önce Önemli Notlar -->
+<section class="p-4 bg-[#142127] border border-[#24343A] rounded flex flex-col gap-2.5">
+<h2 class="font-label-caps text-label-caps text-[#E9A514] uppercase tracking-wider">Başlamadan Önce Önemli Notlar</h2>
+<ul class="flex flex-col gap-2">
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#E9A514] text-base shrink-0 mt-0.5" data-icon="timer">timer</span>
+<span class="font-body-sm text-body-sm text-[#E4ECEC]">Kesintisiz 30 dakika ayırabileceğiniz sessiz bir ortama geçiniz.</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#E9A514] text-base shrink-0 mt-0.5" data-icon="assignment_late">assignment_late</span>
+<span class="font-body-sm text-body-sm text-[#E4ECEC]">ÖSYM puanlamasında yanlış doğruyu götürmediğinden hiçbir soruyu boş bırakmayınız.</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#E9A514] text-base shrink-0 mt-0.5" data-icon="menu_book">menu_book</span>
+<span class="font-body-sm text-body-sm text-[#E4ECEC]">Teşhisin doğruluğu için sözlük ya da arama motoru kullanmayınız.</span>
+</li>
+</ul>
+</section>
+<!-- İkincil Alt Aksiyon Alanı -->
+<section class="flex flex-col gap-2 pt-2">
+<button class="w-full min-h-[48px] px-5 py-3 rounded bg-[#0E6A6E] text-[#E4ECEC] font-label-md text-label-md font-semibold tracking-wide flex items-center justify-center gap-2 hover:bg-[#127A7F] active:opacity-90 transition-colors" type="button">
+<span>Hazırsanız Teşhis Sınavını Başlat</span>
+<span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<p class="text-center font-label-caps text-label-caps text-[#A9B8BA]">
+        ODAK · Akademik Sınav Hazırlık Metodolojisi
+      </p>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 w-full z-50 h-16 flex items-center justify-around px-2 bg-[#142127] border-t border-[#24343A] max-w-md mx-auto">
+<!-- Bugün -->
+<a class="flex flex-col items-center justify-center text-[#A9B8BA] py-1 min-h-[44px] min-w-[56px] active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md mt-0.5 text-xs">Bugün</span>
+</a>
+<!-- Çalış -->
+<a class="flex flex-col items-center justify-center text-[#A9B8BA] py-1 min-h-[44px] min-w-[56px] active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="menu_book">menu_book</span>
+<span class="font-label-md text-label-md mt-0.5 text-xs">Çalış</span>
+</a>
+<!-- Deneme (Active for Seviye Tespiti / Test Tanıtımı) -->
+<a class="flex flex-col items-center justify-center text-[#87d3d7] font-bold py-1 min-h-[44px] min-w-[56px] active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="assignment" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span class="font-label-md text-label-md mt-0.5 text-xs">Deneme</span>
+</a>
+<!-- Öğretmen -->
+<a class="flex flex-col items-center justify-center text-[#A9B8BA] py-1 min-h-[44px] min-w-[56px] active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="support_agent">support_agent</span>
+<span class="font-label-md text-label-md mt-0.5 text-xs">Öğretmen</span>
+</a>
+<!-- Ben -->
+<a class="flex flex-col items-center justify-center text-[#A9B8BA] py-1 min-h-[44px] min-w-[56px] active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="person">person</span>
+<span class="font-label-md text-label-md mt-0.5 text-xs">Ben</span>
+</a>
+</nav>
+</body></html>

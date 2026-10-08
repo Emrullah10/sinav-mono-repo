@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>CMS-07 · Soru ve Madde İstatistikleri | ODAK Akademik Değerlendirme</title>
+<!-- Fonts: Literata (Serif) & Work Sans (Sans-Serif) -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface": "#dae4e9",
+            "outline-variant": "#3d4948",
+            "on-primary-container": "#004441",
+            "on-primary-fixed-variant": "#00504d",
+            "inverse-surface": "#dae4e9",
+            "on-primary": "#003735",
+            "surface-variant": "#2d363b",
+            "tertiary-fixed-dim": "#68dd95",
+            "primary-container": "#4db6b0",
+            "inverse-primary": "#006a66",
+            "surface-container-low": "#141d21",
+            "secondary-fixed-dim": "#f9bc42",
+            "on-primary-fixed": "#00201e",
+            "secondary-container": "#bd8700",
+            "on-secondary": "#422d00",
+            "tertiary-fixed": "#85faaf",
+            "tertiary-container": "#44bb77",
+            "on-secondary-fixed": "#271900",
+            "inverse-on-surface": "#293236",
+            "tertiary": "#68dd95",
+            "surface-container": "#182125",
+            "outline": "#879392",
+            "primary": "#71d7d1",
+            "surface-container-highest": "#2d363b",
+            "on-secondary-container": "#392600",
+            "on-surface-variant": "#bdc9c7",
+            "background": "#0c1519",
+            "primary-fixed": "#8ef4ed",
+            "primary-fixed-dim": "#71d7d1",
+            "on-tertiary-container": "#004525",
+            "surface-bright": "#313b3f",
+            "error-container": "#93000a",
+            "surface-tint": "#71d7d1",
+            "error": "#ffb4ab",
+            "on-tertiary-fixed": "#00210f",
+            "on-secondary-fixed-variant": "#5e4200",
+            "on-tertiary-fixed-variant": "#00522c",
+            "surface": "#0c1519",
+            "on-background": "#dae4e9",
+            "surface-container-lowest": "#070f13",
+            "on-tertiary": "#00391d",
+            "on-error": "#690005",
+            "secondary-fixed": "#ffdea8",
+            "secondary": "#f9bc42",
+            "surface-dim": "#0c1519",
+            "on-error-container": "#ffdad6",
+            "surface-container-high": "#222b30"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          spacing: {
+            "margin": "2rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem"
+          },
+          fontFamily: {
+            "legal-code": ["Figtree"],
+            "label-sm": ["Figtree"],
+            "body-lg": ["Literata"],
+            "label-lg": ["Figtree"],
+            "body-sm": ["Literata"],
+            "body-md": ["Literata"],
+            "headline-sm": ["Bricolage Grotesque"],
+            "headline-md": ["Bricolage Grotesque"],
+            "display-lg": ["Bricolage Grotesque"],
+            "label-md": ["Figtree"],
+            "display-lg-mobile": ["Bricolage Grotesque"]
+          },
+          fontSize: {
+            "legal-code": ["12px", { lineHeight: "18px", fontWeight: "400" }],
+            "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.06em", fontWeight: "500" }],
+            "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }],
+            "label-lg": ["14px", { lineHeight: "20px", fontWeight: "600" }],
+            "body-sm": ["13px", { lineHeight: "20px", fontWeight: "400" }],
+            "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }],
+            "headline-sm": ["18px", { lineHeight: "26px", fontWeight: "600" }],
+            "headline-md": ["22px", { lineHeight: "30px", fontWeight: "500" }],
+            "display-lg": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+            "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.04em", fontWeight: "600" }],
+            "display-lg-mobile": ["26px", { lineHeight: "34px", fontWeight: "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Absolute Flat Minimalist Rules - Zero Gradients, Zero Blur */
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      background-color: #0c1519;
+      color: #dae4e9;
+      margin: 0;
+      padding: 0;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .min-touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&amp;family=Bricolage+Grotesque:wght@600;700;800&amp;family=Literata:wght@400;500;600&amp;display=swap" rel="stylesheet"><style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.absolute{position:absolute}.relative{position:relative}.right-2\.5{right:0.625rem}.top-2\.5{top:0.625rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-2{margin-bottom:0.5rem}.mb-space-md{margin-bottom:1rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-space-xl{margin-top:2.5rem}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-11{height:2.75rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-4{height:1rem}.h-6{height:1.5rem}.h-9{height:2.25rem}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-11{width:2.75rem}.w-16{width:4rem}.w-2{width:0.5rem}.w-9{width:2.25rem}.w-\[1px\]{width:1px}.w-full{width:100%}.min-w-\[44px\]{min-width:44px}.max-w-\[1440px\]{max-width:1440px}.shrink-0{flex-shrink:0}.flex-grow{flex-grow:1}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.items-baseline{align-items:baseline}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-space-lg{gap:1.5rem}.gap-space-md{gap:1rem}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.rounded{border-radius:0.125rem}.rounded-full{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-t{border-top-width:1px}.border-\[\#1F7A45\]{--tw-border-opacity:1;border-color:rgb(31 122 69 / var(--tw-border-opacity, 1))}.border-\[\#A33D27\]{--tw-border-opacity:1;border-color:rgb(163 61 39 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(61 73 72 / var(--tw-border-opacity, 1))}.border-primary{--tw-border-opacity:1;border-color:rgb(113 215 209 / var(--tw-border-opacity, 1))}.border-secondary{--tw-border-opacity:1;border-color:rgb(249 188 66 / var(--tw-border-opacity, 1))}.bg-\[\#142127\]{--tw-bg-opacity:1;background-color:rgb(20 33 39 / var(--tw-bg-opacity, 1))}.bg-\[\#1F7A45\]{--tw-bg-opacity:1;background-color:rgb(31 122 69 / var(--tw-bg-opacity, 1))}.bg-\[\#4CC27D\]{--tw-bg-opacity:1;background-color:rgb(76 194 125 / var(--tw-bg-opacity, 1))}.bg-\[\#A33D27\]{--tw-bg-opacity:1;background-color:rgb(163 61 39 / var(--tw-bg-opacity, 1))}.bg-\[\#EE8A6E\]{--tw-bg-opacity:1;background-color:rgb(238 138 110 / var(--tw-bg-opacity, 1))}.bg-outline{--tw-bg-opacity:1;background-color:rgb(135 147 146 / var(--tw-bg-opacity, 1))}.bg-outline-variant{--tw-bg-opacity:1;background-color:rgb(61 73 72 / var(--tw-bg-opacity, 1))}.bg-primary{--tw-bg-opacity:1;background-color:rgb(113 215 209 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(77 182 176 / var(--tw-bg-opacity, 1))}.bg-secondary{--tw-bg-opacity:1;background-color:rgb(249 188 66 / var(--tw-bg-opacity, 1))}.bg-secondary-container{--tw-bg-opacity:1;background-color:rgb(189 135 0 / var(--tw-bg-opacity, 1))}.bg-surface{--tw-bg-opacity:1;background-color:rgb(12 21 25 / var(--tw-bg-opacity, 1))}.bg-surface-container{--tw-bg-opacity:1;background-color:rgb(24 33 37 / var(--tw-bg-opacity, 1))}.bg-surface-container-high{--tw-bg-opacity:1;background-color:rgb(34 43 48 / var(--tw-bg-opacity, 1))}.bg-surface-container-low{--tw-bg-opacity:1;background-color:rgb(20 29 33 / var(--tw-bg-opacity, 1))}.bg-surface-container-lowest{--tw-bg-opacity:1;background-color:rgb(7 15 19 / var(--tw-bg-opacity, 1))}.bg-surface-variant{--tw-bg-opacity:1;background-color:rgb(45 54 59 / var(--tw-bg-opacity, 1))}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-space-lg{padding:1.5rem}.p-space-md{padding:1rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-space-lg{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-space-lg{padding-top:1.5rem;padding-bottom:1.5rem}.py-space-md{padding-top:1rem;padding-bottom:1rem}.pb-space-sm{padding-bottom:0.5rem}.pt-1{padding-top:0.25rem}.pt-3{padding-top:0.75rem}.text-left{text-align:left}.text-right{text-align:right}.font-body-lg{font-family:Literata}.font-body-md{font-family:Literata}.font-body-sm{font-family:Literata}.font-display-lg{font-family:Bricolage Grotesque}.font-headline-md{font-family:Bricolage Grotesque}.font-headline-sm{font-family:Bricolage Grotesque}.font-label-lg{font-family:Figtree}.font-label-md{font-family:Figtree}.font-label-sm{font-family:Figtree}.font-legal-code{font-family:Figtree}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-body-lg{font-size:16px;line-height:26px;font-weight:400}.text-body-md{font-size:14px;line-height:22px;font-weight:400}.text-body-sm{font-size:13px;line-height:20px;font-weight:400}.text-display-lg{font-size:32px;line-height:40px;font-weight:600}.text-headline-md{font-size:22px;line-height:30px;font-weight:500}.text-headline-sm{font-size:18px;line-height:26px;font-weight:600}.text-label-lg{font-size:14px;line-height:20px;font-weight:600}.text-label-md{font-size:12px;line-height:16px;letter-spacing:0.04em;font-weight:600}.text-label-sm{font-size:11px;line-height:14px;letter-spacing:0.06em;font-weight:500}.text-legal-code{font-size:12px;line-height:18px;font-weight:400}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.text-\[\#4CC27D\]{--tw-text-opacity:1;color:rgb(76 194 125 / var(--tw-text-opacity, 1))}.text-\[\#EE8A6E\]{--tw-text-opacity:1;color:rgb(238 138 110 / var(--tw-text-opacity, 1))}.text-on-primary-container{--tw-text-opacity:1;color:rgb(0 68 65 / var(--tw-text-opacity, 1))}.text-on-secondary{--tw-text-opacity:1;color:rgb(66 45 0 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(218 228 233 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(189 201 199 / var(--tw-text-opacity, 1))}.text-outline{--tw-text-opacity:1;color:rgb(135 147 146 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(113 215 209 / var(--tw-text-opacity, 1))}.text-secondary{--tw-text-opacity:1;color:rgb(249 188 66 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-primary-container *::selection{--tw-bg-opacity:1;background-color:rgb(77 182 176 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary-container *::selection{--tw-text-opacity:1;color:rgb(0 68 65 / var(--tw-text-opacity, 1))}.selection\:bg-primary-container::selection{--tw-bg-opacity:1;background-color:rgb(77 182 176 / var(--tw-bg-opacity, 1))}.selection\:text-on-primary-container::selection{--tw-text-opacity:1;color:rgb(0 68 65 / var(--tw-text-opacity, 1))}.hover\:border-primary:hover{--tw-border-opacity:1;border-color:rgb(113 215 209 / var(--tw-border-opacity, 1))}.hover\:bg-primary:hover{--tw-bg-opacity:1;background-color:rgb(113 215 209 / var(--tw-bg-opacity, 1))}.hover\:bg-surface-variant:hover{--tw-bg-opacity:1;background-color:rgb(45 54 59 / var(--tw-bg-opacity, 1))}.hover\:text-on-surface:hover{--tw-text-opacity:1;color:rgb(218 228 233 / var(--tw-text-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(113 215 209 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:flex{display:flex}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}@media (min-width: 768px){.md\:block{display:block}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}}@media (min-width: 1024px){.lg\:col-span-5{grid-column:span 5 / span 5}.lg\:col-span-7{grid-column:span 7 / span 7}.lg\:flex{display:flex}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.lg\:flex-row{flex-direction:row}.lg\:items-center{align-items:center}}</style></head>
+<body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+<!-- TOP BAR (Institutional Standard) -->
+<header class="w-full bg-surface-container border-b border-outline-variant">
+<div class="w-full px-space-lg max-w-[1440px] mx-auto flex items-center justify-between h-16">
+<!-- Brand & Exam Chip Cluster -->
+<div class="flex items-center gap-space-lg">
+<span class="text-headline-md font-headline-md font-semibold tracking-wider text-primary">ODAK</span>
+<div class="h-6 w-[1px] bg-outline-variant hidden md:block"></div>
+<!-- Sınav Seçici Çip -->
+<div class="min-touch-target flex items-center gap-2 px-3 py-1.5 bg-surface-container-high border border-outline-variant text-on-surface text-label-md font-label-md rounded">
+<span class="material-symbols-outlined text-outline" data-icon="event_note">event_note</span>
+<span>2026-YDS/2 · 22 Kasım</span>
+<span class="px-1.5 py-0.5 bg-surface-variant text-outline rounded text-label-sm font-label-sm">52 gün kaldı</span>
+<span class="material-symbols-outlined text-outline" data-icon="arrow_drop_down">arrow_drop_down</span>
+</div>
+</div>
+<!-- Navigation Tabs (Desktop) -->
+<nav class="hidden lg:flex items-center gap-6 h-16">
+<a class="h-16 flex items-center text-on-surface-variant hover:text-on-surface font-label-md transition-colors" href="#havuz">Soru Havuzu</a>
+<a class="h-16 flex items-center text-primary border-b-2 border-primary font-label-lg" href="#madde-analizi">Madde Analizi</a>
+<a class="h-16 flex items-center text-on-surface-variant hover:text-on-surface font-label-md transition-colors" href="#kalibrasyon">Test Kalibrasyonu</a>
+<a class="h-16 flex items-center text-on-surface-variant hover:text-on-surface font-label-md transition-colors" href="#denemeler">Deneme Sınavları</a>
+<a class="h-16 flex items-center text-on-surface-variant hover:text-on-surface font-label-md transition-colors" href="#akademik-kurul">Akademik Kurul Denetimi</a>
+</nav>
+<!-- Right Action & Profile Cluster -->
+<div class="flex items-center gap-space-md">
+<!-- Notification Bell with Dot Badge -->
+<button aria-label="Bildirimler" class="min-touch-target relative flex items-center justify-center p-2 rounded text-outline hover:text-on-surface hover:bg-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-secondary"></span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<!-- Academic Specialist Profile -->
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded bg-surface-variant border border-outline-variant flex items-center justify-center text-primary font-label-lg">
+            MT
+          </div>
+<div class="hidden sm:flex flex-col text-left">
+<span class="text-label-md font-label-md text-on-surface">Doç. Dr. Murat Taner</span>
+<span class="text-label-sm font-label-sm text-outline">Ölçme Uzmanı</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-space-lg py-space-lg flex flex-col gap-space-lg">
+<!-- Screen Title & Top Metadata Strip -->
+<section class="flex flex-col gap-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-sm border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-outline tracking-wider">ÖLÇME VE DEĞERLENDİRME ANALİTİĞİ</span>
+<span class="text-outline">·</span>
+<span class="text-label-sm font-label-sm text-primary">KLASİK TEST TEORİSİ</span>
+</div>
+<h1 class="text-headline-md font-headline-md text-on-surface mt-1">CMS-07 · Soru ve Madde İstatistikleri</h1>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">
+            Ölçme-değerlendirme kalibrasyonu, klasik test teorisi parametreleri, çeldirici işlerliği ve aday yanıt dağılımları.
+          </p>
+</div>
+<!-- Top Right Actions -->
+<div class="flex flex-wrap items-center gap-3">
+<button class="min-touch-target px-4 py-2 border border-outline-variant text-on-surface text-label-md font-label-md hover:border-primary hover:bg-surface-variant transition-colors flex items-center gap-2 rounded" type="button">
+<span class="material-symbols-outlined text-outline" data-icon="flag">flag</span>
+            Gözden Geçirme Talep Et
+          </button>
+<button class="min-touch-target px-4 py-2 border border-outline-variant text-on-surface text-label-md font-label-md hover:border-primary hover:bg-surface-variant transition-colors flex items-center gap-2 rounded" type="button">
+<span class="material-symbols-outlined text-outline" data-icon="edit_note">edit_note</span>
+            Soru Metnini Düzenle
+          </button>
+<button class="min-touch-target px-4 py-2 bg-primary-container text-on-primary-container font-label-md text-label-md hover:bg-primary transition-colors flex items-center gap-2 rounded" type="button">
+<span class="material-symbols-outlined" data-icon="file_download">file_download</span>
+            Madde Raporunu Dışa Aktar
+          </button>
+</div>
+</div>
+<!-- Item Specification Strip -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-space-md p-space-md bg-surface-container-low border border-outline-variant rounded">
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Soru Kodu</span>
+<span class="text-label-lg font-label-lg text-on-surface font-mono">YDS-2026-SB-0418</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Soru Türü</span>
+<span class="text-label-lg font-label-lg text-on-surface">Cümle Tamamlama</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Hedef Seviye</span>
+<span class="text-label-lg font-label-lg text-primary">C1 İleri Akademik</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Çözüm Sayısı</span>
+<span class="text-label-lg font-label-lg text-on-surface">1.420 Aday</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline block">Son Güncelleme</span>
+<span class="text-label-lg font-label-lg text-on-surface">2 Ekim 2026</span>
+</div>
+</div>
+</section>
+<!-- CRITICAL THRESHOLD WARNING PANEL (GÖZDEN GEÇİR DURUMU) -->
+<section class="bg-surface-container-low border-2 border-secondary p-space-md rounded flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md" role="alert">
+<div class="flex items-start gap-4">
+<!-- Safran Icon Badge (Icon fill only, text in dark or outline) -->
+<div class="w-11 h-11 min-w-[44px] bg-secondary-container text-on-secondary rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 bg-secondary-container text-on-secondary text-label-sm font-label-sm rounded uppercase tracking-wider">
+              Gözden Geçir
+            </span>
+<span class="text-label-md font-label-md text-secondary">
+              Ayırt Edicilik Eşiği Uyarısı: r_pb &lt; 0,20 ve D Seçeneği Pozitif Çeldirici Riski
+            </span>
+</div>
+<p class="text-body-md font-body-md text-on-surface">
+            Madde Ayırt Edicilik İndeksi <strong>0,18</strong> olarak hesaplanmıştır (Kritik Eşik: 0,20). Üst grup ve alt grup adaylar arasında yeterli ayrım sağlanamamaktadır. D seçeneği üst grup adaylar tarafından beklenenden yüksek oranda işaretlenmiştir.
+          </p>
+</div>
+</div>
+<button class="min-touch-target shrink-0 px-5 py-2.5 bg-surface-container-high border-2 border-secondary text-on-surface text-label-md font-label-md hover:bg-surface-variant transition-colors rounded" type="button">
+        Revizyon Kuyruğuna Gönder
+      </button>
+</section>
+<!-- 4-COLUMN SUMMARY STATISTICAL CARDS -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Card 1: Madde Güçlüğü (p) -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-outline">DOĞRU ORANI (MADDE GÜÇLÜĞÜ - p)</span>
+<span class="px-2 py-0.5 text-label-sm font-label-sm text-primary bg-surface-variant border border-outline-variant rounded">Dengeli</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="text-display-lg font-display-lg text-on-surface">0,42</span>
+<span class="text-label-md font-label-md text-outline">Orta Güçlük</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between text-legal-code font-legal-code text-outline">
+<span>Hedef Aralık: 0,30 - 0,70</span>
+<span class="text-primary">Kabul Edilebilir</span>
+</div>
+</div>
+<!-- Card 2: Madde Ayırt Ediciliği (r_pb) -->
+<div class="bg-surface-container-low border-2 border-[#A33D27] p-space-md rounded flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-outline">MADDE AYIRT EDİCİLİĞİ (r_pb)</span>
+<span class="px-2 py-0.5 text-label-sm font-label-sm text-[#EE8A6E] bg-surface-variant border border-[#A33D27] rounded">Kritik Eşik Altı</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="text-display-lg font-display-lg text-[#EE8A6E]">0,18</span>
+<span class="text-label-md font-label-md text-[#EE8A6E]">Yetersiz Ayırt Edicilik</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between text-legal-code font-legal-code text-outline">
+<span>Kritik Eşik: 0,20 altı</span>
+<span class="text-[#EE8A6E]">Revizyon Zorunlu</span>
+</div>
+</div>
+<!-- Card 3: Ortalama Yanıtlama Süresi -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-outline">ORTALAMA YANITLAMA SÜRESİ</span>
+<span class="px-2 py-0.5 text-label-sm font-label-sm text-outline bg-surface-variant border border-outline-variant rounded">Standart</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="text-display-lg font-display-lg text-on-surface">88</span>
+<span class="text-body-md font-body-md text-on-surface-variant">Saniye</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between text-legal-code font-legal-code text-outline">
+<span>Önerilen: 110 sn</span>
+<span>Hızlı terk oranı: %4,2</span>
+</div>
+</div>
+<!-- Card 4: Yardım ve Kalite Bildirimleri -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-outline">YARDIM VE KALİTE BİLDİRİMLERİ</span>
+<span class="px-2 py-0.5 text-label-sm font-label-sm text-secondary bg-surface-variant border border-outline-variant rounded">6 İtiraz</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="text-display-lg font-display-lg text-on-surface">%14</span>
+<span class="text-label-md font-label-md text-outline">İpucu Talebi</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between text-legal-code font-legal-code text-outline">
+<span>Soru kökü itirazı: 4</span>
+<span>İmla/Bağlam: 2</span>
+</div>
+</div>
+</section>
+<!-- MAIN TWO-COLUMN CONTENT GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT WIDE COLUMN: QUESTION STEM & CHOICES ANALYSIS (7 Cols) -->
+<section class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Soru Kökü Kutusu -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded">
+<div class="flex items-center justify-between pb-space-sm mb-space-md border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="article">article</span>
+<span class="text-label-lg font-label-lg text-on-surface">İncelenen Soru Kökü</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline font-mono">Madde ID: 418</span>
+</div>
+<!-- Academic Literata Stem -->
+<div class="p-space-md bg-surface-container rounded border border-outline-variant">
+<p class="text-body-lg font-body-lg text-on-surface leading-relaxed selection:bg-primary-container">
+              Although quantum computational models demonstrate extraordinary theoretical efficiency, <span class="text-primary font-semibold tracking-wide">__________________________________________________</span> .
+            </p>
+</div>
+<p class="text-label-sm font-label-sm text-outline mt-3">
+            * Cümle Tamamlama: Karşıtlık bağlacı ("Although") ile başlayan ana cümlecik için anlamsal ve sentaktik tamamlama beklenir.
+          </p>
+</div>
+<!-- Seçenekler ve Seçilme Dağılımları -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="checklist">checklist</span>
+<span class="text-label-lg font-label-lg text-on-surface">Seçenekler ve Çeldirici Dağılım Analizi</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Toplam: 1.420 Aday</span>
+</div>
+<!-- OPTION A -->
+<div class="p-4 bg-surface-container rounded border border-outline-variant flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-surface-variant text-on-surface-variant border border-outline-variant flex items-center justify-center font-label-lg shrink-0">
+                A
+              </div>
+<div class="flex-grow pt-1">
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  they have already supplanted classical microprocessors in ubiquitous consumer electronics
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-on-surface">%8</span>
+<span class="text-legal-code font-legal-code text-outline block">114 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-outline h-2" style="width: 8%"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Zayıf çeldirici · Beklenen düzeyde işlev gördü.</span>
+</div>
+<!-- OPTION B -->
+<div class="p-4 bg-surface-container rounded border border-outline-variant flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-surface-variant text-on-surface-variant border border-outline-variant flex items-center justify-center font-label-lg shrink-0">
+                B
+              </div>
+<div class="flex-grow pt-1">
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  the architectural paradigms remained fundamentally indistinguishable from mechanical calculators
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-on-surface">%12</span>
+<span class="text-legal-code font-legal-code text-outline block">170 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-outline h-2" style="width: 12%"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Normal çeldirici · Alt grup dağılımı stabil.</span>
+</div>
+<!-- OPTION C (DOĞRU SEÇENEK) -->
+<div class="p-4 bg-surface-container rounded border-2 border-[#1F7A45] flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-[#142127] text-[#4CC27D] border-2 border-[#1F7A45] flex items-center justify-center font-label-lg shrink-0">
+<span class="material-symbols-outlined" data-icon="check">check</span>
+</div>
+<div class="flex-grow pt-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-sm font-label-sm px-2 py-0.5 bg-surface-variant text-[#4CC27D] border border-[#1F7A45] rounded font-semibold">
+                    Doğru Seçenek
+                  </span>
+<span class="text-label-sm font-label-sm text-outline">C Seçeneği</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  their practical physical deployment remains severely hindered by thermodynamic decoherence and fault-tolerance thresholds
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-[#4CC27D] font-bold">%42</span>
+<span class="text-legal-code font-legal-code text-outline block">596 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-[#4CC27D] h-2" style="width: 42%"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm font-label-sm text-outline">
+<span class="text-[#4CC27D]">Madde Güçlüğü Doğrulandı (p = 0,42)</span>
+<span>1 Doğru = 1,25 Puan</span>
+</div>
+</div>
+<!-- OPTION D (KRİTİK UYARILI ÇELDİRİCİ) -->
+<div class="p-4 bg-surface-container rounded border-2 border-[#A33D27] flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-[#142127] text-[#EE8A6E] border-2 border-[#A33D27] flex items-center justify-center font-label-lg shrink-0">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</div>
+<div class="flex-grow pt-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-sm font-label-sm px-2 py-0.5 bg-surface-variant text-[#EE8A6E] border border-[#A33D27] rounded font-semibold">
+                    Kuvvetli / Tehlikeli Çeldirici
+                  </span>
+<span class="text-label-sm font-label-sm text-secondary">Pozitif Çeldirici Riski</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  whereas silicon wafer fabrication has encountered an absolute physical impasse in sub-nanometer lithography
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-[#EE8A6E] font-bold">%31</span>
+<span class="text-legal-code font-legal-code text-outline block">440 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-[#EE8A6E] h-2" style="width: 31%"></div>
+</div>
+<div class="p-2.5 bg-surface-container-low border border-[#A33D27] rounded text-label-sm font-label-sm text-on-surface">
+<span class="text-[#EE8A6E] font-semibold">Kritik Sapma:</span> Üst grubun %28'i bu seçeneğe yöneldi. Cümle başındaki "whereas" bağlacı zıtlık yanılsaması yaratarak üst düzey adayları çeldirmiştir.
+            </div>
+</div>
+<!-- OPTION E -->
+<div class="p-4 bg-surface-container rounded border border-outline-variant flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 min-touch-target rounded-full bg-surface-variant text-on-surface-variant border border-outline-variant flex items-center justify-center font-label-lg shrink-0">
+                E
+              </div>
+<div class="flex-grow pt-1">
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                  so that contemporary cryptography algorithms could definitively safeguard global banking infrastructures indefinitely
+                </p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-label-lg font-label-lg text-on-surface">%7</span>
+<span class="text-legal-code font-legal-code text-outline block">100 aday</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden flex">
+<div class="bg-outline h-2" style="width: 7%"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Zayıf çeldirici · Revizyon gerektirmez.</span>
+</div>
+</div>
+</section>
+<!-- RIGHT COLUMN: DETAILED PSYCHOMETRIC ANALYTICS (5 Cols) -->
+<section class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- ÜST / ALT %27 ÇEYREKLİK ANALİZİ GRAFİĞİ -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="leaderboard">leaderboard</span>
+<span class="text-label-lg font-label-lg text-on-surface">Üst / Alt %27 Çeyreklik Dağılımı</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline font-mono">Kelley Yöntemi</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Test toplam puanına göre en başarılı %27'lik dilim (383 aday) ile en düşük %27'lik dilimin (383 aday) seçenek tercihlerinin karşılaştırması.
+          </p>
+<!-- Karşılaştırmalı Çubuklar -->
+<div class="flex flex-col gap-4 mt-2">
+<!-- C SEÇENEĞİ (Doğru) Karşılaştırma -->
+<div class="p-3 bg-surface-container rounded border border-outline-variant">
+<div class="flex justify-between items-center text-label-sm font-label-sm mb-2">
+<span class="text-[#4CC27D] font-semibold">C Seçeneği (Doğru Yanıt)</span>
+<span class="text-outline">Ayırt Edicilik Katkısı</span>
+</div>
+<!-- Üst Grup -->
+<div class="flex items-center gap-3 text-legal-code font-legal-code text-on-surface mb-1.5">
+<span class="w-16 shrink-0 text-outline">Üst Grup:</span>
+<div class="flex-grow bg-surface-variant h-4 rounded overflow-hidden flex">
+<div class="bg-[#4CC27D] h-4" style="width: 54%"></div>
+</div>
+<span class="w-10 text-right font-mono">%54</span>
+</div>
+<!-- Alt Grup -->
+<div class="flex items-center gap-3 text-legal-code font-legal-code text-on-surface">
+<span class="w-16 shrink-0 text-outline">Alt Grup:</span>
+<div class="flex-grow bg-surface-variant h-4 rounded overflow-hidden flex">
+<div class="bg-[#1F7A45] h-4" style="width: 36%"></div>
+</div>
+<span class="w-10 text-right font-mono">%36</span>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-outline text-right">
+                Fark (r_pb payı): +%18 (Yetersiz makas)
+              </div>
+</div>
+<!-- D SEÇENEĞİ (Kritik Çeldirici) Karşılaştırma -->
+<div class="p-3 bg-surface-container rounded border-2 border-[#A33D27]">
+<div class="flex justify-between items-center text-label-sm font-label-sm mb-2">
+<span class="text-[#EE8A6E] font-semibold">D Seçeneği (Ters Çeldirici)</span>
+<span class="text-[#EE8A6E]">Ayırt Edicilik Bozucu</span>
+</div>
+<!-- Üst Grup -->
+<div class="flex items-center gap-3 text-legal-code font-legal-code text-on-surface mb-1.5">
+<span class="w-16 shrink-0 text-outline">Üst Grup:</span>
+<div class="flex-grow bg-surface-variant h-4 rounded overflow-hidden flex">
+<div class="bg-[#EE8A6E] h-4" style="width: 28%"></div>
+</div>
+<span class="w-10 text-right font-mono text-[#EE8A6E] font-bold">%28</span>
+</div>
+<!-- Alt Grup -->
+<div class="flex items-center gap-3 text-legal-code font-legal-code text-on-surface">
+<span class="w-16 shrink-0 text-outline">Alt Grup:</span>
+<div class="flex-grow bg-surface-variant h-4 rounded overflow-hidden flex">
+<div class="bg-[#A33D27] h-4" style="width: 22%"></div>
+</div>
+<span class="w-10 text-right font-mono">%22</span>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-[#EE8A6E]">
+                * Üst grubun alt gruptan daha yüksek oranda bu çeldiriciye gitmesi ayırt ediciliği doğrudan 0,20 altına düşürmüştür.
+              </div>
+</div>
+</div>
+</div>
+<!-- İPUCU VE SÜRE DAĞILIM MATRİSİ -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="timer">timer</span>
+<span class="text-label-lg font-label-lg text-on-surface">İpucu ve Süre Dağılım Matrisi</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Zaman Eğrisi</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-outline">İlk 30 saniyede işaretleyenler</span>
+<span class="text-on-surface font-mono font-semibold">%18 (Hızlı Yanıt)</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden">
+<div class="bg-primary h-2" style="width: 18%"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm font-label-sm pt-1">
+<span class="text-outline">30 - 90 saniye arası (Önerilen Aralık)</span>
+<span class="text-on-surface font-mono font-semibold">%62 (Optimal Aralık)</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden">
+<div class="bg-primary h-2" style="width: 62%"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm font-label-sm pt-1">
+<span class="text-outline">120 saniye üzeri (Zaman tüketenler)</span>
+<span class="text-secondary font-mono font-semibold">%20 (Aşırı Süre)</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded overflow-hidden">
+<div class="bg-secondary h-2" style="width: 20%"></div>
+</div>
+</div>
+</div>
+<!-- ADAY HATA BİLDİRİMLERİ MASASI -->
+<div class="bg-surface-container-low border border-outline-variant p-space-lg rounded flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="report_problem">report_problem</span>
+<span class="text-label-lg font-label-lg text-on-surface">Aday Hata Bildirimleri Masası</span>
+</div>
+<span class="text-label-sm font-label-sm px-2 py-0.5 bg-surface-variant text-secondary border border-outline-variant rounded">6 Kayıt</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Notification 1 -->
+<div class="p-3 bg-surface-container rounded border border-outline-variant flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-secondary font-semibold">Bağlaç ve Kök İtirazı</span>
+<span class="text-outline">3 Aday</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface">
+                "D seçeneğindeki 'whereas' bağlacı soru kökündeki tezatlıkla örtüşüyor gibi algılanıyor."
+              </p>
+<div class="flex items-center justify-between text-legal-code font-legal-code text-outline mt-1 pt-1 border-t border-outline-variant">
+<span>Durum: <strong class="text-primary">İnceleniyor</strong></span>
+<span>Referans: #TK-8812</span>
+</div>
+</div>
+<!-- Notification 2 -->
+<div class="p-3 bg-surface-container rounded border border-outline-variant flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline font-semibold">Terminoloji Düzeyi</span>
+<span class="text-outline">2 Aday</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface">
+                "Metin bilimsel terminoloji açısından C1 üstü düzeyde."
+              </p>
+<div class="flex items-center justify-between text-legal-code font-legal-code text-outline mt-1 pt-1 border-t border-outline-variant">
+<span>Durum: <strong class="text-primary">İnceleniyor</strong></span>
+<span>Referans: #TK-8819</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- BOTTOM PANEL: ACADEMIC MEASUREMENT THRESHOLDS & NORMS -->
+<section class="bg-surface-container-low border border-outline-variant p-space-lg rounded">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary" data-icon="gavel">gavel</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Akademik Ölçme Eşikleri ve Standartları Özeti</h2>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed">
+<strong>ODAK Ölçme Kuralları:</strong> Madde güçlüğü 0,20 altı (aşırı zor) ya da 0,95 üstü (aşırı kolay) olan sorular ile ayırt edicilik katsayısı (r_pb) 0,20 altında kalan sorular canlı deneme sınav havuzundan otomatik olarak revizyon kuruluna sevk edilir. YDS puanlamasında her doğru soru <strong>1,25 puan</strong> değerindedir; yanlış cevaplar doğruyu eksiltmez.
+      </p>
+</section>
+</main>
+<!-- FOOTER (Institutional Blueprint Compliance) -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant mt-space-xl">
+<div class="w-full px-space-lg max-w-[1440px] mx-auto py-space-md flex flex-col md:flex-row justify-between items-center text-legal-code font-legal-code text-outline gap-4">
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-outline">ODAK</span>
+<span>·</span>
+<span>© 2026 ODAK Akademik Değerlendirme ve Sınav Hazırlık Sistemleri A.Ş. Tüm hakları saklıdır. Madde Kalibrasyon Sürümü 4.2.</span>
+</div>
+<div class="flex flex-wrap items-center gap-4 text-legal-code font-legal-code">
+<a class="hover:text-primary transition-colors" href="#mevzuat">Mevzuat ve Standartlar</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#kvkk">KVKK Aydınlatma Metni</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#telif">Soru Telif Kuralları</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#protokol">Senkronizasyon Protokolü</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#destek">Destek</a>
+</div>
+</div>
+</footer>
+</body></html>

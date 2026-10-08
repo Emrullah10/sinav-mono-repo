@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>ODAK · Ödeme Yöntemleri ve Faturalar</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts: Literata & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-dim": "#0c1519",
+            "on-surface-variant": "#bec8c9",
+            "tertiary-fixed": "#ffdeac",
+            "surface-container-high": "#222b30",
+            "secondary-container": "#32a09a",
+            "on-secondary-container": "#00302d",
+            "surface-variant": "#2d363b",
+            "secondary": "#71d7d1",
+            "primary-fixed": "#a3eff4",
+            "background": "#0c1519",
+            "on-primary-container": "#9be7eb",
+            "on-primary-fixed-variant": "#004f52",
+            "tertiary": "#ffba38",
+            "on-secondary-fixed-variant": "#00504d",
+            "surface-container-low": "#141d21",
+            "on-tertiary-fixed": "#281900",
+            "secondary-fixed": "#8ef4ed",
+            "inverse-primary": "#0b696d",
+            "on-tertiary": "#432c00",
+            "on-tertiary-container": "#ffd491",
+            "primary-container": "#0e6a6e",
+            "inverse-surface": "#dae4e9",
+            "error": "#ffb4ab",
+            "on-secondary-fixed": "#00201e",
+            "error-container": "#93000a",
+            "on-secondary": "#003735",
+            "on-primary": "#003739",
+            "tertiary-fixed-dim": "#ffba38",
+            "on-tertiary-fixed-variant": "#604100",
+            "surface-container-lowest": "#070f13",
+            "on-surface": "#dae4e9",
+            "on-error": "#690005",
+            "surface-tint": "#87d3d7",
+            "tertiary-container": "#805800",
+            "surface": "#0c1519",
+            "secondary-fixed-dim": "#71d7d1",
+            "outline-variant": "#3f4949",
+            "outline": "#889393",
+            "primary-fixed-dim": "#87d3d7",
+            "surface-bright": "#313b3f",
+            "primary": "#87d3d7",
+            "surface-container": "#182125",
+            "inverse-on-surface": "#293236",
+            "on-primary-fixed": "#002021",
+            "on-background": "#dae4e9",
+            "on-error-container": "#ffdad6",
+            "surface-container-highest": "#2d363b",
+            /* Ek marka renkleri */
+            "petrol": "#4DB6B0",
+            "saffron": "#E9A514",
+            "success-green": "#4CC27D",
+            "brick-error": "#EE8A6E",
+            "border-hairline": "#24343A"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2.25rem",
+            "gutter": "1.5rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "reading-lg": ["Literata", "serif"],
+            "reading-md": ["Literata", "serif"],
+            "label-caps": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "display-lg": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "body-default": ["Inter", "sans-serif"],
+            "metric-display": ["Inter", "sans-serif"]
+          },
+          "fontSize": {
+            "reading-lg": ["19px", { "lineHeight": "32px", "fontWeight": "400" }],
+            "label-caps": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "reading-md": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+            "display-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "body-default": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "metric-display": ["28px", { "lineHeight": "34px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      background-color: #0E171B;
+      color: #E4ECEC;
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#0E171B] text-[#E4ECEC] antialiased min-h-screen flex justify-center selection:bg-[#0E6A6E] selection:text-[#E4ECEC]">
+<!-- Mobile Viewport Frame (390px simulated container) -->
+<div class="w-full max-w-[390px] min-h-screen bg-[#0E171B] flex flex-col relative pb-24 shadow-2xl">
+<!-- TopAppBar (Shared Component execution) -->
+<header class="fixed top-0 left-0 right-0 max-w-[390px] mx-auto z-50 flex justify-between items-center h-14 px-4 bg-[#0E171B] border-b border-[#24343A]">
+<div class="flex items-center gap-2">
+<button aria-label="Geri" class="w-11 h-11 flex items-center justify-center text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors active:scale-95" type="button">
+<span class="material-symbols-outlined text-[22px]">arrow_back</span>
+</button>
+<span class="font-headline-md text-headline-md tracking-tight font-bold text-[#E4ECEC]">ODAK</span>
+</div>
+<!-- Sınav Geri Sayım Çipi -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-[#142127] border border-[#24343A] rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-[#E9A514]"></span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] tracking-wider">
+          2026-YDS/2 · 22 Kas <span class="text-[#E4ECEC] font-semibold">(52g)</span>
+</span>
+</div>
+</header>
+<!-- Main Operational Canvas -->
+<main class="flex-1 px-4 pt-16 flex flex-col gap-6">
+<!-- Breadcrumb & Başlık Bölümü -->
+<section class="pt-3">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-label-caps text-label-caps text-[#4DB6B0] tracking-widest">HESAP AYARLARI · ME-08</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-[#E4ECEC] font-semibold tracking-tight">
+          Ödeme Yöntemleri ve Faturalar
+        </h1>
+<p class="font-body-sm text-body-sm text-[#A9B8BA] mt-1.5 leading-relaxed">
+          Kayıtlı ödeme kartlarınız, e-Arşiv fatura dökümü ve bireysel/kurumsal fatura adres bilgileriniz.
+        </p>
+</section>
+<!-- Akademik Başvuru Takvim Bildirimi (Saffron Status Bar) -->
+<section class="bg-[#142127] border-l-2 border-l-[#E9A514] border border-[#24343A] rounded p-3 flex items-start gap-3">
+<span class="material-symbols-outlined text-[#E9A514] text-[20px] shrink-0 mt-0.5" data-icon="event_note">event_note</span>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-[#E9A514] uppercase tracking-wider">Sınav Başvuru Dönemi</span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA]">30 Eyl - 8 Eki</span>
+</div>
+<p class="font-body-sm text-body-sm text-[#E4ECEC] mt-0.5">
+            2026-YDS/2 resmi ÖSYM başvuruları devam etmektedir. Başvurunun tamamlanması için son 6 gün.
+          </p>
+</div>
+</section>
+<!-- BÖLÜM 1: Kayıtlı Ödeme Kartları -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#4DB6B0] text-[20px]" data-icon="credit_card">credit_card</span>
+<h2 class="font-headline-md text-[17px] leading-6 font-semibold text-[#E4ECEC]">Kayıtlı Kartlarım</h2>
+</div>
+<button class="min-h-[44px] px-3 flex items-center gap-1.5 text-[#4DB6B0] hover:text-[#71d7d1] font-label-md text-label-md transition-colors active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+<span>Yeni Kart Ekle</span>
+</button>
+</div>
+<!-- Kart 1 (Varsayılan) -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 flex flex-col gap-3 relative">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<!-- Kart Sembolü -->
+<div class="w-10 h-7 bg-[#0E171B] border border-[#24343A] rounded flex items-center justify-center font-label-caps text-label-caps text-[#E4ECEC] font-semibold">
+                TROY
+              </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-body-default text-body-default font-medium text-[#E4ECEC] tracking-wide">•••• 4281</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#4CC27D]/10 text-[#4CC27D] border border-[#4CC27D]/30">
+                    Varsayılan
+                  </span>
+</div>
+<div class="font-body-sm text-body-sm text-[#A9B8BA] mt-0.5">
+                  Doç. Dr. Selin Vardar · SKT 09/28
+                </div>
+</div>
+</div>
+</div>
+<div class="h-[1px] bg-[#24343A] w-full"></div>
+<div class="flex items-center justify-between pt-0.5">
+<span class="font-label-caps text-label-caps text-[#A9B8BA]">Mastercard Altyapısı</span>
+<div class="flex items-center gap-2">
+<button class="min-h-[44px] px-3 flex items-center justify-center font-label-md text-label-md text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors" type="button">
+                Düzenle
+              </button>
+<button class="min-h-[44px] px-3 flex items-center justify-center font-label-md text-label-md text-[#EE8A6E] hover:text-[#ffb4ab] transition-colors" type="button">
+                Sil
+              </button>
+</div>
+</div>
+</div>
+<!-- Kart 2 (İkincil) -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 flex flex-col gap-3">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-7 bg-[#0E171B] border border-[#24343A] rounded flex items-center justify-center font-label-caps text-label-caps text-[#E4ECEC] font-semibold">
+                VISA
+              </div>
+<div>
+<span class="font-body-default text-body-default font-medium text-[#E4ECEC] tracking-wide">•••• 9014</span>
+<div class="font-body-sm text-body-sm text-[#A9B8BA] mt-0.5">
+                  Doç. Dr. Selin Vardar · SKT 04/29
+                </div>
+</div>
+</div>
+</div>
+<div class="h-[1px] bg-[#24343A] w-full"></div>
+<div class="flex items-center justify-between pt-0.5">
+<button class="min-h-[44px] pr-2 flex items-center font-label-md text-label-md text-[#4DB6B0] hover:text-[#71d7d1] transition-colors" type="button">
+              Varsayılan Yap
+            </button>
+<div class="flex items-center gap-2">
+<button class="min-h-[44px] px-3 flex items-center justify-center font-label-md text-label-md text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors" type="button">
+                Düzenle
+              </button>
+<button class="min-h-[44px] px-3 flex items-center justify-center font-label-md text-label-md text-[#EE8A6E] hover:text-[#ffb4ab] transition-colors" type="button">
+                Sil
+              </button>
+</div>
+</div>
+</div>
+<!-- Güvenlik & BDDK Yasal Bilgilendirmesi -->
+<div class="px-3 py-2 bg-[#0E171B] border border-[#24343A] rounded flex items-center gap-2 text-[#A9B8BA]">
+<span class="material-symbols-outlined text-[18px] text-[#4DB6B0]" data-icon="verified_user">verified_user</span>
+<span class="font-body-sm text-[12px] leading-tight text-[#A9B8BA]">
+            Kart bilgileriniz BDDK ve TCMB lisanslı güvenli ödeme altyapısıyla saklanır.
+          </span>
+</div>
+</section>
+<!-- BÖLÜM 2: Fatura Bilgileri (Bireysel / Kurumsal) -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#4DB6B0] text-[20px]" data-icon="receipt_long">receipt_long</span>
+<h2 class="font-headline-md text-[17px] leading-6 font-semibold text-[#E4ECEC]">Fatura Bilgileri</h2>
+</div>
+<!-- Sekmeli Seçici (Bireysel / Kurumsal) -->
+<div class="grid grid-cols-2 bg-[#142127] border border-[#24343A] rounded p-1">
+<button class="min-h-[44px] flex items-center justify-center font-label-md text-label-md font-semibold bg-[#1A2A32] text-[#4DB6B0] border border-[#24343A] rounded transition-all" type="button">
+            Bireysel Fatura
+          </button>
+<button class="min-h-[44px] flex items-center justify-center font-label-md text-label-md font-medium text-[#A9B8BA] hover:text-[#E4ECEC] transition-colors" type="button">
+            Kurumsal Fatura
+          </button>
+</div>
+<!-- Bireysel Bilgi Kartı -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 flex flex-col gap-3">
+<div class="flex items-center justify-between border-b border-[#24343A] pb-2.5">
+<span class="font-label-caps text-label-caps text-[#A9B8BA] uppercase tracking-wider">Tanımlı Bireysel Mükellef</span>
+<button class="min-h-[44px] px-2 flex items-center text-[#4DB6B0] font-label-md text-label-md hover:underline" type="button">
+              Adresi Güncelle
+            </button>
+</div>
+<div class="space-y-2">
+<div>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] block">Ad Soyad</span>
+<span class="font-body-default text-body-default text-[#E4ECEC] font-medium">Selin Vardar</span>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] block">T.C. Kimlik No</span>
+<span class="font-body-default text-body-default text-[#E4ECEC] font-mono tracking-wider">284******12</span>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] block">Tebligat ve Fatura Adresi</span>
+<span class="font-body-sm text-body-sm text-[#E4ECEC] leading-snug">
+                Üniversiteler Mah. Dumlupınar Bulv. No:14 Çankaya / Ankara
+              </span>
+</div>
+</div>
+<!-- Kurumsal Hatırlatma Notu -->
+<div class="pt-2 border-t border-[#24343A] flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-[#A9B8BA] mt-0.5" data-icon="domain">domain</span>
+<span class="font-body-sm text-[12px] leading-snug text-[#A9B8BA]">
+              Hacettepe Üniversitesi Rektörlüğü adına düzenlenen kurumsal faturalar için vergi dairesi ve VKN tanımlıdır.
+            </span>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 3: e-Arşiv Fatura Geçmişi (2026) -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#4DB6B0] text-[20px]" data-icon="history">history</span>
+<h2 class="font-headline-md text-[17px] leading-6 font-semibold text-[#E4ECEC]">Fatura Geçmişi (2026)</h2>
+</div>
+<span class="px-2.5 py-1 bg-[#142127] border border-[#24343A] rounded font-label-caps text-label-caps text-[#A9B8BA]">
+            Tümü (3 Fatura)
+          </span>
+</div>
+<div class="space-y-3">
+<!-- Fatura 1 -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 flex flex-col gap-3">
+<div class="flex items-start justify-between gap-2">
+<div class="flex-1">
+<span class="font-body-default text-body-default font-semibold text-[#E4ECEC] block">
+                  2026-YDS/2 Odak Hazırlık Paketi
+                </span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] block mt-0.5">
+                  15 Eylül 2026 · No: ODK202600001842
+                </span>
+</div>
+<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#4CC27D]/10 text-[#4CC27D] border border-[#4CC27D]/30 shrink-0">
+                Ödendi
+              </span>
+</div>
+<div class="h-[1px] bg-[#24343A] w-full"></div>
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] block">Ödenen Tutar</span>
+<span class="font-headline-md text-[18px] font-semibold text-[#E4ECEC]">850,00 TL</span>
+</div>
+<button class="min-h-[44px] px-3.5 bg-[#0E171B] border border-[#24343A] hover:border-[#4DB6B0] text-[#E4ECEC] rounded flex items-center gap-1.5 font-label-md text-label-md transition-colors active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px] text-[#4DB6B0]" data-icon="download">download</span>
+<span>PDF İndir</span>
+</button>
+</div>
+</div>
+<!-- Fatura 2 -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 flex flex-col gap-3">
+<div class="flex items-start justify-between gap-2">
+<div class="flex-1">
+<span class="font-body-default text-body-default font-semibold text-[#E4ECEC] block">
+                  2026-YÖKDİL İlkbahar Deneme Seti
+                </span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] block mt-0.5">
+                  10 Mart 2026 · No: ODK202600000914
+                </span>
+</div>
+<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#4CC27D]/10 text-[#4CC27D] border border-[#4CC27D]/30 shrink-0">
+                Ödendi
+              </span>
+</div>
+<div class="h-[1px] bg-[#24343A] w-full"></div>
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] block">Ödenen Tutar</span>
+<span class="font-headline-md text-[18px] font-semibold text-[#E4ECEC]">450,00 TL</span>
+</div>
+<button class="min-h-[44px] px-3.5 bg-[#0E171B] border border-[#24343A] hover:border-[#4DB6B0] text-[#E4ECEC] rounded flex items-center gap-1.5 font-label-md text-label-md transition-colors active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px] text-[#4DB6B0]" data-icon="download">download</span>
+<span>PDF İndir</span>
+</button>
+</div>
+</div>
+<!-- Fatura 3 -->
+<div class="bg-[#142127] border border-[#24343A] rounded-lg p-4 flex flex-col gap-3">
+<div class="flex items-start justify-between gap-2">
+<div class="flex-1">
+<span class="font-body-default text-body-default font-semibold text-[#E4ECEC] block">
+                  Soru Bankası Ek Çözüm Modülü
+                </span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] block mt-0.5">
+                  18 Ocak 2026 · No: ODK202600000301
+                </span>
+</div>
+<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#4CC27D]/10 text-[#4CC27D] border border-[#4CC27D]/30 shrink-0">
+                Ödendi
+              </span>
+</div>
+<div class="h-[1px] bg-[#24343A] w-full"></div>
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] block">Ödenen Tutar</span>
+<span class="font-headline-md text-[18px] font-semibold text-[#E4ECEC]">180,00 TL</span>
+</div>
+<button class="min-h-[44px] px-3.5 bg-[#0E171B] border border-[#24343A] hover:border-[#4DB6B0] text-[#E4ECEC] rounded flex items-center gap-1.5 font-label-md text-label-md transition-colors active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px] text-[#4DB6B0]" data-icon="download">download</span>
+<span>PDF İndir</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 4: Yasal Bilgilendirme & YDS Değerlendirme İlkesi -->
+<section class="bg-[#142127] border border-[#24343A] rounded-lg p-4 space-y-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#A9B8BA] text-[18px]" data-icon="policy">policy</span>
+<span class="font-label-caps text-label-caps text-[#A9B8BA] uppercase tracking-wider">
+            Yasal Haklar ve Sınav Mevzuatı
+          </span>
+</div>
+<p class="font-body-sm text-[12px] leading-relaxed text-[#A9B8BA]">
+          Tüm elektronik faturalar Gelir İdaresi Başkanlığı e-Arşiv mevzuatına uygun tanzim edilir. 6502 sayılı Tüketicinin Korunması Hakkında Kanun uyarınca dijital eğitim içeriklerinde cayma ve iade talepleri 14 iş günü içinde değerlendirilir.
+        </p>
+<div class="p-2.5 bg-[#0E171B] border border-[#24343A] rounded flex items-start gap-2">
+<span class="material-symbols-outlined text-[#4DB6B0] text-[18px] shrink-0 mt-0.5" data-icon="check_circle">check_circle</span>
+<div class="text-[12px] leading-relaxed text-[#A9B8BA]">
+<strong class="text-[#E4ECEC] font-medium">YDS Değerlendirme Esası:</strong> Sınavda yanlış cevaplar doğruyu eksiltmez; her doğru cevap tam <span class="text-[#4DB6B0] font-semibold">1,25 puan</span> değerindedir.
+          </div>
+</div>
+<div class="pt-1 flex items-center justify-between text-[12px]">
+<span class="text-[#A9B8BA]">Bir sorun mu yaşıyorsunuz?</span>
+<button class="min-h-[44px] flex items-center text-[#4DB6B0] hover:underline font-label-md text-label-md" type="button">
+            Destek ve İnceleme Masası
+          </button>
+</div>
+</section>
+<!-- Tarih ve Oturum Damgası -->
+<div class="text-center py-2 text-[#A9B8BA]/60 font-label-caps text-[10px] tracking-widest uppercase">
+        Sistem Saati: 2 Ekim 2026 Cuma · Güvenli Oturum Aktif
+      </div>
+</main>
+<!-- BottomNavBar (Shared Component Execution, 5 Destinations, Active: "Ben") -->
+<nav aria-label="Ana Navigasyon" class="fixed bottom-0 left-0 right-0 max-w-[390px] mx-auto z-50 flex justify-around items-center h-16 bg-[#070f13] border-t border-[#24343A] pb-safe">
+<!-- 1. Bugün -->
+<a class="flex flex-col items-center justify-center text-[#bec8c9] py-1 min-w-[56px] min-h-[44px] hover:text-[#87d3d7] transition-colors active:scale-95" href="#bugun">
+<span class="material-symbols-outlined text-[22px]" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-caps text-[11px] mt-1">Bugün</span>
+</a>
+<!-- 2. Çalış -->
+<a class="flex flex-col items-center justify-center text-[#bec8c9] py-1 min-w-[56px] min-h-[44px] hover:text-[#87d3d7] transition-colors active:scale-95" href="#calis">
+<span class="material-symbols-outlined text-[22px]" data-icon="menu_book">menu_book</span>
+<span class="font-label-caps text-[11px] mt-1">Çalış</span>
+</a>
+<!-- 3. Deneme -->
+<a class="flex flex-col items-center justify-center text-[#bec8c9] py-1 min-w-[56px] min-h-[44px] hover:text-[#87d3d7] transition-colors active:scale-95" href="#deneme">
+<span class="material-symbols-outlined text-[22px]" data-icon="assignment">assignment</span>
+<span class="font-label-caps text-[11px] mt-1">Deneme</span>
+</a>
+<!-- 4. Öğretmen -->
+<a class="flex flex-col items-center justify-center text-[#bec8c9] py-1 min-w-[56px] min-h-[44px] hover:text-[#87d3d7] transition-colors active:scale-95" href="#ogretmen">
+<span class="material-symbols-outlined text-[22px]" data-icon="support_agent">support_agent</span>
+<span class="font-label-caps text-[11px] mt-1">Öğretmen</span>
+</a>
+<!-- 5. Ben (Active Tab) -->
+<a class="flex flex-col items-center justify-center text-[#87d3d7] font-semibold py-1 min-w-[56px] min-h-[44px] active:scale-95" href="#ben">
+<span class="material-symbols-outlined text-[22px]" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-caps text-[11px] mt-1 text-[#87d3d7]">Ben</span>
+</a>
+</nav>
+</div>
+</body></html>

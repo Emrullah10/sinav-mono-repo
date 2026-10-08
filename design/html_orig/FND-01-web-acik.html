@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FND-01 · Renk Paleti ve Anlamsal Token Sistemi - ODAK</title>
+<!-- Google Fonts: Hanken Grotesk & Literata -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&amp;family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed": "#9df6b4",
+            "surface-container": "#dff1fa",
+            "surface": "#f3faff",
+            "on-error": "#ffffff",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "on-tertiary": "#ffffff",
+            "on-primary": "#ffffff",
+            "tertiary-container": "#0b6e3a",
+            "background": "#f3faff",
+            "surface-dim": "#cbdde6",
+            "on-tertiary-fixed": "#00210d",
+            "secondary-fixed-dim": "#ffba38",
+            "primary-fixed-dim": "#87d3d7",
+            "surface-container-lowest": "#ffffff",
+            "secondary-container": "#feb72b",
+            "surface-container-highest": "#d4e5ef",
+            "secondary-fixed": "#ffdeac",
+            "outline-variant": "#bec8c9",
+            "on-primary-fixed-variant": "#004f52",
+            "on-primary-fixed": "#002021",
+            "inverse-primary": "#87d3d7",
+            "on-secondary-container": "#6c4a00",
+            "on-secondary-fixed": "#281900",
+            "outline": "#6f7979",
+            "on-error-container": "#93000a",
+            "on-surface": "#0d1e24",
+            "on-background": "#0d1e24",
+            "on-secondary-fixed-variant": "#604100",
+            "inverse-on-surface": "#e2f3fd",
+            "surface-tint": "#0b696d",
+            "primary-container": "#0e6a6e",
+            "tertiary-fixed-dim": "#82d99a",
+            "surface-variant": "#d4e5ef",
+            "secondary": "#7e5700",
+            "surface-container-high": "#daebf4",
+            "on-tertiary-container": "#95edad",
+            "on-tertiary-fixed-variant": "#005229",
+            "primary-fixed": "#a3eff4",
+            "error-container": "#ffdad6",
+            "inverse-surface": "#23333a",
+            "surface-container-low": "#e6f6ff",
+            "tertiary": "#00532a",
+            "on-primary-container": "#9be7eb",
+            "primary": "#005054",
+            "surface-bright": "#f3faff",
+            "on-surface-variant": "#3f4949"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin": "2rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "margin-mobile": "1rem",
+            "gutter-mobile": "1rem",
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "display-lg-mobile": ["Hanken Grotesk"],
+            "label-lg": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "timer-display": ["Hanken Grotesk"],
+            "question-stem": ["Literata"],
+            "headline-md": ["Hanken Grotesk"],
+            "label-md": ["Hanken Grotesk"],
+            "display-lg": ["Hanken Grotesk"],
+            "headline-sm": ["Hanken Grotesk"],
+            "question-option": ["Literata"],
+            "question-passage": ["Literata"],
+            "headline-lg": ["Hanken Grotesk"],
+            "label-sm": ["Hanken Grotesk"],
+            "body-lg": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "display-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "timer-display": ["22px", { "lineHeight": "26px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+            "question-stem": ["18px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["17px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "question-option": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "question-passage": ["17px", { "lineHeight": "28px", "letterSpacing": "0.005em", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #F4F6F5;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #DAE1E0;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#F4F6F5] text-[#13232A]">
+<!-- TopNavBar (Shared Component Anchor) -->
+<header class="h-16 flex items-center justify-between px-6 w-full border-b border-[#DAE1E0] bg-[#F4F6F5] sticky top-0 z-50">
+<div class="flex items-center gap-6">
+<span class="font-headline-lg text-headline-lg tracking-wider font-semibold text-[#0E6A6E] uppercase select-none">ODAK</span>
+<div class="h-5 w-px bg-[#DAE1E0]"></div>
+<!-- Exam Selector Chip -->
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 bg-[#FFFFFF] border border-[#DAE1E0] rounded px-3 py-1.5 text-primary hover:border-[#0E6A6E] transition-colors duration-150 text-left min-h-[44px]">
+<span class="font-label-md text-label-md font-semibold text-[#0E6A6E]">YDS · 22 Kasım 2026</span>
+<span class="material-symbols-outlined text-[18px] text-[#46565C]" data-icon="arrow_drop_down">arrow_drop_down</span>
+</button>
+<span class="bg-[#E9A514] text-[#13232A] font-label-sm text-label-sm font-bold px-2.5 py-1 rounded">
+          2026-YDS/2 · 52 Gün Kaldı
+        </span>
+</div>
+</div>
+<!-- Trailing Actions & Profile -->
+<div class="flex items-center gap-3">
+<button aria-label="Bildirimler" class="w-11 h-11 flex items-center justify-center rounded border border-[#DAE1E0] bg-[#FFFFFF] text-[#46565C] hover:text-[#13232A] hover:bg-[#F4F6F5] transition-colors duration-150">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+</button>
+<button aria-label="Ayarlar" class="w-11 h-11 flex items-center justify-center rounded border border-[#DAE1E0] bg-[#FFFFFF] text-[#46565C] hover:text-[#13232A] hover:bg-[#F4F6F5] transition-colors duration-150">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+<div class="h-6 w-px bg-[#DAE1E0] mx-1"></div>
+<div class="flex items-center gap-2.5 pl-1">
+<div class="w-8 h-8 rounded border border-[#DAE1E0] bg-[#E6F6FF] flex items-center justify-center font-label-md text-label-md font-bold text-[#0E6A6E]">
+          YÖ
+        </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-[#13232A] leading-tight">Yönetici</span>
+<span class="font-label-sm text-label-sm text-[#46565C] leading-none">Kurul Üyesi</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Architecture Container -->
+<div class="flex flex-1 w-full max-w-[1440px] mx-auto">
+<!-- SideNavBar (Shared Component Anchor) -->
+<aside class="w-[260px] flex-shrink-0 flex flex-col justify-between py-space-md border-r border-[#DAE1E0] bg-[#F4F6F5] sticky top-16 h-[calc(100vh-4rem)]">
+<div class="flex flex-col gap-1">
+<div class="px-space-md pb-3 border-b border-[#DAE1E0] mb-2">
+<div class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">ODAK Yönetim</div>
+<div class="font-label-sm text-label-sm text-[#46565C]">Akademik Sınav Konsolu</div>
+</div>
+<!-- Navigation Items -->
+<a class="flex items-center gap-space-sm px-space-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 min-h-[44px]" href="#deneme-sinavlari">
+<span class="material-symbols-outlined text-[20px]" data-icon="assignment">assignment</span>
+<span class="font-label-md text-label-md">Deneme Sınavları</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 min-h-[44px]" href="#soru-bankasi">
+<span class="material-symbols-outlined text-[20px]" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Soru Bankası &amp; Analiz</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 min-h-[44px]" href="#kullanici-yonetimi">
+<span class="material-symbols-outlined text-[20px]" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Kullanıcı Yönetimi</span>
+</a>
+<!-- Active Tab: Sistem Şablonları (SYS-09 / FND-01) -->
+<a class="flex items-center gap-space-sm px-space-md py-3 text-primary bg-[#FFFFFF] border-l-2 border-[#0E6A6E] font-medium transition-colors duration-150 min-h-[44px]" href="#sistem-sablonlari">
+<span class="material-symbols-outlined text-[20px] text-[#0E6A6E]" data-icon="mail">mail</span>
+<span class="font-label-md text-label-md text-[#0E6A6E] font-semibold">Sistem Şablonları (SYS-09)</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 min-h-[44px]" href="#denetim">
+<span class="material-symbols-outlined text-[20px]" data-icon="history_edu">history_edu</span>
+<span class="font-label-md text-label-md">Denetim &amp; Raporlama</span>
+</a>
+</div>
+<!-- Footer Tabs -->
+<div class="flex flex-col gap-1 border-t border-[#DAE1E0] pt-3 px-1">
+<a class="flex items-center gap-space-sm px-space-md py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 min-h-[44px]" href="#destek">
+<span class="material-symbols-outlined text-[18px]" data-icon="help_outline">help_outline</span>
+<span class="font-label-md text-label-md">Destek Protokolü</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 min-h-[44px]" href="#gunluk">
+<span class="material-symbols-outlined text-[18px]" data-icon="terminal">terminal</span>
+<span class="font-label-md text-label-md">Sistem Günlüğü</span>
+</a>
+<div class="px-space-md pt-2 text-[11px] text-[#46565C]">
+          Sürüm v4.8 · ODAK FND
+        </div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-8 space-y-8 bg-[#F4F6F5] overflow-y-auto">
+<!-- Page Header & Summary -->
+<section class="bg-[#FFFFFF] border border-[#DAE1E0] p-6 rounded">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#DAE1E0] pb-5">
+<div>
+<div class="flex items-center gap-2 mb-1.5">
+<span class="bg-[#DAE1E0] text-[#13232A] font-label-sm text-label-sm px-2 py-0.5 rounded font-mono">FND-01</span>
+<span class="text-[#46565C] font-label-sm text-label-sm">Akademik Arayüz Temelleri</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-[#13232A] font-bold tracking-tight">Renk Paleti ve Anlamsal Token Sistemi</h1>
+<p class="font-body-md text-body-md text-[#46565C] mt-1 max-w-3xl">
+              Yüksek lisans ve kamu personeli yabancı dil sınavı (YDS, YÖKDİL) konsolu için tasarlanmış renk mimarisi. Bilişsel yorgunluğu önleyen, rasyonel, disiplinli ve basılı akademik yayın ağırlığında renk token dizilimi.
+            </p>
+</div>
+<div class="flex flex-col items-start md:items-end justify-center gap-1.5 bg-[#F4F6F5] p-3 rounded border border-[#DAE1E0]">
+<div class="flex items-center gap-1.5 text-primary font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified">verified</span>
+<span>Sürüm v4.8 (Yürürlükte)</span>
+</div>
+<div class="text-[12px] text-[#46565C]">Son Güncelleme: 2 Ekim 2026</div>
+<div class="text-[11px] font-medium text-[#0E6A6E] bg-[#FFFFFF] px-2 py-0.5 rounded border border-[#DAE1E0]">2026-YDS/2 Takvim Standardı</div>
+</div>
+</div>
+<!-- System Axioms (Editorial Minimalism) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4">
+<div class="border-l-2 border-[#0E6A6E] pl-3 py-1">
+<span class="font-label-sm text-label-sm text-[#46565C] block">Ana Renk Ailesi</span>
+<span class="font-label-md text-label-md font-semibold text-[#13232A]">Petrol (#0E6A6E)</span>
+<p class="text-[12px] text-[#46565C] mt-0.5">Kararlı, entelektüel odak ve rehberlik.</p>
+</div>
+<div class="border-l-2 border-[#E9A514] pl-3 py-1">
+<span class="font-label-sm text-label-sm text-[#46565C] block">Safran Kuralı</span>
+<span class="font-label-md text-label-md font-semibold text-[#13232A]">Yalnızca Dolgu &amp; Rozet</span>
+<p class="text-[12px] text-[#46565C] mt-0.5">Kesinlikle metin rengi olarak kullanılmaz.</p>
+</div>
+<div class="border-l-2 border-[#1F7A45] pl-3 py-1">
+<span class="font-label-sm text-label-sm text-[#46565C] block">Akademik Ölçüm Kuralı</span>
+<span class="font-label-md text-label-md font-semibold text-[#13232A]">"Net" Metriği Yasaktır</span>
+<p class="text-[12px] text-[#46565C] mt-0.5">Yalnızca Doğru, Yanlış, Boş ve Puan.</p>
+</div>
+<div class="border-l-2 border-[#A33D27] pl-3 py-1">
+<span class="font-label-sm text-label-sm text-[#46565C] block">Kusursuz Dil Standardı</span>
+<span class="font-label-md text-label-md font-semibold text-[#13232A]">Salt Türkçe Sözlük</span>
+<p class="text-[12px] text-[#46565C] mt-0.5">Yabancı parantez terimleri içermez.</p>
+</div>
+</div>
+</section>
+<!-- 1. BÖLÜM: İlkel Ölçekler (Primitive Scales) -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-[#0E6A6E] rounded-full"></span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-[#13232A]">1. İlkel Ölçekler</h2>
+</div>
+<span class="font-label-sm text-label-sm text-[#46565C]">Temel Spektrum ve Onaltılık Değerler</span>
+</div>
+<!-- Petrol Skalası (50 - 950) -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-6 rounded space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Petrol (Kurumsal Ana Renk)</h3>
+<span class="font-label-sm text-label-sm text-[#0E6A6E] bg-[#F4F6F5] px-2 py-0.5 rounded border border-[#DAE1E0]">Açık Tema: Petrol 600 · Koyu Tema: Petrol 400</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-2">
+<!-- 50 -->
+<div class="border border-[#DAE1E0] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF]">
+<div class="h-10 rounded border border-[#DAE1E0]" style="background-color: #EBF7F7;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#13232A]">Petrol 50</span>
+<span class="text-[11px] font-mono text-[#46565C]">#EBF7F7</span>
+</div>
+</div>
+<!-- 100 -->
+<div class="border border-[#DAE1E0] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF]">
+<div class="h-10 rounded border border-[#DAE1E0]" style="background-color: #D2EEEE;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#13232A]">Petrol 100</span>
+<span class="text-[11px] font-mono text-[#46565C]">#D2EEEE</span>
+</div>
+</div>
+<!-- 200 -->
+<div class="border border-[#DAE1E0] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF]">
+<div class="h-10 rounded" style="background-color: #A9DFDE;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#13232A]">Petrol 200</span>
+<span class="text-[11px] font-mono text-[#46565C]">#A9DFDE</span>
+</div>
+</div>
+<!-- 300 -->
+<div class="border border-[#DAE1E0] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF]">
+<div class="h-10 rounded" style="background-color: #79CAC7;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#13232A]">Petrol 300</span>
+<span class="text-[11px] font-mono text-[#46565C]">#79CAC7</span>
+</div>
+</div>
+<!-- 400 -->
+<div class="border border-[#DAE1E0] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF] ring-1 ring-[#0E6A6E]">
+<div class="h-10 rounded" style="background-color: #4DB6B0;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#13232A]">Petrol 400</span>
+<span class="text-[11px] font-mono text-[#0E6A6E] font-semibold">#4DB6B0 (Koyu)</span>
+</div>
+</div>
+<!-- 500 -->
+<div class="border border-[#DAE1E0] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF]">
+<div class="h-10 rounded" style="background-color: #269294;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#13232A]">Petrol 500</span>
+<span class="text-[11px] font-mono text-[#46565C]">#269294</span>
+</div>
+</div>
+<!-- 600 -->
+<div class="border border-[#0E6A6E] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF] shadow-sm">
+<div class="h-10 rounded" style="background-color: #0E6A6E;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#0E6A6E]">Petrol 600</span>
+<span class="text-[11px] font-mono text-[#0E6A6E] font-semibold">#0E6A6E (Ana)</span>
+</div>
+</div>
+<!-- 700 -->
+<div class="border border-[#DAE1E0] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF]">
+<div class="h-10 rounded" style="background-color: #0C5558;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#13232A]">Petrol 700</span>
+<span class="text-[11px] font-mono text-[#46565C]">#0C5558</span>
+</div>
+</div>
+<!-- 800 -->
+<div class="border border-[#DAE1E0] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF]">
+<div class="h-10 rounded" style="background-color: #0A4346;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#13232A]">Petrol 800</span>
+<span class="text-[11px] font-mono text-[#46565C]">#0A4346</span>
+</div>
+</div>
+<!-- 900 / 950 -->
+<div class="border border-[#DAE1E0] rounded p-2 flex flex-col justify-between h-28 bg-[#FFFFFF]">
+<div class="h-10 rounded" style="background-color: #062D2F;"></div>
+<div>
+<span class="font-label-sm text-label-sm font-bold block text-[#13232A]">Petrol 950</span>
+<span class="text-[11px] font-mono text-[#46565C]">#062D2F</span>
+</div>
+</div>
+</div>
+</div>
+<!-- İşlevsel ve Durumsal Skalalar -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Safran (Vurgu / Rozet) -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-5 rounded space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Safran (Zaman &amp; Rozet)</h3>
+<span class="font-label-sm text-label-sm font-bold text-[#6c4a00] bg-[#feb72b]/20 px-2 py-0.5 rounded">Yalnızca Dolgu</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="border border-[#DAE1E0] p-2.5 rounded">
+<div class="h-8 rounded mb-2" style="background-color: #E9A514;"></div>
+<div class="font-label-sm text-label-sm font-bold text-[#13232A]">Safran 500</div>
+<div class="text-[11px] font-mono text-[#46565C]">#E9A514</div>
+<div class="text-[10px] text-[#46565C] mt-1">Açık tema sayaç &amp; dolgusu</div>
+</div>
+<div class="border border-[#DAE1E0] p-2.5 rounded">
+<div class="h-8 rounded mb-2" style="background-color: #F0B43A;"></div>
+<div class="font-label-sm text-label-sm font-bold text-[#13232A]">Safran 400</div>
+<div class="text-[11px] font-mono text-[#46565C]">#F0B43A</div>
+<div class="text-[10px] text-[#46565C] mt-1">Koyu tema zemin vurgusu</div>
+</div>
+</div>
+<div class="text-[11px] text-[#A33D27] font-medium bg-[#A33D27]/5 p-2 rounded border border-[#A33D27]/20">
+              Kural İhlali: Safran rengi metin yazımında kesinlikle kullanılamaz.
+            </div>
+</div>
+<!-- Yaprak / Doğru -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-5 rounded space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Yaprak (Doğru Yanıt)</h3>
+<span class="font-label-sm text-label-sm font-bold text-[#1F7A45] bg-[#1F7A45]/10 px-2 py-0.5 rounded">✓ Doğru</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="border border-[#DAE1E0] p-2.5 rounded">
+<div class="h-8 rounded mb-2" style="background-color: #1F7A45;"></div>
+<div class="font-label-sm text-label-sm font-bold text-[#13232A]">Yaprak 600</div>
+<div class="text-[11px] font-mono text-[#46565C]">#1F7A45</div>
+<div class="text-[10px] text-[#46565C] mt-1">Açık tema doğrulama rozeti</div>
+</div>
+<div class="border border-[#DAE1E0] p-2.5 rounded">
+<div class="h-8 rounded mb-2" style="background-color: #4CC27D;"></div>
+<div class="font-label-sm text-label-sm font-bold text-[#13232A]">Yaprak 400</div>
+<div class="text-[11px] font-mono text-[#46565C]">#4CC27D</div>
+<div class="text-[10px] text-[#46565C] mt-1">Koyu tema başarı göstergesi</div>
+</div>
+</div>
+<div class="text-[11px] text-[#1F7A45] font-medium bg-[#1F7A45]/5 p-2 rounded border border-[#1F7A45]/20">
+              Kural: Doğru durumu daima '✓' sembolü ve 'Doğru' yazısı ile pekiştirilir.
+            </div>
+</div>
+<!-- Tuğla / Yanlış -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-5 rounded space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Tuğla (Hatalı Yanıt)</h3>
+<span class="font-label-sm text-label-sm font-bold text-[#A33D27] bg-[#A33D27]/10 px-2 py-0.5 rounded">✕ Yanlış</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="border border-[#DAE1E0] p-2.5 rounded">
+<div class="h-8 rounded mb-2" style="background-color: #A33D27;"></div>
+<div class="font-label-sm text-label-sm font-bold text-[#13232A]">Tuğla 600</div>
+<div class="text-[11px] font-mono text-[#46565C]">#A33D27</div>
+<div class="text-[10px] text-[#46565C] mt-1">Açık tema hata ve uyarı</div>
+</div>
+<div class="border border-[#DAE1E0] p-2.5 rounded">
+<div class="h-8 rounded mb-2" style="background-color: #EE8A6E;"></div>
+<div class="font-label-sm text-label-sm font-bold text-[#13232A]">Tuğla 400</div>
+<div class="text-[11px] font-mono text-[#46565C]">#EE8A6E</div>
+<div class="text-[10px] text-[#46565C] mt-1">Koyu tema uyarı göstergesi</div>
+</div>
+</div>
+<div class="text-[11px] text-[#A33D27] font-medium bg-[#A33D27]/5 p-2 rounded border border-[#A33D27]/20">
+              Kural: Hatalı durum daima '✕' sembolü ve 'Yanlış' ibaresi ile desteklenir.
+            </div>
+</div>
+</div>
+<!-- Nötr Ölçekler (Açık ve Koyu) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Açık Nötrler (Mürekkep & Kâğıt) -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-5 rounded space-y-3">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Açık Nötrler (Gündüz &amp; Matbaa)</h3>
+<div class="grid grid-cols-5 gap-2">
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded border border-[#DAE1E0] mb-1.5" style="background-color: #F4F6F5;"></div>
+<span class="text-[11px] font-bold block">Tuval</span>
+<span class="text-[10px] font-mono text-[#46565C]">#F4F6F5</span>
+</div>
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded border border-[#DAE1E0] mb-1.5" style="background-color: #FFFFFF;"></div>
+<span class="text-[11px] font-bold block">Kart</span>
+<span class="text-[10px] font-mono text-[#46565C]">#FFFFFF</span>
+</div>
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded mb-1.5" style="background-color: #DAE1E0;"></div>
+<span class="text-[11px] font-bold block">Sınır</span>
+<span class="text-[10px] font-mono text-[#46565C]">#DAE1E0</span>
+</div>
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded mb-1.5" style="background-color: #46565C;"></div>
+<span class="text-[11px] font-bold block">İkincil</span>
+<span class="text-[10px] font-mono text-[#46565C]">#46565C</span>
+</div>
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded mb-1.5" style="background-color: #13232A;"></div>
+<span class="text-[11px] font-bold block">Mürekkep</span>
+<span class="text-[10px] font-mono text-[#46565C]">#13232A</span>
+</div>
+</div>
+</div>
+<!-- Koyu Nötrler (Gece Modu) -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-5 rounded space-y-3">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Koyu Nötrler (Gece Çalışma Modu)</h3>
+<div class="grid grid-cols-5 gap-2">
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded mb-1.5" style="background-color: #0E171B;"></div>
+<span class="text-[11px] font-bold block">Gece Tuval</span>
+<span class="text-[10px] font-mono text-[#46565C]">#0E171B</span>
+</div>
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded mb-1.5" style="background-color: #142127;"></div>
+<span class="text-[11px] font-bold block">Gece Kart</span>
+<span class="text-[10px] font-mono text-[#46565C]">#142127</span>
+</div>
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded mb-1.5" style="background-color: #24343A;"></div>
+<span class="text-[11px] font-bold block">Gece Sınır</span>
+<span class="text-[10px] font-mono text-[#46565C]">#24343A</span>
+</div>
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded mb-1.5" style="background-color: #A9B8BA;"></div>
+<span class="text-[11px] font-bold block">Gece İkincil</span>
+<span class="text-[10px] font-mono text-[#46565C]">#A9B8BA</span>
+</div>
+<div class="border border-[#DAE1E0] p-2 rounded text-center">
+<div class="h-10 rounded mb-1.5" style="background-color: #E4ECEC;"></div>
+<span class="text-[11px] font-bold block">Gece Metin</span>
+<span class="text-[10px] font-mono text-[#46565C]">#E4ECEC</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. BÖLÜM: Anlamsal Token Matrisi -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-[#0E6A6E] rounded-full"></span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-[#13232A]">2. Anlamsal Token Matrisi</h2>
+</div>
+<span class="font-label-sm text-label-sm text-[#46565C]">Arayüzde doğrudan referans verilen token eşleştirmeleri</span>
+</div>
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] rounded overflow-hidden">
+<div class="overflow-x-auto custom-scroll">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#F4F6F5] border-b border-[#DAE1E0]">
+<th class="py-3 px-4 font-label-md text-label-md font-semibold text-[#13232A]">Token Adı</th>
+<th class="py-3 px-4 font-label-md text-label-md font-semibold text-[#13232A]">Açık Tema</th>
+<th class="py-3 px-4 font-label-md text-label-md font-semibold text-[#13232A]">Koyu Tema</th>
+<th class="py-3 px-4 font-label-md text-label-md font-semibold text-[#13232A]">Kullanım Yeri ve Katı Tasarım Kuralı</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#DAE1E0] font-body-md text-body-md text-[#13232A]">
+<!-- surface-canvas -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">surface-canvas</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 border border-[#DAE1E0] rounded-sm bg-[#F4F6F5]"></span>#F4F6F5</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#0E171B]"></span>#0E171B</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Uygulama arka planı (Level 0). Yansıma yapmayan mat tuval.</td>
+</tr>
+<!-- surface-card -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">surface-card</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 border border-[#DAE1E0] rounded-sm bg-[#FFFFFF]"></span>#FFFFFF</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#142127]"></span>#142127</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Soru panelleri, sınav kartları, diyalog kutuları (Level 1).</td>
+</tr>
+<!-- text-primary -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">text-primary</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#13232A]"></span>#13232A</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#E4ECEC]"></span>#E4ECEC</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Paragraf metinleri, soru kökleri, seçenekler, birincil başlıklar.</td>
+</tr>
+<!-- text-secondary -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">text-secondary</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#46565C]"></span>#46565C</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#A9B8BA]"></span>#A9B8BA</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Yardımcı açıklamalar, alt bilgi, soru kategori etiketleri.</td>
+</tr>
+<!-- action-primary -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">action-primary</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#0E6A6E]"></span>#0E6A6E</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#4DB6B0]"></span>#4DB6B0</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Sınavı bitir, sonraki soru, birincil onay butonları (min 44px).</td>
+</tr>
+<!-- action-hover -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">action-hover</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#094B4E]"></span>#094B4E</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#60C4BE]"></span>#60C4BE</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Birincil butonların fareyle üzerine gelindiğinde aldığı ton.</td>
+</tr>
+<!-- status-correct -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">status-correct</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#1F7A45]"></span>#1F7A45</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#4CC27D]"></span>#4CC27D</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Doğru yanıt rozeti ve analizi. Yanında ✓ ve 'Doğru' metni zorunludur.</td>
+</tr>
+<!-- status-incorrect -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">status-incorrect</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#A33D27]"></span>#A33D27</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#EE8A6E]"></span>#EE8A6E</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Hatalı yanıt göstergesi. Yanında ✕ ve 'Yanlış' metni zorunludur.</td>
+</tr>
+<!-- status-warning (Safran) -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors bg-[#feb72b]/5">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">status-warning</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#E9A514]"></span>#E9A514</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#F0B43A]"></span>#F0B43A</span></td>
+<td class="py-3.5 px-4 text-[#13232A] text-[13px] font-medium">
+<strong class="text-[#0E6A6E]">SAFRAN KURALI:</strong> Yalnızca sayaç dolgusu, rozet zemininde kullanılır. Metin rengi olamaz.
+                  </td>
+</tr>
+<!-- border-subtle & border-strong -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">border-subtle</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#DAE1E0]"></span>#DAE1E0</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#24343A]"></span>#24343A</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Paneller arası 1px ayırıcı çizgiler, pasif buton sınırları.</td>
+</tr>
+<!-- focus-ring -->
+<tr class="hover:bg-[#F4F6F5]/50 transition-colors">
+<td class="py-3.5 px-4 font-mono text-[13px] font-semibold text-[#0E6A6E]">focus-ring</td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#0E6A6E]"></span>#0E6A6E (2px)</span></td>
+<td class="py-3.5 px-4"><span class="inline-flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-sm bg-[#4DB6B0]"></span>#4DB6B0 (2px)</span></td>
+<td class="py-3.5 px-4 text-[#46565C] text-[13px]">Klavye erişilebilirliği odak çerçevesi. Dış gölge veya blur içermez.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- 3. BÖLÜM: WCAG 2.1 AA / AAA Kontrast Doğrulama Matrisi -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-[#0E6A6E] rounded-full"></span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-[#13232A]">3. WCAG 2.1 AA / AAA Kontrast Doğrulama Matrisi</h2>
+</div>
+<span class="font-label-sm text-label-sm text-[#46565C]">Yüksek kontrastlı, yormayan akademik erişilebilirlik güvencesi</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Doğrulama 1: Metin Mürekkep / Tuval -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-5 rounded space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-[#46565C]">Gövde Metni</span>
+<span class="font-label-sm text-label-sm font-bold text-[#1F7A45] bg-[#1F7A45]/10 px-2 py-0.5 rounded">Geçti · AAA</span>
+</div>
+<div class="bg-[#F4F6F5] p-3 rounded border border-[#DAE1E0]">
+<span class="text-[#13232A] font-question-stem text-[17px] font-semibold">14.2 : 1 Kontrast</span>
+<p class="text-[#13232A] text-[13px] mt-1">#13232A mürekkep üzeri #F4F6F5 tuval zemin.</p>
+</div>
+<p class="text-[12px] text-[#46565C]">Akademik uzun okuma pasajları için ISO-9241-300 standardında sıfır göz yorgunluğu.</p>
+</div>
+<!-- Doğrulama 2: Petrol 600 / Beyaz -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-5 rounded space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-[#46565C]">Birincil Eylem</span>
+<span class="font-label-sm text-label-sm font-bold text-[#1F7A45] bg-[#1F7A45]/10 px-2 py-0.5 rounded">Geçti · AAA</span>
+</div>
+<div class="bg-[#0E6A6E] p-3 rounded text-white">
+<span class="font-question-stem text-[17px] font-semibold">7.8 : 1 Kontrast</span>
+<p class="text-white/90 text-[13px] mt-1">#FFFFFF beyaz yazı üzeri #0E6A6E petrol buton.</p>
+</div>
+<p class="text-[12px] text-[#46565C]">Sınavı tamamlama ve cevap onaylama eylemlerinde yüksek kararlılık sağlar.</p>
+</div>
+<!-- Doğrulama 3: İkincil Metin / Beyaz Kart -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-5 rounded space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-[#46565C]">Açıklama Metni</span>
+<span class="font-label-sm text-label-sm font-bold text-[#1F7A45] bg-[#1F7A45]/10 px-2 py-0.5 rounded">Geçti · AAA</span>
+</div>
+<div class="bg-[#FFFFFF] p-3 rounded border border-[#DAE1E0]">
+<span class="text-[#46565C] font-question-stem text-[17px] font-semibold">7.1 : 1 Kontrast</span>
+<p class="text-[#46565C] text-[13px] mt-1">#46565C çelik gri üzeri #FFFFFF kart zemin.</p>
+</div>
+<p class="text-[12px] text-[#46565C]">Soru numarası ve yönerge metinlerinde net hiyerarşi oluşturur.</p>
+</div>
+<!-- Doğrulama 4: Doğru & Yanlış Durumları -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-5 rounded space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-[#46565C]">Değerlendirme Rozeti</span>
+<span class="font-label-sm text-label-sm font-bold text-[#1F7A45] bg-[#1F7A45]/10 px-2 py-0.5 rounded">Geçti · AAA</span>
+</div>
+<div class="grid grid-cols-2 gap-1.5">
+<div class="bg-[#1F7A45] text-white p-2 rounded text-center">
+<span class="font-mono text-[13px] font-bold">5.8 : 1</span>
+<span class="block text-[11px]">✓ Doğru</span>
+</div>
+<div class="bg-[#A33D27] text-white p-2 rounded text-center">
+<span class="font-mono text-[13px] font-bold">6.1 : 1</span>
+<span class="block text-[11px]">✕ Yanlış</span>
+</div>
+</div>
+<p class="text-[12px] text-[#46565C]">Renk körlüğü protokolü gereğince harf ve ikonlarla destekli onay.</p>
+</div>
+</div>
+</section>
+<!-- 4. BÖLÜM: Grafik ve Veri Görselleştirme Paleti (4 Renk) -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-[#0E6A6E] rounded-full"></span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-[#13232A]">4. Grafik ve Veri Görselleştirme Paleti</h2>
+</div>
+<span class="font-label-sm text-label-sm text-[#46565C]">4 Resmi Kurumsal Renk ile Soru Dağılımı ve Başarı Analitiği</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- 4 Renk Açıklama Kartı (7 Kolon) -->
+<div class="lg:col-span-7 bg-[#FFFFFF] border border-[#DAE1E0] p-6 rounded space-y-4">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Standart Veri Renkleri</h3>
+<p class="font-body-md text-body-md text-[#46565C]">
+              Deneme sınavı sonuç analizlerinde, soru zorluk eğrilerinde ve aday gelişim grafiklerinde yalnızca bu 4 renk kullanılır. Parlak mor, neon mavi veya yapay degrade renkler tamamen engellenmiştir.
+            </p>
+<div class="space-y-3 pt-2">
+<div class="flex items-center justify-between p-3 border border-[#DAE1E0] rounded bg-[#F4F6F5]">
+<div class="flex items-center gap-3">
+<span class="w-5 h-5 rounded-sm bg-[#0E6A6E]"></span>
+<div>
+<span class="font-label-md text-label-md font-semibold text-[#13232A] block">1. Petrol (#0E6A6E)</span>
+<span class="text-[12px] text-[#46565C]">Doğru yanıtlar, tamamlanan modüller ve birincil odak.</span>
+</div>
+</div>
+<span class="font-mono text-[12px] text-[#0E6A6E] font-bold">%55 Ağırlık</span>
+</div>
+<div class="flex items-center justify-between p-3 border border-[#DAE1E0] rounded bg-[#F4F6F5]">
+<div class="flex items-center gap-3">
+<span class="w-5 h-5 rounded-sm bg-[#E9A514]"></span>
+<div>
+<span class="font-label-md text-label-md font-semibold text-[#13232A] block">2. Safran Dolgu (#E9A514)</span>
+<span class="text-[12px] text-[#46565C]">Boş bırakılan sorular, işaretlenen inceleme hedefleri.</span>
+</div>
+</div>
+<span class="font-mono text-[12px] text-[#6c4a00] font-bold">%15 Ağırlık</span>
+</div>
+<div class="flex items-center justify-between p-3 border border-[#DAE1E0] rounded bg-[#F4F6F5]">
+<div class="flex items-center gap-3">
+<span class="w-5 h-5 rounded-sm bg-[#46565C]"></span>
+<div>
+<span class="font-label-md text-label-md font-semibold text-[#13232A] block">3. Nötr Çelik (#46565C)</span>
+<span class="text-[12px] text-[#46565C]">Kalan süre, sınav ortalaması referans çizgisi.</span>
+</div>
+</div>
+<span class="font-mono text-[12px] text-[#46565C] font-bold">%18 Ağırlık</span>
+</div>
+<div class="flex items-center justify-between p-3 border border-[#DAE1E0] rounded bg-[#F4F6F5]">
+<div class="flex items-center gap-3">
+<span class="w-5 h-5 rounded-sm bg-[#094447]"></span>
+<div>
+<span class="font-label-md text-label-md font-semibold text-[#13232A] block">4. Koyu Petrol (#094447)</span>
+<span class="text-[12px] text-[#46565C]">Tarihsel geçmiş deneme karşılaştırmaları.</span>
+</div>
+</div>
+<span class="font-mono text-[12px] text-[#094447] font-bold">%12 Ağırlık</span>
+</div>
+</div>
+</div>
+<!-- Canlı Veri Görselleştirme Örneği (5 Kolon) -->
+<div class="lg:col-span-5 bg-[#FFFFFF] border border-[#DAE1E0] p-6 rounded flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b border-[#DAE1E0] pb-3 mb-4">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Örnek Analiz: 80 Soru Dağılımı</h3>
+<span class="font-mono font-bold text-[12px] text-[#0E6A6E]">2026-YDS/1</span>
+</div>
+<!-- Bar Dağılım Grafiği -->
+<div class="space-y-1.5 mb-6">
+<div class="flex justify-between text-[12px] font-medium text-[#46565C]">
+<span>Genel İlerleme ve Dağılım</span>
+<span>Toplam 80 Soru</span>
+</div>
+<!-- Çok Parçalı Segment Bar -->
+<div class="h-6 w-full bg-[#DAE1E0] rounded flex overflow-hidden">
+<div class="bg-[#0E6A6E] h-full" style="width: 77.5%" title="62 Doğru"></div>
+<div class="bg-[#A33D27] h-full" style="width: 15%" title="12 Yanlış"></div>
+<div class="bg-[#E9A514] h-full" style="width: 7.5%" title="6 Boş"></div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-[#46565C] pt-1">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#0E6A6E]"></span> Doğru: 62</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#A33D27]"></span> Yanlış: 12</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#E9A514]"></span> Boş: 6</span>
+</div>
+</div>
+<!-- Puan Hesaplama Özeti (Net Metriği Kesinlikle Yok) -->
+<div class="bg-[#F4F6F5] border border-[#DAE1E0] p-4 rounded space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-[#46565C]">Doğru Sayısı:</span>
+<span class="font-mono font-bold text-[15px] text-[#13232A]">62 / 80</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-[#46565C]">Yanlış Sayısı:</span>
+<span class="font-mono font-bold text-[15px] text-[#A33D27]">12 / 80</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-[#46565C]">Boş Sayısı:</span>
+<span class="font-mono font-bold text-[15px] text-[#E9A514]">6 / 80</span>
+</div>
+<div class="h-px bg-[#DAE1E0] my-2"></div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-md text-label-md font-bold text-[#0E6A6E]">Sınav Puanı:</span>
+<div class="text-right">
+<span class="font-display-lg text-[26px] font-bold text-[#0E6A6E] leading-none">77,50</span>
+<span class="text-[12px] text-[#46565C] block">/ 100 Tam Puan</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-[#DAE1E0] flex items-center justify-between text-[11px] text-[#46565C]">
+<span>Formül: Doğru × 1,25</span>
+<span class="font-medium text-[#0E6A6E]">Resmi ÖSYM YDS Katsayısı</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. BÖLÜM: Arayüz İçi Uygulama Örnekleri -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-[#0E6A6E] rounded-full"></span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-[#13232A]">5. Arayüz İçi Uygulama Örnekleri</h2>
+</div>
+<span class="font-label-sm text-label-sm text-[#46565C]">Erişilebilir Dokunma Hedefleri (min 44px) ve Akademik Bileşenler</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Sol Panel: Akademik Örnek Soru & Seçenek Baloncukları (7 Kolon) -->
+<div class="lg:col-span-7 bg-[#FFFFFF] border border-[#DAE1E0] p-6 rounded space-y-5">
+<div class="flex items-center justify-between border-b border-[#DAE1E0] pb-3">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-bold text-[#0E6A6E] bg-[#E6F6FF] px-2.5 py-1 rounded border border-[#DAE1E0]">Soru 14 / 80</span>
+<span class="font-label-sm text-label-sm text-[#46565C]">Kelime Bilgisi · Cümle Tamamlama</span>
+</div>
+<div class="flex items-center gap-1.5 text-timer-display text-[#13232A] font-mono">
+<span class="material-symbols-outlined text-[20px] text-[#46565C]" data-icon="timer">timer</span>
+<span>142:18</span>
+</div>
+</div>
+<!-- Soru Metni (Literata Serif) -->
+<div class="space-y-2">
+<p class="font-question-passage text-question-passage text-[#13232A] leading-relaxed">
+                Although scientific research into neuroplasticity has expanded rapidly over the past two decades, many cognitive mechanisms underlying language acquisition in adulthood remain remarkably <span class="border-b-2 border-[#0E6A6E] px-2 font-semibold">________</span> to researchers across the globe.
+              </p>
+</div>
+<!-- Cevap Baloncukları (A-E Tam Daire, min 44px) -->
+<div class="space-y-2.5 pt-1">
+<!-- Seçenek A (Varsayılan Pasif) -->
+<label class="flex items-center gap-3.5 p-2 rounded border border-[#DAE1E0] hover:bg-[#F4F6F5] cursor-pointer transition-colors min-h-[52px]">
+<div class="w-11 h-11 rounded-full border border-[#DAE1E0] bg-[#FFFFFF] text-[#13232A] flex items-center justify-center font-bold text-[15px] flex-shrink-0">
+                  A
+                </div>
+<span class="font-question-option text-question-option text-[#13232A]">accessible</span>
+</label>
+<!-- Seçenek B (Seçili / Aktif Durum) -->
+<label class="flex items-center gap-3.5 p-2 rounded border-2 border-[#0E6A6E] bg-[#E6F6FF]/40 cursor-pointer transition-colors min-h-[52px]">
+<div class="w-11 h-11 rounded-full bg-[#0E6A6E] text-[#FFFFFF] flex items-center justify-center font-bold text-[15px] flex-shrink-0">
+                  B
+                </div>
+<div class="flex-1 flex items-center justify-between pr-2">
+<span class="font-question-option text-question-option text-[#13232A] font-semibold">elusive</span>
+<span class="font-label-sm text-label-sm text-[#0E6A6E] font-medium">Adayın Seçimi</span>
+</div>
+</label>
+<!-- Seçenek C (İnceleme Modu: Doğru Yanıt) -->
+<div class="flex items-center gap-3.5 p-2 rounded border border-[#1F7A45] bg-[#1F7A45]/5 min-h-[52px]">
+<div class="w-11 h-11 rounded-full bg-[#1F7A45] text-white flex items-center justify-center font-bold text-[15px] flex-shrink-0">
+                  C
+                </div>
+<div class="flex-1 flex items-center justify-between pr-2">
+<span class="font-question-option text-question-option text-[#13232A]">comprehensive</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm font-bold text-[#1F7A45]">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle">check_circle</span>
+                    ✓ Doğru
+                  </span>
+</div>
+</div>
+<!-- Seçenek D (İnceleme Modu: Hatalı Seçim) -->
+<div class="flex items-center gap-3.5 p-2 rounded border border-[#A33D27] bg-[#A33D27]/5 min-h-[52px]">
+<div class="w-11 h-11 rounded-full bg-[#A33D27] text-white flex items-center justify-center font-bold text-[15px] flex-shrink-0">
+                  D
+                </div>
+<div class="flex-1 flex items-center justify-between pr-2">
+<span class="font-question-option text-question-option text-[#13232A]">detrimental</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm font-bold text-[#A33D27]">
+<span class="material-symbols-outlined text-[16px]" data-icon="cancel">cancel</span>
+                    ✕ Yanlış
+                  </span>
+</div>
+</div>
+<!-- Seçenek E (Boş) -->
+<label class="flex items-center gap-3.5 p-2 rounded border border-[#DAE1E0] hover:bg-[#F4F6F5] cursor-pointer transition-colors min-h-[52px]">
+<div class="w-11 h-11 rounded-full border border-[#DAE1E0] bg-[#FFFFFF] text-[#13232A] flex items-center justify-center font-bold text-[15px] flex-shrink-0">
+                  E
+                </div>
+<span class="font-question-option text-question-option text-[#13232A]">unprecedented</span>
+</label>
+</div>
+<!-- Alt Eylem Çubuğu -->
+<div class="flex items-center justify-between pt-4 border-t border-[#DAE1E0]">
+<button class="h-11 px-5 border border-[#DAE1E0] bg-[#FFFFFF] text-[#46565C] hover:text-[#13232A] hover:bg-[#F4F6F5] font-label-md text-label-md rounded font-semibold transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+                Önceki Soru
+              </button>
+<div class="flex items-center gap-2">
+<button class="h-11 px-4 border border-[#DAE1E0] bg-[#FFFFFF] text-[#0E6A6E] hover:bg-[#F4F6F5] font-label-md text-label-md rounded font-semibold transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]" data-icon="bookmark">bookmark</span>
+                  Gözden Geçir
+                </button>
+<button class="h-11 px-6 bg-[#0E6A6E] text-white hover:bg-[#094B4E] font-label-md text-label-md rounded font-semibold transition-colors flex items-center gap-2">
+                  Sonraki Soru
+                  <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Sağ Panel: Kontrol Elemanları & Rozetler (5 Kolon) -->
+<div class="lg:col-span-5 space-y-6">
+<!-- Buton Türleri (En az 44px kuralı) -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-6 rounded space-y-4">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Buton Sistemi (Min 44px Hedef)</h3>
+<div class="space-y-3">
+<div>
+<span class="text-[12px] text-[#46565C] block mb-1">Birincil Buton (Primary):</span>
+<button class="w-full h-11 px-5 bg-[#0E6A6E] text-white hover:bg-[#094B4E] font-label-md text-label-md rounded font-semibold transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="assignment_turned_in">assignment_turned_in</span>
+                    Sınavı Tamamla ve Gönder
+                  </button>
+</div>
+<div>
+<span class="text-[12px] text-[#46565C] block mb-1">İkincil / Çerçeveli Buton (Secondary):</span>
+<button class="w-full h-11 px-5 border border-[#0E6A6E] bg-white text-[#0E6A6E] hover:bg-[#F4F6F5] font-label-md text-label-md rounded font-semibold transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="tune">tune</span>
+                    Soru Filtrelerini Aç
+                  </button>
+</div>
+<div>
+<span class="text-[12px] text-[#46565C] block mb-1">Üçüncül / Şeffaf Buton (Ghost):</span>
+<button class="w-full h-11 px-5 text-[#46565C] hover:text-[#13232A] hover:bg-[#F4F6F5] font-label-md text-label-md rounded font-medium transition-colors flex items-center justify-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]" data-icon="undo">undo</span>
+                    Cevabı Temizle
+                  </button>
+</div>
+</div>
+</div>
+<!-- Rozetler ve Sayaç Göstergeleri (Safran Kuralı Denetimi) -->
+<div class="bg-[#FFFFFF] border border-[#DAE1E0] p-6 rounded space-y-4">
+<h3 class="font-headline-sm text-headline-sm font-semibold text-[#13232A]">Rozet &amp; Durum Uygulamaları</h3>
+<div class="space-y-3">
+<!-- Safran Sayaç Rozeti -->
+<div class="p-3 border border-[#DAE1E0] rounded bg-[#F4F6F5] flex items-center justify-between">
+<div>
+<span class="font-label-md text-label-md font-semibold text-[#13232A] block">Geri Sayım Rozeti</span>
+<span class="text-[11px] text-[#46565C]">Safran yalnızca zemin dolgusunda</span>
+</div>
+<span class="bg-[#E9A514] text-[#13232A] font-label-sm text-label-sm font-bold px-3 py-1.5 rounded flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]" data-icon="event">event</span>
+                    52 Gün Kaldı
+                  </span>
+</div>
+<!-- Doğruluk Bildirimi -->
+<div class="p-3 border border-[#1F7A45]/30 rounded bg-[#1F7A45]/5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#1F7A45] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-label-md text-label-md font-semibold text-[#1F7A45]">Doğru Yanıtlandı</span>
+</div>
+<span class="font-mono text-[13px] font-bold text-[#1F7A45]">+1,25 Puan</span>
+</div>
+<!-- Yanlışlık Bildirimi -->
+<div class="p-3 border border-[#A33D27]/30 rounded bg-[#A33D27]/5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#A33D27] text-[20px]" data-icon="cancel">cancel</span>
+<span class="font-label-md text-label-md font-semibold text-[#A33D27]">Yanlış Yanıtlandı</span>
+</div>
+<span class="font-mono text-[13px] font-bold text-[#A33D27]">0,00 Puan</span>
+</div>
+</div>
+<!-- Metin Kutusu Odaklanma Örneği -->
+<div class="pt-2">
+<label class="block text-[12px] font-semibold text-[#13232A] mb-1">Aday Not Defteri (Odaklanma Hali):</label>
+<input class="w-full h-11 px-3 border-2 border-[#0E6A6E] rounded bg-white text-[#13232A] font-body-md text-body-md focus:outline-none" readonly="" type="text" value="Paragrafta neuroplasticity ve language acquisition zıtlığı var."/>
+<span class="text-[11px] text-[#46565C] mt-1 block">Odak çerçevesi: 1.5px/2px katı Petrol (#0E6A6E), dış ışıma yoktur.</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ödeme Yöntemleri ve Faturalar · ODAK Akademik Sınav Hazırlık Platformu</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#F4F6F5',
+            surface: '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            outline: '#77868A',
+            'outline-variant': '#DAE1E0',
+            primary: '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            secondary: '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            tertiary: '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            error: '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+            'chart-1': '#0F9485',
+            'chart-2': '#505AC8',
+            'chart-3': '#BA7F14',
+            'chart-4': '#9E427B',
+          },
+          fontFamily: {
+            headline: ['Figtree', 'sans-serif'],
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            body: ['Figtree', 'sans-serif'],
+            label: ['Figtree', 'sans-serif'],
+            reading: ['Literata', 'serif'],
+          },
+          borderRadius: {
+            xs: '4px',
+            sm: '8px',
+            DEFAULT: '12px',
+            md: '12px',
+            lg: '16px',
+            xl: '24px',
+            full: '9999px',
+          },
+          boxShadow: {
+            subtle: '0 1px 3px rgba(19, 35, 42, 0.05)',
+            popover: '0 4px 12px rgba(19, 35, 42, 0.08)',
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Tabular figures for academic financial values */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- TOP APP BAR (Shared Components JSON Anchor) -->
+<header class="bg-surface border-b border-outline-variant sticky top-0 z-50">
+<div class="w-full h-16 flex items-center justify-between px-8 max-w-7xl mx-auto">
+<!-- Brand & Exam Switcher Chip -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-2.5 cursor-pointer active:scale-98 transition-transform duration-100" href="#">
+<!-- OSYM Optical Bubble Mark -->
+<div class="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center bg-surface">
+<div class="w-4 h-4 rounded-full bg-primary"></div>
+</div>
+<span class="font-headline text-2xl font-bold tracking-tight text-primary">ODAK</span>
+</a>
+<!-- Exam Switcher Chip (Detachable) -->
+<button class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-container/50 border border-outline-variant hover:bg-primary-container/80 transition-colors text-xs font-semibold text-on-primary-container cursor-pointer" type="button">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>YDS · 22 Kasım 2026 · 52 Gün Kaldı</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center space-x-8 h-full">
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface hover:bg-primary-container/20 px-2 transition-colors duration-150" href="#">Bugün</a>
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface hover:bg-primary-container/20 px-2 transition-colors duration-150" href="#">Çalış</a>
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface hover:bg-primary-container/20 px-2 transition-colors duration-150" href="#">Deneme</a>
+<a class="text-on-surface-variant font-medium py-5 hover:text-on-surface hover:bg-primary-container/20 px-2 transition-colors duration-150" href="#">Öğretmen</a>
+<!-- Active Tab: Ben -->
+<a class="text-primary font-semibold border-b-2 border-primary py-5 px-2" href="#">Ben</a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center gap-4">
+<!-- 14 Day Streak Badge (Saffron fill badge, dark text) -->
+<div class="flex items-center gap-1.5 px-3 py-1 bg-secondary rounded-full text-on-secondary font-bold text-xs shadow-none">
+<span class="material-symbols-outlined text-sm fill">local_fire_department</span>
+<span>14 Gün Seri</span>
+</div>
+<!-- Notifications -->
+<button aria-label="Bildirimler" class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<!-- User Profile Pill -->
+<div class="flex items-center gap-3 pl-2 border-l border-outline-variant">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container font-bold text-xs flex items-center justify-center border border-primary/20">
+            BKÖ
+          </div>
+<div class="hidden xl:flex flex-col text-left">
+<span class="text-xs font-bold text-on-surface leading-tight">Doç. Dr. Bilge Kağan Öztürk</span>
+<span class="text-[11px] text-on-surface-variant leading-tight">Hacettepe Üniversitesi</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-6 lg:px-8 py-8 space-y-8">
+<!-- 2. Page Header & Primary Breadcrumb Cluster -->
+<section class="space-y-4">
+<!-- Breadcrumb -->
+<div class="flex items-center gap-2 text-xs font-medium text-on-surface-variant">
+<span>Ben</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span>Hesap ve Abonelik</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-primary font-semibold">Ödeme Yöntemleri ve Faturalar</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-outline-variant">
+<div class="max-w-3xl space-y-2">
+<div class="flex items-center gap-3">
+<h1 class="font-headline text-3xl font-bold text-on-surface tracking-tight">Ödeme Yöntemleri ve Faturalar</h1>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tertiary-container text-tertiary border border-tertiary/20 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+              Aktif BAP Aboneliği
+            </span>
+</div>
+<p class="text-on-surface-variant text-sm md:text-base leading-relaxed">
+            Akademik sınav hazırlık paketlerinize ve üniversite BAP / araştırma projelerinize ait kayıtlı ödeme araçlarını yönetin, resmi e-Arşiv faturalarınızı inceleyin ve fatura profilinizi güncelleyin.
+          </p>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<button class="h-11 px-5 rounded-md border border-outline-variant bg-surface text-on-surface text-sm font-semibold hover:bg-surface-container-high transition-colors flex items-center gap-2 cursor-pointer active:scale-98" type="button">
+<span class="material-symbols-outlined text-lg">download</span>
+<span>Toplu Fatura İndir</span>
+</button>
+<button class="h-11 px-5 rounded-md bg-primary text-on-primary text-sm font-semibold hover:bg-on-primary-container transition-colors flex items-center gap-2 cursor-pointer active:scale-98 shadow-sm" type="button">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+<span>Yeni Kart Ekle</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 3. Stored Payment Cards & Invoice Profile (Two Column Grid) -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Sol Kart: Kayıtlı Ödeme Kartları (5 Cols) -->
+<div class="lg:col-span-5 bg-surface rounded-lg border border-outline-variant p-6 flex flex-col justify-between space-y-6">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-primary text-2xl">credit_card</span>
+<h2 class="font-headline text-lg font-bold text-on-surface">Kayıtlı Ödeme Kartları</h2>
+</div>
+<span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-background text-on-surface-variant border border-outline-variant">
+              2 Kart Kayıtlı
+            </span>
+</div>
+<!-- Cards Stack -->
+<div class="space-y-4 mt-5">
+<!-- Card 1: Default TROY -->
+<div class="p-5 rounded-md border-2 border-primary bg-primary-container/15 relative space-y-4">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<!-- Optical circle badge for bank logo motif -->
+<div class="w-10 h-7 rounded bg-surface border border-outline-variant flex items-center justify-center font-bold text-[11px] text-primary tracking-wider">
+                    TROY
+                  </div>
+<div>
+<div class="text-xs font-semibold text-on-surface">VakıfBank Bankomat Kartı</div>
+<div class="font-mono text-sm font-semibold text-on-surface tracking-wider">•••• •••• •••• 9012</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-tertiary-container text-tertiary flex items-center gap-1 border border-tertiary/20">
+<span class="material-symbols-outlined text-sm fill">check_circle</span>
+<span>Varsayılan Kart</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-xs text-on-surface-variant pt-2 border-t border-outline-variant/60">
+<div>
+<span class="block text-[11px] text-outline">Kart Sahibi</span>
+<span class="font-medium text-on-surface">Doç. Dr. Bilge Kağan Öztürk</span>
+</div>
+<div class="text-right">
+<span class="block text-[11px] text-outline">Son Kullanma</span>
+<span class="font-medium text-on-surface tabular-nums">08 / 2028</span>
+</div>
+</div>
+<div class="flex items-center gap-3 pt-1">
+<button class="h-9 px-3.5 rounded text-xs font-semibold bg-surface border border-outline-variant text-on-surface hover:bg-surface-container-high transition-colors" type="button">
+                  Düzenle
+                </button>
+<button class="h-9 px-3.5 rounded text-xs font-semibold text-primary hover:bg-primary-container/30 transition-colors" type="button">
+                  Kartı Değiştir
+                </button>
+</div>
+</div>
+<!-- Card 2: Backup University Card -->
+<div class="p-5 rounded-md border border-outline-variant bg-surface space-y-4 hover:border-outline transition-colors">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-7 rounded bg-background border border-outline-variant flex items-center justify-center font-bold text-[10px] text-on-surface-variant tracking-tight">
+                    KURUMSAL
+                  </div>
+<div>
+<div class="text-xs font-semibold text-on-surface">Ziraat Kurumsal Üniversite Kartı</div>
+<div class="font-mono text-sm font-semibold text-on-surface tracking-wider">•••• •••• •••• 3091</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-background text-on-surface-variant border border-outline-variant">
+                  Yedek Kart
+                </span>
+</div>
+<div class="flex items-center justify-between text-xs text-on-surface-variant pt-2 border-t border-outline-variant">
+<div>
+<span class="block text-[11px] text-outline">Kart Sahibi</span>
+<span class="font-medium text-on-surface">Doç. Dr. Bilge Kağan Öztürk</span>
+</div>
+<div class="text-right">
+<span class="block text-[11px] text-outline">Son Kullanma</span>
+<span class="font-medium text-on-surface tabular-nums">11 / 2027</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<button class="h-9 px-3 rounded text-xs font-semibold text-primary hover:bg-primary-container/30 transition-colors" type="button">
+                  Varsayılan Yap
+                </button>
+<button class="h-9 px-3 rounded text-xs font-semibold text-error hover:bg-error-container/40 transition-colors" type="button">
+                  Kartı Kaldır
+                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Security Badge Under Cards -->
+<div class="p-3.5 rounded-md bg-background border border-outline-variant flex items-start gap-3 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-lg shrink-0 mt-0.5">verified_user</span>
+<p class="leading-relaxed">
+            Bankacılık Düzenleme ve Denetleme Kurumu onaylı banka altyapısıyla güvenli 3D Secure ödeme adımı uygulanmaktadır.
+          </p>
+</div>
+</div>
+<!-- Sağ Kart: Fatura Profili ve Resmi Vergi Bilgileri (7 Cols) -->
+<div class="lg:col-span-7 bg-surface rounded-lg border border-outline-variant p-6 flex flex-col justify-between space-y-6">
+<div class="space-y-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-outline-variant">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-primary text-2xl">receipt_long</span>
+<div>
+<h2 class="font-headline text-lg font-bold text-on-surface">Fatura Profili ve Resmî Vergi Bilgileri</h2>
+<p class="text-xs text-on-surface-variant">BAP ve üniversite mali harcama mevzuatına uygun e-Arşiv düzeni</p>
+</div>
+</div>
+<!-- Tab Segment Controller -->
+<div class="inline-flex p-1 rounded-md bg-background border border-outline-variant text-xs font-semibold self-start sm:self-auto">
+<button class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface transition-colors" type="button">Bireysel Fatura</button>
+<button class="px-3 py-1.5 rounded bg-surface text-primary shadow-xs font-bold border border-outline-variant" type="button">Kurumsal / BAP Faturası</button>
+</div>
+</div>
+<!-- Form Fields Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+<!-- Institution Full Legal Title (Spans 2 cols) -->
+<div class="md:col-span-2 space-y-1.5">
+<label class="block text-xs font-bold text-on-surface">Kurum / Üniversite Tam Resmî Ünvanı</label>
+<input class="w-full h-11 px-3.5 rounded-md border border-outline-variant bg-background text-on-surface text-xs font-medium focus:ring-2 focus:ring-primary focus:border-primary" readonly="" type="text" value="Hacettepe Üniversitesi Rektörlüğü Bilimsel Araştırma Projeleri Koordinatörlüğü - BAP"/>
+</div>
+<!-- Tax Office -->
+<div class="space-y-1.5">
+<label class="block text-xs font-bold text-on-surface">Vergi Dairesi</label>
+<input class="w-full h-11 px-3.5 rounded-md border border-outline-variant bg-surface text-on-surface text-xs font-medium focus:ring-2 focus:ring-primary focus:border-primary" type="text" value="Sıhhiye Vergi Dairesi"/>
+</div>
+<!-- Tax ID (VKN) with Verified Badge -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="block text-xs font-bold text-on-surface">Vergi Kimlik Numarası (VKN)</label>
+<span class="text-[11px] font-semibold text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs fill">check_circle</span>
+                  Doğrulandı
+                </span>
+</div>
+<div class="relative">
+<input class="w-full h-11 px-3.5 pr-20 rounded-md border border-outline-variant bg-surface text-on-surface text-xs font-mono font-medium focus:ring-2 focus:ring-primary focus:border-primary" type="text" value="4540192841"/>
+<span class="absolute right-3 top-3 text-[11px] font-medium text-outline">GİB Uygun</span>
+</div>
+</div>
+<!-- Invoice Notification Email -->
+<div class="space-y-1.5">
+<label class="block text-xs font-bold text-on-surface">Fatura Bildirim E-Postası</label>
+<input class="w-full h-11 px-3.5 rounded-md border border-outline-variant bg-surface text-on-surface text-xs font-medium focus:ring-2 focus:ring-primary focus:border-primary" type="email" value="bilge.ozturk@hacettepe.edu.tr"/>
+</div>
+<!-- Project / BAP Code -->
+<div class="space-y-1.5">
+<label class="block text-xs font-bold text-on-surface">Proje / BAP Sicil No</label>
+<input class="w-full h-11 px-3.5 rounded-md border border-outline-variant bg-surface text-on-surface text-xs font-medium focus:ring-2 focus:ring-primary focus:border-primary" type="text" value="BAP-2026-TIP-084"/>
+</div>
+<!-- Official Notification Address (Spans 2 cols) -->
+<div class="md:col-span-2 space-y-1.5">
+<label class="block text-xs font-bold text-on-surface">Resmî Tebligat ve Fatura Adresi</label>
+<textarea class="w-full p-3 rounded-md border border-outline-variant bg-surface text-on-surface text-xs font-medium focus:ring-2 focus:ring-primary focus:border-primary" rows="2">Hacettepe Üniversitesi Sıhhiye Yerleşkesi, BAP Koordinasyon Birimi, 06100 Çankaya / Ankara</textarea>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant">
+<div class="flex items-center gap-2 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-outline">info</span>
+<span>Tüm faturalar doğrudan e-Arşiv formatında üretilerek bu adrese iletilir.</span>
+</div>
+<button class="h-11 px-6 rounded-md bg-primary text-on-primary text-xs font-bold hover:bg-on-primary-container transition-colors cursor-pointer active:scale-98" type="button">
+            Fatura Bilgilerini Güncelle
+          </button>
+</div>
+</div>
+</section>
+<!-- 4. e-Arşiv Faturalar ve Harcama Makbuzları (Data Table) -->
+<section class="bg-surface rounded-lg border border-outline-variant p-6 space-y-6">
+<!-- Table Header & Filter Bar -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-outline-variant">
+<div>
+<h2 class="font-headline text-lg font-bold text-on-surface">e-Arşiv Faturalar ve Harcama Makbuzları</h2>
+<p class="text-xs text-on-surface-variant">Harcama pusulaları ve üniversite muhasebesine ibraz edilebilir yasal belgeler</p>
+</div>
+<!-- Filter Row -->
+<div class="flex items-center gap-3">
+<!-- Year Filter -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-outline-variant bg-background text-xs font-medium text-on-surface">
+<span class="text-outline">Dönem:</span>
+<span class="font-bold">2026 Yılı</span>
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span>
+</div>
+<!-- Status Filter -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-outline-variant bg-background text-xs font-medium text-on-surface">
+<span class="text-outline">Durum:</span>
+<span class="font-bold text-tertiary">Ödendi (3)</span>
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Table Element -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant text-[11px] font-bold uppercase tracking-wider text-outline">
+<th class="py-3 px-4">Belge No</th>
+<th class="py-3 px-4">Düzenleme Tarihi</th>
+<th class="py-3 px-4">Hizmet / Paket Tanımı</th>
+<th class="py-3 px-4">Ödeme Yöntemi</th>
+<th class="py-3 px-4 text-right">Tutar</th>
+<th class="py-3 px-4 text-center">Durum</th>
+<th class="py-3 px-4 text-right">İşlemler</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-xs">
+<!-- Row 1 -->
+<tr class="hover:bg-background/80 transition-colors">
+<td class="py-4 px-4 font-mono font-bold text-primary">FAT-2026-00412</td>
+<td class="py-4 px-4 text-on-surface-variant tabular-nums">15 Eylül 2026</td>
+<td class="py-4 px-4">
+<div class="font-semibold text-on-surface">2026 Sonbahar YDS/2 Tam Kapsamlı Sınav Paketi</div>
+<div class="text-[11px] text-on-surface-variant">80 Soru x 10 Deneme + Soru Çözüm Analizi</div>
+</td>
+<td class="py-4 px-4 text-on-surface-variant font-mono">TROY (•••• 9012)</td>
+<td class="py-4 px-4 text-right font-bold text-on-surface tabular-nums">1.490,00 TL</td>
+<td class="py-4 px-4 text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-tertiary-container text-tertiary">
+<span class="material-symbols-outlined text-xs fill">done_all</span>
+                  Ödendi
+                </span>
+</td>
+<td class="py-4 px-4 text-right">
+<div class="inline-flex items-center gap-1.5">
+<button class="h-8 px-2.5 rounded border border-outline-variant text-[11px] font-semibold text-on-surface hover:bg-surface-container-high transition-colors" type="button">Görüntüle</button>
+<button class="h-8 px-2.5 rounded bg-surface-container-high text-[11px] font-semibold text-primary hover:bg-primary hover:text-on-primary transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+<span>PDF</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-background/80 transition-colors">
+<td class="py-4 px-4 font-mono font-bold text-primary">FAT-2026-00287</td>
+<td class="py-4 px-4 text-on-surface-variant tabular-nums">10 Temmuz 2026</td>
+<td class="py-4 px-4">
+<div class="font-semibold text-on-surface">Akademik Metin Analizi ve Literatür Okuma Modülü</div>
+<div class="text-[11px] text-on-surface-variant">Özgün Makale Çözümlemeleri ve Söz Dağarcığı</div>
+</td>
+<td class="py-4 px-4 text-on-surface-variant font-mono">TROY (•••• 9012)</td>
+<td class="py-4 px-4 text-right font-bold text-on-surface tabular-nums">450,00 TL</td>
+<td class="py-4 px-4 text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-tertiary-container text-tertiary">
+<span class="material-symbols-outlined text-xs fill">done_all</span>
+                  Ödendi
+                </span>
+</td>
+<td class="py-4 px-4 text-right">
+<div class="inline-flex items-center gap-1.5">
+<button class="h-8 px-2.5 rounded border border-outline-variant text-[11px] font-semibold text-on-surface hover:bg-surface-container-high transition-colors" type="button">Görüntüle</button>
+<button class="h-8 px-2.5 rounded bg-surface-container-high text-[11px] font-semibold text-primary hover:bg-primary hover:text-on-primary transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+<span>PDF</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-background/80 transition-colors">
+<td class="py-4 px-4 font-mono font-bold text-primary">FAT-2026-00104</td>
+<td class="py-4 px-4 text-on-surface-variant tabular-nums">14 Nisan 2026</td>
+<td class="py-4 px-4">
+<div class="font-semibold text-on-surface">YDS Gramer ve Kelime Hazırlık Paketi</div>
+<div class="text-[11px] text-on-surface-variant">ÖSYM Formatı 1.200 Kelime ve Soru Havuzu</div>
+</td>
+<td class="py-4 px-4 text-on-surface-variant font-mono">Mastercard (•••• 3091)</td>
+<td class="py-4 px-4 text-right font-bold text-on-surface tabular-nums">1.150,00 TL</td>
+<td class="py-4 px-4 text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-tertiary-container text-tertiary">
+<span class="material-symbols-outlined text-xs fill">done_all</span>
+                  Ödendi
+                </span>
+</td>
+<td class="py-4 px-4 text-right">
+<div class="inline-flex items-center gap-1.5">
+<button class="h-8 px-2.5 rounded border border-outline-variant text-[11px] font-semibold text-on-surface hover:bg-surface-container-high transition-colors" type="button">Görüntüle</button>
+<button class="h-8 px-2.5 rounded bg-surface-container-high text-[11px] font-semibold text-primary hover:bg-primary hover:text-on-primary transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+<span>PDF</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Legal Compliance Subtitle -->
+<div class="pt-4 border-t border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>Tüm faturalar 5018 sayılı Kamu Malî Yönetimi Kanununa ve üniversite BAP harcama kriterlerine tam uyumludur.</span>
+</div>
+<div class="text-right font-medium">Toplam Harcama: <span class="font-bold text-on-surface">3.090,00 TL</span></div>
+</div>
+</section>
+<!-- 5. Academic & Consumer Guarantees (Bento Grid of 4 Trust Cards) -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Guarantee 1 -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-2xl fill">verified</span>
+</div>
+<h3 class="font-headline text-sm font-bold text-on-surface">14 Gün Koşulsuz Cayma Hakkı</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+          Paket alımınızdan itibaren 14 gün içinde kesintisiz tam iade hakkı sağlanır; yasal mevzuata eksiksiz riayet edilir.
+        </p>
+</div>
+<!-- Guarantee 2 -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">schedule_send</span>
+</div>
+<h3 class="font-headline text-sm font-bold text-on-surface">Önceden Şeffaf Bildirim</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+          Sürpriz tahsilat yoktur. Dönemsel yenilemelerden tam 7 gün önce SMS ve kurumsal e-posta ile bildirim iletilir.
+        </p>
+</div>
+<!-- Guarantee 3 -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-2xl">account_balance</span>
+</div>
+<h3 class="font-headline text-sm font-bold text-on-surface">Üniversite BAP ve Teşvik Uyumu</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+          Rektörlük, BAP komisyonu ve TÜBİTAK proje bütçeleri standartlarında resmi e-Arşiv fatura düzeni sunulur.
+        </p>
+</div>
+<!-- Guarantee 4 -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5 space-y-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">lock_open</span>
+</div>
+<h3 class="font-headline text-sm font-bold text-on-surface">Kesintisiz Çalışma Güvencesi</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+          Kart yenileme sırasında aktif sınav seansınız, çözdüğünüz deneme verileriniz ve öğretmen notlarınız asla kesintiye uğramaz.
+        </p>
+</div>
+</section>
+<!-- 6. Canlı Lisans Örneği (Canlı ÖSYM Soru Formatı ve Cümle Röntgeni Entegrasyonu) -->
+<section class="bg-surface rounded-lg border border-outline-variant p-6 lg:p-8 space-y-6">
+<!-- Section Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<span class="text-xs font-bold uppercase tracking-wider text-primary">Lisanslı İçerik Denetimi</span>
+</div>
+<h2 class="font-headline text-xl font-bold text-on-surface mt-1">ÖSYM Formatında Orijinal Soru ve Öğretmen İpucu Desteği</h2>
+</div>
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-primary-container text-on-primary-container self-start">
+          Tam Paket Kapsamı
+        </span>
+</div>
+<!-- Question Preview Box -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left: Question Stem & Options (7 Cols) -->
+<div class="lg:col-span-7 space-y-6">
+<div class="space-y-3">
+<div class="flex items-center justify-between text-xs text-on-surface-variant">
+<span class="font-bold text-on-surface">Soru 18 · Cümle Tamamlama</span>
+<span class="tabular-nums">1 Doğru = 1,25 Puan</span>
+</div>
+<!-- Literata Serif Question Stem (Max 680px for optimal reading) -->
+<p class="font-reading text-lg text-on-surface leading-relaxed max-w-[680px]">
+              Although extensive clinical trials appeared promising regarding hypertension, subsequent investigations failed to replicate the findings; ________, health authorities advised further observation.
+            </p>
+</div>
+<!-- Options using Optical Bubble Motif -->
+<div class="space-y-2.5 max-w-[680px]">
+<!-- Option A -->
+<div class="flex items-center gap-3.5 p-3 rounded-md border border-outline-variant hover:bg-background transition-colors cursor-pointer min-h-[52px]">
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-bold text-xs text-on-surface-variant">A</div>
+<span class="font-reading text-base text-on-surface">furthermore</span>
+</div>
+<!-- Option B (Correct - Green Double Indicator) -->
+<div class="flex items-center justify-between p-3 rounded-md border-2 border-tertiary bg-tertiary-container/30 min-h-[52px]">
+<div class="flex items-center gap-3.5">
+<!-- Optical circle: Filled -->
+<div class="w-6 h-6 rounded-full bg-tertiary text-on-primary flex items-center justify-center font-bold text-xs">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="font-reading text-base font-semibold text-on-surface">consequently</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-tertiary text-on-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">done</span> Doğru Seçenek
+              </span>
+</div>
+<!-- Option C -->
+<div class="flex items-center gap-3.5 p-3 rounded-md border border-outline-variant hover:bg-background transition-colors cursor-pointer min-h-[52px]">
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-bold text-xs text-on-surface-variant">C</div>
+<span class="font-reading text-base text-on-surface">nonetheless</span>
+</div>
+<!-- Option D -->
+<div class="flex items-center gap-3.5 p-3 rounded-md border border-outline-variant hover:bg-background transition-colors cursor-pointer min-h-[52px]">
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-bold text-xs text-on-surface-variant">D</div>
+<span class="font-reading text-base text-on-surface">otherwise</span>
+</div>
+<!-- Option E -->
+<div class="flex items-center gap-3.5 p-3 rounded-md border border-outline-variant hover:bg-background transition-colors cursor-pointer min-h-[52px]">
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-bold text-xs text-on-surface-variant">E</div>
+<span class="font-reading text-base text-on-surface">on the contrary</span>
+</div>
+</div>
+</div>
+<!-- Right: 4-Step Teacher Ladder (5 Cols) -->
+<div class="lg:col-span-5 bg-background rounded-lg border border-outline-variant p-6 space-y-4">
+<div class="flex items-center gap-2 pb-3 border-b border-outline-variant">
+<span class="material-symbols-outlined text-primary text-xl">psychology</span>
+<h3 class="font-headline text-sm font-bold text-on-surface">Öğretmen İpucu Merdiveni</h3>
+</div>
+<div class="space-y-3">
+<!-- Step 1: Odak -->
+<div class="p-3 bg-surface rounded-md border border-outline-variant space-y-1">
+<div class="flex items-center gap-2 text-xs font-bold text-primary">
+<span class="w-5 h-5 rounded-full bg-primary-container text-primary flex items-center justify-center text-[10px]">1</span>
+<span>Odak</span>
+</div>
+<p class="text-xs text-on-surface-variant pl-7">
+                Noktalı virgülden sonraki bağlaç; önceki yargının ("failed to replicate") mantıksal sonucunu bildirmelidir.
+              </p>
+</div>
+<!-- Step 2: Kural -->
+<div class="p-3 bg-surface rounded-md border border-outline-variant space-y-1">
+<div class="flex items-center gap-2 text-xs font-bold text-primary">
+<span class="w-5 h-5 rounded-full bg-primary-container text-primary flex items-center justify-center text-[10px]">2</span>
+<span>Kural</span>
+</div>
+<p class="text-xs text-on-surface-variant pl-7">
+                Sebep-sonuç zarf bağlaçları (transitions) iki bağımsız cümleyi noktalı virgül ve virgülle bağlar.
+              </p>
+</div>
+<!-- Step 3: Eleme -->
+<div class="p-3 bg-surface rounded-md border border-outline-variant space-y-1">
+<div class="flex items-center gap-2 text-xs font-bold text-primary">
+<span class="w-5 h-5 rounded-full bg-primary-container text-primary flex items-center justify-center text-[10px]">3</span>
+<span>Eleme</span>
+</div>
+<p class="text-xs text-on-surface-variant pl-7">
+                "Nonetheless" ve "on the contrary" zıtlık bildirir; denemenin başarısız olması sonrasındaki tavsiye bir sonuçtur.
+              </p>
+</div>
+<!-- Step 4: Çözüm -->
+<div class="p-3 bg-primary-container/30 rounded-md border border-primary/30 space-y-1">
+<div class="flex items-center gap-2 text-xs font-bold text-primary">
+<span class="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center text-[10px]">4</span>
+<span>Çözüm</span>
+</div>
+<p class="text-xs text-on-surface pl-7 font-medium">
+                Bulgular doğrulanamadığı için (sebep), yetkililer ek gözlem tavsiye etmiştir (sonuç: consequently).
+              </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 7. Sistem Davranışları ve Ödeme Güvenlik Protokolleri Matrisi -->
+<section class="bg-surface rounded-lg border border-outline-variant p-6 space-y-6">
+<div>
+<h2 class="font-headline text-lg font-bold text-on-surface">Ödeme Güvenlik Protokolleri ve Hesap Kuralları</h2>
+<p class="text-xs text-on-surface-variant">Sınav hazırlık sürecinizin kesintiye uğramaması için uygulanan sistem prensipleri</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Behavior 1 -->
+<div class="p-4 rounded-md border border-outline-variant bg-background space-y-2">
+<div class="flex items-center gap-2 text-xs font-bold text-on-surface">
+<span class="material-symbols-outlined text-primary text-lg">swap_horiz</span>
+<span>Varsayılan Kart Değişimi</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Yeni bir kart birincil yapıldığında, sonraki dönem harç ve paket tahsilatları otomatik olarak yeni seçilen karta yönlendirilir.
+          </p>
+</div>
+<!-- Behavior 2 -->
+<div class="p-4 rounded-md border border-outline-variant bg-background space-y-2">
+<div class="flex items-center gap-2 text-xs font-bold text-on-surface">
+<span class="material-symbols-outlined text-error text-lg">lock</span>
+<span>Son Kartı Silme Kısıtı</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Aktif sınav hazırlık döneminiz sürerken sistemde tanımlı tek kart doğrudan silinemez; önce alternatif bir ödeme aracı girilmelidir.
+          </p>
+</div>
+<!-- Behavior 3 -->
+<div class="p-4 rounded-md border border-outline-variant bg-background space-y-2">
+<div class="flex items-center gap-2 text-xs font-bold text-on-surface">
+<span class="material-symbols-outlined text-tertiary text-lg">verified</span>
+<span>Vergi No &amp; GİB Doğrulama</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Girilen VKN veya T.C. Kimlik Numarası Gelir İdaresi Başkanlığı veri tabanı üzerinden otomatik doğrulanarak faturaya aktarılır.
+          </p>
+</div>
+<!-- Behavior 4 -->
+<div class="p-4 rounded-md border border-outline-variant bg-background space-y-2">
+<div class="flex items-center gap-2 text-xs font-bold text-on-surface">
+<span class="material-symbols-outlined text-secondary text-lg">hourglass_top</span>
+<span>Ödeme Başarısızlığı Koruması</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Limit yetersizliğinde abonelik hemen askıya alınmaz; 3 gün arayla 3 deneme yapılır ve kayıtlı e-postanıza güvenli bilgi verilir.
+          </p>
+</div>
+</div>
+</section>
+</main>
+<!-- FOOTER (Shared Components JSON Anchor) -->
+<footer class="bg-surface border-t border-outline-variant mt-12">
+<div class="w-full py-8 px-8 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+<!-- Brand & Copyright -->
+<div class="space-y-2 text-center md:text-left">
+<div class="flex items-center justify-center md:justify-start gap-2">
+<div class="w-5 h-5 rounded-full border border-primary flex items-center justify-center bg-surface">
+<div class="w-2.5 h-2.5 rounded-full bg-primary"></div>
+</div>
+<span class="font-headline text-base font-semibold text-on-surface">ODAK</span>
+<span class="text-outline text-xs">·</span>
+<span class="text-xs text-on-surface-variant font-medium">80 Soru · 180 Dakika · 1 Doğru = 1,25 Puan</span>
+</div>
+<p class="font-body text-xs text-on-surface-variant max-w-xl">
+          © 2026 ODAK Akademik Sınav Hazırlık Platformu. ÖSYM formatı ve standartları doğrultusunda hazırlanmıştır. Tüm hakları saklıdır.
+        </p>
+</div>
+<!-- Links Cluster -->
+<div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-on-surface-variant font-body">
+<a class="hover:text-primary transition-colors duration-150" href="#">Sınav Formatı ve Kuralları</a>
+<a class="hover:text-primary transition-colors duration-150" href="#">Çalışma Esasları</a>
+<a class="hover:text-primary transition-colors duration-150" href="#">Soru Dağılımı ve Kılavuz</a>
+<a class="hover:text-primary transition-colors duration-150" href="#">Gizlilik ve Güvenlik</a>
+<a class="hover:text-primary transition-colors duration-150" href="#">İletişim</a>
+</div>
+</div>
+</footer>
+</body></html>

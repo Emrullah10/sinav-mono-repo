@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DIAG-04 · Kişiselleştirilmiş Çalışma Planı Önizleme</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed": "#ffdeac",
+            "on-primary-fixed-variant": "#004f52",
+            "surface-container-lowest": "#070f13",
+            "surface-bright": "#313b3f",
+            "surface-variant": "#2d363b",
+            "primary-fixed-dim": "#87d3d7",
+            "tertiary": "#ffba38",
+            "surface-container-high": "#222b30",
+            "surface-container-low": "#141d21",
+            "on-tertiary-container": "#ffd491",
+            "on-secondary-container": "#00302d",
+            "on-primary-fixed": "#002021",
+            "secondary": "#71d7d1",
+            "error": "#ffb4ab",
+            "on-primary-container": "#9be7eb",
+            "tertiary-container": "#805800",
+            "surface-dim": "#0c1519",
+            "inverse-on-surface": "#293236",
+            "secondary-fixed": "#8ef4ed",
+            "primary-fixed": "#a3eff4",
+            "outline": "#889393",
+            "on-secondary-fixed": "#00201e",
+            "on-secondary": "#003735",
+            "on-tertiary": "#432c00",
+            "on-tertiary-fixed-variant": "#604100",
+            "background": "#0c1519",
+            "surface": "#0c1519",
+            "inverse-primary": "#0b696d",
+            "surface-container": "#182125",
+            "on-tertiary-fixed": "#281900",
+            "on-surface-variant": "#bec8c9",
+            "outline-variant": "#3f4949",
+            "secondary-container": "#32a09a",
+            "on-error": "#690005",
+            "error-container": "#93000a",
+            "on-secondary-fixed-variant": "#00504d",
+            "surface-container-highest": "#2d363b",
+            "primary-container": "#0e6a6e",
+            "tertiary-fixed-dim": "#ffba38",
+            "on-error-container": "#ffdad6",
+            "on-background": "#dae4e9",
+            "secondary-fixed-dim": "#71d7d1",
+            "surface-tint": "#87d3d7",
+            "inverse-surface": "#dae4e9",
+            "on-surface": "#dae4e9",
+            "primary": "#87d3d7",
+            "on-primary": "#003739"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "margin": "2rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.25rem"
+          },
+          "fontFamily": {
+            "label-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-default": ["Inter"],
+            "reading-md": ["Literata"],
+            "headline-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "reading-lg": ["Literata"],
+            "label-caps": ["Inter"],
+            "metric-display": ["Inter"],
+            "body-sm": ["Inter"]
+          },
+          "fontSize": {
+            "label-md": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+            "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "body-default": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+            "reading-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+            "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+            "display-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+            "reading-lg": ["19px", {"lineHeight": "32px", "fontWeight": "400"}],
+            "label-caps": ["11px", {"lineHeight": "14px", "fontWeight": "600"}],
+            "metric-display": ["28px", {"lineHeight": "34px", "fontWeight": "600"}],
+            "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    body {
+      background-color: #0c1519;
+      color: #dae4e9;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased flex justify-center min-h-screen">
+<!-- Mobile Viewport Container (390px fixed frame) -->
+<div class="w-full max-w-[390px] min-h-screen flex flex-col bg-surface relative shadow-2xl pb-24">
+<!-- Top Navigation Bar (Shared Component Anchor) -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-sm border-b border-outline-variant/40">
+<div class="flex justify-between items-center h-14 w-full px-4 max-w-[390px] mx-auto">
+<!-- Left: Logo & Exam Badge Chip -->
+<div class="flex items-center space-x-2">
+<span class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface">ODAK</span>
+<div class="h-4 w-px bg-outline-variant"></div>
+<button class="inline-flex items-center space-x-1 px-2 py-1 rounded bg-surface-container-high border border-outline-variant hover:bg-surface-variant transition-colors text-left min-h-[32px]" type="button">
+<span class="font-label-caps text-label-caps text-on-surface-variant tracking-wider">YDS · 22 KASIM</span>
+<span class="material-symbols-outlined text-outline text-[16px]">arrow_drop_down</span>
+</button>
+</div>
+<!-- Right: Step Indicator -->
+<div class="flex items-center">
+<span class="font-label-md text-label-md text-outline px-2 py-1 rounded bg-surface-container border border-outline-variant/50">
+            Adım 2 / 4
+          </span>
+</div>
+</div>
+</header>
+<!-- Operational Content Canvas -->
+<main class="flex-1 px-4 pt-4 pb-6 space-y-6">
+<!-- Section 1: Header & Diagnostic Summary -->
+<section class="space-y-3">
+<div class="space-y-1">
+<div class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded bg-surface-container border border-outline-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Kişisel Rota Hazırlandı</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg font-semibold text-on-surface tracking-tight">
+            52 Günlük Akademik Çalışma Rotanız Hazır
+          </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Bugün: 2 Ekim 2026 Cuma · Sınav: 2026-YDS/2 (22 Kasım 2026)
+          </p>
+</div>
+<!-- Academic Diagnostic Summary Badges / Bento Trio -->
+<div class="grid grid-cols-2 gap-2 pt-1">
+<!-- Target Score Metric -->
+<div class="bg-surface-container border border-outline-variant rounded p-3 flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-outline tracking-wider uppercase">Hedeflenen Skor</span>
+<div class="mt-1">
+<span class="font-metric-display text-metric-display text-on-surface font-semibold tracking-tight">75,00</span>
+<span class="font-label-md text-label-md text-on-surface-variant block">Puan (60 Doğru)</span>
+</div>
+</div>
+<!-- Current Diagnostic Range -->
+<div class="bg-surface-container border border-outline-variant rounded p-3 flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-outline tracking-wider uppercase">Mevcut Seviye</span>
+<div class="mt-1">
+<span class="font-metric-display text-metric-display text-secondary font-semibold tracking-tight">48–56</span>
+<span class="font-label-md text-label-md text-on-surface-variant block">Puan Aralığı</span>
+</div>
+</div>
+<!-- Pacing Commitment (Full width) -->
+<div class="col-span-2 bg-surface-container-low border border-outline-variant rounded px-3 py-2.5 flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-outline">schedule</span>
+<span class="font-label-md text-label-md text-on-surface">Öngörülen Çalışma Disiplini</span>
+</div>
+<span class="font-label-md text-label-md text-secondary font-medium">Günde 45 Dk · Haftada 5 Gün</span>
+</div>
+</div>
+</section>
+<!-- Section 2: 7-Day Curriculum Schedule Cards -->
+<section class="space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-[18px]">calendar_month</span>
+<h2 class="font-label-caps text-label-caps text-on-surface uppercase tracking-wider font-semibold">İlk 7 Günlük Ders Akışı</h2>
+</div>
+<span class="font-label-caps text-label-caps text-outline">Hafta 1 / 8</span>
+</div>
+<div class="space-y-2.5">
+<!-- Day 1: Today (Active Highlight) -->
+<div class="bg-surface-container border border-primary/50 rounded-lg p-3.5 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/60">
+<div class="flex items-center space-x-2">
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary-container font-label-caps text-label-caps font-semibold">GÜN 1</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Bugün · 2 Ekim Cuma</span>
+</div>
+<span class="font-label-caps text-label-caps text-primary bg-surface-container-high px-2 py-0.5 rounded border border-primary/30">45 Dk</span>
+</div>
+<div class="pt-2.5 space-y-1.5">
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">task_alt</span>
+<span class="font-reading-md text-body-sm text-on-surface">25 Cümle Tamamlama Sorusu</span>
+</div>
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">article</span>
+<span class="font-reading-md text-body-sm text-on-surface">1 Çıkmış Paragraf İncelemesi</span>
+</div>
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">sticky_note_2</span>
+<span class="font-reading-md text-body-sm text-on-surface">Zıtlık Bağlaçları Hap Notu</span>
+</div>
+</div>
+</div>
+<!-- Day 2 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-3.5">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/40">
+<div class="flex items-center space-x-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps">GÜN 2</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">3 Ekim Cumartesi</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline">45 Dk</span>
+</div>
+<div class="pt-2.5 space-y-1.5">
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">format_quote</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">20 Edat & Phrasal Verb Egzersizi</span>
+</div>
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">sync_problem</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">Hata Analizi Tekrarı</span>
+</div>
+</div>
+</div>
+<!-- Day 3 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-3.5">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/40">
+<div class="flex items-center space-x-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps">GÜN 3</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">4 Ekim Pazar</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline">30 Dk</span>
+</div>
+<div class="pt-2.5 space-y-1.5">
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">menu_book</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">Haftalık Kelime Tekrarı (30 Akademik Fiil)</span>
+</div>
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">quiz</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">Mini Deneme (10 Soru)</span>
+</div>
+</div>
+</div>
+<!-- Day 4 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-3.5">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/40">
+<div class="flex items-center space-x-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps">GÜN 4</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">5 Ekim Pazartesi</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline">45 Dk</span>
+</div>
+<div class="pt-2.5 space-y-1.5">
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">subject</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">20 Paragraf Sorusu</span>
+</div>
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">filter_alt</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">Çeldirici Eleme Analizi</span>
+</div>
+</div>
+</div>
+<!-- Day 5 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-3.5">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/40">
+<div class="flex items-center space-x-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps">GÜN 5</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">6 Ekim Salı</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline">45 Dk</span>
+</div>
+<div class="pt-2.5 space-y-1.5">
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">translate</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">25 Çeviri Sorusu (İng-Tür / Tür-İng)</span>
+</div>
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">schedule</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">Zaman Uyumu Notları</span>
+</div>
+</div>
+</div>
+<!-- Day 6 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-3.5">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/40">
+<div class="flex items-center space-x-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps">GÜN 6</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">7 Ekim Çarşamba</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline">45 Dk</span>
+</div>
+<div class="pt-2.5 space-y-1.5">
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">grading</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">Cloze Test İncelemesi</span>
+</div>
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">library_books</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">Akademik Okuma Metni</span>
+</div>
+</div>
+</div>
+<!-- Day 7 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-3.5">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/40">
+<div class="flex items-center space-x-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps">GÜN 7</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">8 Ekim Perşembe</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline">60 Dk</span>
+</div>
+<div class="pt-2.5 space-y-1.5">
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">fact_check</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">1. Hafta Değerlendirme Testi (40 Soru)</span>
+</div>
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">bookmarks</span>
+<span class="font-reading-md text-body-sm text-on-surface-variant">Kişisel Hata Defteri Taraması</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Transparent Soft Paywall Card -->
+<section class="bg-surface-container border border-outline-variant rounded-lg p-4 space-y-4">
+<div class="space-y-1.5">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-tertiary text-[18px]">verified</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Açık ve Saygılı Teklif</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">
+            7 Gün Ücretsiz Premium ile Başlayın
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Tüm çalışma planını, 4.000+ çözümlü soruyu, öğretmen ipucu merdivenini ve sınırsız denemeleri 7 gün boyunca hiçbir kısıtlama olmadan deneyimleyin.
+          </p>
+</div>
+<!-- Academic Benefits Checklist -->
+<div class="space-y-2 py-1 border-y border-outline-variant/60">
+<div class="flex items-start space-x-2.5">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-0.5">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">Günlük kişiselleştirilmiş soru ve kural rotası</span>
+</div>
+<div class="flex items-start space-x-2.5">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-0.5">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">Her soruda 4 basamaklı Öğretmen İpucu Merdiveni</span>
+</div>
+<div class="flex items-start space-x-2.5">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-0.5">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">Ayrıntılı ÖSYM çeldirici analizleri ve soru çözüm videoları</span>
+</div>
+<div class="flex items-start space-x-2.5">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-0.5">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">Çevrimdışı soru çözümü ve senkronizasyon</span>
+</div>
+</div>
+<!-- Pricing Disclosure Box -->
+<div class="bg-surface-container-lowest p-3 rounded border border-outline-variant/70 space-y-1">
+<span class="font-label-caps text-label-caps text-outline block uppercase tracking-wider">Şeffaf Maliyet Detayı</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            7 gün sonunda <span class="text-on-surface font-medium">349 TL / Ay</span> veya tek seferlik <span class="text-on-surface font-medium">850 TL Sınav Dönemi Paketi</span> ile devam edebilirsiniz. İstediğiniz an tek dokunuşla iptal edebilirsiniz. Deneme süresinde ücret tahsil edilmez.
+          </p>
+</div>
+<!-- Section 4: Two Equal Strategic Actions (Honest Dark Pattern-Free UX) -->
+<div class="space-y-3 pt-1">
+<!-- Button 1: Primary Action (Teal) -->
+<div class="space-y-1">
+<button class="w-full min-h-[44px] px-5 py-3 rounded bg-primary-container hover:bg-[#127a7f] active:opacity-80 transition-colors flex items-center justify-center space-x-2" type="button">
+<span class="font-label-md text-label-md font-medium text-on-primary-container">7 Günü Ücretsiz Başlat</span>
+<span class="material-symbols-outlined text-on-primary-container text-[18px]">arrow_forward</span>
+</button>
+<span class="block text-center font-label-caps text-label-caps text-outline">
+              7 gün boyunca 0 TL · İstendiği an tek dokunuşla iptal
+            </span>
+</div>
+<!-- Button 2: Secondary Action (Bordered Dark Surface) -->
+<div class="space-y-1">
+<button class="w-full min-h-[44px] px-5 py-3 rounded bg-surface-container-high border border-outline-variant hover:border-secondary hover:bg-surface-variant active:opacity-80 transition-colors flex items-center justify-center" type="button">
+<span class="font-label-md text-label-md font-medium text-on-surface">Ücretsiz Planla Devam Et</span>
+</button>
+<p class="text-center font-label-caps text-label-caps text-outline leading-tight px-1">
+              Ücretsiz kullanıcılar da günlük planlarını, temel soru çözümlerini ve deneme takvimini eksiksiz kullanabilir; zorunlu ödeme gerekmez.
+            </p>
+</div>
+</div>
+</section>
+<!-- Section 5: Academic Assurance & YDS Rules Footer Note -->
+<footer class="pt-2 pb-4 text-center border-t border-outline-variant/40 space-y-1">
+<p class="font-label-caps text-label-caps text-outline leading-relaxed">
+          ÖSYM standartlarında 80 soru / 100 puan üzerinden değerlendirme.<br/>
+<span class="text-on-surface-variant font-medium">Yanlışlar doğruları götürmez.</span> Her doğru soru 1,25 puandır.
+        </p>
+</footer>
+</main>
+<!-- Bottom Navigation Bar (Shared Component Anchor) -->
+<!-- Destination count: 5. Exact labels: 'Bugün', 'Çalış', 'Deneme', 'Öğretmen', 'Ben' -->
+<nav aria-label="Ana Navigasyon" class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant">
+<div class="flex justify-around items-center h-16 px-2 max-w-[390px] mx-auto pb-safe">
+<!-- Tab 1: Bugün (Active) -->
+<a class="flex flex-col items-center justify-center text-primary font-semibold min-h-[44px] min-w-[44px] py-1 active:scale-95 transition-transform" href="#bugun">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="font-label-sm text-label-md mt-0.5">Bugün</span>
+</a>
+<!-- Tab 2: Çalış -->
+<a class="flex flex-col items-center justify-center text-outline font-normal min-h-[44px] min-w-[44px] py-1 hover:text-primary active:scale-95 transition-transform" href="#calis">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+<span class="font-label-sm text-label-md mt-0.5">Çalış</span>
+</a>
+<!-- Tab 3: Deneme -->
+<a class="flex flex-col items-center justify-center text-outline font-normal min-h-[44px] min-w-[44px] py-1 hover:text-primary active:scale-95 transition-transform" href="#deneme">
+<span class="material-symbols-outlined text-[20px]">assignment</span>
+<span class="font-label-sm text-label-md mt-0.5">Deneme</span>
+</a>
+<!-- Tab 4: Öğretmen -->
+<a class="flex flex-col items-center justify-center text-outline font-normal min-h-[44px] min-w-[44px] py-1 hover:text-primary active:scale-95 transition-transform" href="#ogretmen">
+<span class="material-symbols-outlined text-[20px]">school</span>
+<span class="font-label-sm text-label-md mt-0.5">Öğretmen</span>
+</a>
+<!-- Tab 5: Ben -->
+<a class="flex flex-col items-center justify-center text-outline font-normal min-h-[44px] min-w-[44px] py-1 hover:text-primary active:scale-95 transition-transform" href="#ben">
+<span class="material-symbols-outlined text-[20px]">person</span>
+<span class="font-label-sm text-label-md mt-0.5">Ben</span>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

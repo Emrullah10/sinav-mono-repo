@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AUTH-01 · Karşılama</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&family=Figtree:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            // YDS Koyu Tema Paleti
+            canvas: '#0E171B',
+            surface: '#142127',
+            'surface-container': '#1B2B32',
+            'surface-high': '#16363A',
+            border: '#24343A',
+            'border-light': '#2A3F49',
+            // Petrol
+            primary: '#4DB6B0',
+            'primary-dark': '#0E6A6E',
+            'primary-subtle': '#16363A',
+            // Safran (Yalnızca dolgu / rozet / ikon)
+            safran: '#F0B43A',
+            'safran-muted': '#E9A514',
+            // Durumlar
+            success: '#4CC27D',
+            error: '#EE8A6E',
+            // Nötr Metinler
+            'text-primary': '#E4ECEC',
+            'text-secondary': '#A9B8BA',
+            'text-muted': '#72868D',
+          },
+          fontFamily: {
+            sans: ['Figtree', 'sans-serif'],
+            serif: ['Literata', 'serif'],
+            display: ['Bricolage Grotesque', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #070C0E;
+      font-family: 'Figtree', sans-serif;
+      color: #E4ECEC;
+      -webkit-font-smoothing: antialiased;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .card-snap {
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+    }
+    .card-item {
+      scroll-snap-align: center;
+    }
+    /* Dokunma hedefi min 44px */
+    .touch-target-44 {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    .touch-target-52 {
+      min-height: 52px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center items-center p-0 md:p-6 bg-[#070C0E]">
+
+  <!-- Mobil Cihaz Kapsayıcısı (390pt Standart Genişlik) -->
+  <div class="w-full max-w-[390px] h-[844px] max-h-[844px] bg-canvas flex flex-col justify-between relative shadow-2xl overflow-hidden border border-border md:rounded-[36px]">
+
+    <!-- 1. ÜST ALAN: Durum Çubuğu & Kelime Markası (Wordmark) -->
+    <header class="pt-3 px-6 pb-2 shrink-0 z-20">
+      <!-- Sistem Bilgisi (Saat ve Sinyal) -->
+      <div class="flex justify-between items-center text-xs text-text-muted font-medium mb-3 select-none">
+        <span>09:41</span>
+        <div class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[15px]">signal_cellular_alt</span>
+          <span class="material-symbols-outlined text-[15px]">wifi</span>
+          <span class="material-symbols-outlined text-[15px]">battery_full</span>
+        </div>
+      </div>
+
+      <!-- Marka Logosu & Başlık -->
+      <div class="flex items-center justify-between mt-1">
+        <div class="flex items-center gap-2.5">
+          <!-- ÖSYM Optik Dairesi Motifi Logo -->
+          <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-canvas font-bold text-base shadow-sm ring-2 ring-primary/20">
+            <span>Y</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-display font-bold text-lg tracking-tight text-text-primary leading-none">
+              ODAK<span class="text-primary font-normal ml-0.5">YDS</span>
+            </span>
+            <span class="text-[10px] text-text-muted tracking-wide uppercase font-medium mt-0.5">
+              Akademik Sınav Platformu
+            </span>
+          </div>
+        </div>
+
+        <!-- Ekran Kimlik Rozeti -->
+        <div class="flex items-center gap-1 px-2 py-0.5 rounded bg-surface border border-border text-[10px] text-text-secondary font-mono">
+          <span>v2.4</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+        </div>
+      </div>
+    </header>
+
+
+    <!-- 2. ORTA ALAN: Yatay Kaydırılabilir 3 Karşılama Kartı -->
+    <main class="flex-1 flex flex-col justify-center overflow-hidden my-auto py-2">
+
+      <div id="carouselTrack" class="flex overflow-x-auto hide-scrollbar card-snap w-full px-5 gap-4">
+
+        <!-- KART 1: Sınavı Bilen Öğretmen -->
+        <article class="card-item shrink-0 w-[350px] bg-surface rounded-2xl p-5 border border-border flex flex-col justify-between shadow-sm relative overflow-hidden">
+          <!-- Üst Etiket & Numara -->
+          <div class="flex justify-between items-center mb-3">
+            <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-surface-container border border-border text-[11px] font-semibold text-primary">
+              <span class="material-symbols-outlined text-[14px]">school</span>
+              Pedagojik Rehberlik
+            </span>
+            <span class="text-xs font-mono text-text-muted font-medium">01 / 03</span>
+          </div>
+
+          <!-- Sade & Akademik Vektörel İllüstrasyon (Öğretmen & İpucu Merdiveni) -->
+          <div class="w-full h-36 bg-canvas/70 rounded-xl border border-border flex items-center justify-center p-3 mb-4 relative">
+            <svg class="w-full h-full max-w-[280px]" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Soru ve Çözüm Ağı Arka Planı -->
+              <rect x="14" y="16" width="160" height="88" rx="8" fill="#142127" stroke="#24343A" stroke-width="1.5" />
+              <!-- Soru Cümlesi İskeleti (Literata Serif Hissiyatı) -->
+              <text x="26" y="38" fill="#A9B8BA" font-family="Literata" font-size="9">Although ... the team agreed on</text>
+              <text x="26" y="52" fill="#E4ECEC" font-family="Literata" font-size="9" font-weight="500">the core proposal, doubts</text>
+              
+              <!-- Seçenek Baloncukları -->
+              <circle cx="34" cy="74" r="9" fill="#1B2B32" stroke="#24343A" stroke-width="1.2" />
+              <text x="31" y="77" fill="#A9B8BA" font-size="8" font-family="Figtree" font-weight="600">A</text>
+              <line x1="48" y1="74" x2="88" y2="74" stroke="#24343A" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- Seçili & İpuçlu Doğru Şık -->
+              <circle cx="106" cy="74" r="9" fill="#16363A" stroke="#4DB6B0" stroke-width="1.5" />
+              <text x="103" y="77" fill="#4DB6B0" font-size="8" font-family="Figtree" font-weight="700">B</text>
+              <line x1="120" y1="74" x2="160" y2="74" stroke="#4DB6B0" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- Öğretmen Çıkarımı / İpucu Merdiveni Kartı (Sağ Tarafta Yüzen) -->
+              <rect x="156" y="24" width="110" height="74" rx="6" fill="#1B2B32" stroke="#4DB6B0" stroke-width="1.2" />
+              <!-- Öğretmen Avatar & İsim -->
+              <circle cx="174" cy="40" r="8" fill="#0E6A6E" />
+              <text x="171" y="43" fill="#E4ECEC" font-size="7" font-weight="700">Ö</text>
+              <text x="186" y="39" fill="#E4ECEC" font-size="7.5" font-weight="600">Öğretmen İpucu</text>
+              <text x="186" y="47" fill="#F0B43A" font-size="6.5" font-weight="500">Zıtlık Bağlacı</text>
+
+              <!-- Pedagojik Yönlendirme İpuçları -->
+              <line x1="168" y1="58" x2="252" y2="58" stroke="#2A3F49" stroke-width="1" />
+              <text x="168" y="70" fill="#A9B8BA" font-size="6.5">1. Odak: Yan cümlecik</text>
+              <text x="168" y="80" fill="#A9B8BA" font-size="6.5">2. Kural: Anlam dengesi</text>
+              <circle cx="254" cy="78" r="4" fill="#F0B43A" />
+              <path d="M252.5 78L253.5 79L255.5 77" stroke="#142127" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <!-- Metin Alanı (display-m başlık, body-l tek cümle) -->
+          <div>
+            <h2 class="font-display font-bold text-xl text-text-primary tracking-tight mb-2 leading-snug">
+              Sınavı bilen öğretmen
+            </h2>
+            <p class="text-sm text-text-secondary leading-relaxed font-normal">
+              Yanlışının nedenini bulur, cevabı hemen söylemeden adım adım düşündürür.
+            </p>
+          </div>
+
+          <!-- Alt Mikro Detay -->
+          <div class="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs text-text-muted">
+            <span class="flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              4 Aşamalı İpucu Merdiveni
+            </span>
+            <span class="font-medium text-text-secondary">ÖSYM Odaklı</span>
+          </div>
+        </article>
+
+
+        <!-- KART 2: Her Gün Sana Özel Plan -->
+        <article class="card-item shrink-0 w-[350px] bg-surface rounded-2xl p-5 border border-border flex flex-col justify-between shadow-sm relative overflow-hidden">
+          <!-- Üst Etiket & Numara -->
+          <div class="flex justify-between items-center mb-3">
+            <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-surface-container border border-border text-[11px] font-semibold text-primary">
+              <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+              Kişiselleştirilmiş Rota
+            </span>
+            <span class="text-xs font-mono text-text-muted font-medium">02 / 03</span>
+          </div>
+
+          <!-- Sade Vektörel İllüstrasyon (Takvim, Hedef Süre & 15-45 Dk Göstergesi) -->
+          <div class="w-full h-36 bg-canvas/70 rounded-xl border border-border flex items-center justify-center p-3 mb-4 relative">
+            <svg class="w-full h-full max-w-[280px]" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Günlük Plan Kartı -->
+              <rect x="20" y="16" width="130" height="88" rx="8" fill="#142127" stroke="#24343A" stroke-width="1.5" />
+              <!-- Tarih & Hedef -->
+              <text x="32" y="34" fill="#A9B8BA" font-size="8" font-weight="600">GÜNLÜK HEDEF</text>
+              <rect x="32" y="42" width="106" height="22" rx="4" fill="#1B2B32" stroke="#24343A" stroke-width="1"/>
+              <circle cx="44" cy="53" r="5" fill="#4DB6B0" />
+              <path d="M42 53L43.5 54.5L46.5 51.5" stroke="#0E171B" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="54" y="55" fill="#E4ECEC" font-size="8" font-weight="500">20 Soru · Zıtlık Bağlacı</text>
+
+              <rect x="32" y="70" width="106" height="22" rx="4" fill="#1B2B32" stroke="#24343A" stroke-width="1"/>
+              <circle cx="44" cy="81" r="5" fill="#16363A" stroke="#4DB6B0" stroke-width="1"/>
+              <text x="54" y="83" fill="#E4ECEC" font-size="8" font-weight="500">5 Cümle Röntgeni</text>
+
+              <!-- Sağ Taraf: Süre & İlerleme Çemberi -->
+              <rect x="162" y="16" width="98" height="88" rx="8" fill="#1B2B32" stroke="#24343A" stroke-width="1.5" />
+              <!-- Dairesel Süre Göstergesi -->
+              <circle cx="211" cy="50" r="24" stroke="#24343A" stroke-width="5" />
+              <circle cx="211" cy="50" r="24" stroke="#4DB6B0" stroke-width="5" stroke-dasharray="150" stroke-dashoffset="45" stroke-linecap="round" />
+              <text x="199" y="50" fill="#E4ECEC" font-size="11" font-weight="700" font-family="Bricolage Grotesque">30</text>
+              <text x="214" y="50" fill="#A9B8BA" font-size="7">dk</text>
+              <text x="195" y="60" fill="#F0B43A" font-size="6.5" font-weight="600">Optimum</text>
+
+              <text x="176" y="88" fill="#A9B8BA" font-size="7.5" font-weight="500">Aralık: 15–45 dk</text>
+              <circle cx="244" cy="86" r="3" fill="#4CC27D" />
+            </svg>
+          </div>
+
+          <!-- Metin Alanı -->
+          <div>
+            <h2 class="font-display font-bold text-xl text-text-primary tracking-tight mb-2 leading-snug">
+              Her gün sana özel plan
+            </h2>
+            <p class="text-sm text-text-secondary leading-relaxed font-normal">
+              Sınav tarihine ve günlük vaktine göre 15–45 dakika arasında optimize edilir.
+            </p>
+          </div>
+
+          <!-- Alt Mikro Detay -->
+          <div class="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs text-text-muted">
+            <span class="flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-safran"></span>
+              Bilişsel Yük Koruması
+            </span>
+            <span class="font-medium text-text-secondary">Günde 1 Odak</span>
+          </div>
+        </article>
+
+
+        <!-- KART 3: Yanlışlarından Öğren -->
+        <article class="card-item shrink-0 w-[350px] bg-surface rounded-2xl p-5 border border-border flex flex-col justify-between shadow-sm relative overflow-hidden">
+          <!-- Üst Etiket & Numara -->
+          <div class="flex justify-between items-center mb-3">
+            <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-surface-container border border-border text-[11px] font-semibold text-primary">
+              <span class="material-symbols-outlined text-[14px]">auto_stories</span>
+              Akıllı Hata Defteri
+            </span>
+            <span class="text-xs font-mono text-text-muted font-medium">03 / 03</span>
+          </div>
+
+          <!-- Sade Vektörel İllüstrasyon (Hata Defteri & Aralıklı Tekrar) -->
+          <div class="w-full h-36 bg-canvas/70 rounded-xl border border-border flex items-center justify-center p-3 mb-4 relative">
+            <svg class="w-full h-full max-w-[280px]" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Hata Defteri Yaprağı -->
+              <rect x="22" y="16" width="144" height="88" rx="8" fill="#142127" stroke="#24343A" stroke-width="1.5" />
+              <!-- Soru Bilgisi -->
+              <text x="34" y="32" fill="#EE8A6E" font-size="7.5" font-weight="700">✕ 2024 YDS/1 · Çeldirici Tuzağı</text>
+              <line x1="34" y1="38" x2="154" y2="38" stroke="#24343A" stroke-width="1" />
+
+              <text x="34" y="52" fill="#E4ECEC" font-family="Literata" font-size="8">... in spite of vs although</text>
+              
+              <!-- Yanlış ve Doğru Karşılaştırması -->
+              <rect x="34" y="60" width="120" height="18" rx="4" fill="#1F1517" stroke="#3D211A" stroke-width="1"/>
+              <text x="40" y="72" fill="#EE8A6E" font-size="7.5">✕ in spite of (İsim öbeği ister)</text>
+
+              <rect x="34" y="81" width="120" height="18" rx="4" fill="#10241C" stroke="#164A30" stroke-width="1"/>
+              <text x="40" y="93" fill="#4CC27D" font-size="7.5">✓ although (Tam cümle ister)</text>
+
+              <!-- Sağ Taraf: Aralıklı Tekrar Sayacı (Spaced Repetition) -->
+              <rect x="176" y="20" width="84" height="80" rx="8" fill="#1B2B32" stroke="#24343A" stroke-width="1.2" />
+              <text x="186" y="36" fill="#A9B8BA" font-size="7" font-weight="600">TEKRAR GÜNÜ</text>
+              <circle cx="218" cy="56" r="14" fill="#16363A" stroke="#4DB6B0" stroke-width="1.5"/>
+              <text x="212" y="60" fill="#4DB6B0" font-size="11" font-weight="700" font-family="Bricolage Grotesque">+3</text>
+              <text x="186" y="86" fill="#F0B43A" font-size="7" font-weight="500">Hafıza Tazeleme</text>
+            </svg>
+          </div>
+
+          <!-- Metin Alanı -->
+          <div>
+            <h2 class="font-display font-bold text-xl text-text-primary tracking-tight mb-2 leading-snug">
+              Yanlışlarından öğren
+            </h2>
+            <p class="text-sm text-text-secondary leading-relaxed font-normal">
+              Her hata deftere düşer, zamanı gelince pekiştirme için karşına çıkar.
+            </p>
+          </div>
+
+          <!-- Alt Mikro Detay -->
+          <div class="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs text-text-muted">
+            <span class="flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+              Aralıklı Tekrar Algoritması
+            </span>
+            <span class="font-medium text-text-secondary">Sıfır Kayıp</span>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Sayfalama Nokta Göstergeleri (Dots Indicator) -->
+      <div class="flex items-center justify-center gap-2 mt-4">
+        <button onclick="scrollToCard(0)" class="dot-btn h-1.5 rounded-full transition-all duration-300 w-6 bg-primary" aria-label="1. Karta Git"></button>
+        <button onclick="scrollToCard(1)" class="dot-btn h-1.5 rounded-full transition-all duration-300 w-1.5 bg-border-light hover:bg-text-muted" aria-label="2. Karta Git"></button>
+        <button onclick="scrollToCard(2)" class="dot-btn h-1.5 rounded-full transition-all duration-300 w-1.5 bg-border-light hover:bg-text-muted" aria-label="3. Karta Git"></button>
+      </div>
+
+    </main>
+
+
+    <!-- 3. ALT ALAN: Aksiyonlar & Güvence Metni -->
+    <footer class="px-5 pb-5 pt-2 shrink-0 z-20 flex flex-col gap-2.5">
+      <!-- Birincil Eylem Düğmesi: "Başla" (min 52px, dokunma toleranslı) -->
+      <button class="w-full touch-target-52 py-3.5 px-6 rounded-xl bg-primary hover:bg-[#5ec4be] active:scale-[0.98] text-canvas font-semibold text-base flex items-center justify-center gap-2 transition-all duration-150 shadow-md">
+        <span>Başla</span>
+        <span class="material-symbols-outlined text-[19px]">arrow_forward</span>
+      </button>
+
+      <!-- Üçüncül Eylem Düğmesi: "Hesabım var, giriş yap" (min 44px) -->
+      <button class="w-full touch-target-44 py-2 px-4 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors duration-150 text-sm font-medium flex items-center justify-center">
+        Hesabım var, giriş yap
+      </button>
+
+      <!-- Akademik Güven & Standart Notu -->
+      <div class="text-center pt-1 border-t border-border/60">
+        <p class="text-[11px] text-text-muted leading-tight">
+          ÖSYM formatı ve akademik sınav disiplinine tam uyumlu arayüz.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Alt Çubuk Çizgisi (iOS Home Indicator) -->
+    <div class="w-32 h-1 bg-border rounded-full mx-auto mb-1.5 shrink-0"></div>
+
+  </div>
+
+  <!-- Nokta Göstergesi Senkronizasyonu (Otomatik kaydırma yok, kullanıcı kaydırdıkça güncellenir) -->
+  <script>
+    const track = document.getElementById('carouselTrack');
+    const dots = document.querySelectorAll('.dot-btn');
+
+    function updateDots() {
+      const scrollPos = track.scrollLeft;
+      const cardWidth = 350 + 16; // Kart genişliği + gap
+      const activeIndex = Math.min(Math.round(scrollPos / cardWidth), dots.length - 1);
+
+      dots.forEach((dot, idx) => {
+        if (idx === activeIndex) {
+          dot.classList.remove('w-1.5', 'bg-border-light');
+          dot.classList.add('w-6', 'bg-primary');
+        } else {
+          dot.classList.remove('w-6', 'bg-primary');
+          dot.classList.add('w-1.5', 'bg-border-light');
+        }
+      });
+    }
+
+    function scrollToCard(index) {
+      const cardWidth = 350 + 16;
+      track.scrollTo({
+        left: index * cardWidth,
+        behavior: 'smooth'
+      });
+    }
+
+    track.addEventListener('scroll', updateDots, { passive: true });
+  </script>
+</body>
+</html>

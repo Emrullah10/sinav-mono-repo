@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>ODAK · Güvenli Ödeme (PAY-04)</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed": "#ffdeac",
+            "secondary-container": "#32a09a",
+            "primary": "#87d3d7",
+            "surface-dim": "#0c1519",
+            "on-primary-fixed": "#002021",
+            "outline": "#889393",
+            "inverse-surface": "#dae4e9",
+            "surface-container-low": "#141d21",
+            "on-error-container": "#ffdad6",
+            "surface-container-high": "#222b30",
+            "secondary-fixed": "#8ef4ed",
+            "background": "#0c1519",
+            "inverse-on-surface": "#293236",
+            "secondary": "#71d7d1",
+            "on-tertiary-container": "#ffd491",
+            "on-secondary-container": "#00302d",
+            "inverse-primary": "#0b696d",
+            "surface-container-lowest": "#070f13",
+            "tertiary-container": "#805800",
+            "surface-container": "#182125",
+            "on-error": "#690005",
+            "surface-tint": "#87d3d7",
+            "on-primary-container": "#9be7eb",
+            "primary-fixed-dim": "#87d3d7",
+            "primary-fixed": "#a3eff4",
+            "error": "#ffb4ab",
+            "on-tertiary": "#432c00",
+            "tertiary-fixed-dim": "#ffba38",
+            "on-secondary": "#003735",
+            "surface-variant": "#2d363b",
+            "surface": "#0c1519",
+            "on-tertiary-fixed-variant": "#604100",
+            "on-secondary-fixed": "#00201e",
+            "on-background": "#dae4e9",
+            "on-primary": "#003739",
+            "secondary-fixed-dim": "#71d7d1",
+            "on-surface": "#dae4e9",
+            "surface-bright": "#313b3f",
+            "on-secondary-fixed-variant": "#00504d",
+            "on-tertiary-fixed": "#281900",
+            "on-primary-fixed-variant": "#004f52",
+            "surface-container-highest": "#2d363b",
+            "outline-variant": "#3f4949",
+            "tertiary": "#ffba38",
+            "error-container": "#93000a",
+            "on-surface-variant": "#bec8c9",
+            "primary-container": "#0e6a6e"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "margin": "2rem",
+            "gutter": "1.5rem",
+            "space-xl": "2.25rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "body-default": ["Inter"],
+            "label-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "reading-md": ["Literata"],
+            "reading-lg": ["Literata"],
+            "label-caps": ["Inter"],
+            "metric-display": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "display-lg": ["Inter"]
+          },
+          "fontSize": {
+            "body-default": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "reading-md": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "reading-lg": ["19px", { "lineHeight": "32px", "fontWeight": "400" }],
+            "label-caps": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "metric-display": ["28px", { "lineHeight": "34px", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+            "display-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-default text-body-default min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container flex flex-col justify-between">
+<!-- TOP APP BAR (Shared Component Anchor) -->
+<header class="sticky top-0 z-40 w-full bg-surface border-b border-outline-variant/40">
+<div class="flex justify-between items-center h-14 px-4 w-full max-w-md mx-auto">
+<!-- Leading Icon / Back Action -->
+<button aria-label="Geri Dön" class="flex items-center justify-center w-11 h-11 text-on-surface hover:bg-surface-container transition-colors duration-150 active:opacity-80 rounded" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<!-- Brand Identity Headline -->
+<div class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface">
+        ODAK
+      </div>
+<!-- Trailing Action: Exam Cycle Chip -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container-high rounded text-on-surface border border-outline-variant/50">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span class="font-label-caps text-label-caps tracking-wider text-on-surface-variant font-medium">2026-YDS · 22 Kas</span>
+</div>
+</div>
+</header>
+<!-- MAIN OPERATIONAL CANVAS (Max width ~390px Mobile Viewport) -->
+<main class="w-full max-w-md mx-auto px-4 pt-4 pb-28 space-y-4">
+<!-- Screen Title & Exam Assurance Header -->
+<section class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps tracking-widest text-primary font-semibold uppercase">Akademik Lisans İşlemi</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-secondary text-[11px] font-label-md border border-secondary/30">
+<span class="material-symbols-outlined text-[13px]">verified_user</span>
+          3D Secure Onaylı
+        </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">Güvenli Ödeme</h1>
+<!-- ÖSYM Sınav Erteleme Güvencesi -->
+<div class="p-3 bg-surface-container-low border border-outline-variant/50 rounded flex gap-2.5 items-start">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">shield</span>
+<div class="space-y-0.5">
+<p class="font-label-md text-label-md text-on-surface font-medium">ÖSYM Sınav Takvimi Koruma Güvencesi</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Resmi sınav tarihi ötelenirse paket erişim süreniz otomatik olarak yeni sınav gününe kadar ücretsiz uzatılır.</p>
+</div>
+</div>
+</section>
+<!-- SIMULATION CONTROLLER (Tasarım Doğrulama Sekmeleri) -->
+<section class="p-2.5 bg-surface-container-lowest border border-outline-variant/40 rounded space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Önizleme / Simülatör</span>
+<span class="font-label-caps text-label-caps text-secondary font-medium">PAY-04 Durumları</span>
+</div>
+<div class="grid grid-cols-4 gap-1">
+<button class="h-9 px-1 rounded text-center font-label-caps text-label-caps transition-colors bg-primary-container text-on-primary-container font-semibold border border-primary/40" id="sim-btn-normal" onclick="setSimulationState('normal')">
+          Normal
+        </button>
+<button class="h-9 px-1 rounded text-center font-label-caps text-label-caps transition-colors bg-surface-container text-on-surface-variant border border-outline-variant/50" id="sim-btn-error" onclick="setSimulationState('error')">
+          Kart Hata
+        </button>
+<button class="h-9 px-1 rounded text-center font-label-caps text-label-caps transition-colors bg-surface-container text-on-surface-variant border border-outline-variant/50" id="sim-btn-3d" onclick="setSimulationState('3d')">
+          3D Bekleme
+        </button>
+<button class="h-9 px-1 rounded text-center font-label-caps text-label-caps transition-colors bg-surface-container text-on-surface-variant border border-outline-variant/50" id="sim-btn-timeout" onclick="setSimulationState('timeout')">
+          Zaman Aşımı
+        </button>
+</div>
+</section>
+<!-- ACCORDION: Sipariş Özeti -->
+<section class="border border-outline-variant/50 bg-surface-container-low rounded overflow-hidden">
+<button class="w-full min-h-[44px] px-3.5 py-3 flex items-center justify-between text-left hover:bg-surface-container transition-colors" onclick="toggleOrderSummary()" type="button">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">shopping_bag</span>
+<div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Sipariş Özeti</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-1">(1.490 TL)</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-primary font-label-md text-label-md">
+<span id="accordion-toggle-text">Detayları Göster</span>
+<span class="material-symbols-outlined text-[18px] transition-transform duration-200" id="accordion-toggle-icon">expand_more</span>
+</div>
+</button>
+<!-- Accordion Body (Collapsible) -->
+<div class="hidden px-3.5 pb-3.5 pt-1 border-t border-outline-variant/30 space-y-3" id="order-summary-content">
+<div class="space-y-1">
+<div class="flex justify-between items-start">
+<h2 class="font-label-md text-label-md text-on-surface font-medium">2026-YDS/2 Sınav Dönemi Paketi</h2>
+<span class="font-label-md text-label-md text-on-surface font-semibold">1.490 TL</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            22 Kasım 2026 sınav saatine kadar sınırsız erişim: 80 soruluk özgün denemeler, hoca video çözümleri, çeldirici istatistik motoru ve Kurucu Akademisyen Üyelik Hakları.
+          </p>
+</div>
+<div class="pt-2 border-t border-outline-variant/30 space-y-1.5 font-body-sm text-body-sm">
+<div class="flex justify-between text-on-surface-variant">
+<span>Paket Taban Bedeli</span>
+<span class="font-label-md text-label-md text-on-surface">1.241,67 TL</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Hesaplanan KDV (%20)</span>
+<span class="font-label-md text-label-md text-on-surface">248,33 TL</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Kupon İndirimi</span>
+<span class="font-label-md text-label-md text-secondary">-0,00 TL</span>
+</div>
+</div>
+<!-- Kupon Kodu Alanı -->
+<div class="pt-2 flex gap-2">
+<div class="relative flex-1">
+<input class="w-full h-11 px-3 bg-surface border border-outline-variant rounded font-body-default text-body-default text-on-surface placeholder:text-outline focus:outline-none focus:border-primary" placeholder="Kupon / Teşvik Kodu" type="text"/>
+</div>
+<button class="h-11 px-4 bg-surface-container-high border border-outline-variant rounded text-on-surface font-label-md text-label-md font-medium hover:bg-surface-variant transition-colors min-w-[76px]" type="button">
+            Uygula
+          </button>
+</div>
+</div>
+</section>
+<!-- STATE NOTIFICATION CARDS (Kart Hatası ve Zaman Aşımı) -->
+<div class="hidden p-3.5 bg-error-container/20 border border-error/50 rounded flex gap-2.5 items-start" id="status-card-error">
+<span class="material-symbols-outlined text-error text-[20px] shrink-0 mt-0.5">error</span>
+<div class="space-y-0.5">
+<p class="font-label-md text-label-md text-error font-medium">Ödeme İşlemi Başarısız</p>
+<p class="font-body-sm text-body-sm text-on-surface">Kartınızın son kullanma tarihi geçmiş veya CVC güvenlik kodu hatalı girildi. Lütfen bilgilerinizi kontrol ediniz veya bankanızla iletişime geçiniz.</p>
+</div>
+</div>
+<div class="hidden p-3.5 bg-surface-container-high border border-tertiary/60 rounded flex gap-2.5 items-start" id="status-card-timeout">
+<span class="material-symbols-outlined text-tertiary text-[20px] shrink-0 mt-0.5">timer_off</span>
+<div class="space-y-0.5">
+<p class="font-label-md text-label-md text-tertiary font-medium">Güvenlik Oturumu Zaman Aşımı</p>
+<p class="font-body-sm text-body-sm text-on-surface">İşlem süresi (15 dakika) doldu. Finansal veri gizliliğiniz gereği form güvenle sıfırlandı. Lütfen işlemi yeniden başlatınız.</p>
+</div>
+</div>
+<!-- 3D SECURE MODAL / OVERLAY SIMULATION -->
+<div class="hidden p-4 bg-surface-container-high border border-primary/50 rounded space-y-3" id="status-card-3d">
+<div class="flex items-center justify-between border-b border-outline-variant/40 pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">lock_reset</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">3D Secure Doğrulama Bekleniyor</span>
+</div>
+<span class="text-primary font-label-caps text-label-caps bg-primary-container/30 px-2 py-0.5 rounded">TCMB Gateway</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Bankanızın SMS / Mobil Onay arayüzüne yönlendiriliyorsunuz. Lütfen bu pencereyi kapatmayınız ve geri butonuna basmayınız.
+      </p>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<div class="w-3.5 h-3.5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+<span class="font-body-sm text-body-sm text-on-surface">Kalan onay süresi: <strong class="text-on-surface font-semibold">174 sn</strong></span>
+</div>
+<button class="text-outline hover:text-on-surface text-[12px] underline" onclick="setSimulationState('normal')">Vazgeç</button>
+</div>
+</div>
+<!-- MAIN FORM: Kredi / Banka Kartı Bilgileri -->
+<form class="space-y-4" id="payment-form" onsubmit="event.preventDefault();">
+<!-- Card Information Section -->
+<section class="border border-outline-variant/50 bg-surface-container-low rounded p-3.5 space-y-3.5">
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-2.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">credit_card</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Kart Bilgileri</span>
+</div>
+<!-- Card Badges -->
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-surface border border-outline-variant text-[10px] font-label-caps text-on-surface-variant">TROY</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-outline-variant text-[10px] font-label-caps text-on-surface-variant">VISA</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-outline-variant text-[10px] font-label-caps text-on-surface-variant">MC</span>
+</div>
+</div>
+<!-- Kart Üzerindeki İsim -->
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="card-holder">Kart Üzerindeki İsim</label>
+<div class="relative">
+<input class="w-full h-11 px-3 bg-surface border border-outline-variant rounded font-body-default text-body-default text-on-surface focus:outline-none focus:border-primary" id="card-holder" type="text" value="Doç. Dr. Selin Vardar"/>
+</div>
+</div>
+<!-- Kart Numarası -->
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="card-number">Kart Numarası</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 px-3 pr-10 bg-surface border border-outline-variant rounded font-body-default text-body-default text-on-surface tracking-wider focus:outline-none focus:border-primary" id="card-number" maxlength="19" type="text" value="5549 1204 8831 9024"/>
+<span class="material-symbols-outlined absolute right-3 text-secondary text-[20px]">credit_card</span>
+</div>
+</div>
+<!-- Son Kullanma & CVC (Yan Yana) -->
+<div class="grid grid-cols-2 gap-3">
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="card-exp">Son Kullanma (AA/YY)</label>
+<input class="w-full h-11 px-3 bg-surface border border-outline-variant rounded font-body-default text-body-default text-on-surface text-center tracking-wider focus:outline-none focus:border-primary" id="card-exp" maxlength="5" type="text" value="11/28"/>
+</div>
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="card-cvc">CVC / CVV</label>
+<span class="material-symbols-outlined text-outline text-[16px]" title="Kartın arkasındaki son 3 hane">help</span>
+</div>
+<input class="w-full h-11 px-3 bg-surface border border-outline-variant rounded font-body-default text-body-default text-on-surface text-center tracking-widest focus:outline-none focus:border-primary" id="card-cvc" maxlength="3" type="password" value="732"/>
+</div>
+</div>
+<!-- Taksit Seçenekleri -->
+<div class="space-y-2 pt-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Taksit Tercihi</label>
+<div class="grid grid-cols-3 gap-2">
+<!-- Tek Çekim -->
+<label class="cursor-pointer border border-primary bg-surface-container rounded p-2.5 flex flex-col justify-between min-h-[58px] transition-colors relative">
+<input checked="" class="sr-only" name="installment" type="radio" value="1"/>
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-primary font-semibold">Tek Çekim</span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">1.490 TL</span>
+</label>
+<!-- 3 Taksit -->
+<label class="cursor-pointer border border-outline-variant/60 bg-surface rounded p-2.5 flex flex-col justify-between min-h-[58px] hover:border-outline transition-colors">
+<input class="sr-only" name="installment" type="radio" value="3"/>
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant">3 Taksit</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">3 x 515 TL</span>
+</label>
+<!-- 6 Taksit -->
+<label class="cursor-pointer border border-outline-variant/60 bg-surface rounded p-2.5 flex flex-col justify-between min-h-[58px] hover:border-outline transition-colors">
+<input class="sr-only" name="installment" type="radio" value="6"/>
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant">6 Taksit</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">6 x 265 TL</span>
+</label>
+</div>
+</div>
+<!-- Kart Saklama Onayı -->
+<label class="flex items-start gap-2.5 pt-1.5 cursor-pointer">
+<input checked="" class="w-4 h-4 mt-0.5 rounded border-outline-variant text-primary-container bg-surface focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant leading-snug">
+            Sonraki sınav dönemleri ve soru bankası yenilemelerinde hızlı kullanım için kartımı güvenli altyapıda sakla.
+          </span>
+</label>
+</section>
+<!-- Fatura Bilgileri Bölümü -->
+<section class="border border-outline-variant/50 bg-surface-container-low rounded p-3.5 space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">receipt_long</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Fatura Bilgileri</span>
+</div>
+<!-- Bireysel / Kurumsal Sekme -->
+<div class="flex bg-surface p-0.5 rounded border border-outline-variant/50">
+<button class="px-2.5 py-1 text-[11px] font-label-md rounded font-semibold bg-primary-container text-on-primary-container" id="tab-bireysel" onclick="setInvoiceType('bireysel')" type="button">
+              Bireysel
+            </button>
+<button class="px-2.5 py-1 text-[11px] font-label-md rounded text-on-surface-variant hover:text-on-surface" id="tab-kurumsal" onclick="setInvoiceType('kurumsal')" type="button">
+              Kurumsal
+            </button>
+</div>
+</div>
+<!-- Bireysel Alanlar -->
+<div class="space-y-3" id="invoice-individual-fields">
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="tc-kimlik">T.C. Kimlik Numarası</label>
+<input class="w-full h-11 px-3 bg-surface border border-outline-variant rounded font-body-default text-body-default text-on-surface tracking-wider focus:outline-none focus:border-primary" id="tc-kimlik" maxlength="11" type="text" value="38291048291"/>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-center">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="address">Fatura &amp; Tebligat Adresi</label>
+<button class="text-primary text-[12px] font-label-md hover:underline" type="button">Düzenle</button>
+</div>
+<textarea class="w-full p-2.5 bg-surface border border-outline-variant rounded font-body-sm text-body-sm text-on-surface resize-none focus:outline-none focus:border-primary" id="address" rows="2">Hacettepe Üniversitesi Beytepe Yerleşkesi, Edebiyat Fakültesi Çankaya / Ankara</textarea>
+</div>
+</div>
+<!-- Kurumsal Alanlar (Gizli Başlar) -->
+<div class="hidden space-y-3" id="invoice-corporate-fields">
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="company-title">Kurum / Üniversite / BAP Ünvanı</label>
+<input class="w-full h-11 px-3 bg-surface border border-outline-variant rounded font-body-default text-body-default text-on-surface focus:outline-none focus:border-primary" id="company-title" placeholder="Örn: Hacettepe Üniversitesi Rektörlüğü BAP Birimi" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="tax-office">Vergi Dairesi</label>
+<input class="w-full h-11 px-3 bg-surface border border-outline-variant rounded font-body-default text-body-default text-on-surface focus:outline-none focus:border-primary" id="tax-office" placeholder="Vergi Dairesi" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="tax-id">VKN (Vergi No)</label>
+<input class="w-full h-11 px-3 bg-surface border border-outline-variant rounded font-body-default text-body-default text-on-surface focus:outline-none focus:border-primary" id="tax-id" maxlength="10" placeholder="10 Haneli VKN" type="text"/>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">BAP, TÜBİTAK ve Üniversite Ar-Ge fon ödemeleri için e-Arşiv faturanız aynı gün resmi kurum ünvanına düzenlenir.</p>
+</div>
+</section>
+<!-- Zorunlu Yasal Onaylar -->
+<section class="space-y-2 pt-1">
+<label class="flex items-start gap-2.5 cursor-pointer">
+<input checked="" class="w-4 h-4 mt-0.5 rounded border-outline-variant text-primary-container bg-surface focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant leading-snug">
+<a class="text-primary hover:underline" href="#">Ön Bilgilendirme Formu</a>'nu okudum, anladım ve elektronik ortamda teyit ediyorum.
+          </span>
+</label>
+<label class="flex items-start gap-2.5 cursor-pointer">
+<input checked="" class="w-4 h-4 mt-0.5 rounded border-outline-variant text-primary-container bg-surface focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant leading-snug">
+<a class="text-primary hover:underline" href="#">Mesafeli Satış Sözleşmesi</a> koşullarını eksiksiz kabul ediyorum.
+          </span>
+</label>
+</section>
+<!-- Birincil Eylem Butonu (48px Bounding Target) -->
+<div class="pt-2 space-y-3">
+<button class="w-full h-12 bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold rounded flex items-center justify-center gap-2 hover:bg-[#127a7f] transition-colors active:opacity-90" id="pay-submit-button" onclick="handleSubmitPayment()" type="button">
+<span class="material-symbols-outlined text-[19px]">lock</span>
+<span>3D Secure ile Güvenli Öde · 1.490 TL</span>
+</button>
+<!-- Güvenlik & Mevzuat Güvenceleri -->
+<div class="grid grid-cols-3 gap-2 text-center pt-1 border-t border-outline-variant/30">
+<div class="space-y-0.5">
+<span class="material-symbols-outlined text-outline text-[16px]">account_balance</span>
+<p class="font-label-caps text-label-caps text-on-surface-variant">TCMB &amp; BDDK Lisanslı</p>
+</div>
+<div class="space-y-0.5">
+<span class="material-symbols-outlined text-outline text-[16px]">verified</span>
+<p class="font-label-caps text-label-caps text-on-surface-variant">14 Gün Yasal Cayma</p>
+</div>
+<div class="space-y-0.5">
+<span class="material-symbols-outlined text-outline text-[16px]">event_repeat</span>
+<p class="font-label-caps text-label-caps text-on-surface-variant">ÖSYM Takvim Korumalı</p>
+</div>
+</div>
+</div>
+</form>
+</main>
+<!-- BOTTOM NAVBAR (Shared Component Anchor - Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-1 max-w-md mx-auto bg-surface border-t border-outline-variant/40" style="left: 50%; transform: translateX(-50%);">
+<!-- Tab 1: Bugün -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1.5 min-w-[56px] min-h-[44px] hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">calendar_today</span>
+<span class="font-label-caps text-label-caps mt-0.5">Bugün</span>
+</a>
+<!-- Tab 2: Çalış -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1.5 min-w-[56px] min-h-[44px] hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+<span class="font-label-caps text-label-caps mt-0.5">Çalış</span>
+</a>
+<!-- Tab 3: Deneme -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1.5 min-w-[56px] min-h-[44px] hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">assignment</span>
+<span class="font-label-caps text-label-caps mt-0.5">Deneme</span>
+</a>
+<!-- Tab 4: Öğretmen -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1.5 min-w-[56px] min-h-[44px] hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">school</span>
+<span class="font-label-caps text-label-caps mt-0.5">Öğretmen</span>
+</a>
+<!-- Tab 5: Ben (Aktif Bağlam: Lisans / Profil) -->
+<a class="flex flex-col items-center justify-center text-primary font-semibold py-1.5 min-w-[56px] min-h-[44px] transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-caps text-label-caps mt-0.5">Ben</span>
+</a>
+</nav>
+<!-- UI Micro-interactions & Simulation Logic -->
+<script>
+    // Accordion Toggle
+    function toggleOrderSummary() {
+      const content = document.getElementById('order-summary-content');
+      const label = document.getElementById('accordion-toggle-text');
+      const icon = document.getElementById('accordion-toggle-icon');
+      
+      const isHidden = content.classList.contains('hidden');
+      if (isHidden) {
+        content.classList.remove('hidden');
+        label.textContent = 'Detayları Gizle';
+        icon.classList.add('rotate-180');
+      } else {
+        content.classList.add('hidden');
+        label.textContent = 'Detayları Göster';
+        icon.classList.remove('rotate-180');
+      }
+    }
+
+    // Invoice Tab Switching
+    function setInvoiceType(type) {
+      const tabBireysel = document.getElementById('tab-bireysel');
+      const tabKurumsal = document.getElementById('tab-kurumsal');
+      const individualFields = document.getElementById('invoice-individual-fields');
+      const corporateFields = document.getElementById('invoice-corporate-fields');
+
+      if (type === 'bireysel') {
+        tabBireysel.className = 'px-2.5 py-1 text-[11px] font-label-md rounded font-semibold bg-primary-container text-on-primary-container';
+        tabKurumsal.className = 'px-2.5 py-1 text-[11px] font-label-md rounded text-on-surface-variant hover:text-on-surface';
+        individualFields.classList.remove('hidden');
+        corporateFields.classList.add('hidden');
+      } else {
+        tabKurumsal.className = 'px-2.5 py-1 text-[11px] font-label-md rounded font-semibold bg-primary-container text-on-primary-container';
+        tabBireysel.className = 'px-2.5 py-1 text-[11px] font-label-md rounded text-on-surface-variant hover:text-on-surface';
+        individualFields.classList.add('hidden');
+        corporateFields.classList.remove('hidden');
+      }
+    }
+
+    // Simulation States Handler
+    function setSimulationState(state) {
+      // Elements
+      const errCard = document.getElementById('status-card-error');
+      const timeoutCard = document.getElementById('status-card-timeout');
+      const secureCard = document.getElementById('status-card-3d');
+      const submitBtn = document.getElementById('pay-submit-button');
+
+      // Reset all buttons
+      const buttons = ['sim-btn-normal', 'sim-btn-error', 'sim-btn-3d', 'sim-btn-timeout'];
+      buttons.forEach(id => {
+        const btn = document.getElementById(id);
+        btn.className = 'h-9 px-1 rounded text-center font-label-caps text-label-caps transition-colors bg-surface-container text-on-surface-variant border border-outline-variant/50';
+      });
+
+      // Active state button highlight
+      const activeBtn = document.getElementById(`sim-btn-${state}`);
+      if (activeBtn) {
+        activeBtn.className = 'h-9 px-1 rounded text-center font-label-caps text-label-caps transition-colors bg-primary-container text-on-primary-container font-semibold border border-primary/40';
+      }
+
+      // Hide all status overlays
+      errCard.classList.add('hidden');
+      timeoutCard.classList.add('hidden');
+      secureCard.classList.add('hidden');
+      submitBtn.classList.remove('opacity-50', 'pointer-events-none');
+
+      if (state === 'error') {
+        errCard.classList.remove('hidden');
+        errCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else if (state === 'timeout') {
+        timeoutCard.classList.remove('hidden');
+        submitBtn.classList.add('opacity-50', 'pointer-events-none');
+        timeoutCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else if (state === '3d') {
+        secureCard.classList.remove('hidden');
+        secureCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    // Direct Payment Action Click
+    function handleSubmitPayment() {
+      setSimulationState('3d');
+    }
+
+    // Credit Card formatting helper
+    const cardInput = document.getElementById('card-number');
+    if (cardInput) {
+      cardInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        let formatted = '';
+        for (let i = 0; i < value.length; i++) {
+          if (i > 0 && i % 4 === 0) formatted += ' ';
+          formatted += value[i];
+        }
+        e.target.value = formatted.substring(0, 19);
+      });
+    }
+
+    // Expiry date formatting helper
+    const expInput = document.getElementById('card-exp');
+    if (expInput) {
+      expInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+          e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        } else {
+          e.target.value = value;
+        }
+      });
+    }
+  </script>
+</body></html>

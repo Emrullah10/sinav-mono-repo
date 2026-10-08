@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>STUDY-19 · Çeviri Koçu | ODAK YDS Hazırlık Platformu</title>
+<!-- Google Fonts: Figtree, Literata, Bricolage Grotesque, Public Sans, DM Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;family=Public+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "background": "#0E171B",
+            "surface": "#142127",
+            "surface-container": "#1B2B32",
+            "surface-container-high": "#16363A",
+            "on-surface": "#E4ECEC",
+            "on-surface-variant": "#A9B8BA",
+            "outline": "#71838A",
+            "outline-variant": "#24343A",
+            "primary": "#4DB6B0",
+            "on-primary": "#0E171B",
+            "primary-container": "#16363A",
+            "on-primary-container": "#87CDC8",
+            "secondary": "#F0B43A",
+            "on-secondary": "#0E171B",
+            "secondary-container": "#3A2E12",
+            "tertiary": "#4CC27D",
+            "tertiary-container": "#163524",
+            "error": "#EE8A6E",
+            "error-container": "#3D211A",
+            "inverse-surface": "#E4ECEC",
+            "chart-1": "#04A19B",
+            "chart-2": "#7483E0",
+            "chart-3": "#C0851F",
+            "chart-4": "#C06099",
+          },
+          borderRadius: {
+            "xs": "4px",
+            "sm": "8px",
+            "DEFAULT": "12px",
+            "md": "12px",
+            "lg": "16px",
+            "xl": "24px",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Figtree", "sans-serif"],
+            "display": ["Bricolage Grotesque", "sans-serif"],
+            "body": ["Figtree", "sans-serif"],
+            "label": ["Figtree", "sans-serif"],
+            "reading": ["Literata", "serif"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #0E171B;
+      color: #E4ECEC;
+      font-family: 'Figtree', sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Strict Flat styling: No blurry glass, no gradients */
+    .flat-card {
+      background-color: #142127;
+      border: 1px solid #24343A;
+    }
+    .flat-card-inner {
+      background-color: #1B2B32;
+      border: 1px solid #24343A;
+    }
+    .optical-bubble {
+      width: 22px;
+      height: 22px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .optical-bubble-active {
+      background-color: #4DB6B0;
+      color: #0E171B;
+      border: 1px solid #4DB6B0;
+    }
+    .optical-bubble-empty {
+      background-color: transparent;
+      border: 1px solid #71838A;
+      color: #A9B8BA;
+    }
+    .optical-bubble-correct {
+      background-color: #4CC27D;
+      color: #0E171B;
+      border: 1px solid #4CC27D;
+    }
+    .optical-bubble-wrong {
+      background-color: #EE8A6E;
+      color: #0E171B;
+      border: 1px solid #EE8A6E;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#0E171B] text-[#E4ECEC]">
+<!-- Top Navigation Bar (Shared Component Blueprint) -->
+<header class="w-full h-16 top-0 sticky z-40 bg-surface border-b border-outline-variant">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<!-- Brand & Exam Chip -->
+<div class="flex items-center gap-4">
+<a class="font-display text-2xl font-bold tracking-tight text-primary" href="#">ODAK</a>
+<!-- Sınav Bilgi Rozeti (2026-YDS/2) -->
+<div class="hidden sm:flex items-center gap-2 px-3 py-1 bg-surface-container border border-outline-variant rounded-full text-xs font-medium text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-on-surface font-semibold">2026-YDS/2</span>
+<span class="text-outline">·</span>
+<span>22 Kasım 2026</span>
+<span class="text-outline">·</span>
+<span class="text-primary font-medium">52 Gün Kaldı</span>
+</div>
+</div>
+<!-- Main Navigation Links -->
+<nav class="hidden md:flex items-center gap-1 h-16">
+<a class="text-on-surface-variant hover:text-on-surface py-5 px-3 flex items-center gap-2 transition-colors text-sm" href="#">
+<span>Bugün</span>
+</a>
+<a class="text-primary font-semibold border-b-2 border-primary py-5 px-3 flex items-center gap-2 text-sm" href="#">
+<span>Çalış</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface py-5 px-3 flex items-center gap-2 transition-colors text-sm" href="#">
+<span>Deneme</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface py-5 px-3 flex items-center gap-2 transition-colors text-sm" href="#">
+<span>Öğretmen</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface py-5 px-3 flex items-center gap-2 transition-colors text-sm" href="#">
+<span>Ben</span>
+</a>
+</nav>
+<!-- Trailing Action & Profile Cluster -->
+<div class="flex items-center gap-3">
+<!-- 14 Gün Seri Rozeti (Safran dolgu, koyu metin/ikon kuralı) -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-secondary rounded-full text-on-secondary font-bold text-xs">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span>14 Gün Seri</span>
+</div>
+<!-- Bildirimler -->
+<button aria-label="Bildirimler" class="w-9 h-9 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors relative" type="button">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary"></span>
+</button>
+<!-- Kullanıcı Profili -->
+<div class="flex items-center gap-2.5 pl-2 border-l border-outline-variant">
+<div class="w-9 h-9 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-semibold text-xs">
+            BK
+          </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="text-xs font-semibold text-on-surface leading-tight">Doç. Dr. Bilge Kağan Öztürk</span>
+<span class="text-[11px] text-on-surface-variant leading-tight">Hedef: <strong class="text-on-surface font-semibold">85+ Puan</strong> (Doğru Başı 1,25 Puan)</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Ana İçerik Kapsayıcısı -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-6 py-6 flex flex-col gap-6">
+<!-- 2. Gezinme Yolu (Breadcrumb) ve Sayfa Başlığı -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-outline-variant">
+<div>
+<nav class="flex items-center gap-2 text-xs text-on-surface-variant mb-2">
+<span>Çalışma Alanı</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>Çeviri ve Cümle Analizi</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-medium">STUDY-19 · Çeviri Koçu</span>
+</nav>
+<h1 class="font-display text-2xl lg:text-3xl font-bold tracking-tight text-on-surface">
+          Akademik Çeviri Koçu ve Sentaktik Değerlendirme
+        </h1>
+<p class="text-sm text-on-surface-variant mt-1.5 max-w-3xl leading-relaxed">
+          ÖSYM YDS formatındaki cümlelerde anlam bütünlüğü, zaman uyumu, sentaktik yapı ve akademik terminoloji denetimi yapan akıllı çeviri motoru.
+        </p>
+</div>
+<!-- Sağ Aksiyonlar -->
+<div class="flex items-center gap-2 self-start md:self-auto shrink-0">
+<button class="h-9 px-3.5 rounded-lg border border-outline-variant text-xs font-medium text-on-surface hover:bg-surface-container flex items-center gap-2 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">history</span>
+<span>Çeviri Geçmişi</span>
+</button>
+<button class="h-9 px-3.5 rounded-lg border border-outline-variant text-xs font-medium text-on-surface hover:bg-surface-container flex items-center gap-2 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+<span>Örnek Çeviri Kılavuzu</span>
+</button>
+</div>
+</div>
+<!-- 3. Kurulum ve Filtre Çubuğu -->
+<section class="flat-card rounded-lg p-4 flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-4 text-xs">
+<!-- Çeviri Yönü -->
+<div class="flex items-center gap-1.5">
+<span class="text-on-surface-variant font-medium">Yön:</span>
+<div class="inline-flex rounded-md border border-outline-variant p-0.5 bg-surface-container">
+<button class="px-2.5 py-1 rounded bg-primary text-on-primary font-semibold text-xs flex items-center gap-1" type="button">
+<span>İngilizceden Türkçeye</span>
+</button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface text-xs transition-colors" type="button">
+<span>Türkçeden İngilizceye</span>
+</button>
+</div>
+</div>
+<div class="h-4 w-px bg-outline-variant hidden sm:block"></div>
+<!-- Zorluk Seviyesi -->
+<div class="flex items-center gap-1.5">
+<span class="text-on-surface-variant font-medium">Zorluk:</span>
+<div class="flex items-center gap-1">
+<button class="px-2 py-1 rounded border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button">B1 Temel</button>
+<button class="px-2 py-1 rounded border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button">B2 Orta</button>
+<button class="px-2 py-1 rounded border border-primary text-primary bg-primary-container font-semibold" type="button">C1 İleri - ÖSYM Düzeyi</button>
+</div>
+</div>
+<div class="h-4 w-px bg-outline-variant hidden sm:block"></div>
+<!-- Akademik Alan -->
+<div class="flex items-center gap-1.5">
+<span class="text-on-surface-variant font-medium">Alan:</span>
+<div class="flex items-center gap-1">
+<span class="px-2.5 py-1 rounded bg-surface-container border border-primary text-primary font-semibold">Sosyal Bilimler</span>
+<button class="px-2 py-1 rounded border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button">Sağlık Bilimleri</button>
+<button class="px-2 py-1 rounded border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button">Fen Bilimleri</button>
+</div>
+</div>
+</div>
+<!-- Sentaktik Odak Etiketi -->
+<div class="flex items-center gap-2">
+<span class="text-xs text-on-surface-variant">Sentaktik Odak:</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant text-xs text-on-surface font-medium flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+          Zıtlık &amp; Sebep-Sonuç Bağlaçları
+        </span>
+</div>
+</section>
+<!-- 4. İki Sütunlu Çalışma ve Değerlendirme Alanı -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Sol Sütun: Kaynak & Giriş (7/12) -->
+<div class="lg:col-span-7 flex flex-col gap-5">
+<!-- Kaynak İngilizce Cümle Kartı -->
+<div class="flat-card rounded-lg p-5">
+<div class="flex items-center justify-between pb-3 mb-3 border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary-container text-on-primary-container border border-primary/30 uppercase tracking-wider">ÖSYM C1 Metni</span>
+<span class="text-xs text-on-surface-variant">Sözcük: 28 · Sentaktik Yan Cümle: 2</span>
+</div>
+<div class="flex items-center gap-1 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+<span>Okuma Hızı: 42 sn</span>
+</div>
+</div>
+<div class="py-2">
+<p class="font-reading text-[17px] leading-[1.65] text-on-surface tracking-normal select-text">
+              “<span class="text-primary font-medium border-b border-primary/40">Although</span> extensive preclinical trials demonstrated that the experimental compound substantially inhibited viral replication in vitro, regulatory authorities hesitated to authorize emergency clinical use <span class="text-primary font-medium border-b border-primary/40">in the absence of</span> robust pharmacokinetic data.”
+            </p>
+</div>
+<!-- Cümle Sentaktik İpucu Çipi -->
+<div class="mt-4 pt-3 border-t border-outline-variant flex flex-wrap items-center justify-between gap-2 text-xs">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[18px]">lightbulb</span>
+<span><strong>Önemli Bileşenler:</strong> [Zıtlık Yan Cümlesi] + [Edilgen/Etken Eylemler] + [Şart/Durum Edatı]</span>
+</div>
+<button class="text-primary hover:underline text-xs flex items-center gap-1" type="button">
+<span>Sözlükte İncele</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Türkçe Akademik Çeviri Girişi Kartı -->
+<div class="flat-card rounded-lg p-5">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<label class="text-sm font-semibold text-on-surface" for="translation-input">Sizin Türkçe Akademik Çeviriniz</label>
+<span class="text-xs text-on-surface-variant">(Literata 17px)</span>
+</div>
+<span class="text-xs text-on-surface-variant font-mono" id="char-counter">218 Karakter / 23 Sözcük</span>
+</div>
+<!-- Metin Alanı -->
+<div class="relative">
+<textarea class="w-full bg-surface-container border border-outline focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-4 font-reading text-[17px] leading-[1.65] text-on-surface placeholder:text-outline-variant resize-y outline-none transition-colors" id="translation-input" placeholder="Cümlenin Türkçe akademik karşılığını buraya yazınız..." rows="4">Klinik öncesi kapsamlı deneyler deneysel bileşiğin laboratuvar ortamında virüs çoğalmasını belirgin ölçüde engellediğini kanıtlamasına rağmen, düzenleyici otoriteler güçlü farmakokinetik verilerin yokluğunda acil klinik kullanım izni vermekten çekindi.</textarea>
+</div>
+<!-- Butonlar ve Kontrol Çubuğu -->
+<div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<button class="h-9 px-3 rounded-lg border border-outline-variant text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">backspace</span>
+<span>Metni Temizle</span>
+</button>
+<button class="h-9 px-3 rounded-lg border border-outline-variant text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">mic</span>
+<span>Sesli Dikte</span>
+</button>
+</div>
+<button class="h-11 px-5 rounded-lg bg-primary text-on-primary font-semibold text-sm hover:opacity-95 transition-opacity flex items-center gap-2 shadow-none cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[18px]">spellcheck</span>
+<span>Değerlendir ve Hataları Göster</span>
+</button>
+</div>
+</div>
+<!-- Çeviri İpucu Notu Kartı -->
+<div class="flat-card-inner rounded-lg p-4 border border-outline-variant flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container text-primary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">school</span>
+</div>
+<div class="flex-1 text-xs">
+<h4 class="font-semibold text-on-surface text-sm mb-1">ÖSYM YDS Çeviri Stratejisi Notu</h4>
+<p class="text-on-surface-variant leading-relaxed">
+              ÖSYM, <strong>“Although / Even though”</strong> ile başlayan cümlelerde ana fiilin yüklemine bağlanan <em>“-mesine rağmen / -e karşın / -dığı halde”</em> kalıplarını arar. Cümle başındaki zıtlık yan cümleciği Türkçeye aktarılırken cümlenin en başına veya öznenin hemen ardına bağlanmalıdır.
+            </p>
+</div>
+</div>
+</div>
+<!-- Sağ Sütun: Sentaktik Değerlendirme & Sonuç (5/12) -->
+<div class="lg:col-span-5 flex flex-col gap-5">
+<!-- Genel Başarı Skorbordu -->
+<div class="flat-card rounded-lg p-5">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Değerlendirme Raporu</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-tertiary-container text-tertiary border border-tertiary/30">
+              Yetkin Akademik Seviye
+            </span>
+</div>
+<div class="py-4 flex items-center justify-between">
+<div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-display text-4xl font-bold text-on-surface">9</span>
+<span class="text-xl font-medium text-on-surface-variant">/ 12</span>
+<span class="text-xs font-semibold text-primary ml-2">Puan</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">B+ Yetkin Akademik Çeviri Derecesi</p>
+</div>
+<!-- Optik Form Benzeri Daire Göstergesi -->
+<div class="flex items-center gap-1.5">
+<span class="optical-bubble optical-bubble-correct" title="1. Boyut Tam">✓</span>
+<span class="optical-bubble optical-bubble-correct" title="2. Boyut Başarılı">✓</span>
+<span class="optical-bubble optical-bubble-correct" title="3. Boyut Başarılı">✓</span>
+<span class="optical-bubble optical-bubble-empty" title="4. Boyutta Gelişme Alanı">○</span>
+</div>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 75%"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] text-on-surface-variant mt-1.5">
+<span>Minimum Kabul: 6 Puan</span>
+<span>ÖSYM Barem Eşdeğeri: %75 Başarı</span>
+</div>
+</div>
+<!-- 4 Boyutlu Ölçüt Değerlendirmesi -->
+<div class="flat-card rounded-lg p-5 space-y-4">
+<h3 class="text-sm font-semibold text-on-surface pb-2 border-b border-outline-variant flex items-center justify-between">
+<span>4 Boyutlu Sentaktik Ölçüt Analizi</span>
+<span class="text-xs font-normal text-on-surface-variant">Detaylı Geri Bildirim</span>
+</h3>
+<!-- 1. Anlam Bütünlüğü -->
+<div class="p-3 rounded-lg bg-surface-container border border-outline-variant space-y-1.5">
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-semibold text-on-surface">1. Anlam Bütünlüğü</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="optical-bubble optical-bubble-correct text-[10px]">✓</span>
+<span class="optical-bubble optical-bubble-correct text-[10px]">✓</span>
+<span class="optical-bubble optical-bubble-correct text-[10px]">✓</span>
+<span class="text-xs font-mono font-bold text-tertiary ml-1">3/3</span>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<strong class="text-on-surface">Doğru:</strong> Eksiksiz ana fikir ve iki odak yargının tam aktarımı sağlandı. Metin dışı fazlalık ya da anlam kaybı saptanmadı.
+            </p>
+</div>
+<!-- 2. Zaman ve Kip Uyumu -->
+<div class="p-3 rounded-lg bg-surface-container border border-outline-variant space-y-1.5">
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-semibold text-on-surface">2. Zaman ve Kip Uyumu</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="optical-bubble optical-bubble-correct text-[10px]">✓</span>
+<span class="optical-bubble optical-bubble-correct text-[10px]">✓</span>
+<span class="optical-bubble optical-bubble-empty text-[10px]">○</span>
+<span class="text-xs font-mono font-bold text-on-surface ml-1">2/3</span>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<strong class="text-on-surface">Kısmi Uyum:</strong> Geçmiş zaman kipi ("demonstrated", "hesitated") aktarımı başarılı. Etken/edilgen ayrımında "yetkilendirildi" yerine "izin vermekten çekindi" tercihi kabul edilebilir düzeydedir.
+            </p>
+</div>
+<!-- 3. Sentaktik Yapı Analizi -->
+<div class="p-3 rounded-lg bg-surface-container border border-outline-variant space-y-1.5">
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-semibold text-on-surface">3. Sentaktik Yapı Analizi</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="optical-bubble optical-bubble-correct text-[10px]">✓</span>
+<span class="optical-bubble optical-bubble-correct text-[10px]">✓</span>
+<span class="optical-bubble optical-bubble-empty text-[10px]">○</span>
+<span class="text-xs font-mono font-bold text-on-surface ml-1">2/3</span>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<strong class="text-on-surface">Gelişim Önerisi:</strong> "Although" yan tümcesi doğru konumlandırılmış; ancak "in the absence of" edat öbeği cümlenin sonu yerine yüklemden hemen önceye taşınırsa akıcılık artar.
+            </p>
+</div>
+<!-- 4. Terminoloji ve Sözcük Dağarcığı -->
+<div class="p-3 rounded-lg bg-surface-container border border-outline-variant space-y-1.5">
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-semibold text-on-surface">4. Terminoloji ve Sözcük Dağarcığı</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="optical-bubble optical-bubble-correct text-[10px]">✓</span>
+<span class="optical-bubble optical-bubble-correct text-[10px]">✓</span>
+<span class="optical-bubble optical-bubble-empty text-[10px]">○</span>
+<span class="text-xs font-mono font-bold text-on-surface ml-1">2/3</span>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<strong class="text-on-surface">Akademik Terim:</strong> "Substantially" (belirgin ölçüde) ve "robust" (güçlü/sağlam) karşılıkları yerindedir. "Authorize" eylemi için idari hukukta "onaylamak / izin vermek" denkliği uygundur.
+            </p>
+</div>
+</div>
+<!-- ÖSYM Formatında İdeal Model Çeviri Kartı -->
+<div class="flat-card rounded-lg p-5 border-l-4 border-l-primary">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+              ÖSYM Formatında İdeal Model Çeviri
+            </span>
+<span class="text-[11px] text-on-surface-variant font-mono">12 / 12 Tam Puan</span>
+</div>
+<p class="font-reading text-[16px] leading-[1.65] text-on-surface italic bg-surface-container p-3 rounded border border-outline-variant">
+            “Kapsamlı klinik öncesi deneyler, deneysel bileşiğin laboratuvar ortamında virüsün çoğalmasını önemli ölçüde engellediğini ortaya koymuş olmasına karşın, denetleyici kurullar güçlü farmakokinetik verilerin bulunmadığı durumda acil klinik kullanıma onay vermekte tereddüt etmiştir.”
+          </p>
+<div class="mt-4 flex items-center justify-between gap-3 pt-3 border-t border-outline-variant">
+<button class="h-9 px-3 rounded-lg border border-outline-variant text-xs text-on-surface hover:bg-surface-container transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">quiz</span>
+<span>ÖSYM Tarzı Soruya Dönüştür</span>
+</button>
+<button class="h-9 px-4 rounded-lg bg-surface-container border border-primary text-primary font-semibold text-xs hover:bg-primary hover:text-on-primary transition-colors flex items-center gap-1.5" type="button">
+<span>Sonraki Cümleye Geç</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 5. Kota ve Hak Bilgisi Paneli -->
+<section class="flat-card rounded-lg p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold">
+          2
+        </div>
+<div>
+<span class="text-on-surface font-semibold">Günlük Ücretsiz Değerlendirme Hakkı: 2 Adet Kaldı</span>
+<p class="text-on-surface-variant">Öğretmen soru çözüm kotanızdan düşülmektedir (Günde 3 standart hak sunulur).</p>
+</div>
+</div>
+<a class="px-4 py-2 rounded-lg border border-secondary text-on-surface font-medium hover:bg-surface-container flex items-center gap-1.5 transition-colors" href="#">
+<span>Sınırsız Çeviri İçin 2026-YDS Hazırlık Paketini İncele</span>
+<span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+</a>
+</section>
+<!-- 6. Sistem Durumları ve Bilgilendirme Matrisi -->
+<section class="flat-card rounded-lg p-5">
+<h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-4 pb-2 border-b border-outline-variant flex items-center justify-between">
+<span>Sistem Durumları &amp; Pedagojik Güvence Matrisi</span>
+<span class="text-[11px] font-normal text-on-surface-variant">Çalışma Standartları</span>
+</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Durum 1: Boş Giriş / Bekleme -->
+<div class="flat-card-inner rounded-lg p-3.5 space-y-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full border border-outline"></span>
+<span class="text-xs font-semibold text-on-surface">1. Bekleme Durumu</span>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Metin girişi yapılmadığında değerlendirme butonu pasif kalır; sistem öğrencinin ilk cümleyi yazmasını veya taslak kaydetmesini bekler.
+          </p>
+</div>
+<!-- Durum 2: Değerlendirme Süreci -->
+<div class="flat-card-inner rounded-lg p-3.5 space-y-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<span class="text-xs font-semibold text-on-surface">2. Anlık Sentaktik Analiz</span>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Yazılan her çeviri ÖSYM soru yazım ilkeleri, sentaktik anahtar kelimeler ve terminoloji doğruluğu ile eş zamanlı karşılaştırılır.
+          </p>
+</div>
+<!-- Durum 3: Günlük Kota Dolumu -->
+<div class="flat-card-inner rounded-lg p-3.5 space-y-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="text-xs font-semibold text-on-surface">3. Kota Koruması</span>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Günlük değerlendirme hakları tükendiğinde önceki çeviriler incelenebilir, yeni cümleler için çözümlü arşiv kılavuzuna yönlendirilir.
+          </p>
+</div>
+<!-- Durum 4: Oturum ve Seans Güvencesi -->
+<div class="flat-card-inner rounded-lg p-3.5 space-y-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+<span class="text-xs font-semibold text-on-surface">4. Kesintisiz Seans Güvencesi</span>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Yarıda kalan çevirileriniz tarayıcınızda güvenle korunur. Bağlantınız kopsa dahi yazdığınız hiçbir analiz veya metin kaybolmaz.
+          </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Web Footer (Shared Component Blueprint) -->
+<footer class="w-full bottom-0 bg-surface border-t border-outline-variant mt-8">
+<div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex flex-col sm:flex-row items-center gap-3">
+<span class="font-display text-lg font-bold text-on-surface">ODAK</span>
+<span class="hidden sm:inline text-outline">|</span>
+<span class="font-body text-sm text-on-surface-variant">© 2026 ODAK Yabancı Dil Sınavı Hazırlık Platformu. Tüm hakları saklıdır.</span>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">ÖSYM Formatı Esasları</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Sınav Takvimi</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Akademik Çerçeve</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Metodoloji</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Gizlilik ve Güvenlik</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">İletişim</a>
+</div>
+</div>
+</footer>
+<!-- Karakter Sayacı ve Canlı Etkileşim Scripti -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const textarea = document.getElementById('translation-input');
+      const counter = document.getElementById('char-counter');
+
+      if (textarea && counter) {
+        const updateCount = () => {
+          const text = textarea.value.trim();
+          const charLen = textarea.value.length;
+          const wordLen = text === '' ? 0 : text.split(/\s+/).length;
+          counter.textContent = `${charLen} Karakter / ${wordLen} Sözcük`;
+        };
+
+        textarea.addEventListener('input', updateCount);
+        updateCount();
+      }
+    });
+  </script>
+</body></html>

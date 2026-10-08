@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CMS-11 · Kullanıcı Desteği ve Hesap Yönetimi | ODAK</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed-dim": "#71d7d1",
+            "on-secondary-fixed": "#271900",
+            "on-primary-fixed": "#00201e",
+            "surface-container-high": "#222b30",
+            "inverse-primary": "#006a66",
+            "on-background": "#dae4e9",
+            "background": "#0c1519",
+            "surface-container": "#182125",
+            "surface": "#0c1519",
+            "on-primary-container": "#004441",
+            "on-primary": "#003735",
+            "error-container": "#93000a",
+            "on-primary-fixed-variant": "#00504d",
+            "secondary-fixed": "#ffdea8",
+            "on-secondary-fixed-variant": "#5e4200",
+            "tertiary": "#68dd95",
+            "secondary": "#f9bc42",
+            "on-surface": "#dae4e9",
+            "tertiary-fixed": "#85faaf",
+            "on-secondary-container": "#392600",
+            "surface-variant": "#2d363b",
+            "outline": "#879392",
+            "tertiary-container": "#44bb77",
+            "tertiary-fixed-dim": "#68dd95",
+            "surface-dim": "#0c1519",
+            "inverse-surface": "#dae4e9",
+            "on-tertiary-fixed-variant": "#00522c",
+            "surface-container-lowest": "#070f13",
+            "primary-container": "#4db6b0",
+            "on-tertiary-fixed": "#00210f",
+            "surface-container-low": "#141d21",
+            "surface-bright": "#313b3f",
+            "primary-fixed": "#8ef4ed",
+            "error": "#ffb4ab",
+            "surface-tint": "#71d7d1",
+            "on-tertiary": "#00391d",
+            "on-secondary": "#422d00",
+            "primary": "#71d7d1",
+            "secondary-fixed-dim": "#f9bc42",
+            "inverse-on-surface": "#293236",
+            "on-surface-variant": "#bdc9c7",
+            "surface-container-highest": "#2d363b",
+            "on-tertiary-container": "#004525",
+            "on-error-container": "#ffdad6",
+            "outline-variant": "#3d4948",
+            "on-error": "#690005",
+            "secondary-container": "#bd8700"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "margin-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "2.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Literata"],
+            "label-md": ["Work Sans"],
+            "label-sm": ["Work Sans"],
+            "display-lg-mobile": ["Literata"],
+            "body-md": ["Literata"],
+            "legal-code": ["Work Sans"],
+            "label-lg": ["Work Sans"],
+            "body-sm": ["Literata"],
+            "headline-sm": ["Literata"],
+            "headline-md": ["Literata"],
+            "display-lg": ["Literata"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "500" }],
+            "display-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "legal-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "500" }],
+            "display-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    input:focus, select:focus, button:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- Üst Gezinti (Shared Component: TopNavBar Anchor) -->
+<header class="w-full border-b border-outline-variant bg-surface-container-low px-margin max-w-[1040px] mx-auto flex items-center justify-between h-16 sticky top-0 z-30">
+<div class="flex items-center gap-space-lg">
+<span class="text-headline-sm font-headline-sm font-bold text-primary tracking-wide select-none">ODAK</span>
+<div class="h-5 w-px bg-outline-variant hidden sm:block"></div>
+<!-- Sınav Durum Çipi -->
+<div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-surface-container border border-outline-variant rounded text-on-surface-variant font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="text-on-surface font-medium">YDS · 22 Kasım (52 gün kaldı)</span>
+</div>
+</div>
+<!-- Gezinti Bağlantıları -->
+<nav class="hidden md:flex items-center gap-space-lg h-full">
+<a class="text-on-surface-variant font-label-md text-label-md pb-4 pt-4 hover:text-on-surface transition-colors duration-150" href="#">Çalışma Alanı</a>
+<a class="text-on-surface-variant font-label-md text-label-md pb-4 pt-4 hover:text-on-surface transition-colors duration-150" href="#">Soru Bankası</a>
+<a class="text-on-surface-variant font-label-md text-label-md pb-4 pt-4 hover:text-on-surface transition-colors duration-150" href="#">Denemeler</a>
+<a class="text-on-surface-variant font-label-md text-label-md pb-4 pt-4 hover:text-on-surface transition-colors duration-150" href="#">Analiz/Raporlar</a>
+<a class="border-b-2 border-primary text-primary font-label-md text-label-md pb-4 pt-4 transition-colors duration-150" href="#">Profil</a>
+</nav>
+<!-- Yetkili ve Eylemler -->
+<div class="flex items-center gap-space-md">
+<button aria-label="Bildirimler" class="min-h-[44px] min-w-[44px] flex items-center justify-center text-outline hover:text-on-surface transition-colors duration-150" type="button">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-5 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-2 pl-1">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-label-md text-label-md">
+          MT
+        </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-label-md text-label-md text-on-surface leading-tight">Murat Tepe</span>
+<span class="font-legal-code text-legal-code text-outline leading-tight">Kıdemli Destek Uzmanı</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Ana İçerik Taşıyıcısı (1040px Grid Standardı) -->
+<main class="w-full max-w-[1040px] mx-auto px-margin-mobile md:px-margin pt-space-lg pb-space-xl flex-grow">
+<!-- Sayfa Başlığı ve Resmi Takvim Özeti -->
+<section class="border-b border-outline-variant pb-space-lg mb-space-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-legal-code text-legal-code text-outline">CMS-11</span>
+<span class="text-outline-variant font-legal-code text-legal-code">/</span>
+<span class="font-legal-code text-legal-code text-primary">DENETİM VE KULLANICI İŞLEMLERİ</span>
+</div>
+<h1 class="text-headline-md font-headline-md text-on-surface font-semibold tracking-tight">
+            Kullanıcı Desteği ve Hesap Yönetimi
+          </h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 max-w-2xl">
+            Aday hesapları, lisans ve abonelik incelemesi, mevzuata uygun süre uzatma ve iade işlemleri ile KVKK veri talepleri konsolu.
+          </p>
+</div>
+<!-- Resmi Takvim Bilgi Kutusu -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-3 text-right shrink-0">
+<div class="font-label-sm text-label-sm text-outline">GÜNCEL SİSTEM OTURUMU</div>
+<div class="font-label-md text-label-md text-on-surface font-medium">2 Ekim 2026 Cuma</div>
+<div class="font-legal-code text-legal-code text-on-surface-variant mt-0.5">
+            2026-YDS/2 Başvuru Dönemi (30 Eyl - 8 Eki 2026)
+          </div>
+</div>
+</div>
+</section>
+<!-- Arama ve Filtreleme Konsolu -->
+<section class="bg-surface-container-low border border-outline-variant rounded p-space-md mb-space-lg">
+<div class="flex flex-col gap-space-md">
+<!-- Arama Girdisi -->
+<div class="flex flex-col md:flex-row gap-space-sm items-stretch">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full h-11 pl-10 pr-4 bg-background border border-outline-variant text-on-surface font-label-md text-label-md rounded focus:border-primary placeholder:text-outline" placeholder="T.C. Kimlik No, e-posta, aday kayıt kodu veya sipariş referansı ile arayın..." type="text" value="selim.yilmaz@ankara.edu.tr"/>
+</div>
+<button class="min-h-[44px] px-space-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-label-md rounded transition-colors duration-150 flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+<span>Detaylı Sorgu</span>
+</button>
+</div>
+<!-- Durum Filtre Sekmeleri -->
+<div class="flex flex-wrap items-center gap-2 pt-1 border-t border-outline-variant">
+<span class="font-legal-code text-legal-code text-outline mr-2">Süzgeç:</span>
+<button class="min-h-[44px] px-3 py-1 bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline-variant rounded font-label-sm text-label-sm" type="button">
+            Tüm Kayıtlar
+          </button>
+<button class="min-h-[44px] px-3 py-1 bg-surface-container border border-primary text-primary rounded font-label-sm text-label-sm font-semibold" type="button">
+            Aktif Aboneler (1)
+          </button>
+<button class="min-h-[44px] px-3 py-1 bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline-variant rounded font-label-sm text-label-sm" type="button">
+            İade Talebi Olanlar (0)
+          </button>
+<button class="min-h-[44px] px-3 py-1 bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline-variant rounded font-label-sm text-label-sm" type="button">
+            Süre Uzatma Bekleyenler (4)
+          </button>
+<button class="min-h-[44px] px-3 py-1 bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline-variant rounded font-label-sm text-label-sm" type="button">
+            KVKK Başvuruları (0)
+          </button>
+</div>
+</div>
+</section>
+<!-- Seçili Kullanıcı Kimlik Kartı (Bento Üst Barı) -->
+<section class="bg-surface-container-low border border-outline-variant rounded p-space-md mb-space-lg">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex items-start sm:items-center gap-space-md">
+<div class="w-12 h-12 rounded bg-surface-container border border-outline-variant flex items-center justify-center text-primary font-headline-sm font-headline-sm shrink-0">
+            SY
+          </div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Dr. Selim Yılmaz</h2>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-label-sm font-label-sm bg-surface-container border border-[#1F7A45] text-[#4CC27D]">
+                Doğrulanmış Akademik Hesap
+              </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-label-sm font-label-sm bg-surface-container border border-outline-variant text-on-surface-variant">
+                T.C. 394*****102
+              </span>
+</div>
+<div class="font-body-sm text-body-sm text-outline mt-0.5">
+              Doçentlik Adayı · Ankara Üniversitesi Tıp Fakültesi · Kayıt Tarihi: 15 Ağustos 2026
+            </div>
+</div>
+</div>
+<div class="flex items-center gap-space-sm border-t lg:border-t-0 pt-3 lg:pt-0 border-outline-variant">
+<button class="min-h-[44px] px-3 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-label-md rounded flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-outline" data-icon="lock_reset">lock_reset</span>
+<span>Parola Sıfırla</span>
+</button>
+<button class="min-h-[44px] px-3 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-label-md rounded flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-outline" data-icon="mail">mail</span>
+<span>Bilgilendirme İletisi</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Ana Çalışma Alanı: Asimetrik Çift Kolon Izgara -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- SOL KOLON: Lisans, Paket, Sınav İstatistiği ve Finansal Geçmiş (7 Kolon) -->
+<div class="lg:col-span-7 flex flex-col gap-space-lg">
+<!-- Aktif Paket ve Kapsam Kartı -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-space-md">
+<div>
+<span class="font-legal-code text-legal-code text-secondary">AKTİF ERİŞİM LİSANSI</span>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mt-0.5">
+                2026 Sonbahar YDS/2 Tam Hazırlık Paketi
+              </h3>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-outline block">KALAN SÜRE</span>
+<span class="font-label-lg text-label-lg text-primary font-bold">52 Gün</span>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm mb-space-md">
+<div class="bg-surface-container border border-outline-variant rounded p-3">
+<div class="font-label-sm text-label-sm text-outline">Paket Bitişi</div>
+<div class="font-label-md text-label-md text-on-surface mt-1">22 Kasım 2026</div>
+<div class="font-legal-code text-legal-code text-outline-variant mt-0.5">Sınav Günü 23:59</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded p-3">
+<div class="font-label-sm text-label-sm text-outline">Deneme Kotası</div>
+<div class="font-label-md text-label-md text-on-surface mt-1">8 / 12 Tamamlandı</div>
+<div class="font-legal-code text-legal-code text-[#4CC27D] mt-0.5">4 Deneme Kalan</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded p-3">
+<div class="font-label-sm text-label-sm text-outline">Akademik Modül</div>
+<div class="font-label-md text-label-md text-on-surface mt-1">Cümle Röntgeni</div>
+<div class="font-legal-code text-legal-code text-outline mt-0.5">Okuma Koçu Aktif</div>
+</div>
+</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant bg-surface-container-lowest border border-outline-variant p-3 rounded">
+<span class="text-on-surface font-semibold">Lisans Kapsamı:</span> Bu paket 80 soruluk 12 adet özgün YDS deneme sınavı, modüler soru bankası ve akademik metin çözümleme araçlarına tam erişim hakkı içerir. Yanlış cevaplar doğru cevapları etkilemez; her doğru yanıt tam 1,25 puan olarak değerlendirilir.
+          </div>
+</div>
+<!-- Son Deneme Performans Kartı (Metrikler ve Puan) -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-space-md">
+<div>
+<span class="font-legal-code text-legal-code text-outline">ÖLÇME VE DEĞERLENDİRME VERİSİ</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Son Deneme Sınavı Raporu</h3>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-surface-container border border-outline-variant text-on-surface-variant rounded">
+              Deneme #8 · 29 Eylül 2026
+            </span>
+</div>
+<!-- Puan ve Sayım Metrikleri -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-sm mb-space-md">
+<div class="bg-surface-container border border-outline-variant rounded p-3 text-center">
+<div class="font-label-sm text-label-sm text-outline">DOĞRU CEVAP</div>
+<div class="text-headline-md font-headline-md text-primary font-bold mt-1">55</div>
+<div class="font-legal-code text-legal-code text-outline mt-0.5">55 × 1,25 puan</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded p-3 text-center">
+<div class="font-label-sm text-label-sm text-outline">YANLIŞ CEVAP</div>
+<div class="text-headline-md font-headline-md text-[#EE8A6E] font-bold mt-1">23</div>
+<div class="font-legal-code text-legal-code text-outline mt-0.5">Puan düşürmez</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded p-3 text-center">
+<div class="font-label-sm text-label-sm text-outline">BOŞ BIRAKILAN</div>
+<div class="text-headline-md font-headline-md text-outline font-bold mt-1">2</div>
+<div class="font-legal-code text-legal-code text-outline mt-0.5">Toplam 80 Soru</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded p-3 text-center border-l-2 border-l-secondary">
+<div class="font-label-sm text-label-sm text-secondary">SINAV PUANI</div>
+<div class="text-headline-md font-headline-md text-secondary font-bold mt-1">68,75</div>
+<div class="font-legal-code text-legal-code text-outline mt-0.5">Hedef: 65,00+</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Adayın doçentlik yabancı dil asgari şartı (65,00) son denemede aşılmıştır. Sınav tam süresi olan 180 dakikanın 164 dakikası kullanılmıştır.
+          </p>
+</div>
+<!-- İşlem, Ödeme ve Destek Geçmişi Tablosu -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Ödeme ve Talep Geçmişi</h3>
+<span class="font-legal-code text-legal-code text-outline">3 Kayıt Kayıtlı</span>
+</div>
+<div class="divide-y divide-outline-variant">
+<!-- Kayıt 1 -->
+<div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">1.250,00 TL · Kredi Kartı</span>
+<span class="px-1.5 py-0.5 rounded text-label-sm font-label-sm bg-surface-container border border-[#1F7A45] text-[#4CC27D]">
+                    Başarılı
+                  </span>
+</div>
+<div class="font-legal-code text-legal-code text-outline mt-0.5">
+                  15 Ağustos 2026 · Fatura No: ODK-2026-88192 (YDS Tam Paket)
+                </div>
+</div>
+<button class="min-h-[44px] px-2.5 text-outline hover:text-on-surface font-legal-code text-legal-code flex items-center gap-1 self-start sm:self-auto" type="button">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Fatura Görüntüle</span>
+</button>
+</div>
+<!-- Kayıt 2 -->
+<div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">350,00 TL · Deneme Paketi Ek Modülü</span>
+<span class="px-1.5 py-0.5 rounded text-label-sm font-label-sm bg-surface-container border border-[#1F7A45] text-[#4CC27D]">
+                    Başarılı
+                  </span>
+</div>
+<div class="font-legal-code text-legal-code text-outline mt-0.5">
+                  28 Eylül 2026 · Fatura No: ODK-2026-90412
+                </div>
+</div>
+<button class="min-h-[44px] px-2.5 text-outline hover:text-on-surface font-legal-code text-legal-code flex items-center gap-1 self-start sm:self-auto" type="button">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Fatura Görüntüle</span>
+</button>
+</div>
+<!-- Kayıt 3 (Açık Destek Talebi) -->
+<div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-surface-container px-3 rounded mt-1 border border-outline-variant">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Destek Talebi #TK-4401</span>
+<span class="px-1.5 py-0.5 rounded text-label-sm font-label-sm bg-surface-container border border-[#E9A514] text-secondary">
+                    İncelemede
+                  </span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                  "Sınav erteleme kaynaklı lisans dondurma / ek süre talebi"
+                </div>
+<div class="font-legal-code text-legal-code text-outline mt-0.5">
+                  2 Ekim 2026 09:42 · İleten: Dr. Selim Yılmaz
+                </div>
+</div>
+<button class="min-h-[44px] px-3 bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-label-md rounded flex items-center gap-1 self-start sm:self-auto" type="button">
+<span>Talebe Yanıt Ver</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- SAĞ KOLON: Yetkili İşlem Masası ve Güvenlik/KVKK (5 Kolon) -->
+<div class="lg:col-span-5 flex flex-col gap-space-lg">
+<!-- Yetkiye Bağlı İşlem Masası -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md">
+<div class="border-b border-outline-variant pb-3 mb-space-md">
+<span class="font-legal-code text-legal-code text-outline">KIDEMLİ DESTEK MASASI</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Lisans ve Süre İşlemleri</h3>
+</div>
+<!-- Süre Uzatma Form Alanı -->
+<div class="mb-space-lg">
+<label class="block font-label-md text-label-md text-on-surface mb-1.5">
+              Lisans Süresi Uzatma
+            </label>
+<div class="grid grid-cols-2 gap-2 mb-2">
+<label class="min-h-[44px] px-2.5 py-2 bg-surface-container border border-outline-variant rounded flex items-center gap-2 cursor-pointer hover:border-primary">
+<input class="w-4 h-4 text-primary bg-background border-outline-variant focus:ring-0" name="extension" type="radio"/>
+<span class="font-label-sm text-label-sm text-on-surface">+15 Gün</span>
+</label>
+<label class="min-h-[44px] px-2.5 py-2 bg-surface-container border border-primary rounded flex items-center gap-2 cursor-pointer">
+<input checked="" class="w-4 h-4 text-primary bg-background border-outline-variant focus:ring-0" name="extension" type="radio"/>
+<span class="font-label-sm text-label-sm text-on-surface">+30 Gün (Sınava Kadar)</span>
+</label>
+</div>
+<label class="block font-legal-code text-legal-code text-outline mb-1">
+              Uzatma Gerekçesi (Mevzuat Zorunluluğu)
+            </label>
+<select class="w-full h-11 px-3 bg-background border border-outline-variant text-on-surface font-label-md text-label-md rounded focus:border-primary mb-3">
+<option>Akademik Görevlendirme Raporu</option>
+<option>Sağlık Mazereti / Kurul Belgesi</option>
+<option>Üniversite / Kurum Toplu Onayı</option>
+<option>Müşteri Memnuniyeti / İdari Takdir</option>
+</select>
+<button class="w-full min-h-[44px] bg-primary text-on-primary font-label-md text-label-md font-semibold rounded hover:bg-primary-fixed-dim transition-colors duration-150 flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined" data-icon="update">update</span>
+<span>Süreyi Güncelle</span>
+</button>
+</div>
+<!-- İade ve İptal Bölümü -->
+<div class="border-t border-outline-variant pt-space-md mb-space-md">
+<div class="flex items-center justify-between mb-2">
+<label class="font-label-md text-label-md text-on-surface">Kısmi / Tam İade İşlemi</label>
+<span class="font-legal-code text-legal-code text-outline">14 Gün Cayma Süresi Doldu</span>
+</div>
+<div class="bg-surface-container border border-outline-variant p-3 rounded mb-3">
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span class="text-outline">Kullanılmayan Deneme Payı:</span>
+<span class="text-on-surface">4 / 12 (%33,3)</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-outline">Maksimum İade Edilebilir Tutar:</span>
+<span class="text-on-surface font-semibold">416,60 TL</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="min-h-[44px] px-3 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-label-md rounded transition-colors" type="button">
+                Paketi Dondur
+              </button>
+<button class="min-h-[44px] px-3 bg-transparent hover:bg-surface-container border border-[#A33D27] text-[#EE8A6E] font-label-md text-label-md font-semibold rounded transition-colors flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined" data-icon="cancel">cancel</span>
+<span>İadeyi Onayla</span>
+</button>
+</div>
+</div>
+</div>
+<!-- KVKK ve Veri Yönetimi Masası -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md">
+<div class="border-b border-outline-variant pb-3 mb-space-md">
+<span class="font-legal-code text-legal-code text-outline">6698 SAYILI KVKK</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Kişisel Veri ve Talep Masası</h3>
+</div>
+<div class="space-y-2 mb-space-md">
+<button class="w-full min-h-[44px] px-3 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-label-md rounded flex items-center justify-between text-left transition-colors" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="download">download</span>
+<span>Aday Veri Dökümü İndir</span>
+</span>
+<span class="font-legal-code text-legal-code text-outline">JSON / PDF</span>
+</button>
+<button class="w-full min-h-[44px] px-3 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-label-md rounded flex items-center justify-between text-left transition-colors" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="fingerprint">fingerprint</span>
+<span>İşlem Kayıtlarını Anonimleştir</span>
+</span>
+<span class="font-legal-code text-legal-code text-outline">Log Maskele</span>
+</button>
+<button class="w-full min-h-[44px] px-3 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-[#EE8A6E] font-label-md text-label-md rounded flex items-center justify-between text-left transition-colors" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="delete_forever">delete_forever</span>
+<span>Unutulma Talebi İncele</span>
+</span>
+<span class="font-legal-code text-legal-code text-outline">Madde 7</span>
+</button>
+</div>
+<!-- Kurum Eşleşmesi ve Paylaşım Durumu -->
+<div class="bg-surface-container border border-outline-variant rounded p-3">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm text-on-surface font-medium">Kurum Eşleşmesi Durumu</span>
+<span class="px-1.5 py-0.5 rounded text-label-sm font-label-sm bg-surface-container-high border border-[#1F7A45] text-[#4CC27D]">
+                Aktif
+              </span>
+</div>
+<div class="font-legal-code text-legal-code text-on-surface-variant">
+              Ankara Dil Akademisi · Şube: Sınıf 26-B
+            </div>
+<div class="font-legal-code text-legal-code text-outline mt-1 border-t border-outline-variant pt-1.5">
+              İzinli Paylaşım: Çalışma süresi ve deneme sonuçları. (Sohbet ve bireysel notlar gizli tutulmaktadır.)
+            </div>
+</div>
+</div>
+<!-- Denetim Günlüğü (Audit Log) -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Denetim Günlüğü</h3>
+<span class="material-symbols-outlined text-outline" data-icon="history">history</span>
+</div>
+<div class="space-y-3 font-legal-code text-legal-code">
+<div class="border-l-2 border-primary pl-2.5 py-0.5">
+<div class="text-on-surface font-medium">2 Ekim 2026 · 11:20</div>
+<div class="text-outline">Destek Uzmanı M. T. tarafından paket detayları ve fatura dökümü görüntülendi.</div>
+</div>
+<div class="border-l-2 border-outline-variant pl-2.5 py-0.5">
+<div class="text-on-surface font-medium">28 Eylül 2026 · 14:05</div>
+<div class="text-outline">Aday tarafından ek soru modülü siparişi tanımlandı (Referans #88192).</div>
+</div>
+<div class="border-l-2 border-outline-variant pl-2.5 py-0.5">
+<div class="text-on-surface font-medium">15 Ağustos 2026 · 09:12</div>
+<div class="text-outline">Akademik hesap doğrulama belgesi E-Devlet YÖKSİS üzerinden onaylandı.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Alt Bilgi (Shared Component: Footer Anchor) -->
+<footer class="w-full border-t border-outline-variant bg-surface-container-lowest px-margin py-space-lg max-w-[1040px] mx-auto flex flex-col md:flex-row justify-between items-center gap-space-md">
+<div class="flex flex-col sm:flex-row items-center gap-3">
+<span class="text-label-sm font-label-sm font-semibold text-on-surface">ODAK</span>
+<span class="hidden sm:inline text-outline font-legal-code text-legal-code">·</span>
+<span class="text-legal-code font-legal-code text-outline text-center sm:text-left">
+        © 2024 ODAK Sınav Hazırlık ve Düzenleme Sistemi. Tüm hakları saklıdır.
+      </span>
+</div>
+<div class="flex flex-wrap justify-center items-center gap-space-md">
+<a class="text-legal-code font-legal-code text-outline hover:text-on-surface transition-colors duration-150" href="#">Mevzuat ve Yönerge</a>
+<a class="text-legal-code font-legal-code text-outline hover:text-on-surface transition-colors duration-150" href="#">Gizlilik Politikası</a>
+<a class="text-legal-code font-legal-code text-outline hover:text-on-surface transition-colors duration-150" href="#">Kullanım Koşulları</a>
+<a class="text-legal-code font-legal-code text-outline hover:text-on-surface transition-colors duration-150" href="#">İletişim</a>
+</div>
+</footer>
+</body></html>

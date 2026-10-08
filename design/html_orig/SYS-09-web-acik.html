@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SYS-09 · E-posta Şablonları ve Otomasyon Merkezi | ODAK YDS</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Figtree (UI), Literata (Reading), Bricolage Grotesque (Display) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#F4F6F5',
+            surface: '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-low': '#EDF1F0',
+            'surface-container-lowest': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            outline: '#77868A',
+            'outline-variant': '#DAE1E0',
+            primary: '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            secondary: '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            tertiary: '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            error: '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+            'inverse-on-surface': '#F4F6F5',
+            'inverse-primary': '#DCEDEC',
+            'chart-1': '#0F9485',
+            'chart-2': '#505AC8',
+            'chart-3': '#BA7F14',
+            'chart-4': '#9E427B',
+          },
+          borderRadius: {
+            "DEFAULT": "12px",
+            "xs": "4px",
+            "sm": "8px",
+            "md": "12px",
+            "lg": "16px",
+            "xl": "24px",
+            "full": "9999px"
+          },
+          fontFamily: {
+            sans: ['Figtree', 'sans-serif'],
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            reading: ['Literata', 'serif'],
+            body: ['Figtree', 'sans-serif'],
+            headline: ['Figtree', 'sans-serif'],
+            label: ['Figtree', 'sans-serif']
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    .optical-bubble {
+      width: 24px;
+      height: 24px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+      border: 1.5px solid #0E6A6E;
+    }
+    .optical-bubble-active {
+      background-color: #0E6A6E;
+      color: #FFFFFF;
+      border-color: #0E6A6E;
+    }
+    .optical-bubble-empty {
+      background-color: transparent;
+      color: #0E6A6E;
+      border-color: #77868A;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#F4F6F5] text-[#13232A]">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface-container-lowest dark:bg-inverse-surface docked full-width top-0 sticky z-40 border-b border-outline-variant dark:border-outline flat no shadows">
+<div class="w-full max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+<!-- Brand & Section Anchor -->
+<div class="flex items-center gap-6">
+<a class="text-headline-md font-headline-md tracking-tight font-bold text-primary dark:text-inverse-primary flex items-center gap-2" href="#">
+<!-- Optical answer bubble motif in logo -->
+<span class="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-white text-[10px] font-bold">O</span>
+          ODAK YDS
+        </a>
+<div class="h-5 w-px bg-outline-variant hidden md:block"></div>
+<span class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container-high text-on-primary-container text-xs font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+          Akademik Sistem Modülü SYS-09
+        </span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-8 h-full">
+<a class="text-on-surface-variant dark:text-outline-variant font-medium py-5 hover:text-on-surface dark:hover:text-inverse-on-surface hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150" href="#">Bugün</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium py-5 hover:text-on-surface dark:hover:text-inverse-on-surface hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150" href="#">Çalış</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium py-5 hover:text-on-surface dark:hover:text-inverse-on-surface hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150" href="#">Deneme</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium py-5 hover:text-on-surface dark:hover:text-inverse-on-surface hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150" href="#">Öğretmen</a>
+<a class="border-b-2 border-primary dark:border-inverse-primary text-primary dark:text-inverse-primary font-semibold py-5 focus:outline-none transition-colors duration-150" href="#">Gelişim ve Rapor</a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<button aria-label="Bildirimler" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors text-on-surface-variant hover:text-primary" title="Bildirimler">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button aria-label="Yardım ve Belgeler" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors text-on-surface-variant hover:text-primary" title="Yardım ve Belgeler">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+<div class="h-6 w-px bg-outline-variant"></div>
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-md border border-primary text-primary hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-[16px]">timer</span>
+          Sınav Modu
+        </button>
+<div class="flex items-center gap-2.5 pl-1">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container font-bold text-xs flex items-center justify-center border border-[#C3CDCC]">
+            BÖ
+          </div>
+<div class="hidden lg:block text-left text-xs leading-tight">
+<div class="font-semibold text-on-surface">Doç. Dr. B. Öztürk</div>
+<div class="text-on-surface-variant">Aday Profili</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-6 py-8">
+<!-- Top Headline & Architecture Status -->
+<div class="mb-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2.5 mb-2">
+<span class="text-xs font-bold tracking-wider text-primary uppercase bg-primary-container px-2 py-0.5 rounded">Bölüm 19</span>
+<span class="text-xs text-on-surface-variant font-medium">Akademik İletişim &amp; Otomasyon Yönergesi</span>
+<span class="text-outline-variant">•</span>
+<span class="inline-flex items-center gap-1 text-xs font-medium text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+              Kuyruk Aktif
+            </span>
+</div>
+<h1 class="text-2xl md:text-3xl font-bold tracking-tight text-on-surface">
+            SYS-09 · E-posta Şablonları ve Otomasyon Merkezi
+          </h1>
+<p class="text-sm text-on-surface-variant mt-1.5 max-w-2xl leading-relaxed">
+            YDS hazırlık sürecindeki akademisyen ve kamu personeli adaylarına gönderilen bilişsel odak bildirimleri, kişisel gelişim karneleri ve resmî tebligat şablonlarının önizleme ve kural yönetim konsolu.
+          </p>
+</div>
+<!-- Quick Top Actions -->
+<div class="flex items-center gap-3 shrink-0">
+<button class="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-md border border-outline hover:bg-white text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm">tune</span>
+            Gönderim Kuralları
+          </button>
+<button class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-md bg-primary text-on-primary hover:bg-[#0A5458] transition-colors shadow-none">
+<span class="material-symbols-outlined text-sm">send</span>
+            Test E-postası Gönder
+          </button>
+</div>
+</div>
+<!-- Core Principle Banner -->
+<div class="mt-4 p-3.5 bg-surface rounded-lg border border-outline-variant flex items-center justify-between gap-4 text-xs">
+<div class="flex items-center gap-3">
+<div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-base">psychology</span>
+</div>
+<div>
+<span class="font-semibold text-on-surface">Bilişsel Sessizlik Politikası devrede:</span>
+<span class="text-on-surface-variant ml-1">Adayların çalışma konsantrasyonunu korumak adına günde en fazla 1 e-posta iletilir. Saat 22:00 ile 08:00 arasında tüm akademik bildirimler sessize alınır.</span>
+</div>
+</div>
+<div class="shrink-0 flex items-center gap-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-tertiary-container text-tertiary">
+<span class="mr-1">✓</span> İYS Entegre
+          </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-primary-container text-on-primary-container">
+            256-bit DKIM İmzalı
+          </span>
+</div>
+</div>
+</div>
+<!-- Template Selector Tabs (5 Templates) -->
+<div class="mb-8">
+<div class="flex items-center justify-between mb-3">
+<h2 class="text-sm font-bold uppercase tracking-wider text-on-surface-variant">Sistem Şablon Kütüphanesi</h2>
+<span class="text-xs text-on-surface-variant">5 kayıtlı akademik otomasyon şablonu</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+<!-- Tab 1: Active -->
+<button class="text-left p-3.5 rounded-lg border-2 border-primary bg-surface transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-[11px] font-bold text-primary bg-primary-container px-2 py-0.5 rounded">Şablon 1</span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<div class="font-bold text-xs text-on-surface leading-snug">Günlük Çalışma Hatırlatıcısı</div>
+<div class="text-[11px] text-on-surface-variant mt-1">Mikro Odak ve SRS Kelime Tekrarı</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-[11px]">
+<span class="text-tertiary font-semibold flex items-center gap-1">
+<span class="text-[12px]">✓</span> Otomatik
+            </span>
+<span class="text-on-surface-variant">Her Sabah 08:30</span>
+</div>
+</button>
+<!-- Tab 2 -->
+<button class="text-left p-3.5 rounded-lg border border-outline-variant bg-surface hover:border-[#C3CDCC] transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-[11px] font-semibold text-on-surface-variant bg-slate-100 px-2 py-0.5 rounded">Şablon 2</span>
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</div>
+<div class="font-semibold text-xs text-on-surface leading-snug">Haftalık Bilişsel Karne</div>
+<div class="text-[11px] text-on-surface-variant mt-1">Pazar Performans Raporu &amp; Net Analizi</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-[11px]">
+<span class="text-tertiary font-semibold flex items-center gap-1">
+<span class="text-[12px]">✓</span> Otomatik
+            </span>
+<span class="text-on-surface-variant">Pazar 20:00</span>
+</div>
+</button>
+<!-- Tab 3 -->
+<button class="text-left p-3.5 rounded-lg border border-outline-variant bg-surface hover:border-[#C3CDCC] transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-[11px] font-semibold text-on-surface-variant bg-slate-100 px-2 py-0.5 rounded">Şablon 3</span>
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</div>
+<div class="font-semibold text-xs text-on-surface leading-snug">Lisans &amp; Dönem Bitiş Uyarısı</div>
+<div class="text-[11px] text-on-surface-variant mt-1">Şeffaf İptal ve Hak Koruma Güvencesi</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-[11px]">
+<span class="text-on-surface-variant font-medium">Tetikleyici</span>
+<span class="text-on-surface-variant">Son 7 Gün</span>
+</div>
+</button>
+<!-- Tab 4 -->
+<button class="text-left p-3.5 rounded-lg border border-outline-variant bg-surface hover:border-[#C3CDCC] transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-[11px] font-semibold text-on-surface-variant bg-slate-100 px-2 py-0.5 rounded">Şablon 4</span>
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</div>
+<div class="font-semibold text-xs text-on-surface leading-snug">Güvenlik ve OTP Giriş Kodu</div>
+<div class="text-[11px] text-on-surface-variant mt-1">Tek Kullanımlık E-posta Doğrulama</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-[11px]">
+<span class="text-tertiary font-semibold flex items-center gap-1">
+<span class="text-[12px]">✓</span> Anlık
+            </span>
+<span class="text-on-surface-variant">Olay Bazlı</span>
+</div>
+</button>
+<!-- Tab 5 -->
+<button class="text-left p-3.5 rounded-lg border border-outline-variant bg-surface hover:border-[#C3CDCC] transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-[11px] font-semibold text-on-surface-variant bg-slate-100 px-2 py-0.5 rounded">Şablon 5</span>
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</div>
+<div class="font-semibold text-xs text-on-surface leading-snug">Doçentlik &amp; BAP Fatura Dekontu</div>
+<div class="text-[11px] text-on-surface-variant mt-1">GİB E-Fatura &amp; Üniversite Kurumsal</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-[11px]">
+<span class="text-on-surface-variant font-medium">Finansal</span>
+<span class="text-on-surface-variant">Ödeme Sonrası</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Main Workspace: Asymmetric 2-Column (Preview 64% vs Contextual Parameters 36%) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Realistic Email Client Preview (640px viewport simulation) -->
+<div class="lg:col-span-8 flex flex-col">
+<div class="bg-surface rounded-xl border border-outline-variant overflow-hidden">
+<!-- Email Client Top Chrome -->
+<div class="bg-slate-50 border-b border-outline-variant px-5 py-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-slate-300"></span>
+<span class="w-3 h-3 rounded-full bg-slate-300"></span>
+<span class="w-3 h-3 rounded-full bg-slate-300"></span>
+<span class="ml-2 text-xs font-semibold text-on-surface-variant">Önizleme İstemcisi · Web / Masaüstü (640 piksel)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 text-[11px] font-medium text-tertiary bg-tertiary-container px-2 py-0.5 rounded">
+<span>✓</span> HTML &amp; Düz Metin Senkron
+              </span>
+<button class="text-xs text-on-surface-variant hover:text-primary font-medium p-1">
+<span class="material-symbols-outlined text-base">refresh</span>
+</button>
+</div>
+</div>
+<!-- Email Envelope Headers -->
+<div class="p-5 border-b border-outline-variant bg-white text-xs space-y-2">
+<div class="flex items-baseline">
+<span class="w-16 font-semibold text-on-surface-variant shrink-0">Kimden:</span>
+<span class="font-medium text-on-surface">ODAK YDS Akademik Bildirim Servisi &lt;bilgi@odakyds.com&gt;</span>
+</div>
+<div class="flex items-baseline">
+<span class="w-16 font-semibold text-on-surface-variant shrink-0">Kime:</span>
+<span class="font-medium text-on-surface">Doç. Dr. Bilge Kağan Öztürk &lt;bilge.ozturk@hacettepe.edu.tr&gt;</span>
+</div>
+<div class="flex items-baseline">
+<span class="w-16 font-semibold text-on-surface-variant shrink-0">Konu:</span>
+<span class="font-bold text-primary text-sm">Günün 15 Dakikalık YDS Odak Görevi ve 3 Kritik Zıtlık Bağlacı Hazır</span>
+</div>
+<div class="flex items-baseline pt-1 text-[11px] text-on-surface-variant">
+<span class="w-16 font-semibold shrink-0">Güvenlik:</span>
+<span class="flex items-center gap-3">
+<span class="text-tertiary font-medium">✓ DMARC Doğrulandı</span>
+<span>•</span>
+<span class="text-tertiary font-medium">✓ SPF hacettepe.edu.tr Kabul Edildi</span>
+<span>•</span>
+<span>İleti Boyutu: 14.8 KB</span>
+</span>
+</div>
+</div>
+<!-- Rendered Email Body Canvas (Centered 640px Max Body) -->
+<div class="bg-[#F4F6F5] p-6 md:p-8 flex justify-center">
+<div class="w-full max-w-[600px] bg-white rounded-lg border border-outline-variant p-7 text-on-surface shadow-none">
+<!-- Email Brand Header -->
+<div class="flex items-center justify-between pb-5 border-b border-outline-variant mb-6">
+<div class="flex items-center gap-2">
+<!-- Optical bubble motif -->
+<div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
+                    O
+                  </div>
+<div>
+<div class="font-bold text-sm tracking-tight text-primary">ODAK YDS</div>
+<div class="text-[10px] text-on-surface-variant tracking-normal">Akademik Yabancı Dil Sınavı Hazırlık Portalı</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-[11px] font-bold text-on-surface">Hedef: 85+ (A Grubu)</div>
+<div class="text-[10px] text-on-surface-variant">Sınava Kalan: 48 Gün</div>
+</div>
+</div>
+<!-- Greeting & Context -->
+<div class="mb-5">
+<h3 class="font-bold text-base text-on-surface">Sayın Doç. Dr. Bilge Kağan Öztürk,</h3>
+<p class="text-xs text-on-surface-variant mt-1.5 leading-relaxed">
+                  Bugünkü 15 dakikalık akademik çalışma planınız sistem tarafından oluşturuldu. SRS aralıklı tekrar algoritmanız, son 3 denemede zıtlık bağlaçlarında hata yoğunluğu saptadığı için bugünkü mikro görev bu kazanımı pekiştirmek üzere optimize edilmiştir.
+                </p>
+</div>
+<!-- Focus Tasks Block -->
+<div class="bg-[#F8FAF9] rounded-lg border border-outline-variant p-4 mb-6">
+<div class="text-xs font-bold text-primary mb-3 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">checklist</span>
+                  Günün 3 Kritik Çalışma Maddesi
+                </div>
+<div class="space-y-2.5">
+<!-- Task 1 -->
+<div class="flex items-center justify-between bg-white p-2.5 rounded border border-outline-variant text-xs">
+<div class="flex items-center gap-2.5">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-[11px]">
+                        1
+                      </div>
+<div>
+<div class="font-semibold text-on-surface">SRS Kelime Havuzu Tekrarı</div>
+<div class="text-[11px] text-on-surface-variant">Unutulma eğrisine giren 12 akademik kelime</div>
+</div>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant">4 Dakika</span>
+</div>
+<!-- Task 2 -->
+<div class="flex items-center justify-between bg-white p-2.5 rounded border border-outline-variant text-xs">
+<div class="flex items-center gap-2.5">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-[11px]">
+                        2
+                      </div>
+<div>
+<div class="font-semibold text-on-surface">Zıtlık Bağlacı Cümle Röntgeni</div>
+<div class="text-[11px] text-on-surface-variant">Despite, In spite of, Although yapısal çözümleme</div>
+</div>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant">5 Dakika</span>
+</div>
+<!-- Task 3 -->
+<div class="flex items-center justify-between bg-white p-2.5 rounded border border-outline-variant text-xs">
+<div class="flex items-center gap-2.5">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-[11px]">
+                        3
+                      </div>
+<div>
+<div class="font-semibold text-on-surface">5 Soruluk Mikro Kazanım Testi</div>
+<div class="text-[11px] text-on-surface-variant">ÖSYM soru kökleriyle birebir uyumlu pratik</div>
+</div>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant">6 Dakika</span>
+</div>
+</div>
+</div>
+<!-- Question Excerpt (Literata Serif Mandatory for Academic Question Quotes) -->
+<div class="mb-6 p-4 rounded-lg border border-[#C3CDCC] bg-[#FFFFFF]">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Günün Örnek Soru Kökü Alıntısı</span>
+<span class="text-[11px] font-medium text-primary">Soru No: 18</span>
+</div>
+<div class="font-reading text-sm text-[#13232A] leading-relaxed mb-3">
+                  “<strong class="font-semibold text-primary">Although</strong> the preliminary clinical trial results appeared promising, the supervisory committee insisted on a second phase to verify long-term efficacy.”
+                </div>
+<!-- Optical answer bubbles motif -->
+<div class="space-y-1.5 pt-2 border-t border-outline-variant text-xs">
+<div class="flex items-center gap-2 p-1.5 rounded hover:bg-slate-50">
+<span class="optical-bubble optical-bubble-active">A</span>
+<span class="font-reading text-xs text-on-surface">Although</span>
+<span class="ml-auto text-[11px] text-tertiary font-semibold flex items-center gap-0.5">
+<span>✓</span> Doğru Cevap
+                    </span>
+</div>
+<div class="flex items-center gap-2 p-1.5 rounded">
+<span class="optical-bubble optical-bubble-empty">B</span>
+<span class="font-reading text-xs text-on-surface">Because of</span>
+</div>
+<div class="flex items-center gap-2 p-1.5 rounded">
+<span class="optical-bubble optical-bubble-empty">C</span>
+<span class="font-reading text-xs text-on-surface">In case</span>
+</div>
+</div>
+</div>
+<!-- Single Primary Call-to-Action Button (Petrol, min 44px) -->
+<div class="text-center my-6">
+<a class="inline-flex items-center justify-center w-full py-3.5 px-6 rounded-md bg-primary text-white font-bold text-sm hover:bg-[#0A5458] transition-colors min-h-[44px]" href="#">
+                  Bugünkü 15 Dakikalık Çalışmayı Başlat
+                  <span class="material-symbols-outlined text-base ml-2">arrow_forward</span>
+</a>
+<div class="text-[11px] text-on-surface-variant mt-2">
+                  Giriş yapılmış oturumunuz üzerinden tek tıkla doğrudan ilgili soruya yönlendirilirsiniz.
+                </div>
+</div>
+<!-- University & Institutional Accreditation Note -->
+<div class="border-t border-outline-variant pt-4 mt-6 text-[11px] text-on-surface-variant space-y-2 leading-relaxed">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+<span>Bu e-posta, <strong>Hacettepe Üniversitesi</strong> kurumsal akademik lisans protokolü kapsamında iletilmiştir.</span>
+</div>
+<div>
+                  Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca akademik verileriniz hiçbir üçüncü tarafla paylaşılmaz. Dilediğiniz an tek tıkla bildirim saatlerini düzenleyebilir veya gönderimi durdurabilirsiniz.
+                </div>
+<div class="pt-2 flex flex-wrap items-center gap-3 text-primary underline text-[11px]">
+<a class="hover:text-on-surface" href="#">Bildirim Tercihlerini Yönet</a>
+<span>•</span>
+<a class="hover:text-on-surface" href="#">Tek Tıkla E-posta Bildirimlerini Kapat</a>
+<span>•</span>
+<a class="hover:text-on-surface" href="#">Akademik Lisans Paneli</a>
+</div>
+</div>
+<!-- Footer Branding in Email -->
+<div class="mt-6 pt-4 border-t border-outline-variant text-center text-[10px] text-on-surface-variant">
+                ODAK YDS Hazırlık ve Değerlendirme Sistemi · Çankaya, Ankara · Tel: 0850 300 YDS1
+              </div>
+</div>
+</div>
+<!-- Bottom Preview Bar -->
+<div class="px-5 py-3 bg-slate-50 border-t border-outline-variant flex items-center justify-between text-xs text-on-surface-variant">
+<span>Şablon Kimliği: <code class="font-mono text-on-surface bg-white px-1.5 py-0.5 rounded border border-outline-variant">TPL_DAILY_SRS_V3</code></span>
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1 text-tertiary">
+<span class="text-sm">✓</span> Mobil &amp; Web Uyumlu
+              </span>
+<span>Son Değişiklik: 28 Şubat 2025</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Variables, Delivery Rules & Matrix -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Dynamic Parameters / Variables Card -->
+<div class="bg-surface rounded-xl border border-outline-variant p-5">
+<div class="flex items-center justify-between mb-3 pb-3 border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">data_object</span>
+<h3 class="font-bold text-xs uppercase tracking-wider text-on-surface">Dinamik Parametre Listesi</h3>
+</div>
+<span class="text-[11px] text-on-surface-variant font-mono">6 Değişken</span>
+</div>
+<div class="space-y-2.5">
+<!-- Var 1 -->
+<div class="p-2.5 rounded bg-[#F8FAF9] border border-outline-variant text-xs">
+<div class="flex items-center justify-between font-mono font-bold text-primary text-[11px]">
+<span>{{aday_unvan_ad}}</span>
+<span class="text-[10px] text-on-surface-variant font-sans font-normal">Metin (Dize)</span>
+</div>
+<div class="text-[11px] text-on-surface mt-1">Örn: Doç. Dr. Bilge Kağan Öztürk</div>
+<div class="text-[10px] text-on-surface-variant">Adayın akademik unvan ve tam adı.</div>
+</div>
+<!-- Var 2 -->
+<div class="p-2.5 rounded bg-[#F8FAF9] border border-outline-variant text-xs">
+<div class="flex items-center justify-between font-mono font-bold text-primary text-[11px]">
+<span>{{hedef_puan}}</span>
+<span class="text-[10px] text-on-surface-variant font-sans font-normal">Sayısal</span>
+</div>
+<div class="text-[11px] text-on-surface mt-1">Örn: 85+ (A Grubu)</div>
+<div class="text-[10px] text-on-surface-variant">Sınav hedef puanı ve hedef başarı bandı.</div>
+</div>
+<!-- Var 3 -->
+<div class="p-2.5 rounded bg-[#F8FAF9] border border-outline-variant text-xs">
+<div class="flex items-center justify-between font-mono font-bold text-primary text-[11px]">
+<span>{{kalan_gun_sayisi}}</span>
+<span class="text-[10px] text-on-surface-variant font-sans font-normal">Sayısal</span>
+</div>
+<div class="text-[11px] text-on-surface mt-1">Örn: 48 Gün</div>
+<div class="text-[10px] text-on-surface-variant">ÖSYM resmi YDS oturumuna kalan gün.</div>
+</div>
+<!-- Var 4 -->
+<div class="p-2.5 rounded bg-[#F8FAF9] border border-outline-variant text-xs">
+<div class="flex items-center justify-between font-mono font-bold text-primary text-[11px]">
+<span>{{srs_kelime_adedi}}</span>
+<span class="text-[10px] text-on-surface-variant font-sans font-normal">Sayısal</span>
+</div>
+<div class="text-[11px] text-on-surface mt-1">Örn: 12 Kelime</div>
+<div class="text-[10px] text-on-surface-variant">Adayın o gün unutma eğrisinde olan kelimeleri.</div>
+</div>
+<!-- Var 5 -->
+<div class="p-2.5 rounded bg-[#F8FAF9] border border-outline-variant text-xs">
+<div class="flex items-center justify-between font-mono font-bold text-primary text-[11px]">
+<span>{{kritik_kazanim}}</span>
+<span class="text-[10px] text-on-surface-variant font-sans font-normal">Metin</span>
+</div>
+<div class="text-[11px] text-on-surface mt-1">Örn: Zıtlık Bağlaçları (Although / In spite of)</div>
+<div class="text-[10px] text-on-surface-variant">Kişiselleştirilmiş hata analizi önceliği.</div>
+</div>
+<!-- Var 6 -->
+<div class="p-2.5 rounded bg-[#F8FAF9] border border-outline-variant text-xs">
+<div class="flex items-center justify-between font-mono font-bold text-primary text-[11px]">
+<span>{{oturum_tarihi}}</span>
+<span class="text-[10px] text-on-surface-variant font-sans font-normal">Tarih</span>
+</div>
+<div class="text-[11px] text-on-surface mt-1">Örn: 13 Nisan 2025 (2025-YDS/1)</div>
+<div class="text-[10px] text-on-surface-variant">Adayın başvurduğu resmi oturum tarihi.</div>
+</div>
+</div>
+</div>
+<!-- Sending Rules & Cognitive Silence Policy Card -->
+<div class="bg-surface rounded-xl border border-outline-variant p-5">
+<div class="flex items-center gap-2 mb-3 pb-3 border-b border-outline-variant">
+<span class="material-symbols-outlined text-primary text-base">bedtime</span>
+<h3 class="font-bold text-xs uppercase tracking-wider text-on-surface">Gönderim Kuralları &amp; Bilişsel Sessizlik</h3>
+</div>
+<div class="space-y-3 text-xs">
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-primary-container text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                ✓
+              </span>
+<div>
+<div class="font-semibold text-on-surface">22:00 - 08:00 Arası Bilişsel Sessizlik</div>
+<div class="text-on-surface-variant text-[11px]">Gece saatlerinde tetiklenen hiçbir hatırlatıcı iletilmez; sabah 08:30 kuyruğuna ertelenir.</div>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-primary-container text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                ✓
+              </span>
+<div>
+<div class="font-semibold text-on-surface">Günde En Fazla 1 E-posta Limiti</div>
+<div class="text-on-surface-variant text-[11px]">Adayın gelen kutusu bilgi çöplüğüne dönüştürülmez. Bir günde tek bir mikro odak iletilir.</div>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-primary-container text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                ✓
+              </span>
+<div>
+<div class="font-semibold text-on-surface">Spamsiz, Sade ve Metin Odaklı</div>
+<div class="text-on-surface-variant text-[11px]">Gereksiz görseller, maskotlar ve ağır komut dosyaları içermez. Anında açılır ve okunur.</div>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-primary-container text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                ✓
+              </span>
+<div>
+<div class="font-semibold text-on-surface">İleti Yönetim Sistemi (İYS) Kaydı</div>
+<div class="text-on-surface-variant text-[11px]">Aday tek tıkla dilediği e-posta türünü kapatabilir; sistem anında veritabanını günceller.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 6: Delivery States and Matrix (4 State Cards) -->
+<div class="mt-12 pt-8 border-t border-outline-variant">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h2 class="text-base font-bold text-on-surface">Sistem Durumları ve İletim Matrisi</h2>
+<p class="text-xs text-on-surface-variant mt-0.5">Otomasyon motorunun farklı senaryolardaki davranış ve teyit mekanizmaları</p>
+</div>
+<span class="text-xs font-medium text-primary bg-primary-container px-2.5 py-1 rounded">
+          Son 24 Saat Başarı Oranı: %99.84
+        </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- State Card 1 -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-bold text-tertiary flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+              Durum 01
+            </span>
+<span class="text-[11px] font-semibold text-tertiary bg-tertiary-container px-2 py-0.5 rounded">
+              ✓ Doğrulandı
+            </span>
+</div>
+<div class="font-bold text-xs text-on-surface">Başarılı İletim &amp; Anlık Açılma</div>
+<p class="text-[11px] text-on-surface-variant mt-1.5 leading-relaxed">
+            DMARC, SPF ve DKIM 256-bit kurumsal imzaları tam uyumlu. E-posta doğrudan aday gelen kutusuna (Primary Inbox) düşer, spam klasörüne girmez.
+          </p>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-[11px] text-on-surface-variant">
+<span>Ortalama Teslim:</span>
+<span class="font-semibold text-on-surface">1.2 saniye</span>
+</div>
+</div>
+<!-- State Card 2 -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-bold text-primary flex items-center gap-1.5">
+<!-- Safran indicator dot -->
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+              Durum 02
+            </span>
+<span class="text-[11px] font-semibold text-on-secondary bg-secondary-container px-2 py-0.5 rounded">
+              Ertelendi
+            </span>
+</div>
+<div class="font-bold text-xs text-on-surface">Bilişsel Sessiz Saat Ertelemesi</div>
+<p class="text-[11px] text-on-surface-variant mt-1.5 leading-relaxed">
+            Aday gece 23:40'ta deneme tamamlasa bile gelişim karnesi gecikmeli kuyruğa alınır. Sabah adayın dikkatinin taze olduğu 08:30'da otomatik olarak iletilir.
+          </p>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-[11px] text-on-surface-variant">
+<span>Kuyruk Süresi:</span>
+<span class="font-semibold text-on-surface">08:30 Beklemede</span>
+</div>
+</div>
+<!-- State Card 3 -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-bold text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+              Durum 03
+            </span>
+<span class="text-[11px] font-semibold text-on-surface-variant bg-slate-100 px-2 py-0.5 rounded">
+              İYS Senkron
+            </span>
+</div>
+<div class="font-bold text-xs text-on-surface">İletişim Tercihleri ve Çıkış</div>
+<p class="text-[11px] text-on-surface-variant mt-1.5 leading-relaxed">
+            Aday tek tıkla ayrılma bağlantısına tıkladığında onay gerekmeksizin sistem aboneliği askıya alır. Üniversite kurumsal raporlaması hariç tüm e-postalar durdurulur.
+          </p>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-[11px] text-on-surface-variant">
+<span>İptal Süresi:</span>
+<span class="font-semibold text-on-surface">Anında (0 sn)</span>
+</div>
+</div>
+<!-- State Card 4 -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-bold text-error flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+              Durum 04
+            </span>
+<span class="text-[11px] font-semibold text-error bg-error-container px-2 py-0.5 rounded">
+              ✕ Sunucu Hatası
+            </span>
+</div>
+<div class="font-bold text-xs text-on-surface">Çevrimdışı Kuyruk &amp; Yedek SMS</div>
+<p class="text-[11px] text-on-surface-variant mt-1.5 leading-relaxed">
+            Üniversite alan adı veya e-posta sunucusu geçici olarak yanıt vermediğinde 3 kademeli yeniden deneme (retry) başlatılır. Kritik OTP kodları yedek SMS hattına aktarılır.
+          </p>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-[11px] text-on-surface-variant">
+<span>Yeniden Deneme:</span>
+<span class="font-semibold text-on-surface">3 Kademe (15 dk)</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="bg-surface-container-low dark:bg-inverse-surface docked full-width bottom border-t border-outline-variant dark:border-outline flat no shadows mt-16">
+<div class="w-full max-w-[1200px] mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-6">
+<!-- Left: Brand and Copyright Text -->
+<div class="flex flex-col md:flex-row items-center md:items-start gap-4 text-center md:text-left">
+<a class="text-headline-sm font-headline-sm font-bold text-primary dark:text-inverse-primary" href="#">
+          ODAK YDS
+        </a>
+<div class="text-on-surface-variant dark:text-outline-variant text-label-md font-label-md max-w-xl">
+          © 2025 ODAK YDS Akademik Hazırlık ve Değerlendirme Sistemi. ÖSYM YDS ve e-YDS müfredat standartlarıyla tam uyumludur. Tüm hakları saklıdır.
+        </div>
+</div>
+<!-- Right: Footer Navigation Links -->
+<div class="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 text-label-md font-label-md">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-inverse-primary hover:underline transition-colors duration-150" href="#">ÖSYM Standartları</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-inverse-primary hover:underline transition-colors duration-150" href="#">Akademik Rehber</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-inverse-primary hover:underline transition-colors duration-150" href="#">Kullanım Koşulları</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-inverse-primary hover:underline transition-colors duration-150" href="#">KVKK Aydınlatma Metni</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-inverse-primary hover:underline transition-colors duration-150" href="#">GİB E-Fatura Entegrasyonu</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-inverse-primary hover:underline transition-colors duration-150" href="#">Teknik Destek</a>
+</div>
+</div>
+</footer>
+</body></html>

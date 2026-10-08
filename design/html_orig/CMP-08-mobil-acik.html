@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>YDS Hazırlık Platformu - CMP-08 Cümle Röntgeni ve Çeviri Koçu</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#F4F6F5',
+            surface: '#FFFFFF',
+            'surface-container': '#FFFFFF',
+            'surface-container-high': '#DCEDEC',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            outline: '#77868A',
+            'outline-variant': '#DAE1E0',
+            primary: '#0E6A6E',
+            'on-primary': '#FFFFFF',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0A5458',
+            secondary: '#E9A514',
+            'on-secondary': '#13232A',
+            'secondary-container': '#FBEFD2',
+            tertiary: '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            error: '#A33D27',
+            'error-container': '#F8E3DC',
+            'inverse-surface': '#13232A',
+            'chart-1': '#0F9485',
+            'chart-2': '#505AC8',
+            'chart-3': '#BA7F14',
+            'chart-4': '#9E427B'
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "xs": "4px",
+            "sm": "8px",
+            "md": "12px",
+            "lg": "16px",
+            "xl": "24px",
+            "full": "9999px"
+          },
+          fontFamily: {
+            sans: ["Figtree", "sans-serif"],
+            serif: ["Literata", "serif"],
+            brand: ["Bricolage Grotesque", "sans-serif"],
+            headline: ["Figtree", "sans-serif"],
+            display: ["Bricolage Grotesque", "sans-serif"],
+            body: ["Figtree", "sans-serif"],
+            label: ["Figtree", "sans-serif"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .xray-main {
+      border-bottom: 2.5px solid #0E6A6E;
+      padding-bottom: 2px;
+    }
+    .xray-sub {
+      border-bottom: 2px dotted #77868A;
+      padding-bottom: 2px;
+    }
+    .diff-deleted {
+      background-color: #F8E3DC;
+      color: #A33D27;
+      text-decoration: line-through;
+    }
+    .diff-inserted {
+      background-color: #DFF1E6;
+      color: #1F7A45;
+      border-bottom: 2px solid #1F7A45;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-sans antialiased min-h-screen flex justify-center selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mobil Çerçeve Kapsayıcısı (390px) -->
+<main class="w-full max-w-[390px] bg-background min-h-screen flex flex-col relative pb-24 shadow-sm border-x border-outline-variant">
+<!-- 1. Üst Bar ve Başlık (Header - Shared Component Uyumlu) -->
+<header class="bg-surface sticky top-0 z-40 w-full border-b border-outline-variant">
+<div class="flex justify-between items-center h-16 w-full max-w-[390px] mx-auto px-4">
+<button aria-label="Geri Dön" class="min-w-[44px] min-h-[44px] flex items-center justify-center text-on-surface hover:bg-primary-container/40 rounded-full transition-colors active:opacity-80" type="button">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h1 class="font-headline text-[17px] font-semibold text-on-surface tracking-tight">
+          Bileşenler / CMP-08
+        </h1>
+<button aria-label="Ayarlar ve Filtre" class="min-w-[44px] min-h-[44px] flex items-center justify-center text-on-surface hover:bg-primary-container/40 rounded-full transition-colors active:opacity-80" type="button">
+<span class="material-symbols-outlined text-[24px]">tune</span>
+</button>
+</div>
+</header>
+<!-- İçerik Alanı -->
+<div class="p-4 space-y-6">
+<!-- Spesifikasyon Rozetleri ve Sayfa Başlığı -->
+<section class="space-y-3">
+<div class="flex flex-wrap gap-1.5 items-center">
+<span class="px-2 py-0.5 bg-surface text-on-surface-variant border border-outline-variant text-[11px] font-semibold tracking-wider rounded-xs">
+            BİLEŞEN SPESİFİKASYONU
+          </span>
+<span class="px-2 py-0.5 bg-surface text-on-surface-variant border border-outline-variant text-[11px] font-semibold tracking-wider rounded-xs">
+            390PT MOBİL
+          </span>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary text-[11px] font-semibold tracking-wider rounded-xs border border-secondary/30">
+            ÖSYM SENTAKS UYUMU
+          </span>
+<span class="px-2 py-0.5 bg-tertiary-container text-tertiary text-[11px] font-semibold tracking-wider rounded-xs">
+            WCAG AAA
+          </span>
+</div>
+<div class="space-y-1">
+<h2 class="font-brand text-[24px] font-bold tracking-tight text-on-surface leading-tight">
+            CMP-08 · Cümle Röntgeni ve Çeviri Koçu
+          </h2>
+<p class="text-[13px] text-on-surface-variant leading-relaxed font-sans">
+            YDS adaylarının uzun ve karmaşık akademik cümleleri sentaktik ögelerine ayırmasını sağlayan cümle röntgeni, yapay zekâ destekli çeviri koçu ve hap kural kartı bileşenleri.
+          </p>
+</div>
+</section>
+<!-- BÖLÜM 1: CANLI CÜMLE RÖNTGENİ ANATOMİSİ -->
+<section class="bg-surface rounded-lg border border-outline-variant p-4 space-y-4">
+<!-- Bağlam Başlığı -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-2.5">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-[20px]">document_scanner</span>
+<span class="text-[12px] font-bold text-primary tracking-wide">2023 SONBAHAR YDS · SORU 18</span>
+</div>
+<span class="text-[11px] text-on-surface-variant font-medium bg-background px-2 py-0.5 rounded-full border border-outline-variant">Sentaktik Röntgen</span>
+</div>
+<!-- İnteraktif Cümle Metni (Literata Serif + Optik Numaralar) -->
+<div class="bg-background/80 p-3.5 rounded-md border border-outline-variant space-y-3">
+<div class="text-[11px] font-semibold text-on-surface-variant flex items-center justify-between">
+<span>İNGİLİZCE ANALİZ METNİ</span>
+<span class="text-[10px] text-on-surface-variant">Katmanlı Gösterim</span>
+</div>
+<div class="font-serif text-[17px] leading-[1.75] text-on-surface tracking-normal">
+<!-- 1 -->
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] font-sans font-bold mr-1 align-middle">1</span>
+<span class="xray-sub font-medium">Although</span>
+<!-- 2 -->
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] font-sans font-bold ml-1.5 mr-1 align-middle">2</span>
+<span class="xray-sub">ancient maritime trade routes</span>
+<!-- 3 -->
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] font-sans font-bold ml-1.5 mr-1 align-middle">3</span>
+<span class="xray-sub">were initially established for spice transit,</span>
+<!-- 4 -->
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] font-sans font-bold ml-1.5 mr-1 align-middle">4</span>
+<span class="xray-main font-semibold">recent underwater archaeological findings</span>
+<!-- 5 -->
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] font-sans font-bold ml-1.5 mr-1 align-middle">5</span>
+<span class="bg-primary text-white px-2 py-0.5 rounded-full font-semibold font-sans text-[15px] inline-block mx-0.5 shadow-sm">prove</span>
+<!-- 6 -->
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] font-sans font-bold ml-1 mr-1 align-middle">6</span>
+<span class="xray-sub">that cultural artifacts were exchanged</span>
+<!-- 7 -->
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] font-sans font-bold ml-1 mr-1 align-middle">7</span>
+<span class="xray-sub">at an unprecedented scale.</span>
+</div>
+<!-- Gösterge Açıklaması -->
+<div class="pt-2 border-t border-outline-variant/60 flex flex-wrap items-center gap-3 text-[11px] text-on-surface-variant">
+<span class="inline-flex items-center gap-1.5">
+<span class="w-3.5 h-0.5 bg-primary rounded-full"></span> Ana Cümle Ögesi
+            </span>
+<span class="inline-flex items-center gap-1.5">
+<span class="w-3.5 border-b-2 border-dotted border-outline"></span> Yan Cümlecik (Bağımlı)
+            </span>
+<span class="inline-flex items-center gap-1">
+<span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span> Ana Yüklem
+            </span>
+</div>
+</div>
+<!-- Cümle İskeleti (Sentence Spine) -->
+<div class="space-y-1.5">
+<div class="text-[12px] font-bold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">account_tree</span>
+            Cümle İskeleti (Core Skeleton)
+          </div>
+<div class="flex items-center gap-1 overflow-x-auto py-1 text-[11px] font-medium no-scrollbar">
+<div class="px-2 py-1 bg-surface-container-high text-on-primary-container rounded border border-primary/20 shrink-0">
+              [Yan Cümle: Zıtlık]
+            </div>
+<span class="text-on-surface-variant font-bold">+</span>
+<div class="px-2 py-1 bg-primary text-white rounded shrink-0 font-semibold">
+              [Ana Özne]
+            </div>
+<span class="text-on-surface-variant font-bold">+</span>
+<div class="px-2 py-1 bg-primary text-white rounded shrink-0 font-semibold ring-1 ring-primary/40">
+              [Yüklem: prove]
+            </div>
+<span class="text-on-surface-variant font-bold">+</span>
+<div class="px-2 py-1 bg-surface-container-high text-on-primary-container rounded border border-primary/20 shrink-0">
+              [Nesne: That-Clause]
+            </div>
+</div>
+</div>
+<!-- Parça - Görev Tablosu -->
+<div class="space-y-2 pt-1">
+<div class="text-[12px] font-bold text-on-surface">Sentaktik Ayrıştırma Dökümü</div>
+<div class="space-y-1.5 text-[12px]">
+<!-- Öğe 1 -->
+<div class="flex items-start gap-2 p-2 rounded bg-background border border-outline-variant">
+<span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</span>
+<div class="flex-1">
+<span class="font-serif font-semibold text-on-surface">Although</span>
+<p class="text-[11px] text-on-surface-variant">Bağlaç (Zıtlık / Adverbial Conjunction) - Beklentiye aykırı durumu bağlar.</p>
+</div>
+</div>
+<!-- Öğe 2-3 -->
+<div class="flex items-start gap-2 p-2 rounded bg-background border border-outline-variant">
+<span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2-3</span>
+<div class="flex-1">
+<span class="font-serif font-semibold text-on-surface">ancient trade routes were established</span>
+<p class="text-[11px] text-on-surface-variant">Zıtlık Yan Cümlesi (Passive Verb: Past Simple Passive).</p>
+</div>
+</div>
+<!-- Öğe 4 -->
+<div class="flex items-start gap-2 p-2 rounded bg-background border border-outline-variant">
+<span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">4</span>
+<div class="flex-1">
+<span class="font-serif font-semibold text-primary">recent underwater archaeological findings</span>
+<p class="text-[11px] text-on-surface-variant font-medium">Ana Cümle Öznesi (Genişletilmiş Noun Phrase).</p>
+</div>
+</div>
+<!-- Öğe 5 -->
+<div class="flex items-start gap-2 p-2 rounded bg-primary-container/40 border border-primary/20">
+<span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">5</span>
+<div class="flex-1">
+<span class="font-serif font-bold text-on-primary-container">prove (V1)</span>
+<p class="text-[11px] text-on-primary-container">Temel Yüklem (Transitive Verb - Simple Present bilimsel geçerlilik).</p>
+</div>
+</div>
+<!-- Öğe 6-7 -->
+<div class="flex items-start gap-2 p-2 rounded bg-background border border-outline-variant">
+<span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">6-7</span>
+<div class="flex-1">
+<span class="font-serif font-semibold text-on-surface">cultural artifacts were exchanged...</span>
+<p class="text-[11px] text-on-surface-variant">Nesne Yan Cümlesi (Noun Clause Complement).</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Katlanır Türkçe Çeviri (Akordiyon Açık Durumda) -->
+<div class="border border-outline-variant rounded-md overflow-hidden bg-background">
+<div class="w-full flex items-center justify-between p-3 bg-surface cursor-default">
+<span class="text-[13px] font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">translate</span>
+              Tam Akademik Çeviri (Katlanır)
+            </span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">expand_less</span>
+</div>
+<div class="p-3 pt-2 border-t border-outline-variant space-y-2">
+<p class="font-serif text-[14px] leading-relaxed text-on-surface">
+              "Her ne kadar kadim deniz ticaret yolları başlangıçta baharat taşımacılığı için kurulmuş olsa da, son su altı arkeolojik bulguları kültürel eserlerin benzeri görülmemiş bir ölçekte takas edildiğini kanıtlamaktadır."
+            </p>
+<div class="text-[11px] text-on-surface-variant flex items-center gap-1 bg-surface p-2 rounded border border-outline-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">info</span>
+<span><strong>Çeviri Notu:</strong> Özne-yüklem uyumu ve zıtlık bağlacının aktarımına dikkat ediniz.</span>
+</div>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 2: ÇEVİRİ KOÇU VE ANLIK GERİ BİLDİRİM PANELİ -->
+<section class="bg-surface rounded-lg border border-outline-variant p-4 space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2.5">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-[20px]">spellcheck</span>
+<span class="text-[12px] font-bold text-primary tracking-wide">YAPAY ZEKA ÇEVİRİ KOÇU</span>
+</div>
+<span class="text-[11px] font-bold text-tertiary bg-tertiary-container px-2 py-0.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">check_circle</span> Analiz Edildi
+          </span>
+</div>
+<!-- Kaynak İngilizce Metin -->
+<div class="space-y-1">
+<label class="text-[11px] font-bold text-on-surface-variant">KAYNAK CÜMLE (YDS DÜZEYİ)</label>
+<div class="p-3 rounded-md bg-background border border-outline-variant font-serif text-[15px] text-on-surface leading-normal">
+            "The implementation of the new economic framework failed to mitigate inflationary pressures."
+          </div>
+</div>
+<!-- Kullanıcı Çevirisi (Textarea Simülasyonu) -->
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold text-on-surface-variant flex items-center justify-between" for="user-trans">
+<span>ADAYIN TÜRKÇE ÇEVİRİSİ</span>
+<span class="text-[11px] font-normal text-on-surface-variant">59 Karakter</span>
+</label>
+<div class="relative">
+<textarea class="w-full min-h-[88px] p-3 text-[14px] font-sans text-on-surface bg-surface border border-outline rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" id="user-trans" readonly="">Yeni ekonomik çerçevenin uygulanması enflasyon baskısını düşüremedi.</textarea>
+</div>
+</div>
+<!-- Eylem Butonu -->
+<button class="w-full min-h-[48px] bg-primary text-white rounded-md font-semibold text-[14px] flex items-center justify-center gap-2 hover:bg-on-primary-container transition-colors active:opacity-90" type="button">
+<span>Değerlendir ve Hataları Göster</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<!-- Canlı Değerlendirme ve Skor Kartı -->
+<div class="p-3.5 bg-background rounded-md border border-outline-variant space-y-3.5">
+<!-- Skor Başlığı -->
+<div class="flex items-center justify-between">
+<span class="text-[13px] font-bold text-on-surface">Değerlendirme Puanı</span>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 bg-primary text-white text-[12px] font-bold rounded-full">
+                9 / 12 Puan
+              </span>
+<span class="text-[11px] text-on-surface-variant font-semibold">(%75 Başarı)</span>
+</div>
+</div>
+<!-- 4 Temel Ölçüt Değerlendirme Matrisi -->
+<div class="space-y-2 text-[12px]">
+<!-- Ölçüt 1 -->
+<div class="p-2 bg-surface rounded border border-outline-variant/80 space-y-1">
+<div class="flex justify-between items-center">
+<span class="font-semibold text-on-surface">Anlam Bütünlüğü</span>
+<span class="text-primary font-bold tracking-widest text-[11px]">● ● ● ○ <span class="text-on-surface-variant font-normal">(2/3)</span></span>
+</div>
+<p class="text-[11px] text-on-surface-variant">Küçük nüans kaybı: "hafifletmek" yerine "düşürmek" kullanıldı.</p>
+</div>
+<!-- Ölçüt 2 -->
+<div class="p-2 bg-surface rounded border border-outline-variant/80 space-y-1">
+<div class="flex justify-between items-center">
+<span class="font-semibold text-on-surface">Zaman &amp; Kip Uyumu</span>
+<span class="text-tertiary font-bold tracking-widest text-[11px]">● ● ● ● <span class="text-tertiary font-bold">(3/3 Tam)</span></span>
+</div>
+<p class="text-[11px] text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+                Simple past zaman uyumu kusursuz aktarılmış.
+              </p>
+</div>
+<!-- Ölçüt 3 -->
+<div class="p-2 bg-surface rounded border border-outline-variant/80 space-y-1">
+<div class="flex justify-between items-center">
+<span class="font-semibold text-on-surface">Sentaktik Yapı Analizi</span>
+<span class="text-primary font-bold tracking-widest text-[11px]">● ● ● ○ <span class="text-on-surface-variant font-normal">(2/3)</span></span>
+</div>
+<p class="text-[11px] text-on-surface-variant">"Fail to" kalıbı doğru kavranmış ve olumsuzluk ekiyle aktarılmış.</p>
+</div>
+<!-- Ölçüt 4 -->
+<div class="p-2 bg-surface rounded border border-outline-variant/80 space-y-1">
+<div class="flex justify-between items-center">
+<span class="font-semibold text-on-surface">Terminoloji / Kelime Seçimi</span>
+<span class="text-on-surface-variant font-bold tracking-widest text-[11px]">● ● ○ ○ <span class="text-on-surface-variant font-normal">(2/3)</span></span>
+</div>
+<p class="text-[11px] text-on-surface-variant">"Mitigate" fiili YDS bağlamında standart olarak "hafifletmek"tir.</p>
+</div>
+</div>
+<!-- Fark Karşılaştırma Alanı (Diff View) - Çift Belirteç Kuralı -->
+<div class="space-y-2 pt-1 border-t border-outline-variant">
+<span class="text-[11px] font-bold text-on-surface-variant block uppercase tracking-wider">Metin İçi Düzeltme (Diff Görünümü)</span>
+<div class="p-3 bg-surface rounded-md border border-outline-variant space-y-2.5 text-[13px] leading-relaxed">
+<!-- Hatalı Kısım -->
+<div class="flex items-start gap-1.5 p-1.5 rounded bg-error-container/60 text-error">
+<span class="material-symbols-outlined text-[16px] shrink-0 mt-0.5">cancel</span>
+<div>
+<span class="font-bold text-[11px] uppercase mr-1">[Silinen / Hatalı]:</span>
+<span class="line-through">enflasyon baskısını düşüremedi</span>
+<span class="font-semibold text-[11px] ml-1">✕</span>
+</div>
+</div>
+<!-- Doğru / Önerilen Kısım -->
+<div class="flex items-start gap-1.5 p-1.5 rounded bg-tertiary-container/80 text-tertiary">
+<span class="material-symbols-outlined text-[16px] shrink-0 mt-0.5">check_circle</span>
+<div>
+<span class="font-bold text-[11px] uppercase mr-1">[Eklenen / Önerilen]:</span>
+<span class="underline underline-offset-2 font-semibold">enflasyonist baskıları hafifletmekte başarısız oldu</span>
+<span class="font-bold text-[11px] ml-1">✓</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Model Akademik Çeviri -->
+<div class="p-3 bg-primary-container/30 rounded border border-primary/20 space-y-1">
+<span class="text-[11px] font-bold text-on-primary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">school</span>
+              Önerilen İdeal ÖSYM Çevirisi
+            </span>
+<p class="font-serif text-[13px] text-on-surface leading-snug">
+              "Yeni iktisadi çerçevenin uygulamaya konması, enflasyonist baskıları hafifletmekte başarısız olmuştur."
+            </p>
+</div>
+</div>
+</section>
+<!-- BÖLÜM 3: HAP NOT KARTI (MICRO LEARNING / RULE CAPSULE) -->
+<section class="bg-surface rounded-lg border border-outline-variant p-4 space-y-3.5">
+<!-- Başlık ve Rozetler -->
+<div class="flex items-start justify-between gap-2 border-b border-outline-variant pb-2.5">
+<div class="space-y-1">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[20px]">lightbulb</span>
+<span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Hap Not #38</span>
+</div>
+<h3 class="text-[15px] font-bold text-on-surface leading-snug">
+              'Fail to + V1' Kalıbı ve Çeviri Tuzağı
+            </h3>
+</div>
+<div class="flex flex-col items-end gap-1 shrink-0">
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary text-[10px] font-bold rounded-xs border border-secondary/20">
+              ≈ 90 sn Okuma
+            </span>
+<span class="px-2 py-0.5 bg-surface text-primary text-[10px] font-semibold rounded-xs border border-primary/30">
+              ÖSYM Sentaks
+            </span>
+</div>
+</div>
+<!-- Kural Bloğu -->
+<div class="p-3 bg-background rounded-md border-l-4 border-primary text-[13px] text-on-surface leading-relaxed">
+<strong>Kural:</strong> <em>"Fail to do something"</em> yapısı Türkçeye sıklıkla tek başına <em>"başarısız olmak"</em> şeklinde değil, cümlenin ana fiiline doğrudan olumsuzluk anlamı <strong>(-ama / -eme / -madı)</strong> katılarak aktarılır.
+        </div>
+<!-- Çift Karşılaştırmalı Örnek Kutusu -->
+<div class="p-3 bg-background rounded-md border border-outline-variant space-y-2 text-[12px]">
+<div class="font-serif text-[14px] font-medium text-on-surface pb-1 border-b border-outline-variant">
+            "The committee <strong>failed to reach</strong> a consensus."
+          </div>
+<div class="flex items-start gap-1.5 text-on-surface-variant">
+<span class="w-4 h-4 rounded-full bg-error-container text-error flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">✕</span>
+<div>
+<span class="font-semibold text-error">Birebir Çeviri (Zayıf):</span>
+<span class="italic">Komite uzlaşmaya varmakta başarısız oldu.</span>
+</div>
+</div>
+<div class="flex items-start gap-1.5 text-on-surface">
+<span class="w-4 h-4 rounded-full bg-tertiary-container text-tertiary flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">✓</span>
+<div>
+<span class="font-bold text-tertiary">YDS Standart Çeviri (İdeal):</span>
+<span class="font-medium">Komite bir uzlaşmaya varamadı.</span>
+</div>
+</div>
+</div>
+<!-- Tuzak Rozeti & Uyarı -->
+<div class="p-2.5 bg-error-container/40 rounded-md border border-error/20 flex items-start gap-2 text-[12px] text-error">
+<span class="material-symbols-outlined text-[18px] shrink-0 mt-0.5">warning</span>
+<p class="leading-snug">
+<strong>ÖSYM Tuzağı:</strong> Seçeneklerde <em>"fail"</em> kelimesini gören aday Türkçede hemen <em>"hata"</em> veya <em>"başarısızlık"</em> arar; oysa ÖSYM doğru cevapta doğrudan olumsuz fiil kökü kullanır!
+          </p>
+</div>
+<!-- 3 Soruluk Hızlı Kontrol Testi (Soru 1 Örneği) -->
+<div class="space-y-2 pt-1 border-t border-outline-variant">
+<div class="text-[12px] font-bold text-on-surface flex items-center justify-between">
+<span>Hızlı Kontrol (Soru 1 / 3)</span>
+<span class="text-[11px] font-semibold text-primary">Anında Dönüt</span>
+</div>
+<p class="font-serif text-[13px] text-on-surface">
+            "'The engine failed to start.' ifadesinin en doğal YDS Türkçe karşılığı hangisidir?"
+          </p>
+<div class="space-y-1.5">
+<!-- Seçenek A (Doğru İşaretli) -->
+<button class="w-full text-left p-2.5 rounded-md border-2 border-tertiary bg-tertiary-container/30 flex items-center justify-between min-h-[44px]" type="button">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-tertiary text-white flex items-center justify-center text-[12px] font-bold">A</span>
+<span class="text-[13px] font-medium text-on-surface">Motor çalışamadı / çalışmadı</span>
+</div>
+<span class="text-tertiary text-[11px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">check</span> Doğru
+              </span>
+</button>
+<!-- Seçenek B (Hatalı İşaretli) -->
+<button class="w-full text-left p-2.5 rounded-md border border-outline-variant bg-surface flex items-center justify-between min-h-[44px] opacity-75" type="button">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-background border border-outline-variant text-on-surface flex items-center justify-center text-[12px] font-bold">B</span>
+<span class="text-[13px] text-on-surface line-through">Motor çalıştırmada hata yaptı</span>
+</div>
+<span class="text-error text-[11px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">close</span> Yanlış
+              </span>
+</button>
+</div>
+</div>
+<!-- İkincil Buton -->
+<button class="w-full min-h-[44px] border border-primary text-primary bg-surface rounded-md font-semibold text-[13px] flex items-center justify-center gap-2 hover:bg-primary-container/30 transition-colors active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">bookmark_add</span>
+<span>Anladım, Kural Defterime Ekle</span>
+</button>
+</section>
+<!-- BÖLÜM 4: TASARIM BELİRTEÇLERİ VE WCAG SPESİFİKASYON KARTI -->
+<section class="bg-surface rounded-lg border border-outline-variant p-4 space-y-3">
+<div class="flex items-center space-x-2 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">style</span>
+<h3 class="text-[12px] font-bold text-on-surface uppercase tracking-wider">Tasarım Belirteçleri &amp; Uyumluluk</h3>
+</div>
+<div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+<div class="p-2 rounded bg-background border border-outline-variant">
+<span class="text-on-surface-variant block font-sans text-[10px]">--yds-xray-main</span>
+<span class="font-bold text-primary">2.5px solid #0E6A6E</span>
+</div>
+<div class="p-2 rounded bg-background border border-outline-variant">
+<span class="text-on-surface-variant block font-sans text-[10px]">--yds-xray-sub</span>
+<span class="font-bold text-on-surface-variant">2px dotted #77868A</span>
+</div>
+<div class="p-2 rounded bg-background border border-outline-variant">
+<span class="text-on-surface-variant block font-sans text-[10px]">--yds-diff-del</span>
+<span class="font-bold text-error">#A33D27 (Tuğla / ✕)</span>
+</div>
+<div class="p-2 rounded bg-background border border-outline-variant">
+<span class="text-on-surface-variant block font-sans text-[10px]">--yds-diff-ins</span>
+<span class="font-bold text-tertiary">#1F7A45 (Yeşil / ✓)</span>
+</div>
+</div>
+<div class="p-2.5 rounded bg-background border border-outline-variant text-[11px] text-on-surface-variant space-y-1">
+<div class="flex items-center gap-1 font-bold text-on-surface font-sans">
+<span class="material-symbols-outlined text-[14px] text-primary">accessibility_new</span>
+            Çift Belirteç ve Erişilebilirlik Garantisi
+          </div>
+<p class="font-sans leading-normal">
+            Renk körlüğü yaşayan kullanıcılar için tüm doğru/yanlış veya eklenen/silinen durumlar hem ikon (✓ / ✕), hem yazı etiketi ("Doğru / Silinen"), hem de tipografik stillerle (üstü çizili / altı çift çizgili) desteklenmiştir.
+          </p>
+</div>
+</section>
+</div>
+<!-- 5. Alt Sekme Çubuğu (BottomNavBar - Shared Component Birebir Uygulandı) -->
+<!-- JSON: ["Bugün", "Çalış", "Deneme", "Öğretmen", "Ben"] -->
+<!-- Bu sayfa analiz ve çalışma bileşeni olduğu için 'Çalış' sekmesi aktiftir -->
+<nav aria-label="Ana Gezinme Çubuğu" class="fixed bottom-0 left-0 right-0 w-full max-w-[390px] mx-auto z-50 flex justify-around items-center h-16 px-2 pb-safe bg-surface border-t border-outline-variant shadow-sm">
+<!-- Sekme 1: Bugün -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" href="#bugun">
+<span class="material-symbols-outlined text-[22px]">calendar_today</span>
+<span class="font-label text-[11px] font-medium tracking-tight mt-0.5">Bugün</span>
+</a>
+<!-- Sekme 2: Çalış (AKTİF - JSON style_active_navigation) -->
+<a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-semibold hover:text-primary transition-colors active:scale-95 duration-100" href="#calis">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-label text-[11px] font-semibold tracking-tight mt-0.5">Çalış</span>
+</a>
+<!-- Sekme 3: Deneme -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" href="#deneme">
+<span class="material-symbols-outlined text-[22px]">assignment</span>
+<span class="font-label text-[11px] font-medium tracking-tight mt-0.5">Deneme</span>
+</a>
+<!-- Sekme 4: Öğretmen -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" href="#ogretmen">
+<span class="material-symbols-outlined text-[22px]">school</span>
+<span class="font-label text-[11px] font-medium tracking-tight mt-0.5">Öğretmen</span>
+</a>
+<!-- Sekme 5: Ben -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant font-normal hover:text-primary transition-colors active:scale-95 duration-100" href="#ben">
+<span class="material-symbols-outlined text-[22px]">person</span>
+<span class="font-label text-[11px] font-medium tracking-tight mt-0.5">Ben</span>
+</a>
+</nav>
+</main>
+</body></html>

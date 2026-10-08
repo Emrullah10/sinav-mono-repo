@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ODAK · EXAM-12 Soru Soru İnceleme</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:wght@400;500;600;700&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#0E171B',
+            surface: '#142127',
+            'surface-container': '#1B2B32',
+            'surface-container-high': '#16363A',
+            'on-surface': '#E4ECEC',
+            'on-surface-variant': '#A9B8BA',
+            outline: '#71838A',
+            'outline-variant': '#24343A',
+            primary: '#4DB6B0',
+            'on-primary': '#0E171B',
+            'primary-container': '#16363A',
+            'on-primary-container': '#87CDC8',
+            secondary: '#F0B43A',
+            'on-secondary': '#0E171B',
+            'secondary-container': '#3A2E12',
+            tertiary: '#4CC27D',
+            'tertiary-container': '#163524',
+            error: '#EE8A6E',
+            'error-container': '#3D211A',
+            'inverse-surface': '#E4ECEC',
+            'chart-1': '#04A19B',
+            'chart-2': '#7483E0',
+            'chart-3': '#C0851F',
+            'chart-4': '#C06099'
+          },
+          fontFamily: {
+            headline: ['Figtree', 'sans-serif'],
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            body: ['Figtree', 'sans-serif'],
+            label: ['Figtree', 'sans-serif'],
+            reading: ['Literata', 'serif']
+          },
+          borderRadius: {
+            'xs': '4px',
+            'sm': '8px',
+            DEFAULT: '12px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '24px',
+            'full': '9999px'
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1;
+    }
+    body {
+      background-color: #0E171B;
+      color: #E4ECEC;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-primary">
+<!-- ================= TOP NAV BAR (SHARED COMPONENT) ================= -->
+<header class="w-full bg-surface border-b border-outline-variant sticky top-0 z-40">
+<div class="w-full px-6 h-16 flex items-center justify-between">
+<!-- Brand & Exam Selection Badge -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-2 group" href="#">
+<div class="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-4 h-4 rounded-full bg-primary"></div>
+</div>
+<span class="font-display font-bold text-2xl tracking-tight text-primary">ODAK</span>
+</a>
+<div class="h-5 w-px bg-outline-variant"></div>
+<!-- Trailing Secondary Action Chip (Active Exam Context) -->
+<div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant text-body-sm text-on-surface">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-medium text-xs text-on-surface">2026-YDS/2 · 22 Kasım 2026 · 52 Gün Kaldı</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Main Navigation Links -->
+<nav class="hidden md:flex items-center gap-8 h-full pt-4">
+<a class="text-on-surface-variant hover:text-on-surface pb-4 font-normal transition-colors text-sm" href="#">Bugün</a>
+<a class="text-on-surface-variant hover:text-on-surface pb-4 font-normal transition-colors text-sm" href="#">Çalış</a>
+<!-- Active Link: Deneme -->
+<a class="text-primary font-semibold border-b-2 border-primary pb-4 text-sm flex items-center gap-1.5" href="#">
+<span>Deneme</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface pb-4 font-normal transition-colors text-sm" href="#">Öğretmen</a>
+<a class="text-on-surface-variant hover:text-on-surface pb-4 font-normal transition-colors text-sm" href="#">Ben</a>
+</nav>
+<!-- Trailing Controls: Streak, Notifications, Candidate Profile -->
+<div class="flex items-center gap-3">
+<!-- 14 Gün Seri Badge -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-container border border-outline-variant">
+<span class="material-symbols-outlined fill text-[18px] text-secondary">local_fire_department</span>
+<span class="text-xs font-semibold text-on-surface">14 Gün Seri</span>
+</div>
+<button aria-label="Bildirimler" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<div class="h-6 w-px bg-outline-variant mx-1"></div>
+<!-- User Identity Chip -->
+<div class="flex items-center gap-2.5 pl-1">
+<div class="w-9 h-9 rounded-full bg-surface-container-high border border-primary flex items-center justify-center text-primary font-semibold text-xs">
+            BKÖ
+          </div>
+<div class="hidden xl:flex flex-col text-left">
+<span class="text-xs font-semibold text-on-surface">Doç. Dr. Bilge Kağan Öztürk</span>
+<span class="text-[11px] text-on-surface-variant">Hedef: 85+ Puan</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- ================= SUB-HEADER / CONTEXT & FILTERS ================= -->
+<section class="bg-surface border-b border-outline-variant">
+<div class="max-w-[1440px] mx-auto px-6 py-4">
+<!-- Top Row: Breadcrumb & Primary Actions -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-outline-variant">
+<div class="flex items-center gap-2 text-xs text-on-surface-variant flex-wrap">
+<a class="hover:text-primary transition-colors" href="#">Deneme Sınavları Merkezi</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-medium">2026 Sonbahar YDS Özgün Tam Deneme #05</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-semibold">Soru Soru İnceleme</span>
+<span class="text-outline">·</span>
+<span>2 Ekim 2026 Cuma</span>
+</div>
+<div class="flex items-center gap-2.5">
+<button class="h-9 px-4 rounded-sm border border-outline-variant bg-surface-container text-xs font-semibold text-on-surface hover:border-outline hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+<span>Özet Karneye Dön</span>
+</button>
+<button class="h-9 px-4 rounded-sm border border-outline-variant bg-surface-container text-xs font-semibold text-on-surface hover:border-outline hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span>Resmî Sınav Raporu İndir</span>
+</button>
+</div>
+</div>
+<!-- Bottom Row: Real Exam Metrics & Filter Toggle Pills -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-3.5">
+<!-- Score Bar Summary (No 'net', strict Turkish academic labels) -->
+<div class="flex items-center gap-3 text-xs flex-wrap">
+<div class="px-3 py-1.5 rounded-sm bg-surface-container border border-outline-variant flex items-center gap-2">
+<span class="text-on-surface-variant">Ölçülen Puan:</span>
+<span class="text-sm font-bold text-on-surface font-mono">58,75</span>
+<span class="text-[11px] text-on-surface-variant">/ 100</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-sm border border-outline-variant">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+<span class="text-on-surface-variant">Doğru:</span>
+<span class="font-bold text-on-surface">47</span>
+</div>
+<span class="text-outline-variant">|</span>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+<span class="text-on-surface-variant">Yanlış:</span>
+<span class="font-bold text-on-surface">18</span>
+</div>
+<span class="text-outline-variant">|</span>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+<span class="text-on-surface-variant">Boş:</span>
+<span class="font-bold text-on-surface">15</span>
+</div>
+</div>
+<span class="text-[11px] text-on-surface-variant italic hidden xl:inline">
+            (Yanlış doğruyu götürmez · 1 Doğru = 1,25 Puan)
+          </span>
+</div>
+<!-- Filter Segmented Controls -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
+<button class="h-8 px-3 rounded-full border border-outline-variant text-xs text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">
+            Tümü (80)
+          </button>
+<!-- Active Filter Pill -->
+<button class="h-8 px-3 rounded-full bg-error-container border border-error text-xs font-semibold text-on-surface flex items-center gap-1.5 whitespace-nowrap">
+<span class="material-symbols-outlined text-[15px] text-error">close</span>
+<span>Yalnızca Yanlışlar (18)</span>
+</button>
+<button class="h-8 px-3 rounded-full border border-outline-variant text-xs text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">
+            Yalnızca Boşlar (15)
+          </button>
+<button class="h-8 px-3 rounded-full border border-outline-variant text-xs text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 transition-colors whitespace-nowrap">
+<span class="w-2 h-2 rounded-full border border-secondary"></span>
+<span>Şüpheli İşaretlenenler (3)</span>
+</button>
+<button class="h-8 px-3 rounded-full border border-outline-variant text-xs text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">
+            Yalnızca Doğrular (47)
+          </button>
+<!-- Question Type Select Filter -->
+<div class="h-8 px-3 rounded-sm bg-surface-container border border-outline-variant flex items-center gap-2 text-xs text-on-surface cursor-pointer ml-2">
+<span class="text-on-surface-variant">Soru Türü:</span>
+<span class="font-medium">Cümle Tamamlama ve Bağlaçlar (10 Soru)</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= MAIN WORKSPACE (TWO COLUMNS) ================= -->
+<main class="flex-1 max-w-[1440px] w-full mx-auto px-6 py-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- ================= LEFT COLUMN: QUESTION DETAIL & PEDAGOGICAL ANALYSIS (8 COLS) ================= -->
+<section class="lg:col-span-8 flex flex-col gap-6">
+<!-- Question Meta Header Card -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5">
+<div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-outline-variant text-xs">
+<div class="flex items-center gap-2.5">
+<span class="font-mono text-base font-bold text-primary">Soru 24 <span class="text-xs font-normal text-on-surface-variant">/ 80</span></span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container border border-outline-variant font-medium text-on-surface-variant">
+                Bölüm: Cümle Tamamlama
+              </span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container border border-outline-variant font-medium text-on-surface-variant">
+                ÖSYM Seviyesi: C1 İleri Düzey
+              </span>
+</div>
+<!-- Pace & Score Weight -->
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-medium">
+                Değer: 1,25 Puan
+              </span>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-error-container border border-error text-error text-xs font-medium">
+<span class="material-symbols-outlined text-[15px]">timer</span>
+<span>2 dk 45 sn (Hedef: 75 sn · Süre Aşımı)</span>
+</div>
+</div>
+</div>
+<!-- Question Stem (Strictly Literata font, max 680px reading column) -->
+<div class="py-6 max-w-[680px]">
+<p class="font-reading text-[17px] leading-[27px] text-on-surface">
+              Although the initial clinical trial results appeared promising, the subsequent research failed to replicate the findings; 
+              <span class="inline-block px-4 py-0.5 mx-1 border-b-2 border-primary font-semibold text-primary bg-surface-container">
+                ________
+              </span>
+              , regulatory authorities decided to suspend further distribution pending rigorous safety audits.
+            </p>
+</div>
+<!-- 5 Multiple Choice Options (OSYM Circle Bubble Motifs) -->
+<div class="flex flex-col gap-3">
+<!-- Option A -->
+<div class="min-h-[56px] px-4 py-3 rounded-md border border-outline-variant bg-surface hover:bg-surface-container transition-colors flex items-center justify-between">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-mono text-xs text-on-surface-variant">
+                  A
+                </div>
+<span class="font-reading text-base text-on-surface">nevertheless</span>
+</div>
+<span class="text-xs text-on-surface-variant font-mono">%18 genel çeldirici</span>
+</div>
+<!-- Option B: CORRECT ANSWER -->
+<div class="min-h-[56px] px-4 py-3 rounded-md border-2 border-tertiary bg-tertiary-container/30 flex items-center justify-between">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full bg-tertiary text-on-primary flex items-center justify-center font-mono text-xs font-bold">
+                  B
+                </div>
+<div class="flex items-center gap-2">
+<span class="font-reading text-base font-semibold text-on-surface">consequently</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container border border-tertiary text-tertiary text-[11px] font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check</span>
+<span>Doğru Yanıt · 1,25 Puan</span>
+</span>
+</div>
+</div>
+<span class="text-xs text-tertiary font-mono">%54 aday bildi</span>
+</div>
+<!-- Option C -->
+<div class="min-h-[56px] px-4 py-3 rounded-md border border-outline-variant bg-surface hover:bg-surface-container transition-colors flex items-center justify-between">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-mono text-xs text-on-surface-variant">
+                  C
+                </div>
+<span class="font-reading text-base text-on-surface">moreover</span>
+</div>
+<span class="text-xs text-on-surface-variant font-mono">%3 genel tercih</span>
+</div>
+<!-- Option D: CANDIDATE CHOICE (MISTAKE) -->
+<div class="min-h-[56px] px-4 py-3 rounded-md border-2 border-error bg-error-container/30 flex items-center justify-between">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full bg-error text-on-primary flex items-center justify-center font-mono text-xs font-bold">
+                  D
+                </div>
+<div class="flex items-center gap-2">
+<span class="font-reading text-base font-semibold text-on-surface">in contrast</span>
+<span class="px-2 py-0.5 rounded-full bg-error-container border border-error text-error text-[11px] font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">close</span>
+<span>Senin Tercihin · Hatalı Çeldirici · 0 Puan</span>
+</span>
+</div>
+</div>
+<span class="text-xs text-error font-mono">%23 seninle aynı hataya düştü</span>
+</div>
+<!-- Option E -->
+<div class="min-h-[56px] px-4 py-3 rounded-md border border-outline-variant bg-surface hover:bg-surface-container transition-colors flex items-center justify-between">
+<div class="flex items-center gap-3.5">
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-mono text-xs text-on-surface-variant">
+                  E
+                </div>
+<span class="font-reading text-base text-on-surface">otherwise</span>
+</div>
+<span class="text-xs text-on-surface-variant font-mono">%2 genel tercih</span>
+</div>
+</div>
+</div>
+<!-- SENTACTIC ANALYSIS / CÜMLE RÖNTGENİ CARD -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5">
+<div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">architecture</span>
+<h3 class="text-sm font-bold text-on-surface tracking-wide">Cümle Röntgeni ve Sentaktik Ayrıştırma</h3>
+</div>
+<span class="text-xs text-on-surface-variant">Noktalı Virgül ve Bağlaç Pozisyonu</span>
+</div>
+<!-- 3 Layer Visual Breakdown -->
+<div class="space-y-3">
+<!-- Layer 1 -->
+<div class="p-3.5 rounded-md bg-surface-container border border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-3">
+<div class="flex items-start gap-3">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-primary flex items-center justify-center text-xs font-bold mt-0.5">1</span>
+<div>
+<span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold block">Bağımlı Yan Cümlecik (Zıtlık Zemini)</span>
+<p class="font-reading text-sm text-on-surface mt-0.5">"Although the initial clinical trial results appeared promising,"</p>
+</div>
+</div>
+<span class="text-xs text-primary font-medium shrink-0 bg-primary-container px-2 py-1 rounded">Zıtlık bağlacı zaten kuruldu</span>
+</div>
+<!-- Layer 2 -->
+<div class="p-3.5 rounded-md bg-surface-container border border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-3">
+<div class="flex items-start gap-3">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-primary flex items-center justify-center text-xs font-bold mt-0.5">2</span>
+<div>
+<span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold block">Ana Yargı (Kırılma ve Çöküş)</span>
+<p class="font-reading text-sm text-on-surface mt-0.5">"...the subsequent research failed to replicate the findings;"</p>
+</div>
+</div>
+<span class="text-xs text-on-surface-variant font-medium shrink-0 bg-surface px-2 py-1 rounded border border-outline-variant">Sonraki testler başarısız oldu</span>
+</div>
+<!-- Layer 3 -->
+<div class="p-3.5 rounded-md bg-surface-container border-l-4 border-l-tertiary border border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-3">
+<div class="flex items-start gap-3">
+<span class="w-5 h-5 rounded-full bg-tertiary text-on-primary flex items-center justify-center text-xs font-bold mt-0.5">3</span>
+<div>
+<span class="text-[11px] uppercase tracking-wider text-tertiary font-bold block">Mantıksal Hüküm (Sonuç Bağıntısı)</span>
+<p class="font-reading text-sm text-on-surface mt-0.5">
+                    "[<strong class="text-tertiary">consequently</strong>], regulatory authorities decided to suspend further distribution..."
+                  </p>
+</div>
+</div>
+<span class="text-xs text-tertiary font-semibold shrink-0 bg-tertiary-container px-2 py-1 rounded border border-tertiary">Sebep ➔ Sonuç ilişkisi</span>
+</div>
+</div>
+</div>
+<!-- ÖSYM ÇELDIRICI ANALIZI & NEDEN YANLIŞ PANELI -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5">
+<div class="flex items-center gap-2 pb-3 mb-4 border-b border-outline-variant">
+<span class="material-symbols-outlined text-error text-[20px]">psychology_alt</span>
+<h3 class="text-sm font-bold text-on-surface tracking-wide">ÖSYM Çeldirici Analizi: Neden 'in contrast' Hatalı?</h3>
+</div>
+<div class="space-y-4 text-sm leading-relaxed text-on-surface">
+<div class="p-4 rounded-md bg-surface-container border border-outline-variant">
+<h4 class="text-xs font-bold text-error uppercase tracking-wider mb-1.5">Çift Zıtlık Kural İhlali</h4>
+<p class="text-on-surface-variant text-xs leading-5">
+                Cümle başında halihazırda <code class="text-primary font-mono font-bold">Although</code> yan bağlacı yer almaktadır. Bir cümlenin çatısında zıtlık başlangıçta kurulduktan sonra, noktalı virgülden sonra gelen bağımsız cümleye yeniden bir zıtlık geçiş zarfı (<code class="text-error font-mono">in contrast</code> veya <code class="text-error font-mono">nevertheless</code>) getirilmesi mantıksal bir kısır döngü (double-adversative fallacy) doğurur.
+              </p>
+</div>
+<div class="p-4 rounded-md bg-surface-container border border-outline-variant">
+<h4 class="text-xs font-bold text-tertiary uppercase tracking-wider mb-1.5">Neden Doğru Seçenek 'consequently'?</h4>
+<p class="text-on-surface-variant text-xs leading-5">
+                Deney bulgularının tekrarlanamamış olması (<em class="text-on-surface">failed to replicate</em>) bir sebep teşkil eder; düzenleyici otoritelerin ilacın dağıtımını askıya alması ise bu durumun doğrudan kaçınılmaz bir <strong>sonucudur</strong>. Noktalı virgül ile iki tam bağımsız cümle birbirine bağlandığında sonuç bildiren geçiş zarfı <code class="text-tertiary font-mono font-bold">consequently</code> (dolayısıyla, sonuç olarak) doğru sentaktik tamamlayıcıdır.
+              </p>
+</div>
+<!-- Hap Not Link Card -->
+<div class="p-3.5 rounded-md bg-primary-container border border-primary flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-primary text-[20px]">menu_book</span>
+<div>
+<span class="text-xs font-bold text-on-surface">İlgili Hap Not: Kural #38</span>
+<span class="text-[11px] text-on-surface-variant block">Zıtlık Zarfı vs. Sonuç Zarfı Ayrımı ve Noktalı Virgül Kalıpları</span>
+</div>
+</div>
+<button class="h-8 px-3 rounded-sm bg-primary text-on-primary text-xs font-semibold hover:opacity-90 transition-opacity">
+                Notu İncele
+              </button>
+</div>
+</div>
+</div>
+<!-- Question Navigation & Action Footer -->
+<div class="flex flex-wrap items-center justify-between gap-3 pt-2 pb-6">
+<div class="flex items-center gap-2">
+<button class="h-10 px-4 rounded-sm border border-outline-variant bg-surface text-xs font-semibold text-on-surface hover:border-outline hover:text-primary transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+<span>Önceki Soru (23)</span>
+</button>
+<button class="h-10 px-4 rounded-sm bg-primary text-on-primary text-xs font-semibold hover:opacity-95 transition-opacity flex items-center gap-1.5">
+<span>Sonraki Yanlış Soru (29)</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<button class="h-10 px-3.5 rounded-sm border border-outline-variant bg-surface hover:bg-surface-container text-xs font-medium text-on-surface transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">bookmark</span>
+<span>Hata Defterine Sabitle</span>
+</button>
+<button class="h-10 px-3.5 rounded-sm border border-outline-variant bg-surface hover:bg-surface-container text-xs font-medium text-on-surface transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">share</span>
+<span>Soruyu Paylaş</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ================= RIGHT COLUMN: 80 QUESTION MATRIX & TEACHER ADVISOR (4 COLS) ================= -->
+<aside class="lg:col-span-4 flex flex-col gap-6">
+<!-- 80-Question Optical Matrix Card -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5">
+<div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+<div>
+<h3 class="text-sm font-bold text-on-surface">80 Soruluk Optik Matris</h3>
+<p class="text-[11px] text-on-surface-variant">Soruya tıklayarak doğrudan geçiş yapabilirsiniz</p>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container text-[11px] font-mono text-primary border border-outline-variant">
+              Aktif: #24
+            </span>
+</div>
+<!-- Color Status Legend -->
+<div class="flex items-center justify-between text-[11px] text-on-surface-variant pb-3 mb-3 border-b border-outline-variant/60">
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span> Doğru (47)
+            </span>
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span> Yanlış (18)
+            </span>
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span> Boş (15)
+            </span>
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full border border-secondary"></span> Şüpheli (3)
+            </span>
+</div>
+<!-- Grid of 80 Question Bubbles (10 columns x 8 rows) -->
+<div class="grid grid-cols-10 gap-1.5 text-center">
+<!-- Row 1 (1-10) -->
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">1</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">2</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">3</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">4</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">5</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">6</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">7</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">8</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">9</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">10</button>
+<!-- Row 2 (11-20) -->
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">11</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold relative">
+              12
+              <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-secondary"></span>
+</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">13</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">14</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">15</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">16</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">17</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">18</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">19</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">20</button>
+<!-- Row 3 (21-30) -> Soru 24 is ACTIVE -->
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">21</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">22</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">23</button>
+<!-- CURRENT QUESTION #24 -->
+<button class="h-7 rounded-sm bg-error text-on-primary font-mono text-xs flex items-center justify-center font-bold ring-2 ring-primary ring-offset-2 ring-offset-surface">
+              24
+            </button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">25</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">26</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">27</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">28</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">29</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">30</button>
+<!-- Row 4 (31-40) -->
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">31</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">32</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">33</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">34</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">35</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">36</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">37</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">38</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">39</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">40</button>
+<!-- Row 5 (41-50) -->
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">41</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">42</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold relative">
+              43
+              <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-secondary"></span>
+</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">44</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">45</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">46</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">47</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">48</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">49</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">50</button>
+<!-- Row 6 (51-60) -->
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">51</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">52</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">53</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">54</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">55</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">56</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">57</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">58</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">59</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">60</button>
+<!-- Row 7 (61-70) -->
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">61</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">62</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">63</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">64</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">65</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">66</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">67</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">68</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">69</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">70</button>
+<!-- Row 8 (71-80) -->
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">71</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">72</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">73</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">74</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">75</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">76</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold relative">
+              77
+              <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-secondary"></span>
+</button>
+<button class="h-7 rounded-sm bg-error-container text-error font-mono text-xs flex items-center justify-center font-semibold">78</button>
+<button class="h-7 rounded-sm bg-surface-container text-on-surface-variant font-mono text-xs flex items-center justify-center">79</button>
+<button class="h-7 rounded-sm bg-tertiary-container text-tertiary font-mono text-xs flex items-center justify-center font-semibold">80</button>
+</div>
+</div>
+<!-- HIZLI ÖĞRETMEN DANIŞMANI BOX -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-primary-container border border-primary flex items-center justify-center text-primary font-bold text-xs">
+                SY
+              </div>
+<div>
+<h4 class="text-xs font-bold text-on-surface">Doç. Dr. Selin Yılmaz</h4>
+<div class="flex items-center gap-1.5 text-[11px] text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span>Çevrim içi Danışman</span>
+</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container text-[11px] text-on-surface-variant border border-outline-variant">YDS Kurul Üyesi</span>
+</div>
+<div class="py-3">
+<p class="text-xs text-on-surface-variant mb-2">Hızlı Sorgu Başlıkları:</p>
+<div class="flex flex-wrap gap-1.5">
+<button class="px-2.5 py-1 rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant text-xs text-on-surface transition-colors">
+                Neden D yanlış?
+              </button>
+<button class="px-2.5 py-1 rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant text-xs text-on-surface transition-colors">
+                Kuralı özetle
+              </button>
+<button class="px-2.5 py-1 rounded-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant text-xs text-on-surface transition-colors">
+                Benzer ÖSYM sorusu göster
+              </button>
+</div>
+</div>
+<div class="relative pt-1">
+<input class="w-full h-11 px-3 pr-10 rounded-sm bg-surface-container border border-outline-variant text-xs text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary" placeholder="Bu soruyla ilgili öğretmene danış..." type="text"/>
+<button aria-label="Soruyu Gönder" class="absolute right-1.5 top-2.5 w-8 h-8 rounded-sm bg-primary text-on-primary flex items-center justify-center hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">send</span>
+</button>
+</div>
+</div>
+<!-- ZAMAN VE BİLİŞSEL TEMPO KARTI -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5">
+<div class="flex items-center justify-between pb-3 mb-3 border-b border-outline-variant">
+<h4 class="text-xs font-bold text-on-surface">Zaman &amp; Bilişsel Tempo</h4>
+<span class="text-xs text-error font-mono font-semibold">+90 sn gecikme</span>
+</div>
+<div class="space-y-3">
+<div>
+<div class="flex justify-between text-xs text-on-surface-variant mb-1">
+<span>Harcanan Süre</span>
+<span class="font-mono text-on-surface font-semibold">165 sn (2 dk 45 sn)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-error rounded-full" style="width: 100%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs text-on-surface-variant mb-1">
+<span>Önerilen Soru Temposu</span>
+<span class="font-mono text-primary font-semibold">75 sn</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 45%;"></div>
+</div>
+</div>
+<div class="p-2.5 rounded bg-surface-container border border-outline-variant text-[11px] text-on-surface-variant leading-relaxed">
+<strong class="text-on-surface">Bilişsel Takılma Tespiti:</strong> İki seçenek arasında kalınarak soru başında aşırı vakit kaybedilmiş ve okuma pasajlarına aktarılacak toplam süreden 1,5 dakika harcanmıştır.
+            </div>
+</div>
+</div>
+</aside>
+</div>
+<!-- ================= BENTO GRID: SISTEM DURUMLARI / ALTERNATIF INCELEME PRATIKLERI ================= -->
+<section class="mt-8 pt-6 border-t border-outline-variant">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h2 class="text-base font-bold text-on-surface">Deneme İnceleme Durumları ve Sistem Görünümleri</h2>
+<p class="text-xs text-on-surface-variant">Sınav analizinde farklı yanıt durumlarına göre sunulan pedagojik arayüzler</p>
+</div>
+<span class="text-xs text-primary font-medium">4 Farklı Soru İnceleme Modeli</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+<!-- Bento 1: Doğru Çözülen Soru İnceleme -->
+<div class="bg-surface rounded-lg border border-outline-variant p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container border border-tertiary text-tertiary text-[11px] font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+<span>Doğru Çözülen Soru</span>
+</span>
+<span class="text-xs text-on-surface-variant font-mono">Soru 15</span>
+</div>
+<h4 class="text-sm font-semibold text-on-surface mb-1">Hızlı Doğrulama Modeli</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-3">
+              Doğru yapılmış olsa dahi şans faktörünü elemek için alternatif çeldiriciler 15 saniyelik özet hap ile sunulur.
+            </p>
+</div>
+<div class="pt-3 border-t border-outline-variant flex items-center justify-between text-xs">
+<span class="text-tertiary font-mono">+1,25 Puan</span>
+<span class="text-on-surface-variant">42 sn (Hedef altı)</span>
+</div>
+</div>
+<!-- Bento 2: Boş Bırakılan Soru İnceleme -->
+<div class="bg-surface rounded-lg border border-outline-variant p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 rounded-full bg-surface-container border border-outline text-on-surface-variant text-[11px] font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">remove_circle_outline</span>
+<span>Boş Bırakılan Soru</span>
+</span>
+<span class="text-xs text-on-surface-variant font-mono">Soru 06</span>
+</div>
+<h4 class="text-sm font-semibold text-on-surface mb-1">Adım Adım İpucu Merdiveni</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-3">
+              Öğrenciye doğrudan cevap gösterilmez; sırasıyla 'Odak', 'Kural', 'Eleme' ve 'Çözüm' ipuçları açılarak öğrenme tetiklenir.
+            </p>
+</div>
+<div class="pt-3 border-t border-outline-variant flex items-center justify-between text-xs">
+<span class="text-on-surface-variant font-mono">0 Puan Kaybı</span>
+<span class="text-secondary font-medium">İpucuyla Çöz</span>
+</div>
+</div>
+<!-- Bento 3: Şüpheli İşaretlenen Soru İnceleme -->
+<div class="bg-surface rounded-lg border border-outline-variant p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container border border-secondary text-secondary text-[11px] font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">help_outline</span>
+<span>Şüpheli İşaretlenen</span>
+</span>
+<span class="text-xs text-on-surface-variant font-mono">Soru 12</span>
+</div>
+<h4 class="text-sm font-semibold text-on-surface mb-1">Tereddüt Analiz Kartı</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-3">
+              Sınav anında adayın bayrak (flag) koyduğu sorular. Doğru çıkmış olsa bile eksik kural bilgisi işaretlenir.
+            </p>
+</div>
+<div class="pt-3 border-t border-outline-variant flex items-center justify-between text-xs">
+<span class="text-on-surface font-medium">B vs C Kararsızlığı</span>
+<span class="text-primary font-medium">Kuralı Pekiştir</span>
+</div>
+</div>
+<!-- Bento 4: Aralıklı Tekrar ve Hata Defteri Eşitlemesi -->
+<div class="bg-surface rounded-lg border border-outline-variant p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="px-2 py-0.5 rounded-full bg-primary-container border border-primary text-primary text-[11px] font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">sync</span>
+<span>Aralıklı Tekrar</span>
+</span>
+<span class="text-xs text-on-surface-variant font-mono">Hata Defteri</span>
+</div>
+<h4 class="text-sm font-semibold text-on-surface mb-1">Otomatik Tekrar Kuyruğu</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-3">
+              Hatalı yapılan 18 soru adayın özel hata havuzuna eklenir; 24 saat, 3 gün ve 7 gün sonra varyasyon testleri üretilir.
+            </p>
+</div>
+<div class="pt-3 border-t border-outline-variant flex items-center justify-between text-xs">
+<span class="text-on-surface-variant">18 Soru Sıraya Alındı</span>
+<span class="text-tertiary font-medium">Planlandı</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ================= FOOTER (SHARED COMPONENT) ================= -->
+<footer class="w-full bg-background border-t border-outline-variant mt-12">
+<div class="w-full max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+<!-- Brand & Copyright -->
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+</div>
+<span class="font-display font-semibold text-base text-on-surface">ODAK</span>
+<span class="text-outline">·</span>
+<span class="font-body text-xs text-on-surface-variant">
+          © 2026 ODAK Akademik Dil Hazırlık Platformu. Tüm hakları saklıdır.
+        </span>
+</div>
+<!-- Links -->
+<nav class="flex flex-wrap items-center gap-6 text-xs font-label">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Sınav Takvimi</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Hakkımızda</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Sıkça Sorulan Sorular</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Kullanım Koşulları</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Gizlilik Politikası</a>
+</nav>
+</div>
+</footer>
+</body></html>

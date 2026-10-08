@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FND-03 · Boşluk, Izgara, Köşe, Yükselti ve Hareket | YDS Tasarım Sistemi</title>
+<!-- Typography -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: '#0E171B',
+            surface: '#142127',
+            'surface-container': '#1B2B32',
+            'surface-container-high': '#16363A',
+            'on-surface': '#E4ECEC',
+            'on-surface-variant': '#A9B8BA',
+            outline: '#71838A',
+            'outline-variant': '#24343A',
+            primary: '#4DB6B0',
+            'on-primary': '#0E171B',
+            'primary-container': '#16363A',
+            'on-primary-container': '#87CDC8',
+            secondary: '#F0B43A',
+            'on-secondary': '#0E171B',
+            'secondary-container': '#3A2E12',
+            tertiary: '#4CC27D',
+            'tertiary-container': '#163524',
+            error: '#EE8A6E',
+            'error-container': '#3D211A',
+            'inverse-surface': '#E4ECEC',
+            'chart-1': '#04A19B',
+            'chart-2': '#7483E0',
+            'chart-3': '#C0851F',
+            'chart-4': '#C06099'
+          },
+          borderRadius: {
+            'xs': '4px',
+            'sm': '8px',
+            'DEFAULT': '12px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '24px',
+            'full': '9999px'
+          },
+          fontFamily: {
+            headline: ['Figtree', 'sans-serif'],
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            body: ['Figtree', 'sans-serif'],
+            label: ['Figtree', 'sans-serif'],
+            serif: ['Literata', 'serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined[data-weight="fill"] {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0E171B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #24343A;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #71838A;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col selection:bg-primary selection:text-on-primary">
+<!-- ======================================================== -->
+<!-- TOP NAVIGATION BAR (Exact Shared Component implementation)-->
+<!-- ======================================================== -->
+<header class="w-full h-16 px-6 flex items-center justify-between sticky top-0 z-50 bg-surface dark:bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-8">
+<!-- Brand Logo / Product Name -->
+<a class="flex items-center gap-3 group" href="#">
+<span class="w-8 h-8 rounded-full bg-primary-container border border-primary flex items-center justify-center text-primary font-display font-bold text-base shadow-sm">
+          Y
+        </span>
+<div class="flex flex-col">
+<span class="font-display text-headline-sm font-bold tracking-tight text-primary dark:text-primary">YDS Tasarım Sistemi</span>
+<span class="text-[10px] tracking-wider uppercase text-on-surface-variant font-mono">ÖSYM Standartları v2.4</span>
+</div>
+</a>
+<!-- Search Bar on left -->
+<div class="relative w-64 md:w-80 hidden sm:block">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">search</span>
+</span>
+<input class="w-full pl-9 pr-12 py-1.5 bg-background border border-outline-variant rounded-DEFAULT text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-xs font-mono" placeholder="Tasarım tokeni, kural veya bileşen ara..." type="text"/>
+<span class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+<kbd class="px-1.5 py-0.5 text-[10px] font-mono bg-surface-container text-on-surface-variant border border-outline-variant rounded">⌘K</kbd>
+</span>
+</div>
+</div>
+<!-- Center Navigation Links -->
+<nav class="hidden lg:flex items-center gap-6 text-sm">
+<a class="text-primary dark:text-primary font-semibold border-b-2 border-primary dark:border-primary pb-1" href="#fnd-top">Kılavuz</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface font-medium transition-colors" href="#components">Bileşenler</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface font-medium transition-colors" href="#templates">Şablonlar</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface font-medium transition-colors" href="#resources">Kaynaklar</a>
+</nav>
+<!-- Trailing Actions & Version Tag -->
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-surface-container text-on-primary-container border border-outline-variant">
+        v2.4.0
+      </span>
+<div class="flex items-center gap-1 border-l border-outline-variant pl-3">
+<button aria-label="Dark Mode" class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-DEFAULT transition duration-150 ease-in-out active:scale-95" type="button">
+<span class="material-symbols-outlined text-[20px]">dark_mode</span>
+</button>
+<button aria-label="Code Inspector" class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-DEFAULT transition duration-150 ease-in-out active:scale-95" type="button">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</button>
+<button aria-label="Notifications" class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-DEFAULT transition duration-150 ease-in-out active:scale-95 relative" type="button">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary absolute top-2 right-2"></span>
+</button>
+</div>
+</div>
+</header>
+<!-- ======================================================== -->
+<!-- MAIN APP CONTAINER (SideNavBar + Canvas Content)         -->
+<!-- ======================================================== -->
+<div class="flex flex-1 w-full overflow-hidden">
+<!-- SIDE NAVIGATION BAR (Exact Shared Component implementation) -->
+<aside class="w-64 h-[calc(100vh-4rem)] flex flex-col justify-between p-4 overflow-y-auto shrink-0 bg-surface dark:bg-surface border-r border-outline-variant sticky top-16 hidden md:flex">
+<div class="flex flex-col gap-6">
+<!-- Header Profile / Brand Info -->
+<div class="flex items-center gap-3 px-2 py-1">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high border border-primary/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">architecture</span>
+</div>
+<div class="flex flex-col overflow-hidden">
+<h2 class="font-headline text-title font-bold text-on-surface dark:text-on-surface text-sm truncate">YDS Design System</h2>
+<p class="font-body text-body-sm font-medium text-on-surface-variant dark:text-on-surface-variant text-xs">v2.4 Koyu Mod</p>
+</div>
+</div>
+<!-- Navigation Tabs (6 main tabs from JSON) -->
+<div class="flex flex-col gap-1">
+<span class="px-3 text-[11px] font-bold text-outline uppercase tracking-wider mb-1 font-mono">Temel Standartlar</span>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-xs transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">foundation</span>
+<span>Temeller (FND)</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-xs transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">palette</span>
+<span>Renk Paleti &amp; Roller</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-xs transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">text_fields</span>
+<span>Tipografi &amp; Metin</span>
+</a>
+<!-- Active navigation item mapped strictly to the page subject -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container font-semibold text-xs border border-primary/20" href="#fnd-top">
+<span class="material-symbols-outlined text-[18px] text-primary">grid_view</span>
+<span class="truncate">Boşluk &amp; Grid Düzeni</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-xs transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">shapes</span>
+<span>İkonografi &amp; Şekiller</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface font-medium text-xs transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">widgets</span>
+<span>Bileşen Kitaplığı</span>
+</a>
+</div>
+<!-- In-page Table of Contents / Sub-sections -->
+<div class="flex flex-col gap-1 border-t border-outline-variant pt-4">
+<span class="px-3 text-[10px] font-bold text-outline uppercase tracking-wider mb-1 font-mono">Bölüm İçeriği</span>
+<a class="px-3 py-1.5 text-xs text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#spacing-scale">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            1. Boşluk Ölçeği (4px)
+          </a>
+<a class="px-3 py-1.5 text-xs text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#responsive-grid">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            2. Grid &amp; Kırılma Noktaları
+          </a>
+<a class="px-3 py-1.5 text-xs text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#corner-radius">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            3. Köşe Yarıçapları (Radius)
+          </a>
+<a class="px-3 py-1.5 text-xs text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#elevation-depth">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            4. Yükselti &amp; Yüzey Derinliği
+          </a>
+<a class="px-3 py-1.5 text-xs text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#motion-easing">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            5. Hareket &amp; Easing
+          </a>
+<a class="px-3 py-1.5 text-xs text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#touch-accessibility">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            6. 44px Dokunma &amp; A11y
+          </a>
+</div>
+</div>
+<!-- Footer CTA and Secondary Tabs -->
+<div class="flex flex-col gap-2 pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-medium text-xs transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">accessibility_new</span>
+<span>Erişilebilirlik</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-medium text-xs transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">history_toggle_off</span>
+<span>Sürüm Notları</span>
+</a>
+<!-- CTA button from JSON -->
+<button class="mt-2 w-full py-2 px-3 bg-surface-container border border-outline-variant hover:border-primary/50 text-xs font-semibold text-primary rounded-DEFAULT flex items-center justify-center gap-2 transition duration-150 active:scale-95">
+<span class="material-symbols-outlined text-[16px]">feedback</span>
+<span>Geri Bildirim Bildir</span>
+</button>
+</div>
+</aside>
+<!-- ======================================================== -->
+<!-- MAIN CONTENT CANVAS                                      -->
+<!-- ======================================================== -->
+<main class="flex-1 overflow-y-auto px-6 lg:px-12 py-8 bg-background max-w-[1200px]" id="fnd-top">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-xs font-mono text-on-surface-variant mb-4">
+<span>YDS DS</span>
+<span class="text-outline">/</span>
+<span>Temeller (FND)</span>
+<span class="text-outline">/</span>
+<span class="text-primary font-semibold">FND-03 Mekansal ve Hareket Standartları</span>
+</nav>
+<!-- HERO INTRO SECTION -->
+<section class="border-b border-outline-variant pb-8 mb-10">
+<div class="flex flex-wrap items-center gap-2 mb-3">
+<span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-primary-container text-on-primary-container border border-primary/30">
+            FND-03
+          </span>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-surface-container text-on-surface-variant border border-outline-variant">
+            Durum: Onaylandı · Kararlı
+          </span>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-surface-container text-secondary border border-secondary/30 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            WCAG 2.1 AA/AAA Uyumlu
+          </span>
+</div>
+<h1 class="font-display text-3xl lg:text-4xl font-bold tracking-tight text-on-surface mb-4">
+          Boşluk, Izgara, Köşe, Yükselti ve Hareket
+        </h1>
+<p class="font-serif text-reading-m text-on-surface-variant max-w-[760px] mb-6 leading-relaxed">
+          YDS adaylarının 180 dakikalık 80 soruluk odaklanma maratonunda bilişsel yükü en aza indiren mekansal hiyerarşi rehberi. 4px taban ritmi, ÖSYM optik formuna sadık cevap baloncuğu ergonomisi ve koyu temada sahte gölgeler yerine yüzey parlaklığıyla inşa edilen mimari standartlar.
+        </p>
+<!-- Quick Summary Metrics Bar -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-lg bg-surface border border-outline-variant">
+<div class="flex flex-col">
+<span class="text-caption text-on-surface-variant font-mono uppercase">Taban Ritmi</span>
+<span class="text-xl font-bold font-display text-primary">4px / 8px</span>
+<span class="text-[11px] text-outline">Katı modüler adımlar</span>
+</div>
+<div class="flex flex-col">
+<span class="text-caption text-on-surface-variant font-mono uppercase">Maksimum Genişlik</span>
+<span class="text-xl font-bold font-display text-on-surface">1200px</span>
+<span class="text-[11px] text-outline">Okuma sütunu 680px</span>
+</div>
+<div class="flex flex-col">
+<span class="text-caption text-on-surface-variant font-mono uppercase">Dokunma Alanı</span>
+<span class="text-xl font-bold font-display text-primary">44 × 44px</span>
+<span class="text-[11px] text-outline">WCAG 2.5.5 standartı</span>
+</div>
+<div class="flex flex-col">
+<span class="text-caption text-on-surface-variant font-mono uppercase">Varsayılan Easing</span>
+<span class="text-xl font-bold font-display text-secondary">280ms</span>
+<span class="text-[11px] text-outline">Standart soru akışı</span>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- SECTION 1: BOŞLUK ÖLÇEĞİ (SPACING SCALE - 4px Ritim)    -->
+<!-- ======================================================== -->
+<section class="mb-14 scroll-mt-20" id="spacing-scale">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h2 class="text-headline-md font-bold text-on-surface flex items-center gap-2">
+<span class="text-primary font-mono text-lg">01.</span>
+              Boşluk Ölçeği (Spacing Scale)
+            </h2>
+<p class="text-body-sm text-on-surface-variant mt-1">
+              Tüm iç ve dış boşluklar 4px taban birimine dayanır. keyfi piksel kullanımı kesinlikle yasaktır.
+            </p>
+</div>
+<span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-surface-container text-on-surface-variant border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+            1rem = 16px
+          </span>
+</div>
+<div class="bg-surface rounded-lg border border-outline-variant overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs border-collapse font-mono">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant text-on-surface-variant uppercase tracking-wider text-[11px]">
+<th class="py-3 px-4">Token &amp; Tailwind</th>
+<th class="py-3 px-4">Piksel / rem</th>
+<th class="py-3 px-4 w-44">Görsel Çubuk (Visual Bar)</th>
+<th class="py-3 px-4">Önerilen ÖSYM Arayüz Kullanımı</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body">
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-1 <span class="text-outline">/ space-1</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">2px · 0.125rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 2px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-xs font-body">Odak çerçevesi ofseti, ince bölücü payı</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-2 <span class="text-outline">/ space-2</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">4px · 0.25rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 4px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-xs font-body">Rozet iç boşluğu (pad-y), buton mikro boşluğu</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-3 <span class="text-outline">/ space-3</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">8px · 0.5rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 8px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-xs font-body">İkon ile etiket arası, soru numarası hap boşluğu</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors bg-primary-container/20">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-4 <span class="text-outline">/ space-4</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">12px · 0.75rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 12px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface font-medium text-xs font-body">Soru seçenekleri (A, B, C, D, E) arası dikey boşluk</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-5 <span class="text-outline">/ space-5</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">16px · 1.0rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 16px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-xs font-body">Standart kart iç boşluğu (padding), form satır boşluğu</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-6 <span class="text-outline">/ space-6</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">20px · 1.25rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 20px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-xs font-body">Literata okuma parçası paragrafları arası dikey boşluk</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors bg-primary-container/20">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-7 <span class="text-outline">/ space-7</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">24px · 1.5rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 24px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface font-medium text-xs font-body">Masaüstü ızgara sütun arası (gutter) ve modül ayrımı</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-8 <span class="text-outline">/ space-8</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">32px · 2.0rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 32px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-xs font-body">Sınav paneli ile Öğretmen notu paneli arası ayırıcı boşluk</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-9 <span class="text-outline">/ space-9</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">40px · 2.5rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 40px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-xs font-body">Büyük bölüm başlıkları üst boşluğu</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-10 <span class="text-outline">/ space-10</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">48px · 3.0rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 48px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-xs font-body">Deneme sınavı sonuç ekranı özet kartı ayrımı</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="py-3 px-4 font-mono font-medium text-primary">--yds-space-11 <span class="text-outline">/ space-11</span></td>
+<td class="py-3 px-4 font-mono text-on-surface-variant">64px · 4.0rem</td>
+<td class="py-3 px-4">
+<div class="h-4 bg-primary rounded-xs" style="width: 64px;"></div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-xs font-body">Üst bar (TopAppBar) standart yüksekliği ve ana bölüm bitişi</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- SECTION 2: KIRILMA NOKTALARI & RESPONSIVE GRID           -->
+<!-- ======================================================== -->
+<section class="mb-14 scroll-mt-20" id="responsive-grid">
+<div class="mb-4">
+<h2 class="text-headline-md font-bold text-on-surface flex items-center gap-2">
+<span class="text-primary font-mono text-lg">02.</span>
+            Kırılma Noktaları ve Izgara Sistemi (Responsive Grid)
+          </h2>
+<p class="text-body-sm text-on-surface-variant mt-1">
+            Ekran genişliğine göre sütun, marjin ve oluk (gutter) yapılandırması. Masaüstünde 12 sütunlu hiyerarşi uygulanır.
+          </p>
+</div>
+<!-- 12-Column Live Interactive Preview Bar -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant mb-6">
+<div class="flex items-center justify-between text-xs font-mono text-on-surface-variant mb-2">
+<span class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-[16px]">view_column</span>
+              12 Sütun Izgara Önizlemesi (XL Ekran: 24px Gutter)
+            </span>
+<span>Konteyner: max 1200px</span>
+</div>
+<div class="grid grid-cols-12 gap-2 sm:gap-4 py-2">
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">1</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">2</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">3</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">4</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">5</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">6</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">7</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">8</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">9</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">10</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">11</div>
+<div class="h-10 rounded bg-surface-container border border-primary/40 flex items-center justify-center font-mono text-[10px] text-primary">12</div>
+</div>
+<!-- YDS Sınav Ekranı Ayrımı Temsili: 8 Sütun Soru + 4 Sütun Öğretmen Paneli -->
+<div class="mt-4 pt-3 border-t border-outline-variant grid grid-cols-12 gap-2 sm:gap-4 text-xs font-mono">
+<div class="col-span-8 p-3 rounded bg-primary-container/40 border border-primary/30 flex items-center justify-between">
+<span class="text-on-primary-container font-semibold">col-span-8 · Sınav Soru &amp; Metin Akışı (En çok 760px)</span>
+<span class="text-[10px] text-primary">ÖSYM Formatı</span>
+</div>
+<div class="col-span-4 p-3 rounded bg-surface-container border border-outline-variant flex items-center justify-between">
+<span class="text-on-surface-variant font-medium">col-span-4 · Öğretmen / Sayaç Paneli (380px)</span>
+<span class="text-[10px] text-secondary">Sabit Yan Alan</span>
+</div>
+</div>
+</div>
+<!-- Breakpoints Table -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+<div class="p-4 rounded-lg bg-surface border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-mono font-bold text-xs text-primary">XS (&lt;640px)</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">smartphone</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface">Mobil Sınav</h3>
+<p class="text-xs text-on-surface-variant mt-1">Hızlı soru çözümü ve kelime pratikleri.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant font-mono text-[11px] flex flex-col gap-1 text-on-surface-variant">
+<div>Sütun: <span class="text-on-surface font-semibold">4 Sütun</span></div>
+<div>Kenar: <span class="text-on-surface font-semibold">16px</span></div>
+<div>Gutter: <span class="text-on-surface font-semibold">12px</span></div>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-mono font-bold text-xs text-primary">SM (640–768px)</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">tablet</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface">Küçük Tablet</h3>
+<p class="text-xs text-on-surface-variant mt-1">Dikey tablet, sadeleştirilmiş deneme akışı.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant font-mono text-[11px] flex flex-col gap-1 text-on-surface-variant">
+<div>Sütun: <span class="text-on-surface font-semibold">8 Sütun</span></div>
+<div>Kenar: <span class="text-on-surface font-semibold">20px</span></div>
+<div>Gutter: <span class="text-on-surface font-semibold">16px</span></div>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-mono font-bold text-xs text-primary">MD (768–1024px)</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">tablet_mac</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface">Tablet Yatay</h3>
+<p class="text-xs text-on-surface-variant mt-1">İki parçalı sınav arayüzü ve navigasyon.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant font-mono text-[11px] flex flex-col gap-1 text-on-surface-variant">
+<div>Sütun: <span class="text-on-surface font-semibold">8 Sütun</span></div>
+<div>Kenar: <span class="text-on-surface font-semibold">24px</span></div>
+<div>Gutter: <span class="text-on-surface font-semibold">20px</span></div>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-mono font-bold text-xs text-primary">LG (1024–1280px)</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">laptop</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface">Dizüstü Soru Bankası</h3>
+<p class="text-xs text-on-surface-variant mt-1">Standart soru bankası ve öğretmen notları.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant font-mono text-[11px] flex flex-col gap-1 text-on-surface-variant">
+<div>Sütun: <span class="text-on-surface font-semibold">12 Sütun</span></div>
+<div>Kenar: <span class="text-on-surface font-semibold">32px</span></div>
+<div>Gutter: <span class="text-on-surface font-semibold">24px</span></div>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface border-2 border-primary/50 flex flex-col justify-between relative shadow-sm">
+<span class="absolute -top-2.5 right-3 px-2 py-0.2 rounded bg-primary text-on-primary text-[9px] font-mono font-bold uppercase">Referans Ekran</span>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-mono font-bold text-xs text-primary">XL (&gt;1280px)</span>
+<span class="material-symbols-outlined text-[18px] text-primary">desktop_windows</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface">Masaüstü (1440px)</h3>
+<p class="text-xs text-on-surface-variant mt-1">Yan menü (248px) + soru akışı (760px) + öğretmen.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant font-mono text-[11px] flex flex-col gap-1 text-on-surface-variant">
+<div>Sütun: <span class="text-on-surface font-semibold">12 Sütun</span></div>
+<div>Maks Kutu: <span class="text-on-surface font-semibold">1200px</span></div>
+<div>Gutter: <span class="text-on-surface font-semibold">24px</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- SECTION 3: KÖŞE YARIÇAPLARI (CORNER RADIUS)              -->
+<!-- ======================================================== -->
+<section class="mb-14 scroll-mt-20" id="corner-radius">
+<div class="mb-4">
+<h2 class="text-headline-md font-bold text-on-surface flex items-center gap-2">
+<span class="text-primary font-mono text-lg">03.</span>
+            Köşe Yarıçapları (Corner Radius)
+          </h2>
+<p class="text-body-sm text-on-surface-variant mt-1">
+            YDS tasarım dilinde keskinlik ve yumuşaklık dengesi: Küçük etkileşimler köşeli, ana taşıyıcı kartlar dengeli (12-16px), ÖSYM cevap baloncuğu ise tam dairedir.
+          </p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<!-- r-0 -->
+<div class="p-4 rounded-none bg-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-3">
+<span class="font-mono font-bold text-sm text-on-surface">r-0 (0px)</span>
+<span class="text-caption font-mono text-outline">rounded-none</span>
+</div>
+<div class="h-16 w-full rounded-none bg-surface-container border border-outline flex items-center justify-center text-xs font-mono text-on-surface-variant mb-3">
+              border-radius: 0px
+            </div>
+<p class="text-xs text-on-surface-variant font-body">Tablolar, istatistik veri ızgaraları, cetveller ve ekran kenarına dayalı alt sabit çubuklar.</p>
+</div>
+<!-- r-4 -->
+<div class="p-4 rounded-xs bg-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-3">
+<span class="font-mono font-bold text-sm text-primary">r-4 (4px)</span>
+<span class="text-caption font-mono text-outline">rounded-xs</span>
+</div>
+<div class="h-16 w-full rounded-xs bg-surface-container border border-outline flex items-center justify-center text-xs font-mono text-on-surface mb-3">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-xs bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</span>
+<span class="text-xs">Çentik Kutusu (20px)</span>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant font-body">Onay kutuları (checkbox), teknik etiketler, küçük sınav süresi rozetleri.</p>
+</div>
+<!-- r-8 -->
+<div class="p-4 rounded-sm bg-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-3">
+<span class="font-mono font-bold text-sm text-on-surface">r-8 (8px)</span>
+<span class="text-caption font-mono text-outline">rounded-sm</span>
+</div>
+<div class="h-16 w-full rounded-sm bg-surface-container border border-outline flex items-center justify-center text-xs font-mono text-on-surface mb-3">
+<button class="px-3 py-1.5 rounded-sm bg-surface-container-high border border-outline-variant text-xs text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">tune</span>
+                İkincil Buton
+              </button>
+</div>
+<p class="text-xs text-on-surface-variant font-body">Küçük butonlar, metin giriş alanları, açılır menü (dropdown) panelleri.</p>
+</div>
+<!-- r-12 (DEFAULT) -->
+<div class="p-4 rounded-DEFAULT bg-surface border-2 border-primary/50 relative">
+<span class="absolute -top-2.5 right-3 px-2 py-0.2 rounded bg-primary text-on-primary text-[9px] font-mono font-bold uppercase">Varsayılan Temel</span>
+<div class="flex items-center justify-between mb-3">
+<span class="font-mono font-bold text-sm text-primary">r-12 (12px)</span>
+<span class="text-caption font-mono text-outline">rounded-DEFAULT</span>
+</div>
+<div class="h-16 w-full rounded-DEFAULT bg-surface-container border border-outline flex items-center justify-between px-4 text-xs font-body text-on-surface mb-3">
+<span class="font-serif">Varsayılan ÖSYM Soru Şıkkı Satırı</span>
+<span class="w-6 h-6 rounded-full border border-primary text-primary flex items-center justify-center text-xs font-mono">B</span>
+</div>
+<p class="text-xs text-on-surface-variant font-body">Standart soru kartları, açıklama panelleri, deneme modülü kutuları.</p>
+</div>
+<!-- r-16 -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-3">
+<span class="font-mono font-bold text-sm text-on-surface">r-16 (16px)</span>
+<span class="text-caption font-mono text-outline">rounded-lg</span>
+</div>
+<div class="h-16 w-full rounded-lg bg-surface-container border border-outline flex items-center justify-center text-xs font-mono text-on-surface mb-3">
+<span class="text-xs font-semibold">Öne Çıkan Kart / Soru Kutusu</span>
+</div>
+<p class="text-xs text-on-surface-variant font-body">Soru kutusu dış gövdesi, sınav sonuç panoları, öğretmen tavsiye modülü.</p>
+</div>
+<!-- r-full (Circle) -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-3">
+<span class="font-mono font-bold text-sm text-secondary">r-full (Tam Yuvarlak)</span>
+<span class="text-caption font-mono text-outline">rounded-full</span>
+</div>
+<div class="h-16 w-full rounded-DEFAULT bg-surface-container border border-outline flex items-center justify-center gap-3 mb-3">
+<!-- Optik Cevap Baloncukları Canlı Örneği -->
+<span class="w-8 h-8 rounded-full border-2 border-outline flex items-center justify-center text-xs font-bold font-mono text-on-surface-variant">A</span>
+<span class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center text-xs font-bold font-mono shadow-sm">B</span>
+<span class="w-8 h-8 rounded-full border-2 border-outline flex items-center justify-center text-xs font-bold font-mono text-on-surface-variant">C</span>
+</div>
+<p class="text-xs text-on-surface-variant font-body">ÖSYM cevap baloncukları (A-E), sayaç hapları, durum göstergeleri, kullanıcı avatarları.</p>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- SECTION 4: YÜKSELTİ VE YÜZEY DERİNLİĞİ (ELEVATION e0–e4) -->
+<!-- ======================================================== -->
+<section class="mb-14 scroll-mt-20" id="elevation-depth">
+<div class="mb-4">
+<h2 class="text-headline-md font-bold text-on-surface flex items-center gap-2">
+<span class="text-primary font-mono text-lg">04.</span>
+            Yükselti ve Yüzey Derinlik Seviyeleri (Elevation e0–e4)
+          </h2>
+<p class="text-body-sm text-on-surface-variant mt-1">
+<strong>Koyu Tema İlkesi:</strong> Koyu arayüzlerde siyah gölgeler görünmez. Derinlik, yüzey renginin giderek açılması (tonal parlaklık) ve 1px sınır çizgisi katmanlarıyla hissettirilir.
+          </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+<!-- e0: Canvas -->
+<div class="p-4 rounded-DEFAULT bg-[#0E171B] border border-outline-variant/60 flex flex-col justify-between min-h-[220px]">
+<div>
+<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-surface text-on-surface-variant border border-outline-variant">e0 · Canvas</span>
+<h3 class="text-sm font-semibold text-on-surface mt-2">Zemin Tabanı</h3>
+<p class="text-xs font-mono text-primary mt-1">#0E171B</p>
+<p class="text-[11px] text-on-surface-variant mt-2">Gölgesiz, en koyu arka plan. Sayfanın en alt taşıyıcı tabakası.</p>
+</div>
+<div class="mt-4 pt-2 border-t border-outline-variant/40 text-[10px] font-mono text-outline">
+              Z-Index: 0
+            </div>
+</div>
+<!-- e1: Card -->
+<div class="p-4 rounded-DEFAULT bg-[#142127] border border-[#25363D] flex flex-col justify-between min-h-[220px]">
+<div>
+<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-surface-container text-on-surface-variant border border-outline-variant">e1 · Card Surface</span>
+<h3 class="text-sm font-semibold text-on-surface mt-2">Standart Kart</h3>
+<p class="text-xs font-mono text-primary mt-1">#142127</p>
+<p class="text-[11px] text-on-surface-variant mt-2">1px sınır çizgisi (#25363D). Soru kutuları, soru listesi blokları.</p>
+</div>
+<div class="mt-4 pt-2 border-t border-outline-variant text-[10px] font-mono text-outline">
+              Z-Index: 1 · border 1px
+            </div>
+</div>
+<!-- e2: Raised Container -->
+<div class="p-4 rounded-DEFAULT bg-[#1B2B32] border border-[#33474E] flex flex-col justify-between min-h-[220px]">
+<div>
+<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-surface-container-high text-on-primary-container border border-primary/20">e2 · Raised</span>
+<h3 class="text-sm font-semibold text-on-surface mt-2">Yükseltilmiş Kutu</h3>
+<p class="text-xs font-mono text-primary mt-1">#1B2B32</p>
+<p class="text-[11px] text-on-surface-variant mt-2">Açılır menüler, soru içinde seçili şık satırı, odaklı alanlar.</p>
+</div>
+<div class="mt-4 pt-2 border-t border-outline-variant text-[10px] font-mono text-outline">
+              Z-Index: 2 · subtle ambient
+            </div>
+</div>
+<!-- e3: Floating Panel -->
+<div class="p-4 rounded-DEFAULT bg-[#223740] border border-outline/50 flex flex-col justify-between min-h-[220px] shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
+<div>
+<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-surface-container text-secondary border border-secondary/30">e3 · Floating</span>
+<h3 class="text-sm font-semibold text-on-surface mt-2">Yüzen Panel</h3>
+<p class="text-xs font-mono text-primary mt-1">#223740</p>
+<p class="text-[11px] text-on-surface-variant mt-2">Gezen sınav sayacı, kelime kartı çevirme katmanı, popover.</p>
+</div>
+<div class="mt-4 pt-2 border-t border-outline-variant text-[10px] font-mono text-outline">
+              Z-Index: 10 · 0 8px 24px (40%)
+            </div>
+</div>
+<!-- e4: Dialog / Modal -->
+<div class="p-4 rounded-DEFAULT bg-[#28414B] border border-primary/40 flex flex-col justify-between min-h-[220px] shadow-[0_16px_36px_rgba(0,0,0,0.6)]">
+<div>
+<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-primary-container text-on-primary-container border border-primary/40">e4 · Modal</span>
+<h3 class="text-sm font-semibold text-on-surface mt-2">Modal &amp; Teyit</h3>
+<p class="text-xs font-mono text-primary mt-1">#28414B</p>
+<p class="text-[11px] text-on-surface-variant mt-2">Sınavı bitirme onayı, tam ekran sonuç scrim diyalogları.</p>
+</div>
+<div class="mt-4 pt-2 border-t border-outline-variant text-[10px] font-mono text-outline">
+              Z-Index: 50 · 0 16px 36px (60%)
+            </div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- SECTION 5: HAREKET SÜRELERİ & GEÇİŞ EĞRİLERİ (MOTION)    -->
+<!-- ======================================================== -->
+<section class="mb-14 scroll-mt-20" id="motion-easing">
+<div class="mb-4">
+<h2 class="text-headline-md font-bold text-on-surface flex items-center gap-2">
+<span class="text-primary font-mono text-lg">05.</span>
+            Hareket Süreleri ve Geçiş Eğrileri (Motion &amp; Easing)
+          </h2>
+<p class="text-body-sm text-on-surface-variant mt-1">
+            YDS adayının dikkatini dağıtmayan, animasyon kirliliği yaratmayan amaç odaklı mikro tepkiler. Oyunlaştırma veya zıplama efektleri yasaktır.
+          </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Motion Durations -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5">
+<h3 class="text-title font-semibold text-on-surface mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">timer</span>
+              Süre Skalası (Durations)
+            </h3>
+<div class="space-y-3 font-mono text-xs">
+<div class="flex items-center justify-between p-2.5 rounded bg-surface-container border border-outline-variant">
+<div>
+<span class="text-primary font-bold">100ms</span>
+<span class="text-on-surface ml-2 font-body font-medium">Mikro Etkileşim</span>
+</div>
+<span class="text-[11px] text-on-surface-variant font-body">Buton basma (:active), cevap balonu tıklaması</span>
+</div>
+<div class="flex items-center justify-between p-2.5 rounded bg-surface-container border border-outline-variant">
+<div>
+<span class="text-primary font-bold">200ms</span>
+<span class="text-on-surface ml-2 font-body font-medium">Hızlı Geçiş</span>
+</div>
+<span class="text-[11px] text-on-surface-variant font-body">Hover durumu, tooltip belirmesi, renk geçişi</span>
+</div>
+<div class="flex items-center justify-between p-2.5 rounded bg-primary-container/40 border border-primary/30">
+<div>
+<span class="text-primary font-bold">280ms</span>
+<span class="text-on-primary-container ml-2 font-body font-bold">Standart (ÖSYM Akışı)</span>
+</div>
+<span class="text-[11px] text-primary font-body">Soru geçişi, akordeon açılışı, şık vurgusu</span>
+</div>
+<div class="flex items-center justify-between p-2.5 rounded bg-surface-container border border-outline-variant">
+<div>
+<span class="text-primary font-bold">400ms</span>
+<span class="text-on-surface ml-2 font-body font-medium">Vurgulu Hareket</span>
+</div>
+<span class="text-[11px] text-on-surface-variant font-body">Modal açılışı, ipucu merdiveni kayması</span>
+</div>
+<div class="flex items-center justify-between p-2.5 rounded bg-surface-container border border-outline-variant">
+<div>
+<span class="text-primary font-bold">900ms</span>
+<span class="text-on-surface ml-2 font-body font-medium">Sakin / Sonuç Dolumu</span>
+</div>
+<span class="text-[11px] text-on-surface-variant font-body">Sınav skoru yüzdelik daire dolumu, tebrik bandı</span>
+</div>
+</div>
+</div>
+<!-- Easing Curves Visualizer -->
+<div class="bg-surface rounded-lg border border-outline-variant p-5 flex flex-col justify-between">
+<div>
+<h3 class="text-title font-semibold text-on-surface mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">show_chart</span>
+                Geçiş Eğrileri (Cubic-Bezier Tokens)
+              </h3>
+<div class="space-y-4">
+<!-- Curve 1: Standard -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant">
+<div class="flex items-center justify-between text-xs font-mono mb-1">
+<span class="text-primary font-bold">--yds-ease-standard</span>
+<span class="text-on-surface-variant">cubic-bezier(0.2, 0, 0, 1)</span>
+</div>
+<p class="text-xs text-on-surface-variant font-body">Ekran içi elemanların hareketinde varsayılan dengeli eğri.</p>
+</div>
+<!-- Curve 2: Decelerate (Enter) -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant">
+<div class="flex items-center justify-between text-xs font-mono mb-1">
+<span class="text-primary font-bold">--yds-ease-out (Decelerate)</span>
+<span class="text-on-surface-variant">cubic-bezier(0, 0, 0.2, 1)</span>
+</div>
+<p class="text-xs text-on-surface-variant font-body">Ekrana yeni giren modal, ipucu ve öğretmen panelleri.</p>
+</div>
+<!-- Curve 3: Accelerate (Exit) -->
+<div class="p-3 rounded bg-surface-container border border-outline-variant">
+<div class="flex items-center justify-between text-xs font-mono mb-1">
+<span class="text-primary font-bold">--yds-ease-in (Accelerate)</span>
+<span class="text-on-surface-variant">cubic-bezier(0.4, 0, 1, 1)</span>
+</div>
+<p class="text-xs text-on-surface-variant font-body">Ekrandan çıkan popover ve geçici uyarı bildirimleri.</p>
+</div>
+</div>
+</div>
+<div class="mt-4 p-3 rounded bg-surface-container-high border border-primary/20 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">info</span>
+<p class="text-xs text-on-surface-variant font-body">
+                Kullanıcı işletim sisteminde <code>prefers-reduced-motion: reduce</code> seçeneği aktifse tüm geçiş süreleri 0ms'ye indirgenir.
+              </p>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- SECTION 6: ERİŞİLEBİLİRLİK & ASGARİ DOKUNMA HEDEFİ      -->
+<!-- ======================================================== -->
+<section class="mb-14 scroll-mt-20" id="touch-accessibility">
+<div class="mb-4">
+<h2 class="text-headline-md font-bold text-on-surface flex items-center gap-2">
+<span class="text-primary font-mono text-lg">06.</span>
+            Erişilebilirlik &amp; 44px Dokunma Hedefi Standardı
+          </h2>
+<p class="text-body-sm text-on-surface-variant mt-1">
+            ÖSYM optik formunda cevap baloncuğu 24px çapındadır; ancak dokunmatik ve fare ergonomisi için en az 44px x 44px optik tıklama alanı zorunludur.
+          </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Diagram Card: 24px inside 44px target -->
+<div class="p-6 rounded-lg bg-surface border border-outline-variant flex flex-col items-center justify-center text-center">
+<span class="text-xs font-mono text-on-surface-variant uppercase tracking-wider mb-4">ÖSYM Cevap Baloncuğu Dokunma Alanı Diyagramı</span>
+<div class="relative w-44 h-44 rounded-DEFAULT border-2 border-dashed border-primary/60 flex items-center justify-center bg-primary-container/10 my-2">
+<!-- Dimensions Indicators -->
+<span class="absolute top-1 text-[10px] font-mono text-primary">Dokunma Alanı: 44 × 44px</span>
+<span class="absolute -left-1 text-[10px] font-mono text-primary rotate-[-90deg]">44px</span>
+<!-- Inner 24px Optical Bubble -->
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-on-primary font-mono font-bold text-base shadow-md relative">
+                C
+                <span class="absolute -bottom-6 text-[10px] font-mono text-on-surface font-normal whitespace-nowrap">Görsel: 24px</span>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant font-body max-w-sm mt-6">
+              Baloncuğun kendisi 24px olmasına rağmen çevreleyen padding ile dokunma hedefi tam 44pt/44px'e tamamlanır. Hatalı tıklamalar engellenir.
+            </p>
+</div>
+<!-- Rules: Keyboard Navigation & Never Color Alone -->
+<div class="space-y-4">
+<!-- Rule 1: Never color alone -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant">
+<div class="flex items-center gap-2 mb-2 text-sm font-semibold text-on-surface">
+<span class="material-symbols-outlined text-secondary text-[20px]">palette</span>
+                Kural: Asla Yalnızca Renkle Durum Anlatılmaz
+              </div>
+<p class="text-xs text-on-surface-variant font-body mb-3">
+                Doğru ve yanlış durumları sadece yeşil/kırmızı rengiyle değil; ikon, metin etiketi ve optik dolguyla desteklenir.
+              </p>
+<div class="grid grid-cols-2 gap-3 text-xs font-mono">
+<div class="p-2.5 rounded bg-tertiary-container/60 border border-tertiary/40 flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<div>
+<span class="font-bold">Doğru Seçenek</span>
+<div class="text-[10px] text-on-surface-variant font-body">İkon + Yeşil + "Doğru" etiketi</div>
+</div>
+</div>
+<div class="p-2.5 rounded bg-error-container/60 border border-error/40 flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+<div>
+<span class="font-bold">Yanlış Seçenek</span>
+<div class="text-[10px] text-on-surface-variant font-body">Çarpı + Tuğla + "Yanlış" etiketi</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Rule 2: Keyboard Hotkeys for Adult YDS Candidates -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant">
+<div class="flex items-center gap-2 mb-2 text-sm font-semibold text-on-surface">
+<span class="material-symbols-outlined text-primary text-[20px]">keyboard</span>
+                Klavye Kısayolları (Yetişkin Ergonomisi)
+              </div>
+<p class="text-xs text-on-surface-variant font-body mb-3">
+                Fare kullanmadan hızlı soru çözümü için klavye odağı zorunludur.
+              </p>
+<div class="grid grid-cols-3 gap-2 font-mono text-xs">
+<div class="p-2 rounded bg-surface-container border border-outline-variant flex items-center justify-between">
+<kbd class="px-1.5 py-0.5 rounded bg-surface border border-outline text-primary font-bold">A-E</kbd>
+<span class="text-[11px] text-on-surface-variant font-body">Şık İşaretle</span>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant flex items-center justify-between">
+<kbd class="px-1.5 py-0.5 rounded bg-surface border border-outline text-primary font-bold">J / K</kbd>
+<span class="text-[11px] text-on-surface-variant font-body">Önceki/Sonraki</span>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant flex items-center justify-between">
+<kbd class="px-1.5 py-0.5 rounded bg-surface border border-outline text-primary font-bold">Space</kbd>
+<span class="text-[11px] text-on-surface-variant font-body">İpucu Aç</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- CSS TOKEN EXPORT CODE BOX                                -->
+<!-- ======================================================== -->
+<section class="mb-14">
+<div class="bg-surface rounded-lg border border-outline-variant overflow-hidden">
+<div class="flex items-center justify-between px-4 py-3 bg-surface-container border-b border-outline-variant">
+<div class="flex items-center gap-2 text-xs font-mono text-on-surface">
+<span class="material-symbols-outlined text-primary text-[18px]">terminal</span>
+<span>yds-foundation-tokens.css</span>
+</div>
+<button class="px-3 py-1 rounded bg-surface border border-outline-variant hover:border-primary text-xs font-mono text-primary flex items-center gap-1.5 transition-colors active:scale-95" id="copy-btn" onclick="copyTokens()">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+<span>Tokenleri Kopyala</span>
+</button>
+</div>
+<pre class="p-4 text-xs font-mono text-on-surface-variant overflow-x-auto leading-relaxed bg-[#0E171B]/80"><code id="css-tokens">:root {
+  /* Spacings (4px Rhythm) */
+  --yds-space-1: 2px;
+  --yds-space-2: 4px;
+  --yds-space-3: 8px;
+  --yds-space-4: 12px;  /* Question options gap */
+  --yds-space-5: 16px;  /* Default container padding */
+  --yds-space-6: 20px;  /* Paragraph separation */
+  --yds-space-7: 24px;  /* Desktop grid gutter */
+  --yds-space-8: 32px;
+  --yds-space-9: 40px;
+  --yds-space-10: 48px;
+  --yds-space-11: 64px; /* TopAppBar height */
+
+  /* Corner Radius */
+  --yds-radius-xs: 4px;      /* Checkbox &amp; badges */
+  --yds-radius-sm: 8px;      /* Secondary buttons */
+  --yds-radius-md: 12px;     /* Default question cards */
+  --yds-radius-lg: 16px;     /* Elevated modules */
+  --yds-radius-xl: 24px;     /* Sheets &amp; dialogs */
+  --yds-radius-full: 9999px; /* OSYM A-E answer bubble */
+
+  /* Elevation Surfaces (Dark Theme) */
+  --yds-e0-bg: #0E171B; /* Background canvas */
+  --yds-e1-bg: #142127; /* Standard Card + 1px border #24343A */
+  --yds-e2-bg: #1B2B32; /* Raised interactive container */
+  --yds-e3-bg: #223740; /* Floating timer panel */
+  --yds-e4-bg: #28414B; /* Modal &amp; confirm dialog */
+
+  /* Motion &amp; Durations */
+  --yds-duration-micro: 100ms;
+  --yds-duration-quick: 200ms;
+  --yds-duration-standard: 280ms; /* OSYM step transition */
+  --yds-duration-emphasized: 400ms;
+  --yds-duration-grand: 900ms;
+
+  /* Easing Curves */
+  --yds-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --yds-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --yds-ease-in: cubic-bezier(0.4, 0, 1, 1);
+}</code></pre>
+</div>
+</section>
+<!-- FOOTER NOTE -->
+<footer class="pt-6 border-t border-outline-variant flex flex-col sm:flex-row items-center justify-between text-xs text-on-surface-variant font-mono gap-4 mb-8">
+<div>
+<span>© 2025 YDS Tasarım Sistemi. Akademik &amp; Teknik Standartlar.</span>
+</div>
+<div class="flex items-center gap-4">
+<a class="hover:text-primary transition-colors" href="#">FND-02 Tipografi ←</a>
+<span class="text-outline">·</span>
+<a class="hover:text-primary transition-colors" href="#">FND-04 İkonografi →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Inline Script for micro-interaction (Copy button) -->
+<script>
+    function copyTokens() {
+      const code = document.getElementById('css-tokens').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.innerHTML = '<span class="material-symbols-outlined text-[14px]">check</span><span>Kopyalandı!</span>';
+        btn.classList.add('text-tertiary', 'border-tertiary');
+        setTimeout(() => {
+          btn.innerHTML = '<span class="material-symbols-outlined text-[14px]">content_copy</span><span>Tokenleri Kopyala</span>';
+          btn.classList.remove('text-tertiary', 'border-tertiary');
+        }, 2000);
+      });
+    }
+  </script>
+</body></html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ODAK · PAY-05 Mağaza Satın Alma ve Doğrulama Durumu</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#141d21",
+            "on-primary-fixed-variant": "#00504d",
+            "primary-fixed": "#8ef4ed",
+            "on-primary": "#003735",
+            "primary-fixed-dim": "#71d7d1",
+            "outline-variant": "#3d4948",
+            "tertiary-fixed": "#85faaf",
+            "surface-container": "#182125",
+            "on-surface": "#dae4e9",
+            "on-primary-fixed": "#00201e",
+            "primary": "#71d7d1",
+            "on-secondary-fixed": "#271900",
+            "surface-tint": "#71d7d1",
+            "on-secondary": "#422d00",
+            "tertiary-container": "#44bb77",
+            "on-secondary-fixed-variant": "#5e4200",
+            "inverse-surface": "#dae4e9",
+            "on-primary-container": "#004441",
+            "on-tertiary-container": "#004525",
+            "tertiary": "#68dd95",
+            "background": "#0c1519",
+            "surface-container-highest": "#2d363b",
+            "primary-container": "#4db6b0",
+            "on-surface-variant": "#bdc9c7",
+            "on-tertiary-fixed": "#00210f",
+            "inverse-on-surface": "#293236",
+            "secondary-fixed": "#ffdea8",
+            "secondary-fixed-dim": "#f9bc42",
+            "secondary": "#f9bc42",
+            "on-background": "#dae4e9",
+            "error-container": "#93000a",
+            "surface-dim": "#0c1519",
+            "surface": "#0c1519",
+            "on-tertiary": "#00391d",
+            "on-secondary-container": "#392600",
+            "surface-variant": "#2d363b",
+            "tertiary-fixed-dim": "#68dd95",
+            "surface-container-lowest": "#070f13",
+            "surface-bright": "#313b3f",
+            "surface-container-high": "#222b30",
+            "on-tertiary-fixed-variant": "#00522c",
+            "error": "#ffb4ab",
+            "inverse-primary": "#006a66",
+            "outline": "#879392",
+            "secondary-container": "#bd8700",
+            "on-error-container": "#ffdad6",
+            "on-error": "#690005"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "margin": "2rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "display-lg-mobile": ["Literata"],
+            "body-lg": ["Literata"],
+            "headline-sm": ["Literata"],
+            "body-md": ["Literata"],
+            "label-sm": ["Work Sans"],
+            "headline-md": ["Literata"],
+            "label-md": ["Work Sans"],
+            "legal-code": ["Work Sans"],
+            "body-sm": ["Literata"],
+            "label-lg": ["Work Sans"],
+            "display-lg": ["Literata"]
+          },
+          "fontSize": {
+            "display-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "500" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "500" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "legal-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "display-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary selection:text-on-primary min-h-screen flex justify-center">
+<!-- Mobil Ekran Taşıyıcısı (390px) -->
+<div class="w-full max-w-[390px] min-h-screen bg-surface-container-low flex flex-col relative pb-20 shadow-none border-x border-outline-variant">
+<!-- TopAppBar (Shared Component JSON Blueprint) -->
+<header class="fixed top-0 max-w-[390px] w-full z-40 flex items-center justify-between px-margin-mobile h-14 bg-surface-container-lowest dark:bg-inverse-surface border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary" data-icon="school">school</span>
+<span class="font-headline-sm text-headline-sm font-semibold tracking-tight text-primary dark:text-inverse-primary">ODAK</span>
+</div>
+<!-- Sınav Bilgilendirme Çipi -->
+<div class="flex items-center gap-1.5 px-2 py-1 bg-surface-container border border-outline-variant rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-on-surface">YDS · 22 Kasım (52 gün)</span>
+</div>
+<div class="flex items-center">
+<button aria-label="Bildirimler" class="w-9 h-9 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150" type="button">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Ana Akış Alanı -->
+<main class="flex-1 pt-16 px-margin-mobile space-y-4">
+<!-- Süreç Yol Haritası (Breadcrumb / Kılavuz İlerleme) -->
+<section class="pt-2">
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant pb-1.5 border-b border-outline-variant">
+<span class="font-legal-code text-legal-code text-outline">PAY-01 &gt; <strong class="text-primary font-semibold">PAY-05</strong> &gt; PAY-06</span>
+<span class="text-outline">2 Ekim 2026 Cuma</span>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<div>
+<h1 class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">Doğrulama ve İşlem Durumu</h1>
+<p class="font-label-md text-label-md text-on-surface-variant mt-0.5">Harici Mağaza Dönüş Kontrolü</p>
+</div>
+<span class="px-2 py-1 border border-outline-variant bg-surface text-outline font-label-sm text-label-sm rounded">
+            Oturum: #ODK-9821
+          </span>
+</div>
+</section>
+<!-- Durum Değiştirici (State Switcher / Segmented Tabs) -->
+<section class="bg-surface-container border border-outline-variant p-1 rounded">
+<div class="text-[10px] uppercase tracking-wider font-label-sm text-outline px-1.5 pt-0.5 pb-1">İnceleme Durumu Seçiniz</div>
+<div class="grid grid-cols-3 gap-1">
+<button class="h-10 text-center px-1 py-1 font-label-sm text-label-sm rounded bg-surface-container-highest text-primary border border-primary font-semibold flex items-center justify-center transition-colors" id="tab-cancelled" onclick="switchState('cancelled')" type="button">
+            İptal Edildi
+          </button>
+<button class="h-10 text-center px-1 py-1 font-label-sm text-label-sm rounded bg-surface text-on-surface-variant border border-transparent hover:text-on-surface transition-colors flex items-center justify-center" id="tab-pending" onclick="switchState('pending')" type="button">
+            Onay Bekliyor
+          </button>
+<button class="h-10 text-center px-1 py-1 font-label-sm text-label-sm rounded bg-surface text-on-surface-variant border border-transparent hover:text-on-surface transition-colors flex items-center justify-center" id="tab-failed" onclick="switchState('failed')" type="button">
+            Başarısız
+          </button>
+</div>
+</section>
+<!-- DURUM 1: İPTAL EDİLDİ (SESSİZ DÖNÜŞ) - Varsayılan -->
+<div class="space-y-4" id="state-cancelled">
+<!-- Durum Bildirim Kartı -->
+<article class="bg-surface-container border border-outline-variant p-space-md rounded">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 min-w-[40px] rounded bg-surface-container-highest border border-[#EE8A6E]/40 flex items-center justify-center text-[#EE8A6E]">
+<span class="material-symbols-outlined" data-icon="cancel">cancel</span>
+</div>
+<div class="space-y-1">
+<div class="inline-flex items-center px-2 py-0.5 rounded border border-[#A33D27] bg-surface text-[#EE8A6E] font-label-sm text-label-sm">
+                Mağaza İşlemi Sonlandırılmadı
+              </div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Ödeme İşlemi Tamamlanmadı</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Harici mağaza veya banka arayüzünden ödeme tamamlanmadan ODAK uygulamasına dönüldü. Kartınızdan ya da hesabınızdan herhangi bir ücret tahsil edilmemiştir.
+              </p>
+</div>
+</div>
+</article>
+<!-- Seçilen Paket Özeti -->
+<article class="bg-surface-container border border-outline-variant p-space-md rounded space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<span class="font-label-sm text-label-sm text-outline">SEÇİLEN HAZIRLIK PROGRAMI</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">2026-YDS/2 Hedefi</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">2026 Sonbahar YDS/2 Tam Hazırlık Paketi</h3>
+<p class="font-legal-code text-legal-code text-primary mt-0.5">Lisans Süresi: 22 Kasım 2026 Sınav Günü Dahil</p>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-1">
+<div class="p-2 border border-outline-variant bg-surface rounded">
+<div class="font-label-sm text-label-sm text-outline">DENEME ARŞİVİ</div>
+<div class="font-label-md text-label-md text-on-surface mt-0.5">12 Özgün Deneme</div>
+<div class="font-legal-code text-legal-code text-on-surface-variant">80 Soru × 1,25 Puan</div>
+</div>
+<div class="p-2 border border-outline-variant bg-surface rounded">
+<div class="font-label-sm text-label-sm text-outline">YÖNTEM DESTEĞİ</div>
+<div class="font-label-md text-label-md text-on-surface mt-0.5">Cümle Röntgeni</div>
+<div class="font-legal-code text-legal-code text-on-surface-variant">Okuma Koçu Erişimi</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant">
+<div>
+<span class="font-label-sm text-label-sm text-outline block">Toplam Tutar</span>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">1.250,00 TL</span>
+<span class="font-legal-code text-legal-code text-outline ml-1">KDV Dahil</span>
+</div>
+<span class="px-2 py-1 border border-[#1F7A45] bg-surface text-[#4CC27D] font-label-sm text-label-sm rounded">
+              Sabit Fiyat Güvencesi
+            </span>
+</div>
+</article>
+<!-- Rezervasyon ve Güvence Uyarısı -->
+<article class="bg-surface-container border border-outline-variant p-space-md rounded">
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-secondary mt-0.5" data-icon="schedule">schedule</span>
+<div class="space-y-1">
+<h4 class="font-label-md text-label-md text-on-surface">Paket İndirimi 24 Saat Rezerve Tutuluyor</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Seçtiğiniz paket hakları, kayıt kontenjanı ve indirimli tutar sistemde adınıza 3 Ekim 2026 saat 14:00'e kadar korunmaktadır.
+              </p>
+</div>
+</div>
+</article>
+<!-- Aksiyon Düğmeleri -->
+<div class="space-y-2 pt-1">
+<button class="w-full h-11 min-h-[44px] bg-primary-container text-surface-container-lowest font-label-lg text-label-lg rounded font-semibold flex items-center justify-center gap-2 hover:bg-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="refresh">refresh</span>
+<span>Ödemeyi Yeniden Başlat</span>
+</button>
+<button class="w-full h-11 min-h-[44px] bg-transparent text-on-surface border border-outline-variant font-label-md text-label-md rounded hover:bg-surface hover:border-primary transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+<span>Paket Listesine Dön (PAY-01)</span>
+</button>
+</div>
+</div>
+<!-- DURUM 2: ONAY BEKLİYOR (AİLE / KURUM ONAYI) -->
+<div class="space-y-4 hidden" id="state-pending">
+<article class="bg-surface-container border border-outline-variant p-space-md rounded">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 min-w-[40px] rounded bg-surface-container-highest border border-secondary/40 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="hourglass_top">hourglass_top</span>
+</div>
+<div class="space-y-1">
+<div class="inline-flex items-center px-2 py-0.5 rounded border border-[#E9A514] bg-surface text-[#F0B43A] font-label-sm text-label-sm">
+                Yetkili Onayı Bekleniyor
+              </div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Ödeme Onayı Bekleniyor</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Aile paylaşımı yöneticisine veya kurum fatura yetkilisine onay isteği iletildi. Onay verildiğinde paketiniz ODAK hesabınızda otomatik olarak aktifleşecektir.
+              </p>
+</div>
+</div>
+</article>
+<!-- Onay Süreç Çizelgesi -->
+<article class="bg-surface-container border border-outline-variant p-space-md rounded space-y-3">
+<h3 class="font-label-md text-label-md text-on-surface border-b border-outline-variant pb-2">Doğrulama Aşamaları</h3>
+<div class="space-y-2.5 font-label-sm text-label-sm">
+<div class="flex items-center justify-between text-on-surface">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#4CC27D] text-[18px]" data-icon="check_circle">check_circle</span>
+                1. İstek Mağazaya Gönderildi
+              </span>
+<span class="font-legal-code text-legal-code text-outline">Tamamlandı</span>
+</div>
+<div class="flex items-center justify-between text-on-surface">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="pending">pending</span>
+                2. Aile / Kurum Yetkilisi Onayı
+              </span>
+<span class="font-legal-code text-legal-code text-secondary">Beklemede</span>
+</div>
+<div class="flex items-center justify-between text-outline">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+                3. Lisans Aktivasyonu (PAY-06)
+              </span>
+<span class="font-legal-code text-legal-code text-outline">Sırada</span>
+</div>
+</div>
+</article>
+<!-- Aksiyon Düğmeleri -->
+<div class="space-y-2 pt-1">
+<button class="w-full h-11 min-h-[44px] bg-primary-container text-surface-container-lowest font-label-lg text-label-lg rounded font-semibold flex items-center justify-center gap-2 hover:bg-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="sync">sync</span>
+<span>Onay Durumunu Denetle</span>
+</button>
+<button class="w-full h-11 min-h-[44px] bg-transparent text-on-surface border border-outline-variant font-label-md text-label-md rounded hover:bg-surface hover:border-primary transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="notifications_active">notifications_active</span>
+<span>Onaylandığında Bana Bildir</span>
+</button>
+</div>
+</div>
+<!-- DURUM 3: BAŞARISIZ (ÖDEME HATASI) -->
+<div class="space-y-4 hidden" id="state-failed">
+<article class="bg-surface-container border border-outline-variant p-space-md rounded">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 min-w-[40px] rounded bg-surface-container-highest border border-[#A33D27] flex items-center justify-center text-[#EE8A6E]">
+<span class="material-symbols-outlined" data-icon="error_outline">error_outline</span>
+</div>
+<div class="space-y-1">
+<div class="inline-flex items-center px-2 py-0.5 rounded border border-[#A33D27] bg-surface text-[#EE8A6E] font-label-sm text-label-sm">
+                Tahsilat Hatası
+              </div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Ödeme Doğrulanamadı</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                İşlem banka tarafından onaylanmadı. Olası nedenler: Yetersiz bakiye, internet alışverişi yetkisinin kapalı olması veya 3D Secure doğrulama süresinin aşılması.
+              </p>
+</div>
+</div>
+</article>
+<!-- Hata Tanılama Kutusu -->
+<article class="bg-surface-container border border-outline-variant p-space-md rounded space-y-2">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<span class="font-label-sm text-label-sm text-outline">Banka Yanıt Kodu</span>
+<span class="font-legal-code text-legal-code text-[#EE8A6E] font-semibold">ERR_51_INSUFFICIENT_FUNDS</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">
+            Kredi veya banka kartınızın limitini kontrol ettikten sonra işlemi tekrarlayabilir veya farklı bir kart tanımlayabilirsiniz.
+          </p>
+</article>
+<!-- Aksiyon Düğmeleri -->
+<div class="space-y-2 pt-1">
+<button class="w-full h-11 min-h-[44px] bg-primary-container text-surface-container-lowest font-label-lg text-label-lg rounded font-semibold flex items-center justify-center gap-2 hover:bg-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="credit_card">credit_card</span>
+<span>Farklı Bir Kartla Dene</span>
+</button>
+<button class="w-full h-11 min-h-[44px] bg-transparent text-on-surface border border-outline-variant font-label-md text-label-md rounded hover:bg-surface hover:border-primary transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="support_agent">support_agent</span>
+<span>Destek Masası ile Görüş</span>
+</button>
+</div>
+</div>
+<!-- Ortak Kurumsal Güvence & Yasal Haklar Alanı -->
+<section class="space-y-2 pt-2 border-t border-outline-variant">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Kurumsal Güvence</span>
+<span class="font-legal-code text-legal-code text-primary">6502 Sayılı Kanun Uyarınca</span>
+</div>
+<div class="bg-surface-container border border-outline-variant p-3 rounded space-y-2.5">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5" data-icon="verified_user">verified_user</span>
+<div>
+<div class="font-label-md text-label-md text-on-surface">Çift Çekim Önleme Protokolü</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">ODAK altyapısında sipariş kodu tekil olarak kilitlenir; mükerrer tahsilat ihtimali sistem düzeyinde engellenmiştir.</div>
+</div>
+</div>
+<div class="flex items-start gap-2 pt-2 border-t border-outline-variant">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5" data-icon="gavel">gavel</span>
+<div>
+<div class="font-label-md text-label-md text-on-surface">Yasal Cayma &amp; Akademik Güvence</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Satın alma sonrası 14 gün boyunca yasal cayma ve akademik memnuniyet şartları eksiksiz korunur.</div>
+</div>
+</div>
+</div>
+<!-- İletişim / Destek -->
+<div class="flex items-center justify-between px-1 pt-1 font-label-sm text-label-sm text-outline">
+<span>Sorun mu yaşıyorsunuz?</span>
+<a class="text-primary hover:underline flex items-center gap-1 min-h-[44px]" href="#">
+<span>destek@odakyds.com</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="open_in_new">open_in_new</span>
+</a>
+</div>
+</section>
+<!-- Alt Boşluk Payı -->
+<div class="h-6"></div>
+</main>
+<!-- BottomNavBar (Shared Components JSON Blueprint) -->
+<!-- Destination count: 5, labels: ["Bugün", "Çalış", "Deneme", "Öğretmen", "Ben"] -->
+<!-- Intent: Mağaza satın alma doğrulama ekranı hesap/abonelik ekseninde olduğundan 'Ben' sekmesi aktiftir -->
+<nav class="fixed bottom-0 max-w-[390px] w-full z-50 flex items-center justify-around px-gutter-mobile h-16 bg-surface-container-lowest dark:bg-inverse-surface border-t border-outline-variant dark:border-outline">
+<!-- Bugün -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150 active:scale-95 min-h-[44px] min-w-[44px]" type="button">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-sm text-label-sm">Bugün</span>
+</button>
+<!-- Çalış -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150 active:scale-95 min-h-[44px] min-w-[44px]" type="button">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-sm text-label-sm">Çalış</span>
+</button>
+<!-- Deneme -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150 active:scale-95 min-h-[44px] min-w-[44px]" type="button">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-sm text-label-sm">Deneme</span>
+</button>
+<!-- Öğretmen -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150 active:scale-95 min-h-[44px] min-w-[44px]" type="button">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+<span class="font-label-sm text-label-sm">Öğretmen</span>
+</button>
+<!-- Ben (AKTİF SEÇİM) -->
+<button class="flex flex-col items-center justify-center text-primary dark:text-inverse-primary font-semibold py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150 active:scale-95 min-h-[44px] min-w-[44px]" type="button">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Ben</span>
+</button>
+</nav>
+</div>
+<!-- Durum Değiştirici JavaScript Fonksiyonu -->
+<script>
+    function switchState(stateName) {
+      const states = ['cancelled', 'pending', 'failed'];
+      states.forEach(s => {
+        const el = document.getElementById('state-' + s);
+        const tab = document.getElementById('tab-' + s);
+        if (s === stateName) {
+          el.classList.remove('hidden');
+          tab.className = "h-10 text-center px-1 py-1 font-label-sm text-label-sm rounded bg-surface-container-highest text-primary border border-primary font-semibold flex items-center justify-center transition-colors";
+        } else {
+          el.classList.add('hidden');
+          tab.className = "h-10 text-center px-1 py-1 font-label-sm text-label-sm rounded bg-surface text-on-surface-variant border border-transparent hover:text-on-surface transition-colors flex items-center justify-center";
+        }
+      });
+    }
+  </script>
+</body></html>

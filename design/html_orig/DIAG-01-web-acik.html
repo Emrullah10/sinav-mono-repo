@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIAG-01 · Seviye Tespit Sınavı</title>
+  <!-- Google Fonts: Figtree (Arayüz Sans) & Literata (Soru/Okuma Serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // Açık Tema Renk Paleti Kuralları
+            primary: '#0E6A6E',           // Petrol (Açık tema ana renk)
+            'primary-dark': '#094E51',
+            'primary-light': '#DCEDEC',
+            safran: '#E9A514',            // Yalnızca dolgu ve rozet/ikon (metin rengi değil)
+            'safran-bg': '#FEF3C7',
+            correct: '#1F7A45',           // Doğru yeşil
+            'correct-bg': '#DCFCE7',
+            error: '#A33D27',             // Tuğla kırmızısı
+            'error-bg': '#FEE2E2',
+            canvas: '#F4F6F5',            // Sayfa arka planı
+            card: '#FFFFFF',              // Kart zemini
+            'border-base': '#DAE1E0',     // 1px sınır çizgisi
+            'text-main': '#13232A',       // Başlık ve gövde
+            'text-muted': '#46565C',      // İkincil metin
+            'text-faint': '#788990',
+          },
+          fontFamily: {
+            sans: ['Figtree', 'sans-serif'],
+            serif: ['Literata', 'serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #F4F6F5;
+      color: #13232A;
+      font-family: 'Figtree', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-reading {
+      font-family: 'Literata', serif;
+    }
+    /* Tam daire optik cevap baloncuğu */
+    .optik-baloncuk {
+      width: 32px;
+      height: 32px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- ============================================================ -->
+  <!-- ODAK MODU ÜST ÇUBUĞU (Masaüstü 1440px / Düz Opak Zemin / Cam & Gölge Yok) -->
+  <!-- Kapat butonu, Yüzde Olarak İlerleme, Süre Gösterilmez, Bilgi Çipi -->
+  <!-- ============================================================ -->
+  <header class="w-full bg-white border-b border-border-base sticky top-0 z-40">
+    <div class="max-w-[1440px] mx-auto px-8 h-16 flex items-center justify-between">
+      
+      <!-- Sol: Çıkış / Kapat Eylemi (En az 44px dokunma hedefi) -->
+      <div class="flex items-center gap-6">
+        <button type="button" 
+                onclick="document.getElementById('modal-cikis').classList.remove('hidden')" 
+                class="min-h-[44px] px-3.5 flex items-center gap-2 rounded border border-border-base bg-white text-text-muted hover:text-text-main hover:bg-canvas hover:border-text-muted transition-colors text-sm font-semibold">
+          <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          <span>Sınavdan Çık</span>
+        </button>
+
+        <div class="h-5 w-px bg-border-base hidden sm:block"></div>
+
+        <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+          <span class="text-xs font-bold uppercase tracking-wider text-text-muted">Seviye Tespiti</span>
+          <span class="text-xs text-text-faint">•</span>
+          <span class="text-xs font-medium text-text-muted">Akademik Algoritma Kalibrasyonu</span>
+        </div>
+      </div>
+
+      <!-- Orta & Sağ: Yüzde Olarak Uyarlanabilir İlerleme Göstergesi (Soru Sayısı Verilmez) -->
+      <div class="flex items-center gap-8">
+        
+        <div class="flex items-center gap-3 w-72">
+          <div class="flex-1 bg-border-base h-2 rounded-full overflow-hidden">
+            <!-- %45 İlerleme -->
+            <div class="bg-primary h-full rounded-full" style="width: 45%;"></div>
+          </div>
+          <span class="text-sm font-bold text-text-main tabular-nums whitespace-nowrap">%45 Tamamlandı</span>
+        </div>
+
+        <!-- Rehber / Yardım Menüsü -->
+        <button type="button" 
+                onclick="document.getElementById('modal-baglanti').classList.toggle('hidden')" 
+                title="Sistem Güvencesi" 
+                class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded border border-border-base text-text-muted hover:text-primary hover:border-primary transition-colors text-xs font-medium gap-1.5 px-3">
+          <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+          <span class="hidden md:inline">Otomatik Kayıt Devrede</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- ANA TEST GÖVDESİ (Ortada 760px soru konteyneri / Okuma Sorularında 2 Sütun) -->
+  <!-- ============================================================ -->
+  <main class="flex-1 max-w-[1440px] w-full mx-auto px-8 py-8 flex flex-col items-center">
+
+    <!-- Pedagojik Konum ve Alan Bilgisi -->
+    <div class="w-full max-w-[760px] flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-white border border-border-base text-text-muted">
+          Akademik Okuma & Çıkarım
+        </span>
+        <span class="text-xs text-text-faint">•</span>
+        <span class="text-xs text-text-muted font-medium">Bilişsel zorluk seviyesi cevabınıza göre dengelenir</span>
+      </div>
+
+      <!-- Süre Gösterilmez İlkesi Notu -->
+      <span class="text-xs text-text-faint flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 text-text-faint" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        Süre baskısı yok · Rahat okuyun
+      </span>
+    </div>
+
+    <!-- 760px Soru Kartı (ÖSYM Formatı / Okuma Parçası ile 2 Sütunlu Ergonomik Yerleşim) -->
+    <section class="w-full max-w-[760px] bg-white border border-border-base rounded-xl p-8 shadow-none">
+      
+      <!-- İki Sütunlu Okuma Alanı (Sol: Metin / Sağ: Soru ve Şıklar) -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        
+        <!-- Sol Sütun (5 Kolon): Özgün Akademik Metin (Literata Serif) -->
+        <article class="md:col-span-6 bg-canvas border border-border-base rounded-lg p-5">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-border-base">
+            <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Okuma Parçası</span>
+            <span class="text-xs font-medium text-text-faint">118 Sözcük</span>
+          </div>
+          <p class="font-reading text-[15px] leading-[1.65] text-text-main text-justify">
+            Although subterranean aquifers in hyper-arid regions were historically presumed to be static geological remnants, recent isotope hydrology indicates that deep tectonic fractures continuously recharge these reserves. Consequently, paleoclimatologists now postulate that prehistoric settlements did not merely endure prolonged droughts through passive water rationing; rather, their sustained agricultural viability relied on sophisticated subsurface diversion channels that synchronized seasonal barometric shifts with hydrostatic pressure.
+          </p>
+        </article>
+
+        <!-- Sağ Sütun (6 Kolon): Soru Kökü ve A-E Seçenekleri -->
+        <div class="md:col-span-6 flex flex-col justify-between">
+          
+          <!-- Soru Kökü (Literata Serif) -->
+          <div class="mb-5">
+            <span class="text-xs font-bold text-primary mb-1.5 block">Soru Kökü</span>
+            <h2 class="font-reading text-[16px] leading-[1.5] font-semibold text-text-main">
+              It can be inferred from the passage that prehistoric agricultural survival in hyper-arid zones was made possible because ——.
+            </h2>
+          </div>
+
+          <!-- Seçenekler Listesi (Optik Tam Daire Baloncuklu, A-E) -->
+          <!-- Hiçbir doğru/yanlış geri bildirimi verilmez; sınav disiplini -->
+          <div class="space-y-2.5">
+            
+            <!-- Seçenek A -->
+            <label class="group min-h-[44px] flex items-center gap-3.5 p-3 rounded-lg border border-border-base bg-white hover:bg-canvas cursor-pointer transition-colors">
+              <input type="radio" name="diag_option" value="A" class="sr-only peer">
+              <span class="optik-baloncuk border border-border-base text-text-muted bg-canvas peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary group-hover:border-text-muted">
+                A
+              </span>
+              <span class="font-reading text-sm leading-snug text-text-main flex-1">
+                communities relied strictly upon passive rationing during prolonged dry seasons
+              </span>
+            </label>
+
+            <!-- Seçenek B (Seçili Örnek Durum) -->
+            <label class="group min-h-[44px] flex items-center gap-3.5 p-3 rounded-lg border-2 border-primary bg-primary-light/30 cursor-pointer transition-colors">
+              <input type="radio" name="diag_option" value="B" checked class="sr-only peer">
+              <span class="optik-baloncuk bg-primary text-white border-2 border-primary">
+                B
+              </span>
+              <span class="font-reading text-sm leading-snug text-text-main font-medium flex-1">
+                subsurface water systems dynamically responded to subterranean physical forces
+              </span>
+            </label>
+
+            <!-- Seçenek C -->
+            <label class="group min-h-[44px] flex items-center gap-3.5 p-3 rounded-lg border border-border-base bg-white hover:bg-canvas cursor-pointer transition-colors">
+              <input type="radio" name="diag_option" value="C" class="sr-only peer">
+              <span class="optik-baloncuk border border-border-base text-text-muted bg-canvas peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary group-hover:border-text-muted">
+                C
+              </span>
+              <span class="font-reading text-sm leading-snug text-text-main flex-1">
+                aquifers were completely depleted before the onset of advanced agricultural techniques
+              </span>
+            </label>
+
+            <!-- Seçenek D -->
+            <label class="group min-h-[44px] flex items-center gap-3.5 p-3 rounded-lg border border-border-base bg-white hover:bg-canvas cursor-pointer transition-colors">
+              <input type="radio" name="diag_option" value="D" class="sr-only peer">
+              <span class="optik-baloncuk border border-border-base text-text-muted bg-canvas peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary group-hover:border-text-muted">
+                D
+              </span>
+              <span class="font-reading text-sm leading-snug text-text-main flex-1">
+                surface reservoirs provided more consistent yields than deep tectonic aquifers
+              </span>
+            </label>
+
+            <!-- Seçenek E -->
+            <label class="group min-h-[44px] flex items-center gap-3.5 p-3 rounded-lg border border-border-base bg-white hover:bg-canvas cursor-pointer transition-colors">
+              <input type="radio" name="diag_option" value="E" class="sr-only peer">
+              <span class="optik-baloncuk border border-border-base text-text-muted bg-canvas peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary group-hover:border-text-muted">
+                E
+              </span>
+              <span class="font-reading text-sm leading-snug text-text-main flex-1">
+                tectonic movement completely severed historical water conveyance routes
+              </span>
+            </label>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Ayrım Çizgisi -->
+      <div class="h-px bg-border-base w-full my-6"></div>
+
+      <!-- Alt Aksiyon Alanı: Üçüncül "Bilmiyorum, geç" ve Birincil "Cevapla" (En az 44px hedef) -->
+      <div class="flex items-center justify-between gap-4">
+        
+        <!-- Üçüncül Eylem: Bilmiyorum, geç (Boş Bırakma Refleksi Kalibrasyonu) -->
+        <button type="button" 
+                class="min-h-[44px] px-5 py-2.5 rounded text-sm font-semibold text-text-muted hover:text-text-main hover:bg-canvas border border-transparent hover:border-border-base transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4 text-text-faint" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+          </svg>
+          <span>Bilmiyorum, geç</span>
+        </button>
+
+        <!-- Sağ Taraf: Cevapla & İlerle (Birincil Dolu Petrol Buton) -->
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-text-faint hidden sm:inline">Seçim yapıldı</span>
+          <button type="button" 
+                  class="min-h-[44px] px-8 py-2.5 rounded bg-primary text-white font-semibold text-sm hover:bg-primary-dark transition-colors flex items-center gap-2">
+            <span>Cevapla</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Bilgilendirme Notu: İpucu Yok, Doğru/Yanlış Gösterilmez -->
+    <div class="mt-4 flex items-center gap-2 text-xs text-text-muted">
+      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span>Seviye tespitinde ipucu merdiveni ve anlık doğru/yanlış dönütü kapalıdır; test tamamlandığında kapsamlı beceri karneniz sunulacaktır.</span>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- EKRAN DURUMLARI MATRİSİ & YÖNETİMİ (Platform Standartları) -->
+    <!-- 1. Çıkış Onayı Modalı Görünümü -->
+    <!-- 2. Bağlantı Kopması Durumu (Cihazda Tutulur) -->
+    <!-- 3. MKT-07 Seviye Tespiti Açılışı (Girişsiz DIAG-01 Tanıtımı) -->
+    <!-- ============================================================ -->
+    <section class="w-full max-w-[1200px] mt-16 pt-10 border-t border-border-base">
+      
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <span class="text-xs font-bold text-primary uppercase tracking-wider block">Sistem Davranışı & İkincil Durumlar</span>
+          <h3 class="text-base font-bold text-text-main mt-0.5">DIAG-01 Arayüz Durumları ve Güvenlik Protokolleri</h3>
+        </div>
+        <div class="flex items-center gap-3 text-xs text-text-muted">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-correct"></span> Çift Belirteç Kuralı</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-safran"></span> Safran Dolgu</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span> 44px Dokunma Hedefi</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- DURUM 1: Çıkış Onayı Diyaloğu (Modal Durumu) -->
+        <div class="bg-white border border-border-base rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-border-base mb-3">
+              <span class="text-xs font-bold text-text-muted">Durum 01 · Çıkış Onayı</span>
+              <span class="px-2 py-0.5 text-[11px] font-semibold bg-canvas rounded text-text-muted border border-border-base">Kalıcı Kayıt</span>
+            </div>
+            <div class="p-4 bg-canvas rounded-lg border border-border-base mb-4">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-safran-bg border border-safran/30 flex items-center justify-center shrink-0 text-safran">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-text-main">Testten ayrılmak istiyor musunuz?</h4>
+                  <p class="text-xs text-text-muted mt-1 leading-relaxed">
+                    İlerlemeniz kaydedildi; dilediğiniz zaman kaldığınız sorudan devam edebilirsiniz.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-2">
+            <span class="text-[11px] text-text-faint mr-auto">Protokol: DIAG-EXIT-SAVE</span>
+            <button class="min-h-[44px] px-3.5 text-xs font-semibold rounded border border-border-base text-text-muted hover:bg-canvas">Vazgeç</button>
+            <button class="min-h-[44px] px-3.5 text-xs font-semibold rounded bg-primary text-white hover:bg-primary-dark">Kaydet ve Çık</button>
+          </div>
+        </div>
+
+        <!-- DURUM 2: Bağlantı Kopması (Çevrimdışı Bellek & Cevap Güvencesi) -->
+        <div class="bg-white border border-border-base rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-border-base mb-3">
+              <span class="text-xs font-bold text-text-muted">Durum 02 · Bağlantı Kesintisi</span>
+              <span class="px-2 py-0.5 text-[11px] font-semibold bg-error-bg text-error rounded border border-error/20 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                Çevrimdışı
+              </span>
+            </div>
+            <div class="p-4 bg-canvas rounded-lg border border-border-base mb-4">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-error-bg flex items-center justify-center shrink-0 text-error">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 4.243a9 9 0 01-5.657-2.829m0 0l2.829-2.829m-2.829 2.829L3 21m2.828-15.536a9 9 0 015.657-2.829m4.243 4.243a5 5 0 00-7.072 0m0 0l2.829 2.829"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-text-main">İnternet bağlantısı kesildi</h4>
+                  <p class="text-xs text-text-muted mt-1 leading-relaxed">
+                    İşaretlediğiniz cevap cihazınızda güvenle tutuluyor. Çözmeye devam edebilirsiniz; bağlantı kurulduğunda sunucuyla eşitlenecektir.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-correct font-semibold flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              Cevap korundu
+            </span>
+            <button class="min-h-[44px] px-4 text-xs font-semibold rounded border border-border-base text-text-main hover:bg-canvas">Yeniden Dene</button>
+          </div>
+        </div>
+
+        <!-- DURUM 3: MKT-07 Seviye Tespiti Açılışı (Girişsiz Başlama Modülü) -->
+        <div class="bg-white border border-border-base rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-border-base mb-3">
+              <span class="text-xs font-bold text-text-muted">MKT-07 · Seviye Tespiti Açılışı</span>
+              <span class="px-2 py-0.5 text-[11px] font-semibold bg-safran-bg text-text-main rounded border border-safran/30">Hızlı Başlangıç</span>
+            </div>
+            <div class="p-4 bg-canvas rounded-lg border border-border-base mb-4">
+              <h4 class="text-sm font-bold text-text-main">Giriş yapmadan seviyeni keşfet</h4>
+              <p class="text-xs text-text-muted mt-1.5 leading-relaxed">
+                Kayıt formlarıyla vakit kaybetmeden 20 dakikalık adaptif teste hemen başlayın. Bireysel eksik analiziniz ve tahmini YDS puanınız anında hesaplansın.
+              </p>
+              <div class="mt-3 flex items-center gap-4 text-xs text-text-muted">
+                <span class="flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  ~20 Dakika
+                </span>
+                <span class="flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  Ücretsiz
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-2">
+            <button class="w-full min-h-[44px] px-4 text-xs font-bold rounded bg-primary text-white hover:bg-primary-dark transition-colors flex items-center justify-center gap-2">
+              <span>Seviye Tespitine Başla</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- ALT BİLGİLENDİRME & ÇİFT BELİRTEÇ MİMARİSİ (Footer) -->
+  <!-- ============================================================ -->
+  <footer class="w-full border-t border-border-base bg-white py-4 mt-12">
+    <div class="max-w-[1440px] mx-auto px-8 flex flex-col md:flex-row items-center justify-between text-xs text-text-muted gap-3">
+      <div class="flex items-center gap-3">
+        <span class="font-bold text-text-main">ODAK YDS</span>
+        <span class="text-text-faint">•</span>
+        <span>Akademik Seviye Tespit Sistemi v2.4</span>
+        <span class="text-text-faint">•</span>
+        <span class="text-text-muted">ÖSYM optik form disiplinine tam uyumlu arayüz</span>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <span class="text-text-muted">Erişilebilirlik Standardı: <strong>WCAG 2.1 AAA</strong></span>
+        <span class="text-text-muted">Asgari Dokunma Alanı: <strong>44 × 44 piksel</strong></span>
+        <span class="text-text-muted font-medium">© 2025 ODAK YDS</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: ÇIKIŞ ONAYI DİYALOĞU (Gizli / Buton tetiklemeli) -->
+  <!-- ============================================================ -->
+  <div id="modal-cikis" class="hidden fixed inset-0 z-50 bg-[#13232A]/50 flex items-center justify-center p-4">
+    <div class="bg-white border border-border-base rounded-xl max-w-md w-full p-6 shadow-none">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-safran-bg flex items-center justify-center text-safran shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-text-main">Testi Şimdi Kapatmak İstiyor Musunuz?</h3>
+          <p class="text-xs text-text-muted mt-0.5">Mevcut oturum verileri buluta kaydedildi.</p>
+        </div>
+      </div>
+      <p class="text-sm text-text-muted leading-relaxed mb-6">
+        Seviye tespitinde çözdüğünüz sorular ve işaretlemeler profilinizde saklanmaktadır. Daha sonra giriş yaparak kaldığınız sorudan teste devam edebilirsiniz.
+      </p>
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-border-base">
+        <button type="button" 
+                onclick="document.getElementById('modal-cikis').classList.add('hidden')" 
+                class="min-h-[44px] px-4 rounded border border-border-base text-text-main font-semibold text-sm hover:bg-canvas transition-colors">
+          Teste Geri Dön
+        </button>
+        <button type="button" 
+                onclick="document.getElementById('modal-cikis').classList.add('hidden')" 
+                class="min-h-[44px] px-5 rounded bg-primary text-white font-semibold text-sm hover:bg-primary-dark transition-colors">
+          Kaydet ve Çık
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- BİLGİ POPUP: ÇEVRİMDIŞI GÜVENCESİ BİLGİ KUTUSU -->
+  <!-- ============================================================ -->
+  <div id="modal-baglanti" class="hidden fixed bottom-6 right-8 z-50 bg-white border border-border-base rounded-xl p-4 max-w-sm">
+    <div class="flex items-start gap-3">
+      <div class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+      </div>
+      <div class="flex-1">
+        <h4 class="text-xs font-bold text-text-main">Çevrimdışı Güvence Protokolü</h4>
+        <p class="text-xs text-text-muted mt-1 leading-normal">
+          Tüm yanıtlarınız yerel tarayıcı belleğinde şifreli olarak tutulmaktadır. İnternetiniz kopsa dahi kesintisiz çözmeye devam edebilirsiniz.
+        </p>
+        <button type="button" 
+                onclick="document.getElementById('modal-baglanti').classList.add('hidden')" 
+                class="mt-2 text-xs font-bold text-primary hover:underline">
+          Anladım
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>ODAK · Paragraf Tamamlama ve Akışı Bozan Cümle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "#0E171B",
+            "surface-card": "#142127",
+            "surface-dim": "#0E171B",
+            "surface-container-lowest": "#070F13",
+            "surface-container-low": "#101B20",
+            "surface-container": "#18252C",
+            "surface-container-high": "#202E36",
+            "surface-container-highest": "#24343A",
+            "primary": "#4DB6B0",
+            "primary-container": "#0E6A6E",
+            "on-primary": "#070F13",
+            "on-primary-container": "#D7F5F3",
+            "tertiary": "#F0B43A",
+            "tertiary-container": "#3D2B05",
+            "text-primary": "#E4ECEC",
+            "text-secondary": "#A9B8BA",
+            "text-tertiary": "#708386",
+            "outline": "#24343A",
+            "outline-variant": "#1A2830",
+            "status-correct": "#4CC27D",
+            "status-correct-bg": "#0D2E1B",
+            "status-correct-border": "#1F7A45",
+            "status-incorrect": "#EE8A6E",
+            "status-incorrect-bg": "#331610",
+            "status-incorrect-border": "#A33D27"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            serif: ["Literata", "Georgia", "serif"]
+          },
+          borderRadius: {
+            sm: "2px",
+            DEFAULT: "4px",
+            md: "6px",
+            lg: "8px",
+            full: "9999px"
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    body {
+      background-color: #070F13;
+      color: #E4ECEC;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #0E171B;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #24343A;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="flex justify-center items-start min-h-screen bg-surface-container-lowest antialiased">
+
+  <!-- Mobile Viewport Shell (390px fixed canvas width) -->
+  <main class="w-full max-w-[390px] min-h-screen bg-surface relative flex flex-col border-x border-outline shadow-2xl pb-24">
+    
+    <!-- 1. ÜST GEZİNME ÇUBUĞU (Top App Bar) -->
+    <header class="sticky top-0 left-0 w-full z-40 flex items-center justify-between px-3 h-14 bg-surface border-b border-outline">
+      <div class="flex items-center space-x-2">
+        <button aria-label="Geri Dön ve Çık" class="flex items-center justify-center w-11 h-11 rounded text-text-secondary hover:text-text-primary hover:bg-surface-container active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+        <span class="font-bold text-lg tracking-wider text-primary">ODAK</span>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <!-- Sınav Seçici Çipi -->
+        <button class="inline-flex items-center h-8 bg-surface-card px-2.5 rounded border border-outline text-text-secondary hover:text-text-primary hover:border-text-tertiary transition-colors" title="Sınavı Değiştir">
+          <span class="text-xs font-medium text-text-primary">YDS · 22 Kasım</span>
+          <span class="material-symbols-outlined text-[15px] ml-1 text-text-tertiary">expand_more</span>
+        </button>
+
+        <!-- Sınav Süresi Sayaç Çipi (Saffron dolgu/ikon kuralı) -->
+        <div class="inline-flex items-center h-8 bg-tertiary-container/40 border border-tertiary/30 px-2.5 rounded">
+          <span class="material-symbols-outlined text-[15px] text-tertiary mr-1" style="font-variation-settings: 'FILL' 1;">timer</span>
+          <span class="text-xs font-semibold text-text-primary tabular-nums tracking-wide">01:42</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. ÇİFT SORU TİPİ GEÇİŞ SEKMESİ (Tab Switcher: Paragraf Tamamlama vs Anlam Bütünlüğü) -->
+    <section class="bg-surface-card border-b border-outline px-3 pt-2.5 pb-2">
+      <!-- Tip Seçim Kapsülü (Her ikisi de YDS'nin 2 temel metin sorusu) -->
+      <div class="grid grid-cols-2 gap-1.5 p-1 bg-surface rounded border border-outline">
+        <button id="tab-irrelevant" onclick="switchMode('irrelevant')" class="min-h-[38px] px-2 py-1.5 rounded text-xs font-semibold flex items-center justify-center space-x-1.5 bg-primary-container text-on-primary-container shadow-sm transition-all">
+          <span class="material-symbols-outlined text-[16px]">find_in_page</span>
+          <span>Akışı Bozan (72-80)</span>
+        </button>
+        <button id="tab-completion" onclick="switchMode('completion')" class="min-h-[38px] px-2 py-1.5 rounded text-xs font-medium flex items-center justify-center space-x-1.5 text-text-secondary hover:text-text-primary hover:bg-surface-container transition-all">
+          <span class="material-symbols-outlined text-[16px]">edit_note</span>
+          <span>Paragraf Tamamla (68-71)</span>
+        </button>
+      </div>
+
+      <!-- Soru İlerlemesi ve Bilgilendirme Şeridi -->
+      <div class="flex items-center justify-between mt-2.5 px-0.5">
+        <div class="flex items-center space-x-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+          <span id="question-label" class="text-xs font-semibold text-text-primary tracking-wide">Soru 74 / 80 · Sosyal Bilimler</span>
+        </div>
+        <span class="text-[11px] font-semibold text-primary bg-primary-container/20 border border-primary-container/40 px-2 py-0.5 rounded">
+          1 Doğru = 1,25 Puan
+        </span>
+      </div>
+
+      <!-- 10 Soruluk Hızlı Soru Matrisi -->
+      <div class="flex items-center justify-between gap-1 mt-2">
+        <button class="flex-1 h-7 bg-surface-container border border-outline rounded flex items-center justify-center text-[11px] text-text-secondary">
+          <span class="material-symbols-outlined text-[13px] text-status-correct" style="font-variation-settings: 'FILL' 1;">check</span>
+        </button>
+        <button class="flex-1 h-7 bg-surface-container border border-outline rounded flex items-center justify-center text-[11px] text-text-secondary">
+          <span class="material-symbols-outlined text-[13px] text-status-correct" style="font-variation-settings: 'FILL' 1;">check</span>
+        </button>
+        <!-- Aktif soru -->
+        <button class="flex-1 h-7 bg-primary-container border border-primary rounded flex items-center justify-center text-[11px] text-on-primary-container font-bold ring-1 ring-primary/40">
+          74
+        </button>
+        <button class="flex-1 h-7 bg-surface-container border border-outline rounded flex items-center justify-center text-[11px] text-text-tertiary">
+          75
+        </button>
+        <button class="flex-1 h-7 bg-surface-container border border-outline rounded flex items-center justify-center text-[11px] text-text-tertiary">
+          76
+        </button>
+        <button class="flex-1 h-7 bg-surface-container border border-outline rounded flex items-center justify-center text-[11px] text-text-tertiary">
+          77
+        </button>
+        <button class="flex-1 h-7 bg-surface-container border border-outline rounded flex items-center justify-center text-[11px] text-text-tertiary">
+          78
+        </button>
+        <button class="flex-1 h-7 bg-surface-container border border-outline rounded flex items-center justify-center text-[11px] text-text-tertiary">
+          79
+        </button>
+        <button class="flex-1 h-7 bg-surface-container border border-outline rounded flex items-center justify-center text-[11px] text-text-tertiary">
+          80
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. DEĞİŞEN İÇERİK ALANI (Görünüm 1: Anlamı Bozan Cümle) -->
+    <div id="view-irrelevant" class="flex-1 flex flex-col p-3 space-y-3">
+      
+      <!-- ÖSYM Soru Yönergesi -->
+      <div class="bg-surface-card p-2.5 rounded border border-outline">
+        <p class="text-xs font-semibold text-text-primary flex items-center justify-between">
+          <span>Cümleleri inceleyerek anlam akışını bozan cümleyi bulunuz.</span>
+          <span class="text-[11px] text-text-tertiary font-normal">ÖSYM Formatı</span>
+        </p>
+        <p class="text-[11px] text-text-secondary mt-1">
+          İpucu: Paragraf içerisindeki numaralandırılmış <strong class="text-text-primary">(I)-(V)</strong> cümlelere doğrudan dokunarak seçebilir veya alttaki optik butonları kullanabilirsiniz.
+        </p>
+      </div>
+
+      <!-- Metin Alanı: Numaralandırılmış Dokunulabilir Cümleler (Literata Serif) -->
+      <article class="bg-surface-card p-3.5 rounded border border-outline space-y-2.5">
+        <div class="flex items-center justify-between border-b border-outline pb-2 mb-2">
+          <span class="text-[11px] font-semibold text-primary uppercase tracking-wider">Tarihsel Sosyoloji ve Kentsel Gelişim</span>
+          <span class="text-[11px] text-text-tertiary">Akademik Metin (Literata 15px)</span>
+        </div>
+
+        <div class="font-serif text-[15px] leading-relaxed text-text-primary/95 space-y-2">
+          <!-- Cümle 1 -->
+          <div id="sent-1" onclick="selectSentence(1)" class="p-2 rounded border border-transparent hover:border-outline hover:bg-surface-container/60 cursor-pointer transition-all">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container border border-outline text-text-secondary text-xs font-sans font-bold mr-1.5 align-baseline">I</span>
+            <span>Early agricultural surpluses in ancient river valleys initially spurred unprecedented demographic growth, enabling labor specialization across distinct artisan guilds.</span>
+          </div>
+
+          <!-- Cümle 2 -->
+          <div id="sent-2" onclick="selectSentence(2)" class="p-2 rounded border border-transparent hover:border-outline hover:bg-surface-container/60 cursor-pointer transition-all">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container border border-outline text-text-secondary text-xs font-sans font-bold mr-1.5 align-baseline">II</span>
+            <span>As economic exchanges expanded beyond local tribal borders, standardizing grain weights became an indispensable prerequisite for maintaining civic stability.</span>
+          </div>
+
+          <!-- Cümle 3 (AKISI BOZAN CÜMLE - Seçili Durum Gösterimi: Tuğla / Doğrulama Çerçevesi) -->
+          <div id="sent-3" onclick="selectSentence(3)" class="p-2 rounded border-2 border-primary bg-primary-container/20 cursor-pointer transition-all ring-1 ring-primary/30">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-on-primary text-xs font-sans font-bold mr-1.5 align-baseline">III</span>
+            <span class="font-medium text-text-primary">Nevertheless, modern archaeological digs frequently discover that terracotta pottery styles remained unaffected by catastrophic river floodings in Mesopotamia.</span>
+            <div class="mt-1 text-right">
+              <span class="text-[11px] font-sans font-medium text-primary bg-surface/80 px-2 py-0.5 rounded border border-primary/30">
+                Dokunarak Seçildi · C Şıkkı
+              </span>
+            </div>
+          </div>
+
+          <!-- Cümle 4 -->
+          <div id="sent-4" onclick="selectSentence(4)" class="p-2 rounded border border-transparent hover:border-outline hover:bg-surface-container/60 cursor-pointer transition-all">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container border border-outline text-text-secondary text-xs font-sans font-bold mr-1.5 align-baseline">IV</span>
+            <span>Consequently, administrative scribes were formally trained to document institutional inventories, consolidating centralized oversight over shared canal networks.</span>
+          </div>
+
+          <!-- Cümle 5 -->
+          <div id="sent-5" onclick="selectSentence(5)" class="p-2 rounded border border-transparent hover:border-outline hover:bg-surface-container/60 cursor-pointer transition-all">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container border border-outline text-text-secondary text-xs font-sans font-bold mr-1.5 align-baseline">V</span>
+            <span>Without this meticulously calibrated administrative cohesion, sustaining such monumental hydraulic operations across successive droughts would have been impossible.</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. ÖSYM FORMATI A-E SEÇENEK BUTONLARI (Min 44px Dokunma Hedefi) -->
+      <section class="bg-surface-card p-3 rounded border border-outline space-y-2">
+        <div class="flex items-center justify-between pb-1">
+          <span class="text-xs font-semibold text-text-primary">Akışı Bozan Cümleyi Seçin:</span>
+          <span class="text-[11px] text-text-tertiary">ÖSYM Optik Baloncuk</span>
+        </div>
+
+        <div class="grid grid-cols-5 gap-1.5">
+          <!-- A = I -->
+          <button id="opt-1" onclick="selectSentence(1)" class="min-h-[46px] flex flex-col items-center justify-center bg-surface border border-outline rounded hover:bg-surface-container hover:border-text-tertiary transition-all active:scale-95">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full border border-outline text-text-secondary font-bold text-xs">A</span>
+            <span class="text-[11px] text-text-tertiary mt-0.5">I</span>
+          </button>
+
+          <!-- B = II -->
+          <button id="opt-2" onclick="selectSentence(2)" class="min-h-[46px] flex flex-col items-center justify-center bg-surface border border-outline rounded hover:bg-surface-container hover:border-text-tertiary transition-all active:scale-95">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full border border-outline text-text-secondary font-bold text-xs">B</span>
+            <span class="text-[11px] text-text-tertiary mt-0.5">II</span>
+          </button>
+
+          <!-- C = III (Seçili ve Doğrulanmış Durum) -->
+          <button id="opt-3" onclick="selectSentence(3)" class="min-h-[46px] flex flex-col items-center justify-center bg-status-correct-bg border-2 border-status-correct rounded ring-1 ring-status-correct/40 transition-all active:scale-95">
+            <div class="flex items-center space-x-1">
+              <span class="flex items-center justify-center w-6 h-6 rounded-full bg-status-correct text-surface font-bold text-xs">C</span>
+              <span class="material-symbols-outlined text-[15px] text-status-correct" style="font-variation-settings: 'FILL' 1;">check</span>
+            </div>
+            <span class="text-[11px] text-status-correct font-semibold mt-0.5">III (Doğru)</span>
+          </button>
+
+          <!-- D = IV -->
+          <button id="opt-4" onclick="selectSentence(4)" class="min-h-[46px] flex flex-col items-center justify-center bg-surface border border-outline rounded hover:bg-surface-container hover:border-text-tertiary transition-all active:scale-95">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full border border-outline text-text-secondary font-bold text-xs">D</span>
+            <span class="text-[11px] text-text-tertiary mt-0.5">IV</span>
+          </button>
+
+          <!-- E = V -->
+          <button id="opt-5" onclick="selectSentence(5)" class="min-h-[46px] flex flex-col items-center justify-center bg-surface border border-outline rounded hover:bg-surface-container hover:border-text-tertiary transition-all active:scale-95">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full border border-outline text-text-secondary font-bold text-xs">E</span>
+            <span class="text-[11px] text-text-tertiary mt-0.5">V</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 5. ÖĞRETMEN ANALİZİ VE PEDAGOJİK ÇÖZÜMLEME KARTI -->
+      <section class="bg-surface-card p-3 rounded border border-outline space-y-2">
+        <div class="flex items-center justify-between border-b border-outline pb-2">
+          <div class="flex items-center space-x-1.5">
+            <span class="material-symbols-outlined text-tertiary text-[18px]">school</span>
+            <span class="text-xs font-semibold text-text-primary">Öğretmen İpucu ve Çözüm Merdiveni</span>
+          </div>
+          <span class="text-[11px] font-medium text-primary">Kural #74-B</span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <!-- 1. Basamak: Konu ve Özne Takibi -->
+          <div class="p-2 rounded bg-surface border border-outline">
+            <div class="flex items-center space-x-1.5 text-text-primary font-semibold mb-0.5">
+              <span class="flex items-center justify-center w-4 h-4 rounded bg-surface-container text-[10px] text-primary">1</span>
+              <span>Konu ve Odak Tespiti:</span>
+            </div>
+            <p class="text-text-secondary leading-relaxed pl-5">
+              Paragraf bütününde <strong class="text-text-primary">tarımsal üretim fazlası, idari iş bölümü ve kanal yönetimi</strong> arasındaki nedensel örgütlenme ele alınmaktadır.
+            </p>
+          </div>
+
+          <!-- 2. Basamak: Kopuş Teşhisi (Çeldirici / Hata Analizi) -->
+          <div class="p-2 rounded bg-surface border border-status-correct-border/40 bg-status-correct-bg/20">
+            <div class="flex items-center space-x-1.5 text-status-correct font-semibold mb-0.5">
+              <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+              <span>Kopuş Noktası (III. Cümle):</span>
+            </div>
+            <p class="text-text-primary/90 leading-relaxed pl-5">
+              III. cümlede birdenbire <em class="text-primary font-serif">"terracotta pottery styles" (pişmiş toprak çömlek üslupları)</em> konusuna geçilmiş, idari-kamusal yönetim omurgasından kopulmuştur.
+            </p>
+          </div>
+
+          <!-- 3. Basamak: Gönderim İfadesi (Referans Kelime) Kontrolü -->
+          <div class="p-2 rounded bg-surface border border-outline">
+            <div class="flex items-center space-x-1.5 text-text-primary font-semibold mb-0.5">
+              <span class="flex items-center justify-center w-4 h-4 rounded bg-surface-container text-[10px] text-primary">3</span>
+              <span>Referans Köprüsü:</span>
+            </div>
+            <p class="text-text-secondary leading-relaxed pl-5">
+              IV. cümledeki <strong class="text-text-primary">"Consequently" (Sonuç olarak)</strong> ifadesi doğrudan II. cümledeki standartlaşma ve vergi kayıt ihtiyacına bağlanmaktadır.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- GÖRÜNÜM 2: Paragraf Tamamlama (Varsayılan gizli, JS sekmesiyle değişebilir veya incelenebilir) -->
+    <div id="view-completion" class="flex-1 flex-col p-3 space-y-3 hidden">
+      
+      <!-- ÖSYM Soru Yönergesi -->
+      <div class="bg-surface-card p-2.5 rounded border border-outline">
+        <p class="text-xs font-semibold text-text-primary flex items-center justify-between">
+          <span>Parçada boş bırakılan yere anlam bütünlüğünü sağlayan cümleyi bulunuz.</span>
+          <span class="text-[11px] text-text-tertiary">ÖSYM Soru 69</span>
+        </p>
+      </div>
+
+      <!-- Paragraf ve Vurgulu Boşluk Alanı (Literata Serif) -->
+      <article class="bg-surface-card p-3.5 rounded border border-outline">
+        <div class="flex items-center justify-between border-b border-outline pb-2 mb-2.5">
+          <span class="text-[11px] font-semibold text-primary uppercase tracking-wider">Kognitif Nörobilim ve Bellek</span>
+          <span class="text-[11px] text-text-tertiary">Paragraf Tamamlama (1,25 Puan)</span>
+        </div>
+
+        <div class="font-serif text-[15px] leading-relaxed text-text-primary/95 space-y-2.5 text-justify">
+          <p>
+            Sleep serves a fundamental neurobiological function by actively reorganizing synaptic weights acquired during waking hours. During slow-wave oscillations, the hippocampus systematically transfers fragile episodic representations to neocortical storage networks.
+          </p>
+
+          <!-- Vurgulu Boşluk Bölgesi (Slot with prominent dashed & active state) -->
+          <div class="my-3 p-3 rounded-lg border-2 border-dashed border-primary bg-primary-container/15 text-center transition-all">
+            <span class="inline-flex items-center text-xs font-sans font-bold text-primary bg-surface px-2.5 py-1 rounded border border-primary/40 mb-1">
+              [ . . . . . BOŞ BIRAKILAN CÜMLE . . . . . ]
+            </span>
+            <p class="text-xs font-sans text-text-secondary mt-1">
+              Öncesindeki konsolidasyon tespiti ile sonrasındaki aksama uyarısını bağlayan uygun cümleyi seçiniz.
+            </p>
+          </div>
+
+          <p>
+            Without this critical nocturnal pruning process, neural saturation rapidly occurs, impairing synaptic plasticity and drastically reducing the acquisition efficiency of novel lexical items the following day.
+          </p>
+        </div>
+      </article>
+
+      <!-- 5 Uzun Seçenek (A-E Seçenekleri, Min 44px Dokunma Hedefi) -->
+      <section class="space-y-2">
+        <span class="text-xs font-semibold text-text-primary block px-0.5">Seçenekler:</span>
+
+        <!-- Seçenek A -->
+        <label class="flex items-start min-h-[48px] p-2.5 rounded border border-outline bg-surface-card hover:bg-surface-container cursor-pointer transition-all active:scale-[0.99]">
+          <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-outline text-text-secondary font-bold text-xs mt-0.5 mr-2.5">A</span>
+          <div class="flex-1">
+            <p class="font-serif text-[14px] text-text-secondary leading-snug">
+              Moreover, REM sleep deprivation is often remedied simply by consuming mild caffeine stimulants before dawn.
+            </p>
+            <span class="inline-block mt-1 text-[10px] font-sans text-text-tertiary">Konu dışı çözümleme</span>
+          </div>
+        </label>
+
+        <!-- Seçenek B (Doğru Yanıt Seçilmiş Durum) -->
+        <label class="flex items-start min-h-[48px] p-2.5 rounded border-2 border-status-correct-border bg-status-correct-bg/25 ring-1 ring-status-correct/30 cursor-pointer transition-all">
+          <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-status-correct text-surface font-bold text-xs mt-0.5 mr-2.5">B</span>
+          <div class="flex-1">
+            <p class="font-serif text-[14px] text-text-primary font-medium leading-snug">
+              This structural stabilization not only preserves salient associations but also selectively prunes redundant dendritic spines.
+            </p>
+            <div class="mt-1 flex items-center space-x-2">
+              <span class="inline-flex items-center text-[10px] font-sans font-semibold text-status-correct bg-status-correct/10 px-1.5 py-0.5 rounded border border-status-correct/30">
+                <span class="material-symbols-outlined text-[13px] mr-1" style="font-variation-settings: 'FILL' 1;">check</span>
+                Doğru Yanıt Seçildi (+1,25 Puan)
+              </span>
+              <span class="text-[10px] text-text-tertiary font-sans">Semantik Köprü Tam</span>
+            </div>
+          </div>
+        </label>
+
+        <!-- Seçenek C -->
+        <label class="flex items-start min-h-[48px] p-2.5 rounded border border-outline bg-surface-card hover:bg-surface-container cursor-pointer transition-all active:scale-[0.99]">
+          <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-outline text-text-secondary font-bold text-xs mt-0.5 mr-2.5">C</span>
+          <div class="flex-1">
+            <p class="font-serif text-[14px] text-text-secondary leading-snug">
+              In contrast, ancient philosophers believed that dreaming was an entirely divine omen devoid of corporeal purpose.
+            </p>
+            <span class="inline-block mt-1 text-[10px] font-sans text-text-tertiary">Tarihsel sapma çeldiricisi</span>
+          </div>
+        </label>
+
+        <!-- Seçenek D -->
+        <label class="flex items-start min-h-[48px] p-2.5 rounded border border-outline bg-surface-card hover:bg-surface-container cursor-pointer transition-all active:scale-[0.99]">
+          <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-outline text-text-secondary font-bold text-xs mt-0.5 mr-2.5">D</span>
+          <div class="flex-1">
+            <p class="font-serif text-[14px] text-text-secondary leading-snug">
+              Consequently, daylight exposure completely prevents memory formation unless accompanied by rigorous physical activity.
+            </p>
+            <span class="inline-block mt-1 text-[10px] font-sans text-text-tertiary">Aşırı genelleme tuzağı (completely)</span>
+          </div>
+        </label>
+
+        <!-- Seçenek E -->
+        <label class="flex items-start min-h-[48px] p-2.5 rounded border border-outline bg-surface-card hover:bg-surface-container cursor-pointer transition-all active:scale-[0.99]">
+          <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-outline text-text-secondary font-bold text-xs mt-0.5 mr-2.5">E</span>
+          <div class="flex-1">
+            <p class="font-serif text-[14px] text-text-secondary leading-snug">
+              Nevertheless, cardiovascular health remains totally unrelated to neurological regeneration under normal resting heart rates.
+            </p>
+            <span class="inline-block mt-1 text-[10px] font-sans text-text-tertiary">Bağlam dışı konu</span>
+          </div>
+        </label>
+      </section>
+
+    </div>
+
+    <!-- 6. ALT AKSİYON ŞERİDİ (Sticky Action Bar) -->
+    <div class="sticky bottom-16 left-0 w-full bg-surface-card border-t border-outline px-3 py-2 flex items-center space-x-2 z-30">
+      <button class="min-h-[44px] px-3.5 rounded border border-outline text-text-secondary hover:text-text-primary hover:bg-surface-container text-xs font-semibold flex items-center justify-center space-x-1.5 active:scale-95 transition-all" title="4 Basamaklı Öğretmen İpucu">
+        <span class="material-symbols-outlined text-[17px] text-tertiary">lightbulb</span>
+        <span>İpucu</span>
+      </button>
+
+      <button class="min-h-[44px] px-3 rounded border border-outline text-text-secondary hover:text-text-primary hover:bg-surface-container text-xs font-medium flex items-center justify-center space-x-1 active:scale-95 transition-all">
+        <span class="material-symbols-outlined text-[17px]">bookmark_border</span>
+        <span>Kaydet</span>
+      </button>
+
+      <button class="min-h-[44px] flex-1 bg-primary-container hover:bg-[#127a7f] text-on-primary-container rounded text-xs font-bold flex items-center justify-center space-x-1.5 active:scale-[0.98] transition-all shadow-md">
+        <span>Sonraki Soruya Geç (75/80)</span>
+        <span class="material-symbols-outlined text-[17px]">arrow_forward</span>
+      </button>
+    </div>
+
+    <!-- 7. ALT SEKME ÇUBUĞU (Bottom Navigation Bar - 5 Sekme Standart Shell) -->
+    <footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-around h-16 bg-surface-container-low border-t border-outline max-w-[390px] left-1/2 -translate-x-1/2">
+      <!-- 1. Bugün -->
+      <button class="flex flex-col items-center justify-center text-text-secondary hover:text-text-primary py-1 active:scale-95 transition-transform flex-1 min-h-[44px]">
+        <span class="material-symbols-outlined text-[20px]">calendar_today</span>
+        <span class="text-[11px] mt-1 font-medium">Bugün</span>
+      </button>
+
+      <!-- 2. Çalış (Aktif Bölüm) -->
+      <button class="flex flex-col items-center justify-center text-primary py-1 active:scale-95 transition-transform flex-1 min-h-[44px]">
+        <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+        <span class="text-[11px] mt-1 font-bold">Çalış</span>
+      </button>
+
+      <!-- 3. Deneme -->
+      <button class="flex flex-col items-center justify-center text-text-secondary hover:text-text-primary py-1 active:scale-95 transition-transform flex-1 min-h-[44px]">
+        <span class="material-symbols-outlined text-[20px]">assignment</span>
+        <span class="text-[11px] mt-1 font-medium">Deneme</span>
+      </button>
+
+      <!-- 4. Öğretmen -->
+      <button class="flex flex-col items-center justify-center text-text-secondary hover:text-text-primary py-1 active:scale-95 transition-transform flex-1 min-h-[44px]">
+        <span class="material-symbols-outlined text-[20px]">school</span>
+        <span class="text-[11px] mt-1 font-medium">Öğretmen</span>
+      </button>
+
+      <!-- 5. Ben -->
+      <button class="flex flex-col items-center justify-center text-text-secondary hover:text-text-primary py-1 active:scale-95 transition-transform flex-1 min-h-[44px]">
+        <span class="material-symbols-outlined text-[20px]">person</span>
+        <span class="text-[11px] mt-1 font-medium">Ben</span>
+      </button>
+    </footer>
+
+  </main>
+
+  <!-- Basit Etkileşim Scripti (Sekme ve Cümle Seçimi) -->
+  <script>
+    function switchMode(mode) {
+      const irrelevantView = document.getElementById('view-irrelevant');
+      const completionView = document.getElementById('view-completion');
+      const tabIrrelevant = document.getElementById('tab-irrelevant');
+      const tabCompletion = document.getElementById('tab-completion');
+      const label = document.getElementById('question-label');
+
+      if (mode === 'irrelevant') {
+        irrelevantView.classList.remove('hidden');
+        completionView.classList.add('hidden');
+        tabIrrelevant.className = "min-h-[38px] px-2 py-1.5 rounded text-xs font-semibold flex items-center justify-center space-x-1.5 bg-primary-container text-on-primary-container shadow-sm transition-all";
+        tabCompletion.className = "min-h-[38px] px-2 py-1.5 rounded text-xs font-medium flex items-center justify-center space-x-1.5 text-text-secondary hover:text-text-primary hover:bg-surface-container transition-all";
+        label.textContent = "Soru 74 / 80 · Sosyal Bilimler";
+      } else {
+        irrelevantView.classList.add('hidden');
+        completionView.classList.remove('hidden');
+        tabCompletion.className = "min-h-[38px] px-2 py-1.5 rounded text-xs font-semibold flex items-center justify-center space-x-1.5 bg-primary-container text-on-primary-container shadow-sm transition-all";
+        tabIrrelevant.className = "min-h-[38px] px-2 py-1.5 rounded text-xs font-medium flex items-center justify-center space-x-1.5 text-text-secondary hover:text-text-primary hover:bg-surface-container transition-all";
+        label.textContent = "Soru 69 / 80 · Kognitif Nörobilim";
+      }
+    }
+
+    function selectSentence(num) {
+      // 1-5 arasındaki tüm cümleleri sıfırla
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById('sent-' + i);
+        if (el) {
+          el.className = "p-2 rounded border border-transparent hover:border-outline hover:bg-surface-container/60 cursor-pointer transition-all";
+        }
+      }
+      // Seçilen cümleyi vurgula
+      const target = document.getElementById('sent-' + num);
+      if (target) {
+        target.className = "p-2 rounded border-2 border-primary bg-primary-container/20 cursor-pointer transition-all ring-1 ring-primary/30";
+      }
+    }
+  </script>
+</body>
+</html>

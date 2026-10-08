@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="tr"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CMP-12 · Veri Görselleştirme ve Grafikler</title>
+  <!-- Google Fonts: Figtree, Literata, Bricolage Grotesque -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700&amp;family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet">
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#F4F6F5',
+            surface: '#FFFFFF',
+            'surface-subtle': '#F8FAFA',
+            'surface-card': '#FFFFFF',
+            'on-surface': '#13232A',
+            'on-surface-variant': '#46565C',
+            outline: '#77868A',
+            'outline-variant': '#DAE1E0',
+            primary: '#0E6A6E',
+            'primary-dark': '#0A5458',
+            'primary-container': '#DCEDEC',
+            'on-primary-container': '#0E6A6E',
+            secondary: '#E9A514',
+            'secondary-container': '#FBEFD2',
+            tertiary: '#1F7A45',
+            'tertiary-container': '#DFF1E6',
+            error: '#A33D27',
+            'error-container': '#F8E3DC',
+          },
+          fontFamily: {
+            sans: ['Figtree', 'sans-serif'],
+            "display": ["Bricolage Grotesque"],
+            reading: ['Literata', 'serif'],
+          },
+          borderRadius: {
+            'xs': '4px',
+            'sm': '8px',
+            'DEFAULT': '12px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '20px',
+            'full': '9999px',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Hide scrollbar for tabs */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Figtree, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.fixed{position:fixed}.relative{position:relative}.sticky{position:sticky}.bottom-0{bottom:0px}.left-0{left:0px}.right-0{right:0px}.top-0{top:0px}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mt-0\.5{margin-top:0.125rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.inline-grid{display:inline-grid}.hidden{display:none}.h-0{height:0px}.h-0\.5{height:0.125rem}.h-11{height:2.75rem}.h-14{height:3.5rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-20{height:5rem}.h-3{height:0.75rem}.h-3\.5{height:0.875rem}.h-44{height:11rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-8{height:2rem}.h-full{height:100%}.min-h-\[44px\]{min-height:44px}.min-h-screen{min-height:100vh}.w-11{width:2.75rem}.w-2\.5{width:0.625rem}.w-3{width:0.75rem}.w-3\.5{width:0.875rem}.w-5{width:1.25rem}.w-full{width:100%}.min-w-\[56px\]{min-width:56px}.max-w-\[390px\]{max-width:390px}.shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}.select-none{-webkit-user-select:none;user-select:none}.grid-flow-col{grid-auto-flow:column}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.grid-rows-7{grid-template-rows:repeat(7, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.justify-around{justify-content:space-around}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-outline-variant > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(218 225 224 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded{border-radius:12px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:16px}.rounded-md{border-radius:12px}.rounded-xl{border-radius:20px}.rounded-xs{border-radius:4px}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-t{border-top-width:1px}.border-t-2{border-top-width:2px}.border-dashed{border-style:dashed}.border-error\/30{border-color:rgb(163 61 39 / 0.3)}.border-error\/40{border-color:rgb(163 61 39 / 0.4)}.border-outline{--tw-border-opacity:1;border-color:rgb(119 134 138 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(218 225 224 / var(--tw-border-opacity, 1))}.border-outline-variant\/60{border-color:rgb(218 225 224 / 0.6)}.border-primary\/20{border-color:rgb(14 106 110 / 0.2)}.border-primary\/30{border-color:rgb(14 106 110 / 0.3)}.border-secondary{--tw-border-opacity:1;border-color:rgb(233 165 20 / var(--tw-border-opacity, 1))}.border-tertiary\/20{border-color:rgb(31 122 69 / 0.2)}.bg-\[\#0E6A6E\]{--tw-bg-opacity:1;background-color:rgb(14 106 110 / var(--tw-bg-opacity, 1))}.bg-\[\#188B90\]{--tw-bg-opacity:1;background-color:rgb(24 139 144 / var(--tw-bg-opacity, 1))}.bg-\[\#1F7A45\]{--tw-bg-opacity:1;background-color:rgb(31 122 69 / var(--tw-bg-opacity, 1))}.bg-\[\#66B8BA\]{--tw-bg-opacity:1;background-color:rgb(102 184 186 / var(--tw-bg-opacity, 1))}.bg-\[\#A33D27\]{--tw-bg-opacity:1;background-color:rgb(163 61 39 / var(--tw-bg-opacity, 1))}.bg-\[\#DCEDEC\]{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.bg-\[\#E9A514\]{--tw-bg-opacity:1;background-color:rgb(233 165 20 / var(--tw-bg-opacity, 1))}.bg-\[\#E9EDEC\]{--tw-bg-opacity:1;background-color:rgb(233 237 236 / var(--tw-bg-opacity, 1))}.bg-background{--tw-bg-opacity:1;background-color:rgb(244 246 245 / var(--tw-bg-opacity, 1))}.bg-error{--tw-bg-opacity:1;background-color:rgb(163 61 39 / var(--tw-bg-opacity, 1))}.bg-error-container{--tw-bg-opacity:1;background-color:rgb(248 227 220 / var(--tw-bg-opacity, 1))}.bg-error-container\/20{background-color:rgb(248 227 220 / 0.2)}.bg-error-container\/30{background-color:rgb(248 227 220 / 0.3)}.bg-primary{--tw-bg-opacity:1;background-color:rgb(14 106 110 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.bg-primary-container\/20{background-color:rgb(220 237 236 / 0.2)}.bg-primary\/70{background-color:rgb(14 106 110 / 0.7)}.bg-surface{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-tertiary{--tw-bg-opacity:1;background-color:rgb(31 122 69 / var(--tw-bg-opacity, 1))}.bg-tertiary-container{--tw-bg-opacity:1;background-color:rgb(223 241 230 / var(--tw-bg-opacity, 1))}.fill-error{fill:#A33D27}.fill-on-surface{fill:#13232A}.fill-on-surface-variant{fill:#46565C}.fill-primary{fill:#0E6A6E}.stroke-outline-variant{stroke:#DAE1E0}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-4{padding-left:1rem;padding-right:1rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.pb-2{padding-bottom:0.5rem}.pb-24{padding-bottom:6rem}.pl-1{padding-left:0.25rem}.pl-2\.5{padding-left:0.625rem}.pt-1{padding-top:0.25rem}.pt-2{padding-top:0.5rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-display{font-family:Bricolage Grotesque}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-sans{font-family:Figtree, sans-serif}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[9px\]{font-size:9px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.leading-tight{line-height:1.25}.tracking-wider{letter-spacing:0.05em}.text-\[\#5E6B70\]{--tw-text-opacity:1;color:rgb(94 107 112 / var(--tw-text-opacity, 1))}.text-error{--tw-text-opacity:1;color:rgb(163 61 39 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(70 86 92 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.text-secondary{--tw-text-opacity:1;color:rgb(233 165 20 / var(--tw-text-opacity, 1))}.text-tertiary{--tw-text-opacity:1;color:rgb(31 122 69 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-primary-container *::selection{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.selection\:text-primary *::selection{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.selection\:bg-primary-container::selection{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.selection\:text-primary::selection{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}.after\:mt-0\.5::after{content:var(--tw-content);margin-top:0.125rem}.after\:h-1\.5::after{content:var(--tw-content);height:0.375rem}.after\:w-1\.5::after{content:var(--tw-content);width:0.375rem}.after\:rounded-full::after{content:var(--tw-content);border-radius:9999px}.after\:bg-primary::after{content:var(--tw-content);--tw-bg-opacity:1;background-color:rgb(14 106 110 / var(--tw-bg-opacity, 1))}.after\:content-\[\'\'\]::after{--tw-content:'';content:var(--tw-content)}.hover\:bg-background:hover{--tw-bg-opacity:1;background-color:rgb(244 246 245 / var(--tw-bg-opacity, 1))}.hover\:bg-primary-container:hover{--tw-bg-opacity:1;background-color:rgb(220 237 236 / var(--tw-bg-opacity, 1))}.hover\:text-on-surface:hover{--tw-text-opacity:1;color:rgb(19 35 42 / var(--tw-text-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(14 106 110 / var(--tw-text-opacity, 1))}</style></head>
+<body class="bg-background text-on-surface font-sans antialiased min-h-screen pb-24 selection:bg-primary-container selection:text-primary">
+
+  <!-- ================= TOP APP BAR (390PT STANDART) ================= -->
+  <header class="bg-surface sticky top-0 z-40 w-full border-b border-outline-variant">
+    <div class="max-w-[390px] mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <button type="button" aria-label="Geri Dön" class="w-11 h-11 flex items-center justify-center rounded-lg text-on-surface hover:bg-background transition-colors">
+          <span class="material-symbols-outlined text-xl">arrow_back</span>
+        </button>
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-primary">Bileşenler · CMP-12</span>
+          <h1 class="text-sm font-bold text-on-surface leading-tight">Veri Görselleştirme</h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-primary-container text-primary border border-primary/20">
+          Açık Tema
+        </span>
+        <button type="button" aria-label="Seçenekler" class="w-11 h-11 flex items-center justify-center rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-background transition-colors">
+          <span class="material-symbols-outlined text-xl">tune</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER (390PT STRICT CONTAINER) ================= -->
+  <main class="max-w-[390px] mx-auto px-4 pt-4 space-y-5">
+
+    <!-- HERO METADATA CARD -->
+    <section class="bg-surface rounded-xl border border-outline-variant p-4 space-y-3">
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <span class="text-[10px] font-bold tracking-wider text-primary uppercase">v2.4 Standart · 390pt</span>
+          <h2 class="text-lg font-bold text-on-surface font-display leading-snug">
+            CMP-12 · Grafikler ve İstatistik Paneli
+          </h2>
+        </div>
+        <span class="shrink-0 px-2 py-1 rounded bg-tertiary-container text-tertiary text-[10px] font-bold border border-tertiary/20">
+          WCAG AAA
+        </span>
+      </div>
+      <p class="text-xs text-on-surface-variant leading-relaxed">
+        YDS hazırlık sürecindeki yetişkin adaylar için sakin, bilişsel aşırı yük oluşturmayan, tek eksenli ve çift belirteçli grafik bileşenleri.
+      </p>
+      
+      <!-- Core Principles Pill Grid -->
+      <div class="grid grid-cols-2 gap-2 pt-1 border-t border-outline-variant text-[11px]">
+        <div class="flex items-center gap-1.5 text-on-surface-variant">
+          <span class="material-symbols-outlined text-sm text-primary">block</span>
+          <span><strong>Pasta Grafiksiz:</strong> Doğrusal dağılım</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-on-surface-variant">
+          <span class="material-symbols-outlined text-sm text-secondary">shield</span>
+          <span><strong>Safran Kuralı:</strong> Sadece dolgu</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-on-surface-variant">
+          <span class="material-symbols-outlined text-sm text-tertiary">check_circle</span>
+          <span><strong>Çift Belirteç:</strong> Renk + Sembol</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-on-surface-variant">
+          <span class="material-symbols-outlined text-sm text-primary">touch_app</span>
+          <span><strong>Erişilebilirlik:</strong> Min. 44px hedef</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BÖLÜM 01: PUAN EĞİLİMİ ÇİZGİ GRAFİĞİ ================= -->
+    <section class="bg-surface rounded-xl border border-outline-variant p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase">
+            <span>Bölüm 01</span>
+            <span>•</span>
+            <span>Çizgi Grafiği</span>
+          </div>
+          <h3 class="text-sm font-bold text-on-surface">Puan Eğilimi ve Güven Aralığı</h3>
+        </div>
+        <button type="button" onclick="toggleTable('line-chart-svg', 'line-chart-tbl', this)" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-outline-variant bg-background text-[11px] font-semibold text-on-surface hover:bg-primary-container hover:text-primary transition-colors min-h-[44px]">
+          <span class="material-symbols-outlined text-sm">table_view</span>
+          <span>Tablo Olarak Göster</span>
+        </button>
+      </div>
+
+      <p class="text-[11px] text-on-surface-variant">
+        Son 8 deneme net puan ilerlemesi, %95 güven bandı ve ÖSYM doçentlik hedef çizgisi.
+      </p>
+
+      <!-- Key Metrics Strip -->
+      <div class="grid grid-cols-2 gap-2 bg-background p-2.5 rounded-lg border border-outline-variant">
+        <div>
+          <span class="text-[10px] text-on-surface-variant font-medium block">Son Deneme Skoru</span>
+          <span class="text-base font-bold text-primary tabular-nums">77.50 Puan</span>
+          <span class="text-[10px] text-tertiary font-semibold block">(+5.00 Artış)</span>
+        </div>
+        <div class="border-l border-outline-variant pl-2.5">
+          <span class="text-[10px] text-on-surface-variant font-medium block">ÖSYM Hedef Çizgisi</span>
+          <span class="text-base font-bold text-on-surface tabular-nums">80.00 Puan</span>
+          <span class="text-[10px] text-on-surface-variant block">Doçentlik / A Seviyesi</span>
+        </div>
+      </div>
+
+      <!-- Chart Legend -->
+      <div class="flex flex-wrap items-center gap-3 text-[11px] text-on-surface-variant pt-1">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-0.5 bg-primary rounded-full"></span>
+          <span class="font-medium text-on-surface">Deneme Neti</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-2 bg-primary-container border border-primary/30 rounded-xs"></span>
+          <span>%95 Güven Aralığı</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-0 border-t-2 border-dashed border-secondary"></span>
+          <span class="font-medium text-on-surface">Hedef: 80.00</span>
+        </div>
+      </div>
+
+      <!-- SVG Line Chart Canvas (Strict Responsive 358px) -->
+      <div id="line-chart-svg" class="w-full overflow-hidden pt-1">
+        <svg viewBox="0 0 358 190" class="w-full h-44 overflow-visible" aria-label="YDS Puan Eğilimi Çizgi Grafiği">
+          <!-- Horizontal Grid Lines -->
+          <g class="stroke-outline-variant" stroke-dasharray="2,2" stroke-width="1">
+            <line x1="32" y1="20" x2="350" y2="20"></line>
+            <line x1="32" y1="60" x2="350" y2="60"></line>
+            <line x1="32" y1="100" x2="350" y2="100"></line>
+            <line x1="32" y1="140" x2="350" y2="140"></line>
+          </g>
+
+          <!-- Y-Axis Labels -->
+          <g class="text-[10px] fill-on-surface-variant font-medium select-none tabular-nums" text-anchor="end">
+            <text x="26" y="24">100</text>
+            <text x="26" y="64">80</text>
+            <text x="26" y="104">60</text>
+            <text x="26" y="144">40</text>
+          </g>
+
+          <!-- Dashed Target Line at 80 Puan (Y = 60) -->
+          <line x1="32" y1="60" x2="350" y2="60" stroke="#E9A514" stroke-dasharray="5,4" stroke-width="2"></line>
+          <text x="350" y="54" text-anchor="end" class="text-[10px] font-bold fill-on-surface">Hedef 80.00</text>
+
+          <!-- Confidence Band Polygon (Area) -->
+          <!-- X coordinates: D1:45, D2:88, D3:132, D4:176, D5:220, D6:264, D7:308, D8:342 -->
+          <polygon points="
+            45,115 88,105 132,98 176,88 220,78 264,72 308,62 342,56
+            342,75 308,82 264,95 220,102 176,112 132,122 88,130 45,138
+          " fill="#DCEDEC" opacity="0.8"></polygon>
+
+          <!-- Line Graph Stroke -->
+          <polyline points="
+            45,124 88,118 132,110 176,100 220,90 264,84 308,72 342,65
+          " fill="none" stroke="#0E6A6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+
+          <!-- Data Points (Optical circles) -->
+          <circle cx="45" cy="124" r="3.5" fill="#FFFFFF" stroke="#0E6A6E" stroke-width="2"></circle>
+          <circle cx="88" cy="118" r="3.5" fill="#FFFFFF" stroke="#0E6A6E" stroke-width="2"></circle>
+          <circle cx="132" cy="110" r="3.5" fill="#FFFFFF" stroke="#0E6A6E" stroke-width="2"></circle>
+          <circle cx="176" cy="100" r="3.5" fill="#FFFFFF" stroke="#0E6A6E" stroke-width="2"></circle>
+          <circle cx="220" cy="90" r="3.5" fill="#FFFFFF" stroke="#0E6A6E" stroke-width="2"></circle>
+          <circle cx="264" cy="84" r="3.5" fill="#FFFFFF" stroke="#0E6A6E" stroke-width="2"></circle>
+          <circle cx="308" cy="72" r="3.5" fill="#FFFFFF" stroke="#0E6A6E" stroke-width="2"></circle>
+          
+          <!-- Latest point with dual highlight -->
+          <circle cx="342" cy="65" r="5" fill="#0E6A6E" stroke="#FFFFFF" stroke-width="2"></circle>
+
+          <!-- X-Axis Labels -->
+          <g class="text-[10px] fill-on-surface-variant font-medium select-none" text-anchor="middle">
+            <text x="45" y="162">D-01</text>
+            <text x="88" y="162">D-02</text>
+            <text x="132" y="162">D-03</text>
+            <text x="176" y="162">D-04</text>
+            <text x="220" y="162">D-05</text>
+            <text x="264" y="162">D-06</text>
+            <text x="308" y="162">D-07</text>
+            <text x="342" y="162" class="font-bold fill-primary">D-08</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Accessible Data Table (Hidden initially) -->
+      <div id="line-chart-tbl" class="hidden border border-outline-variant rounded-lg overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="bg-background border-b border-outline-variant text-[11px] text-on-surface-variant font-semibold">
+            <tr>
+              <th class="p-2">Deneme</th>
+              <th class="p-2 tabular-nums">Puan</th>
+              <th class="p-2 tabular-nums">Güven Aralığı</th>
+              <th class="p-2">ÖSYM Düzeyi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant text-[11px]">
+            <tr>
+              <td class="p-2 font-medium">Deneme #01</td>
+              <td class="p-2 tabular-nums">48.75</td>
+              <td class="p-2 text-on-surface-variant tabular-nums">45.0 - 52.5</td>
+              <td class="p-2">E Düzeyi</td>
+            </tr>
+            <tr>
+              <td class="p-2 font-medium">Deneme #04</td>
+              <td class="p-2 tabular-nums">61.25</td>
+              <td class="p-2 text-on-surface-variant tabular-nums">57.5 - 65.0</td>
+              <td class="p-2">C Düzeyi</td>
+            </tr>
+            <tr class="bg-primary-container/20">
+              <td class="p-2 font-bold text-primary">Deneme #08</td>
+              <td class="p-2 font-bold text-primary tabular-nums">77.50</td>
+              <td class="p-2 text-on-surface-variant tabular-nums">73.8 - 81.3</td>
+              <td class="p-2 font-semibold">B Düzeyi</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= BÖLÜM 02: SORU TİPİNE GÖRE BAŞARI YATAY ÇUBUKLARI ================= -->
+    <section class="bg-surface rounded-xl border border-outline-variant p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase">
+            <span>Bölüm 02</span>
+            <span>•</span>
+            <span>Yatay Dağılım</span>
+          </div>
+          <h3 class="text-sm font-bold text-on-surface">Soru Tipine Göre Başarı</h3>
+        </div>
+        <button type="button" onclick="toggleTable('bars-content', 'bars-tbl', this)" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-outline-variant bg-background text-[11px] font-semibold text-on-surface hover:bg-primary-container hover:text-primary transition-colors min-h-[44px]">
+          <span class="material-symbols-outlined text-sm">table_view</span>
+          <span>Tablo Olarak Göster</span>
+        </button>
+      </div>
+
+      <p class="text-[11px] text-on-surface-variant">
+        YDS'nin 8 ana soru alanında başarı oranları. En zayıf iki alan kritik uyarı belirteciyle vurgulanmıştır.
+      </p>
+
+      <div id="bars-content" class="space-y-3 pt-1">
+        <!-- Item 1: Çeviri Soruları (Güçlü) -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-on-surface">1. Çeviri (TR-EN / EN-TR)</span>
+            <span class="text-tertiary font-bold tabular-nums">91.6%</span>
+          </div>
+          <div class="h-2.5 w-full bg-background rounded-full overflow-hidden border border-outline-variant">
+            <div class="h-full bg-tertiary rounded-full" style="width: 91.6%;"></div>
+          </div>
+        </div>
+
+        <!-- Item 2: Karşılıklı Konuşma (Diyalog) -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-on-surface">2. Karşılıklı Konuşma (Diyalog)</span>
+            <span class="text-primary font-bold tabular-nums">80.0%</span>
+          </div>
+          <div class="h-2.5 w-full bg-background rounded-full overflow-hidden border border-outline-variant">
+            <div class="h-full bg-primary rounded-full" style="width: 80.0%;"></div>
+          </div>
+        </div>
+
+        <!-- Item 3: Kelime Bilgisi -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-on-surface">3. Kelime Bilgisi</span>
+            <span class="text-primary font-bold tabular-nums">75.0%</span>
+          </div>
+          <div class="h-2.5 w-full bg-background rounded-full overflow-hidden border border-outline-variant">
+            <div class="h-full bg-primary rounded-full" style="width: 75.0%;"></div>
+          </div>
+        </div>
+
+        <!-- Item 4: Dilbilgisi & Cloze Test -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-on-surface">4. Dilbilgisi &amp; Cloze Test</span>
+            <span class="text-primary font-bold tabular-nums">70.0%</span>
+          </div>
+          <div class="h-2.5 w-full bg-background rounded-full overflow-hidden border border-outline-variant">
+            <div class="h-full bg-primary rounded-full" style="width: 70.0%;"></div>
+          </div>
+        </div>
+
+        <!-- Item 5: Anlam Bütünlüğünü Bozan Cümle -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-on-surface">5. Anlam Bütünlüğünü Bozan</span>
+            <span class="text-primary font-bold tabular-nums">65.0%</span>
+          </div>
+          <div class="h-2.5 w-full bg-background rounded-full overflow-hidden border border-outline-variant">
+            <div class="h-full bg-primary rounded-full" style="width: 65.0%;"></div>
+          </div>
+        </div>
+
+        <!-- Item 6: Okuma Parçaları (Paragraf) -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-on-surface">6. Okuma Parçaları (20 Soru)</span>
+            <span class="text-primary font-bold tabular-nums">62.5%</span>
+          </div>
+          <div class="h-2.5 w-full bg-background rounded-full overflow-hidden border border-outline-variant">
+            <div class="h-full bg-primary rounded-full" style="width: 62.5%;"></div>
+          </div>
+        </div>
+
+        <!-- Item 7: VURGULU EN ZAYIF 1 - Paragraf Tamamlama -->
+        <div class="p-2.5 rounded-lg bg-error-container/30 border border-error/30 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-error text-sm">warning</span>
+              <span class="font-bold text-on-surface">7. Paragraf Tamamlama</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-bold bg-error text-white px-1.5 py-0.5 rounded">Zayıf</span>
+              <span class="text-error font-bold tabular-nums">52.0%</span>
+            </div>
+          </div>
+          <div class="h-2.5 w-full bg-surface rounded-full overflow-hidden border border-error/30">
+            <div class="h-full bg-error rounded-full" style="width: 52.0%;"></div>
+          </div>
+          <p class="text-[10px] text-error font-medium">Zamir ve geçiş sözcükleri takibinde hata oranı yüksek.</p>
+        </div>
+
+        <!-- Item 8: VURGULU EN ZAYIF 2 - Cümle Tamamlama -->
+        <div class="p-2.5 rounded-lg bg-error-container/30 border border-error/30 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-error text-sm">priority_high</span>
+              <span class="font-bold text-on-surface">8. Cümle Tamamlama</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-bold bg-error text-white px-1.5 py-0.5 rounded">Kritik</span>
+              <span class="text-error font-bold tabular-nums">45.0%</span>
+            </div>
+          </div>
+          <div class="h-2.5 w-full bg-surface rounded-full overflow-hidden border border-error/30">
+            <div class="h-full bg-error rounded-full" style="width: 45.0%;"></div>
+          </div>
+          <p class="text-[10px] text-error font-medium">Zıtlık bağlaçlarında zaman uyumu çeldiricisine dikkat edilmeli.</p>
+        </div>
+      </div>
+
+      <!-- Accessible Table -->
+      <div id="bars-tbl" class="hidden border border-outline-variant rounded-lg overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="bg-background border-b border-outline-variant text-[11px] text-on-surface-variant font-semibold">
+            <tr>
+              <th class="p-2">Soru Türü</th>
+              <th class="p-2 tabular-nums">Başarı</th>
+              <th class="p-2">Pedagojik Durum</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant text-[11px]">
+            <tr>
+              <td class="p-2 font-medium">Çeviri</td>
+              <td class="p-2 text-tertiary font-bold tabular-nums">91.6%</td>
+              <td class="p-2 text-tertiary">Güçlü Yetkinlik</td>
+            </tr>
+            <tr class="bg-error-container/20">
+              <td class="p-2 font-bold text-error">Paragraf Tamamlama</td>
+              <td class="p-2 text-error font-bold tabular-nums">52.0%</td>
+              <td class="p-2 text-error font-semibold">Öncelikli Tekrar</td>
+            </tr>
+            <tr class="bg-error-container/20">
+              <td class="p-2 font-bold text-error">Cümle Tamamlama</td>
+              <td class="p-2 text-error font-bold tabular-nums">45.0%</td>
+              <td class="p-2 text-error font-semibold">Kritik Alarm</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= BÖLÜM 03: YIĞILMIŞ DOĞRU / YANLIŞ / BOŞ ÇUBUĞU ================= -->
+    <section class="bg-surface rounded-xl border border-outline-variant p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase">
+            <span>Bölüm 03</span>
+            <span>•</span>
+            <span>80 Soru Optik Dağılım</span>
+          </div>
+          <h3 class="text-sm font-bold text-on-surface">Yığılmış Sonuç Çubuğu</h3>
+        </div>
+        <button type="button" onclick="toggleTable('stacked-bars-content', 'stacked-tbl', this)" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-outline-variant bg-background text-[11px] font-semibold text-on-surface hover:bg-primary-container hover:text-primary transition-colors min-h-[44px]">
+          <span class="material-symbols-outlined text-sm">table_view</span>
+          <span>Tablo Olarak Göster</span>
+        </button>
+      </div>
+
+      <!-- ÖSYM Pedagogical Rule Banner -->
+      <div class="p-2.5 rounded-lg bg-background border border-outline-variant flex items-center gap-2 text-[11px] text-on-surface-variant">
+        <span class="material-symbols-outlined text-primary text-base shrink-0">info</span>
+        <span><strong>ÖSYM Kuralı:</strong> YDS'de 4 yanlış 1 doğruyu götürmez (Net = Doğru Sayısı).</span>
+      </div>
+
+      <!-- Legend -->
+      <div class="flex items-center justify-between text-[11px] border-b border-outline-variant pb-2">
+        <div class="flex items-center gap-1 text-on-surface font-medium">
+          <span class="w-3 h-3 rounded bg-tertiary flex items-center justify-center text-white text-[9px] font-bold">✓</span>
+          <span>Doğru</span>
+        </div>
+        <div class="flex items-center gap-1 text-on-surface font-medium">
+          <span class="w-3 h-3 rounded bg-error flex items-center justify-center text-white text-[9px] font-bold">✕</span>
+          <span>Yanlış</span>
+        </div>
+        <div class="flex items-center gap-1 text-on-surface-variant font-medium">
+          <span class="w-3 h-3 rounded bg-[#E9EDEC] border border-outline text-[#5E6B70] flex items-center justify-center text-[9px] font-bold">○</span>
+          <span>Boş</span>
+        </div>
+        <span class="text-on-surface-variant font-medium text-[10px]">Toplam: 80 Soru</span>
+      </div>
+
+      <!-- Stacked Bars Visual -->
+      <div id="stacked-bars-content" class="space-y-3 pt-1">
+        <!-- Deneme 10 -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-on-surface">Deneme #08 (Son)</span>
+            <span class="tabular-nums font-bold text-primary">65 D • 12 Y • 3 B</span>
+          </div>
+          <div class="h-6 w-full bg-background rounded-md overflow-hidden flex border border-outline-variant text-[10px] font-bold text-white select-none">
+            <div class="bg-tertiary h-full flex items-center justify-center" style="width: 81.25%;">65 D (%81)</div>
+            <div class="bg-error h-full flex items-center justify-center" style="width: 15%;">12 Y</div>
+            <div class="bg-[#E9EDEC] text-[#5E6B70] h-full flex items-center justify-center border-l border-outline" style="width: 3.75%;">3 B</div>
+          </div>
+        </div>
+
+        <!-- Deneme 09 -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-on-surface">Deneme #07</span>
+            <span class="tabular-nums font-medium text-on-surface-variant">60 D • 16 Y • 4 B</span>
+          </div>
+          <div class="h-6 w-full bg-background rounded-md overflow-hidden flex border border-outline-variant text-[10px] font-bold text-white select-none">
+            <div class="bg-tertiary h-full flex items-center justify-center" style="width: 75%;">60 D (%75)</div>
+            <div class="bg-error h-full flex items-center justify-center" style="width: 20%;">16 Y</div>
+            <div class="bg-[#E9EDEC] text-[#5E6B70] h-full flex items-center justify-center border-l border-outline" style="width: 5%;">4 B</div>
+          </div>
+        </div>
+
+        <!-- Deneme 08 -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-on-surface">Deneme #06</span>
+            <span class="tabular-nums font-medium text-on-surface-variant">56 D • 18 Y • 6 B</span>
+          </div>
+          <div class="h-6 w-full bg-background rounded-md overflow-hidden flex border border-outline-variant text-[10px] font-bold text-white select-none">
+            <div class="bg-tertiary h-full flex items-center justify-center" style="width: 70%;">56 D (%70)</div>
+            <div class="bg-error h-full flex items-center justify-center" style="width: 22.5%;">18 Y</div>
+            <div class="bg-[#E9EDEC] text-[#5E6B70] h-full flex items-center justify-center border-l border-outline" style="width: 7.5%;">6 B</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accessible Table -->
+      <div id="stacked-tbl" class="hidden border border-outline-variant rounded-lg overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="bg-background border-b border-outline-variant text-[11px] text-on-surface-variant font-semibold">
+            <tr>
+              <th class="p-2">Deneme</th>
+              <th class="p-2 tabular-nums">Doğru</th>
+              <th class="p-2 tabular-nums">Yanlış</th>
+              <th class="p-2 tabular-nums">Boş</th>
+              <th class="p-2 tabular-nums">Ham Doğru</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant text-[11px]">
+            <tr>
+              <td class="p-2 font-bold text-primary">Deneme #08</td>
+              <td class="p-2 text-tertiary font-bold tabular-nums">65</td>
+              <td class="p-2 text-error tabular-nums">12</td>
+              <td class="p-2 text-on-surface-variant tabular-nums">3</td>
+              <td class="p-2 font-bold tabular-nums">65.00</td>
+            </tr>
+            <tr>
+              <td class="p-2 font-medium">Deneme #07</td>
+              <td class="p-2 text-tertiary font-medium tabular-nums">60</td>
+              <td class="p-2 text-error tabular-nums">16</td>
+              <td class="p-2 text-on-surface-variant tabular-nums">4</td>
+              <td class="p-2 font-medium tabular-nums">60.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= BÖLÜM 04: SORU BAŞINA SÜRE DİKEY ÇUBUKLARI ================= -->
+    <section class="bg-surface rounded-xl border border-outline-variant p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase">
+            <span>Bölüm 04</span>
+            <span>•</span>
+            <span>Hız &amp; Süre Histogramı</span>
+          </div>
+          <h3 class="text-sm font-bold text-on-surface">Soru Başına Harcanan Süre</h3>
+        </div>
+        <button type="button" onclick="toggleTable('speed-chart-svg', 'speed-tbl', this)" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-outline-variant bg-background text-[11px] font-semibold text-on-surface hover:bg-primary-container hover:text-primary transition-colors min-h-[44px]">
+          <span class="material-symbols-outlined text-sm">table_view</span>
+          <span>Tablo Olarak Göster</span>
+        </button>
+      </div>
+
+      <p class="text-[11px] text-on-surface-variant">
+        ÖSYM tavan eşiği olan 135 saniyeyi aşan bölümler kırmızı tuğla rengiyle işaretlenmiştir.
+      </p>
+
+      <!-- Speed Legend -->
+      <div class="flex items-center justify-between text-[11px] text-on-surface-variant bg-background p-2 rounded-lg border border-outline-variant">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded bg-primary"></span>
+          <span>İdeal (&lt;135 sn)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded bg-error"></span>
+          <span class="text-error font-semibold">Aşım (&gt;135 sn)</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-3 h-0 border-t-2 border-dashed border-secondary"></span>
+          <span class="text-[10px] font-medium text-on-surface">135 sn Eşiği</span>
+        </div>
+      </div>
+
+      <!-- Vertical Bars SVG (Strict Responsive 358px) -->
+      <div id="speed-chart-svg" class="w-full overflow-hidden pt-1">
+        <svg viewBox="0 0 358 175" class="w-full h-44 overflow-visible" aria-label="Soru Başına Süre Dikey Çubuk Grafiği">
+          <!-- Threshold Line at 135s (Y = 55) -->
+          <line x1="28" y1="55" x2="350" y2="55" stroke="#E9A514" stroke-dasharray="5,4" stroke-width="2"></line>
+          <text x="350" y="50" text-anchor="end" class="text-[9px] font-bold fill-on-surface">135 sn Tavan Sınırı</text>
+
+          <!-- Average 104s line (Y = 85) -->
+          <line x1="28" y1="85" x2="350" y2="85" stroke="#77868A" stroke-dasharray="2,2" stroke-width="1"></line>
+          <text x="32" y="80" class="text-[9px] font-medium fill-on-surface-variant">Ort: 104 sn</text>
+
+          <!-- Y-Axis labels (Seconds) -->
+          <g class="text-[9px] fill-on-surface-variant select-none tabular-nums" text-anchor="end">
+            <text x="24" y="24">180</text>
+            <text x="24" y="58">135</text>
+            <text x="24" y="95">90</text>
+            <text x="24" y="135">45</text>
+            <text x="24" y="152">0</text>
+          </g>
+
+          <!-- Baseline Axis -->
+          <line x1="28" y1="150" x2="350" y2="150" stroke="#DAE1E0" stroke-width="1.5"></line>
+
+          <!-- Category Bars: 6 Major Sections -->
+          <!-- 1: Kelime (55 sn) -> Height = 36, Y = 114 -->
+          <g transform="translate(38, 0)">
+            <rect x="0" y="114" width="28" height="36" rx="3" fill="#0E6A6E"></rect>
+            <text x="14" y="108" text-anchor="middle" class="text-[9px] font-bold fill-primary tabular-nums">55 sn</text>
+            <text x="14" y="164" text-anchor="middle" class="text-[9px] font-medium fill-on-surface-variant">Kelime</text>
+          </g>
+
+          <!-- 2: Gramer (75 sn) -> Height = 50, Y = 100 -->
+          <g transform="translate(88, 0)">
+            <rect x="0" y="100" width="28" height="50" rx="3" fill="#0E6A6E"></rect>
+            <text x="14" y="94" text-anchor="middle" class="text-[9px] font-bold fill-primary tabular-nums">75 sn</text>
+            <text x="14" y="164" text-anchor="middle" class="text-[9px] font-medium fill-on-surface-variant">Gramer</text>
+          </g>
+
+          <!-- 3: Cümle Tamamlama (118 sn) -> Height = 78, Y = 72 -->
+          <g transform="translate(138, 0)">
+            <rect x="0" y="72" width="28" height="78" rx="3" fill="#0E6A6E"></rect>
+            <text x="14" y="66" text-anchor="middle" class="text-[9px] font-bold fill-primary tabular-nums">118 sn</text>
+            <text x="14" y="164" text-anchor="middle" class="text-[9px] font-medium fill-on-surface-variant">Cümle</text>
+          </g>
+
+          <!-- 4: Çeviri (82 sn) -> Height = 54, Y = 96 -->
+          <g transform="translate(188, 0)">
+            <rect x="0" y="96" width="28" height="54" rx="3" fill="#0E6A6E"></rect>
+            <text x="14" y="90" text-anchor="middle" class="text-[9px] font-bold fill-primary tabular-nums">82 sn</text>
+            <text x="14" y="164" text-anchor="middle" class="text-[9px] font-medium fill-on-surface-variant">Çeviri</text>
+          </g>
+
+          <!-- 5: Paragraf Okuma (165 sn - AŞIM) -> Height = 110, Y = 40 -->
+          <g transform="translate(238, 0)">
+            <rect x="0" y="40" width="28" height="110" rx="3" fill="#A33D27"></rect>
+            <text x="14" y="34" text-anchor="middle" class="text-[9px] font-bold fill-error tabular-nums">165 sn</text>
+            <text x="14" y="164" text-anchor="middle" class="text-[9px] font-bold fill-error">Paragraf</text>
+          </g>
+
+          <!-- 6: Diyalog / Akış (92 sn) -> Height = 61, Y = 89 -->
+          <g transform="translate(288, 0)">
+            <rect x="0" y="89" width="28" height="61" rx="3" fill="#0E6A6E"></rect>
+            <text x="14" y="83" text-anchor="middle" class="text-[9px] font-bold fill-primary tabular-nums">92 sn</text>
+            <text x="14" y="164" text-anchor="middle" class="text-[9px] font-medium fill-on-surface-variant">Diyalog</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Accessible Table -->
+      <div id="speed-tbl" class="hidden border border-outline-variant rounded-lg overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="bg-background border-b border-outline-variant text-[11px] text-on-surface-variant font-semibold">
+            <tr>
+              <th class="p-2">Bölüm</th>
+              <th class="p-2 tabular-nums">Süre</th>
+              <th class="p-2">Eşik Durumu</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant text-[11px]">
+            <tr>
+              <td class="p-2 font-medium">Kelime Bilgisi</td>
+              <td class="p-2 tabular-nums">55 sn</td>
+              <td class="p-2 text-tertiary">Güvenli Hızlı</td>
+            </tr>
+            <tr class="bg-error-container/20">
+              <td class="p-2 font-bold text-error">Paragraf Okuma</td>
+              <td class="p-2 text-error font-bold tabular-nums">165 sn</td>
+              <td class="p-2 text-error font-bold">Kritik Tavan Aşımı (+30 sn)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= BÖLÜM 05: BECERİ USTALIĞI ISI HARİTASI ================= -->
+    <section class="bg-surface rounded-xl border border-outline-variant p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase">
+            <span>Bölüm 05</span>
+            <span>•</span>
+            <span>Kavram Matrisi</span>
+          </div>
+          <h3 class="text-sm font-bold text-on-surface">Beceri Isı Haritası</h3>
+        </div>
+        <button type="button" onclick="toggleTable('heatmap-grid', 'heatmap-tbl', this)" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-outline-variant bg-background text-[11px] font-semibold text-on-surface hover:bg-primary-container hover:text-primary transition-colors min-h-[44px]">
+          <span class="material-symbols-outlined text-sm">table_view</span>
+          <span>Tablo Olarak Göster</span>
+        </button>
+      </div>
+
+      <p class="text-[11px] text-on-surface-variant">
+        Petrol tonlarıyla kademelendirilmiş zorluk düzeyleri ve her hücrede somut doğruluk yüzdesi.
+      </p>
+
+      <!-- Heatmap Grid -->
+      <div id="heatmap-grid" class="space-y-2 pt-1">
+        <!-- Matrix Column Headers -->
+        <div class="grid grid-cols-4 gap-1.5 text-center text-[10px] font-bold text-on-surface-variant">
+          <div class="text-left pl-1">Konu Başlığı</div>
+          <div class="bg-background py-1 rounded">Temel</div>
+          <div class="bg-background py-1 rounded">Orta</div>
+          <div class="bg-background py-1 rounded">Tuzak</div>
+        </div>
+
+        <!-- Row 1: Zıtlık Bağlaçları -->
+        <div class="grid grid-cols-4 gap-1.5 items-center text-xs">
+          <span class="font-medium text-[11px] text-on-surface truncate">Zıtlık Bağlaçları</span>
+          <div class="h-8 rounded bg-[#0E6A6E] text-white font-bold flex items-center justify-center text-[11px] tabular-nums">
+            %94
+          </div>
+          <div class="h-8 rounded bg-[#188B90] text-white font-bold flex items-center justify-center text-[11px] tabular-nums">
+            %82
+          </div>
+          <div class="h-8 rounded bg-error-container text-error font-bold flex items-center justify-center text-[11px] tabular-nums border border-error/30">
+            %41
+          </div>
+        </div>
+
+        <!-- Row 2: Zaman Tensleri -->
+        <div class="grid grid-cols-4 gap-1.5 items-center text-xs">
+          <span class="font-medium text-[11px] text-on-surface truncate">Zaman Tensleri</span>
+          <div class="h-8 rounded bg-[#0E6A6E] text-white font-bold flex items-center justify-center text-[11px] tabular-nums">
+            %96
+          </div>
+          <div class="h-8 rounded bg-[#0E6A6E] text-white font-bold flex items-center justify-center text-[11px] tabular-nums">
+            %88
+          </div>
+          <div class="h-8 rounded bg-primary-container text-primary font-bold flex items-center justify-center text-[11px] tabular-nums border border-primary/20">
+            %64
+          </div>
+        </div>
+
+        <!-- Row 3: Edat Öbekleri -->
+        <div class="grid grid-cols-4 gap-1.5 items-center text-xs">
+          <span class="font-medium text-[11px] text-on-surface truncate">Edat Öbekleri</span>
+          <div class="h-8 rounded bg-[#188B90] text-white font-bold flex items-center justify-center text-[11px] tabular-nums">
+            %84
+          </div>
+          <div class="h-8 rounded bg-[#66B8BA] text-on-surface font-bold flex items-center justify-center text-[11px] tabular-nums">
+            %65
+          </div>
+          <div class="h-8 rounded bg-error-container text-error font-bold flex items-center justify-center text-[11px] tabular-nums border border-error/30">
+            %38
+          </div>
+        </div>
+
+        <!-- Row 4: İsim Cümlecikleri -->
+        <div class="grid grid-cols-4 gap-1.5 items-center text-xs">
+          <span class="font-medium text-[11px] text-on-surface truncate">İsim Cümlecikleri</span>
+          <div class="h-8 rounded bg-[#0E6A6E] text-white font-bold flex items-center justify-center text-[11px] tabular-nums">
+            %90
+          </div>
+          <div class="h-8 rounded bg-[#188B90] text-white font-bold flex items-center justify-center text-[11px] tabular-nums">
+            %78
+          </div>
+          <div class="h-8 rounded bg-error-container text-error font-bold flex items-center justify-center text-[11px] tabular-nums border border-error/30">
+            %46
+          </div>
+        </div>
+      </div>
+
+      <!-- Accessible Table -->
+      <div id="heatmap-tbl" class="hidden border border-outline-variant rounded-lg overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="bg-background border-b border-outline-variant text-[11px] text-on-surface-variant font-semibold">
+            <tr>
+              <th class="p-2">Konu</th>
+              <th class="p-2 tabular-nums">Temel</th>
+              <th class="p-2 tabular-nums">Orta</th>
+              <th class="p-2 tabular-nums">ÖSYM Tuzağı</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant text-[11px]">
+            <tr>
+              <td class="p-2 font-medium">Zıtlık Bağlaçları</td>
+              <td class="p-2 text-tertiary tabular-nums font-bold">%94</td>
+              <td class="p-2 text-tertiary tabular-nums font-bold">%82</td>
+              <td class="p-2 text-error tabular-nums font-bold">%41</td>
+            </tr>
+            <tr>
+              <td class="p-2 font-medium">Edat Öbekleri</td>
+              <td class="p-2 text-tertiary tabular-nums font-bold">%84</td>
+              <td class="p-2 tabular-nums font-bold">%65</td>
+              <td class="p-2 text-error tabular-nums font-bold">%38</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= BÖLÜM 06: ÇALIŞMA TAKVİMİ & KIVILCIM GRAFİKLER ================= -->
+    <section class="bg-surface rounded-xl border border-outline-variant p-4 space-y-3">
+      <div>
+        <div class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase">
+          <span>Bölüm 06</span>
+          <span>•</span>
+          <span>Ritim ve Mikro Göstergeler</span>
+        </div>
+        <h3 class="text-sm font-bold text-on-surface">Çalışma Takvimi ve Kıvılcım Eğilimleri</h3>
+        <p class="text-[11px] text-on-surface-variant">Son 10 haftalık gün gün yoğunluk matrisi ve mikro trendler.</p>
+      </div>
+
+      <!-- Weekly Dots Container (GitHub style 7 rows x 10 cols) -->
+      <div class="p-3 bg-background rounded-lg border border-outline-variant space-y-2">
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="font-bold text-on-surface">Son 10 Hafta Aktivitesi</span>
+          <div class="flex items-center gap-1.5 text-[10px] text-on-surface-variant">
+            <span>Az</span>
+            <span class="w-2.5 h-2.5 rounded-xs bg-[#DCEDEC]"></span>
+            <span class="w-2.5 h-2.5 rounded-xs bg-[#66B8BA]"></span>
+            <span class="w-2.5 h-2.5 rounded-xs bg-[#0E6A6E]"></span>
+            <span>Yoğun</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto py-1">
+          <div class="inline-grid grid-rows-7 grid-flow-col gap-1">
+            <!-- 70 Daily Activity Blocks -->
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]" title="90 dk"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#DCEDEC]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-surface border border-outline-variant"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#DCEDEC]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-surface border border-outline-variant"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#DCEDEC]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-surface border border-outline-variant"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#DCEDEC]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#DCEDEC]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#DCEDEC]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#66B8BA]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+            <div class="w-3.5 h-3.5 rounded-xs bg-[#0E6A6E]"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-[11px] pt-1 border-t border-outline-variant/60">
+          <span class="text-on-surface-variant">Haftalık Ortalama: <strong>5.8 Gün</strong></span>
+          <span class="text-tertiary font-bold">14 Günlük Seri Aktif</span>
+        </div>
+      </div>
+
+      <!-- Sparklines (Mikro Eğilimler) -->
+      <div class="space-y-2 pt-1">
+        <!-- Sparkline 1: Günlük Çözülen Soru -->
+        <div class="p-2.5 rounded-lg border border-outline-variant bg-surface flex items-center justify-between">
+          <div>
+            <span class="text-[10px] text-on-surface-variant font-medium block">Günlük Çözülen Soru</span>
+            <span class="text-xs font-bold text-on-surface tabular-nums">92 soru / gün</span>
+          </div>
+          <svg width="74" height="24" class="overflow-visible">
+            <polyline fill="none" stroke="#1F7A45" stroke-width="2" stroke-linecap="round" points="0,20 12,12 25,14 38,8 52,6 68,2"></polyline>
+            <circle cx="68" cy="2" r="3" fill="#1F7A45"></circle>
+          </svg>
+        </div>
+
+        <!-- Sparkline 2: Kelime Tekrar Hızı -->
+        <div class="p-2.5 rounded-lg border border-outline-variant bg-surface flex items-center justify-between">
+          <div>
+            <span class="text-[10px] text-on-surface-variant font-medium block">SRS Kelime Tekrar Hızı</span>
+            <span class="text-xs font-bold text-on-surface tabular-nums">48 kelime / gün</span>
+          </div>
+          <svg width="74" height="24" class="overflow-visible">
+            <polyline fill="none" stroke="#0E6A6E" stroke-width="2" stroke-linecap="round" points="0,18 12,14 25,16 38,10 52,8 68,3"></polyline>
+            <circle cx="68" cy="3" r="3" fill="#0E6A6E"></circle>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BÖLÜM 07: ÇELDİRİCİ DAĞILIMI HİSTOGRAMI ================= -->
+    <section class="bg-surface rounded-xl border border-outline-variant p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase">
+            <span>Bölüm 07</span>
+            <span>•</span>
+            <span>Hata Analizi</span>
+          </div>
+          <h3 class="text-sm font-bold text-on-surface">ÖSYM Çeldirici Dağılımı</h3>
+        </div>
+        <span class="text-[10px] font-bold text-error bg-error-container px-2 py-0.5 rounded border border-error/30">
+          Tuzak: B Şıkkı
+        </span>
+      </div>
+
+      <p class="text-[11px] text-on-surface-variant">
+        Yanlış yanıtlanan sorularda adayın en çok yöneldiği tuzak seçenek analizi (A-E optik şıkları).
+      </p>
+
+      <!-- 5-Option Histogram Columns -->
+      <div class="grid grid-cols-5 gap-1.5 pt-2">
+        <!-- A Şıkkı -->
+        <div class="space-y-1 text-center">
+          <div class="h-20 bg-background rounded border border-outline-variant flex items-end justify-center p-1">
+            <div class="w-full bg-primary/70 rounded-xs" style="height: 35%;"></div>
+          </div>
+          <div class="text-[11px] font-bold text-on-surface">A</div>
+          <div class="text-[10px] text-on-surface-variant tabular-nums">%14</div>
+        </div>
+
+        <!-- B Şıkkı (Highest Distractor) -->
+        <div class="space-y-1 text-center">
+          <div class="h-20 bg-background rounded border border-error/40 flex items-end justify-center p-1">
+            <div class="w-full bg-error rounded-xs" style="height: 85%;"></div>
+          </div>
+          <div class="text-[11px] font-bold text-error">B</div>
+          <div class="text-[10px] text-error font-bold tabular-nums">%38</div>
+        </div>
+
+        <!-- C Şıkkı -->
+        <div class="space-y-1 text-center">
+          <div class="h-20 bg-background rounded border border-outline-variant flex items-end justify-center p-1">
+            <div class="w-full bg-primary/70 rounded-xs" style="height: 48%;"></div>
+          </div>
+          <div class="text-[11px] font-bold text-on-surface">C</div>
+          <div class="text-[10px] text-on-surface-variant tabular-nums">%20</div>
+        </div>
+
+        <!-- D Şıkkı -->
+        <div class="space-y-1 text-center">
+          <div class="h-20 bg-background rounded border border-outline-variant flex items-end justify-center p-1">
+            <div class="w-full bg-primary/70 rounded-xs" style="height: 40%;"></div>
+          </div>
+          <div class="text-[11px] font-bold text-on-surface">D</div>
+          <div class="text-[10px] text-on-surface-variant tabular-nums">%16</div>
+        </div>
+
+        <!-- E Şıkkı -->
+        <div class="space-y-1 text-center">
+          <div class="h-20 bg-background rounded border border-outline-variant flex items-end justify-center p-1">
+            <div class="w-full bg-primary/70 rounded-xs" style="height: 30%;"></div>
+          </div>
+          <div class="text-[11px] font-bold text-on-surface">E</div>
+          <div class="text-[10px] text-on-surface-variant tabular-nums">%12</div>
+        </div>
+      </div>
+
+      <div class="p-2.5 rounded-lg bg-background border border-outline-variant text-[11px] text-on-surface-variant">
+        <strong>Pedagojik Reçete:</strong> Paragraf sorularında B şıkkında yer alan "kapsamı daraltılmış genel yargı" çeldiricilerine karşı anahtar kelime eşleştirmesi yapılmalı.
+      </div>
+    </section>
+
+    <!-- ================= BÖLÜM 08: GRAFİK RENK PALETİ (AÇIK VE KOYU TEMA) ================= -->
+    <section class="bg-surface rounded-xl border border-outline-variant p-4 space-y-3">
+      <div>
+        <div class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase">
+          <span>Bölüm 08</span>
+          <span>•</span>
+          <span>Tasarım Belirteçleri</span>
+        </div>
+        <h3 class="text-sm font-bold text-on-surface">Açık ve Koyu Tema Grafik Renkleri</h3>
+        <p class="text-[11px] text-on-surface-variant">Daltonizm (renk körlüğü) ve WCAG AAA kontrast güvencesi.</p>
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <!-- Token Row 1: Primary (Petrol) -->
+        <div class="p-2.5 rounded-lg bg-background border border-outline-variant flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-[#0E6A6E] border border-outline-variant"></span>
+            <div>
+              <span class="font-bold text-on-surface block text-[11px]">Petrol (Birincil Veri)</span>
+              <span class="text-[10px] text-on-surface-variant font-mono">Açık: #0E6A6E · Koyu: #4DB6B0</span>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold text-tertiary bg-tertiary-container px-2 py-0.5 rounded">AAA 7.4:1</span>
+        </div>
+
+        <!-- Token Row 2: Secondary (Safran - Dolgu/Hedef) -->
+        <div class="p-2.5 rounded-lg bg-background border border-outline-variant flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-[#E9A514] border border-outline-variant"></span>
+            <div>
+              <span class="font-bold text-on-surface block text-[11px]">Safran (Hedef / Sınır Çizgisi)</span>
+              <span class="text-[10px] text-on-surface-variant font-mono">Açık: #E9A514 · Koyu: #F0B43A</span>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold text-on-surface-variant bg-surface px-2 py-0.5 rounded border border-outline-variant">3:1 Çizgi Sınırı</span>
+        </div>
+
+        <!-- Token Row 3: Tertiary (Yeşil - Doğru) -->
+        <div class="p-2.5 rounded-lg bg-background border border-outline-variant flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-[#1F7A45] border border-outline-variant flex items-center justify-center text-white text-[9px] font-bold">✓</span>
+            <div>
+              <span class="font-bold text-on-surface block text-[11px]">Yeşil (Doğru / Başarı)</span>
+              <span class="text-[10px] text-on-surface-variant font-mono">Açık: #1F7A45 · Koyu: #4CC27D</span>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold text-tertiary bg-tertiary-container px-2 py-0.5 rounded">Çift Belirteç</span>
+        </div>
+
+        <!-- Token Row 4: Error (Tuğla Kırmızısı - Hata) -->
+        <div class="p-2.5 rounded-lg bg-background border border-outline-variant flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-[#A33D27] border border-outline-variant flex items-center justify-center text-white text-[9px] font-bold">✕</span>
+            <div>
+              <span class="font-bold text-on-surface block text-[11px]">Tuğla (Hata / Hız Aşımı)</span>
+              <span class="text-[10px] text-on-surface-variant font-mono">Açık: #A33D27 · Koyu: #EE8A6E</span>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold text-tertiary bg-tertiary-container px-2 py-0.5 rounded">Çift Belirteç</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FIXED BOTTOM NAV BAR (5 DESTINATIONS) ================= -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-outline-variant">
+    <div class="max-w-[390px] mx-auto h-16 px-2 flex items-center justify-around">
+      <!-- 1: Bugün -->
+      <a href="#" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors">
+        <span class="material-symbols-outlined text-xl">calendar_today</span>
+        <span class="text-[10px] font-medium mt-0.5">Bugün</span>
+      </a>
+
+      <!-- 2: Çalış -->
+      <a href="#" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors">
+        <span class="material-symbols-outlined text-xl">menu_book</span>
+        <span class="text-[10px] font-medium mt-0.5">Çalış</span>
+      </a>
+
+      <!-- 3: Deneme (Active Section for CMP-12 Analytics) -->
+      <a href="#" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-semibold relative after:content-[''] after:w-1.5 after:h-1.5 after:bg-primary after:rounded-full after:mt-0.5">
+        <span class="material-symbols-outlined text-xl fill-icon">assignment</span>
+        <span class="text-[10px] font-semibold mt-0.5">Deneme</span>
+      </a>
+
+      <!-- 4: Öğretmen -->
+      <a href="#" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors">
+        <span class="material-symbols-outlined text-xl">school</span>
+        <span class="text-[10px] font-medium mt-0.5">Öğretmen</span>
+      </a>
+
+      <!-- 5: Ben -->
+      <a href="#" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors">
+        <span class="material-symbols-outlined text-xl">person</span>
+        <span class="text-[10px] font-medium mt-0.5">Ben</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Interactive script to toggle accessible table view -->
+  <script>
+    function toggleTable(visualId, tableId, btn) {
+      const visualEl = document.getElementById(visualId);
+      const tableEl = document.getElementById(tableId);
+      if (!visualEl || !tableEl) return;
+
+      if (tableEl.classList.contains('hidden')) {
+        tableEl.classList.remove('hidden');
+        visualEl.classList.add('hidden');
+        btn.innerHTML = '<span class="material-symbols-outlined text-sm">bar_chart</span><span>Grafik Olarak Göster</span>';
+        btn.classList.add('bg-primary-container', 'text-primary');
+      } else {
+        tableEl.classList.add('hidden');
+        visualEl.classList.remove('hidden');
+        btn.innerHTML = '<span class="material-symbols-outlined text-sm">table_view</span><span>Tablo Olarak Göster</span>';
+        btn.classList.remove('bg-primary-container', 'text-primary');
+      }
+    }
+  </script>
+
+
+</body></html>
