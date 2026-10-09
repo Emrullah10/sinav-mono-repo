@@ -52,6 +52,7 @@ export const makeFakePaymentProvider = ({ secret }) => {
   return {
     name: 'fake',
     pageToken,
+    verifyPageToken: (paymentCode, t) => safeEq(t, pageToken(paymentCode)),
     async createPayment({ paymentCode, card }) {
       const meta = normalizeCard(card);
       const token = newToken(meta.last4);

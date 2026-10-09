@@ -80,6 +80,26 @@ function injectAuthHeaders(proxyReq, req) {
   }
 }
 
+// SSE (text/event-stream) yanıtları tamponlanmaz: `responseInterceptor` gövdeyi sonuna kadar
+// biriktirdiği için akış tek parça gelirdi. Akış doğrudan istemciye aktarılır; istemci
+// bağlantıyı keserse yukarı akış da kapatılır (tutor servisi bunu "yarım kaldı" sayar).
+function passSseThrough(interceptor) {
+  return (proxyRes, req, res) => {
+    if (!String(proxyRes.headers['content-type'] || '').includes('text/event-stream')) {
+      return interceptor(proxyRes, req, res);
+    }
+    res.statusCode = proxyRes.statusCode || 200;
+    for (const [key, value] of Object.entries(proxyRes.headers)) {
+      if (value === undefined || ['transfer-encoding', 'content-length', 'connection'].includes(key)) continue;
+      res.setHeader(key, value);
+    }
+    res.flushHeaders?.();
+    proxyRes.pipe(res);
+    res.on('close', () => proxyRes.destroy());
+    return undefined;
+  };
+}
+
 function proxy(url) {
   const webProxy = createProxyMiddleware({
     target: url,
@@ -125,7 +145,7 @@ function proxy(url) {
             .json({ error: 'Proxy error', message: err.message });
         }
       },
-      proxyRes: responseInterceptor(
+      proxyRes: passSseThrough(responseInterceptor(
         async (responseBuffer, proxyRes, request, response) => {
           if (request.originalUrl.includes('/openapi-ui/')) {
             return responseBuffer;
@@ -199,7 +219,7 @@ function proxy(url) {
           }
           return responseBuffer;
         },
-      ),
+      )),
     },
   });
   return webProxy;

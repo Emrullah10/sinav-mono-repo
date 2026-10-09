@@ -217,7 +217,7 @@ export const makeCheckout = ({ rawQuery, nowFn, provider }) => {
               payment_distance_sales_document_id, payment_consents_accepted_at, payment_billing_snapshot, payment_metadata, payment_created_by, payment_updated_by)
            VALUES ($1,$2,$3,$4,$5,$6,$7,'pending',$8,$9,$10,$11,$12,$13,$14,$15,$16,$17::jsonb,$18::jsonb,$3,$3) RETURNING payment_id AS id, payment_code AS code`,
           [user.tenantCode, user.orgId, uid, price.id, price.campaignId, couponId, provider.name, total, discount, vat.tax, price.currency, installments, idemKey, docs.preInfoId, docs.distanceSalesId,
-            now, JSON.stringify(snapshot), JSON.stringify({ saveCard: body.saveCard !== false && price.kind === 'subscription' ? !!body.saveCard || body.saveCard === undefined : !!body.saveCard })]);
+            now, JSON.stringify(snapshot), JSON.stringify({ saveCard: body.saveCard === undefined ? price.kind === 'subscription' : !!body.saveCard })]);
         return ins.rows[0];
       });
       const full = await loadPayment(payment.code, rawQuery);

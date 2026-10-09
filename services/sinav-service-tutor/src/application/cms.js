@@ -48,7 +48,7 @@ export const makeCms = ({ rawQuery }) => {
     const c = requireCode(code, 'TUTOR_REPORT_NOT_FOUND');
     if (!['resolved', 'rejected', 'in_review'].includes(status)) throw new DomainError('TUTOR_REPORT_STATUS_INVALID', 'status must be resolved, rejected or in_review');
     const res = await rawQuery(
-      `UPDATE tutor.message_report SET message_report_status=$2, message_report_resolved_by=$3, message_report_resolved_at = CASE WHEN $2='in_review' THEN NULL ELSE now() END,
+      `UPDATE tutor.message_report SET message_report_status=$2::varchar, message_report_resolved_by=$3, message_report_resolved_at = CASE WHEN $2::varchar='in_review' THEN NULL ELSE now() END,
               message_report_resolution_note=$4, message_report_updated_by=$3, message_report_updated_at=now()
         WHERE message_report_code=$1 AND message_report_tenant_code=$5 AND message_report_status IN ('open','in_review')
         RETURNING message_report_code AS code, message_report_reason AS reason, message_report_reporter_user_account_id AS "reporterId", message_report_status AS status`,

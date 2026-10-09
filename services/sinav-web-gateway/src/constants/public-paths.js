@@ -4,22 +4,18 @@
 // SADECE 'exact' ve 'prefix' destekleniyor — `endsWith` (defansif yan-yol
 // riskli) kaldırıldı.
 
-const ID = '/api/sinav-service-identity/v1';
-const CT = '/api/sinav-service-content/v1';
-const BL = '/api/sinav-service-billing/v1';
-const LN = '/api/sinav-service-learning/v1';
 const PUBLIC_PATHS = [
-  { path: `${ID}/auth/guest`, match: 'exact', methods: ['POST'] },
-  { path: `${ID}/auth/email/code`, match: 'exact', methods: ['POST'] },
-  { path: `${ID}/auth/email/verify`, match: 'exact', methods: ['POST'] },
-  { path: `${ID}/auth/password/login`, match: 'exact', methods: ['POST'] },
-  { path: `${ID}/auth/password/reset/request`, match: 'exact', methods: ['POST'] },
-  { path: `${ID}/auth/password/reset/confirm`, match: 'exact', methods: ['POST'] },
-  { path: `${ID}/public/ping`, match: 'exact', methods: ['GET'] },
-  { path: `${ID}/public/`, match: 'prefix', methods: ['GET', 'POST'] },
-  { path: `${CT}/public/`, match: 'prefix', methods: ['GET'] },
-  { path: `${BL}/public/`, match: 'prefix', methods: ['GET', 'POST'] },
-  { path: `${LN}/public/`, match: 'prefix', methods: ['GET'] },
+  { path: '/api/sinav-service-identity/v1/auth/guest', match: 'exact', methods: ['POST'] },
+  { path: '/api/sinav-service-identity/v1/auth/email/code', match: 'exact', methods: ['POST'] },
+  { path: '/api/sinav-service-identity/v1/auth/email/verify', match: 'exact', methods: ['POST'] },
+  { path: '/api/sinav-service-identity/v1/auth/password/login', match: 'exact', methods: ['POST'] },
+  { path: '/api/sinav-service-identity/v1/auth/password/reset/request', match: 'exact', methods: ['POST'] },
+  { path: '/api/sinav-service-identity/v1/auth/password/reset/confirm', match: 'exact', methods: ['POST'] },
+  { path: '/api/sinav-service-identity/v1/public/ping', match: 'exact', methods: ['GET'] },
+  { path: '/api/sinav-service-identity/v1/public/', match: 'prefix', methods: ['GET', 'POST'] },
+  { path: '/api/sinav-service-content/v1/public/', match: 'prefix', methods: ['GET'] },
+  { path: '/api/sinav-service-billing/v1/public/', match: 'prefix', methods: ['GET', 'POST'] },
+  { path: '/api/sinav-service-learning/v1/public/', match: 'prefix', methods: ['GET'] },
   { path: '/openapi-ui/', match: 'prefix' },
 ];
 
@@ -55,8 +51,8 @@ const isPublicPath = (url, method) => matchesAny(PUBLIC_PATHS, url, method);
 // ESKİ anonim perm'lerle kalır → her korumalı route 403 döner ve kullanıcı
 // elle yeniden login olana kadar düzelmez. (Carrier kayıt 403 bug'ı.)
 const SESSION_REFRESH_PATHS = [
-  { path: `${ID}/auth/register`, match: 'exact', methods: ['POST'] },
-  { path: `${ID}/session/switch`, match: 'exact', methods: ['POST'] },
+  { path: '/api/sinav-service-identity/v1/auth/register', match: 'exact', methods: ['POST'] },
+  { path: '/api/sinav-service-identity/v1/session/switch', match: 'exact', methods: ['POST'] },
 ];
 
 const isSessionRefreshPath = (url, method) =>

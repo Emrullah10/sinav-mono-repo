@@ -127,6 +127,9 @@ export const makeChat = ({ rawQuery, nowFn, llm, context, conversations }) => {
     }, 400);
 
     const remainingNow = () => (quotaState && quotaState.limit != null ? { limit: quotaState.limit, used: quotaState.used, remaining: Math.max(0, quotaState.limit - quotaState.used), period: quotaState.period || 'day' } : { limit: null, used: null, remaining: null, period: 'day' });
+    if (!quotaState) {
+      try { const p = await peekUsage({ userId, feature: 'tutor_messages_per_day', tz, now: nowFn() }); quotaState = { used: p.used, limit: p.limit, period: p.period }; } catch { /* yoksay */ }
+    }
     send('meta', { messageCode: String(asstMsg.code), userMessageCode: String(userMsg.code), conversationCode: String(conv.code), mode, remaining: remainingNow() });
 
     const started = Date.now();
@@ -150,7 +153,8 @@ export const makeChat = ({ rawQuery, nowFn, llm, context, conversations }) => {
     let status = 'complete'; let errorCode = null; let extras = { blocks: [], sources: [], unsure: false };
     if (failure) {
       status = interrupted ? 'interrupted' : 'failed';
-      errorCode = interrupted ? null : (failure.code || 'LLM_UPSTREAM_ERROR');
+      errorCode = interrupted ? null : (failure instanceof DomainError ? failure.code : 'TUTOR_INTERNAL_ERROR');
+      if (!interrupted && !(failure instanceof DomainError)) console.error('[tutor] sendMessage failed', failure);
     } else {
       extras = parseModelExtras(fenced, candidates);
     }

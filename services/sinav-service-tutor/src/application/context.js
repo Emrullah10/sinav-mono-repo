@@ -25,7 +25,7 @@ export const makeContext = ({ rawQuery }) => {
     `SELECT question_option_label AS label, question_option_text AS text, question_option_is_correct AS "isCorrect", question_option_rationale AS rationale
        FROM content.question_option WHERE question_option_question_id=$1 ORDER BY question_option_position`, [questionId])).rows;
   const hintsOf = async (questionId) => (await rawQuery(
-    `SELECT question_hint_step_no AS step, question_hint_kind AS kind, question_hint_body AS body
+    `SELECT question_hint_step_no AS step, question_hint_hint_kind AS kind, question_hint_body AS body
        FROM content.question_hint WHERE question_hint_question_id=$1 ORDER BY question_hint_step_no`, [questionId])).rows;
   const passageOf = async (itemId) => (await rawQuery(
     `SELECT p.passage_title AS title, p.passage_body AS body FROM content.item i

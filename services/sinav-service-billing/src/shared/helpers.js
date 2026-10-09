@@ -71,7 +71,7 @@ export const systemCaller = (user, role = 'system') => ({
 /** identity iç bildirim ucu; commit SONRASI, best-effort (hata ana işi bozmaz). */
 export const notifyUser = async ({ userId, kind, title, body, deepLink = null, payload = {}, dedupeKey, channels = null, scheduledFor = null }) => {
   try {
-    const res = await fetchInternal(`${identityUrl()}/sinav-service-identity/v1/internal/notifications`, {
+    const res = await fetchInternal(`${identityUrl()}/api/sinav-service-identity/v1/internal/notifications`, {
       method: 'POST', headers: internalHeaders(null), timeoutMs: INTERNAL_TIMEOUTS.bestEffort(),
       body: { userAccountId: Number(userId), kind, title, body, deepLink, payload, dedupeKey, channels, scheduledFor },
     });

@@ -197,11 +197,12 @@ export const makeFakeLlm = ({ models }) => {
 
   const complete = async ({ messages, model, json, task } = {}) => {
     const all = messages.map((m) => m.content).join('\n');
+    const userMsg = lastUser(messages);
     let out;
     if (task === 'translation_eval') {
-      const keys = [...all.matchAll(/CRITERION:([a-z_]+)/g)].map((m) => m[1]);
-      const user = /<ogrenci_cevabi>\n?([\s\S]*?)\n?<\/ogrenci_cevabi>/.exec(all)?.[1]?.trim() || '';
-      const refm = /<referans>\n?([\s\S]*?)\n?<\/referans>/.exec(all)?.[1]?.trim() || user;
+      const keys = [...userMsg.matchAll(/CRITERION:([a-z_]+)/g)].map((m) => m[1]);
+      const user = /<ogrenci_cevabi>\n?([\s\S]*?)\n?<\/ogrenci_cevabi>/.exec(userMsg)?.[1]?.trim() || '';
+      const refm = /<referans>\n?([\s\S]*?)\n?<\/referans>/.exec(userMsg)?.[1]?.trim() || user;
       out = {
         scores: Object.fromEntries((keys.length ? keys : ['meaning', 'tense', 'structure', 'vocabulary']).map((k, i) => [k, Math.max(0, 3 - (i % 2))])),
         criteriaComments: Object.fromEntries((keys.length ? keys : ['meaning']).map((k) => [k, 'Bu ölçütte genel olarak iyi gidiyorsun.'])),

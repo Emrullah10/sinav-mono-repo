@@ -10,10 +10,17 @@ export const applySession = (response) => {
 };
 
 // Oturum yoksa misafir oturumu açar (onboarding "Başla"). Varsa dokunmaz.
+let pendingGuest = null;
 export const ensureSession = async () => {
   const s = useAuthStore.getState();
   if (s.status === 'authenticated') return s.user;
-  return applySession(await api.identityAuthGuest({ timezone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+  if (!pendingGuest) {
+    pendingGuest = api
+      .identityAuthGuest({ timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+      .then(applySession)
+      .finally(() => { pendingGuest = null; });
+  }
+  return pendingGuest;
 };
 
 export const signOut = async () => {

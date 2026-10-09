@@ -76,14 +76,30 @@ ok(`ROLE_PERMISSIONS ↔ PERMISSIONS: ${Object.keys(ROLE_PERMISSIONS).length} ro
 // ve bu TAM KAPSAM gibi okunuyordu — oysa degistirilen servis listede yoksa
 // cikti degismiyordu bile. M3 turunda fark edildi: dort yeni uc eklendi, sayi
 // 146'da kaldi.
-const restDefs = ['identity','content','learning','billing','tutor'].map((n) => `services/sinav-service-${n}/definitions/rest-api-definition.js`);
+// Uçlar services/sinav-service-<d>/src/interfaces/http/endpoints*.js (+ endpoints/ klasörü) içinde bildirilir.
+const restDefs = (() => {
+  const out = [];
+  for (const n of ['identity', 'content', 'learning', 'billing', 'tutor']) {
+    const base = `services/sinav-service-${n}/src/interfaces/http`;
+    const abs = path.join(ROOT, base);
+    if (!fs.existsSync(abs)) continue;
+    const walk = (d, rel) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        if (e.isDirectory()) walk(path.join(d, e.name), `${rel}/${e.name}`);
+        else if (e.name.endsWith('.js') && (rel.endsWith('endpoints') || e.name.startsWith('endpoints'))) out.push(`${rel}/${e.name}`);
+      }
+    };
+    walk(abs, base);
+  }
+  return out;
+})();
 const restPermRefs = new Set();
 for (const rel of restDefs) {
   const full = path.join(ROOT, rel);
   if (!fs.existsSync(full)) continue;
   const content = fs.readFileSync(full, 'utf8');
   // Match: permission: PERMISSIONS.xxx OR permission: '*'
-  for (const m of content.matchAll(/permission:\s*PERMISSIONS\.(\w+)/g)) {
+  for (const m of content.matchAll(/permission:\s*(?:PERMISSIONS|P)\.(\w+)/g)) {
     if (!PERMISSIONS[m[1]]) {
       fail(`${rel}: PERMISSIONS.${m[1]} object'te tanımlı değil`);
     } else {

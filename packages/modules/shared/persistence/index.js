@@ -4,3 +4,4 @@ export * from './audit.js';
 export * from './entitlement-read.js';
 export * from './usage.js';
 export * from './blob.js';
+export * from './content-read.js';
