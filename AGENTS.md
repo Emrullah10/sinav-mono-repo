@@ -1,3 +1,0 @@
-# OpenWolf
-
-@.wolf/OPENWOLF.md
