@@ -1,0 +1,17 @@
+export default {
+  'enums.report_reason.wrong_answer_key': { tr: 'Cevap anahtarı yanlış', en: 'Wrong answer key' },
+  'enums.report_reason.typo': { tr: 'Yazım hatası', en: 'Typo' },
+  'enums.report_reason.unclear': { tr: 'Soru belirsiz', en: 'Unclear question' },
+  'enums.report_reason.wrong_info': { tr: 'Yanlış bilgi', en: 'Wrong information' },
+  'enums.report_reason.off_topic': { tr: 'Konu dışı', en: 'Off topic' },
+  'enums.report_reason.inappropriate': { tr: 'Uygunsuz içerik', en: 'Inappropriate content' },
+  'enums.report_reason.other': { tr: 'Diğer', en: 'Other' },
+  'enums.note_kind.skill': { tr: 'Konu notu', en: 'Skill note' },
+  'enums.note_kind.strategy': { tr: 'Strateji notu', en: 'Strategy note' },
+  'enums.access_tier.free': { tr: 'Ücretsiz', en: 'Free' },
+  'enums.access_tier.premium': { tr: 'Premium', en: 'Premium' },
+  'enums.hint_kind.focus': { tr: 'Odaklan', en: 'Focus' },
+  'enums.hint_kind.rule': { tr: 'Kural', en: 'Rule' },
+  'enums.hint_kind.eliminate': { tr: 'Ele', en: 'Eliminate' },
+  'enums.hint_kind.solution': { tr: 'Çözüm', en: 'Solution' },
+};

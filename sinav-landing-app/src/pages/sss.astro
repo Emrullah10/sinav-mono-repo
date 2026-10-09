@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import { getArticles, getCategories } from '../lib/data.mjs';
+const articles = await getArticles('help');
+const cats = await getCategories('help');
+const groups = cats.map((c) => ({ ...c, items: articles.filter((a) => a.category?.key === c.key) })).filter((g) => g.items.length);
+---
+<Base title="Sık sorulan sorular" description="Hesap, ödeme, plan ve sınav hakkında kısa yanıtlar.">
+  <section class="mx-auto max-w-3xl px-4 py-14">
+    <h1 class="font-display text-4xl font-bold">Sık sorulan sorular</h1>
+    <p class="mt-2 text-ink-2">Aradığını bulamazsan <a href="/iletisim">bize yaz</a>; ayrıntılı rehberler için <a href="/yardim">yardım merkezi</a>.</p>
+    {groups.map((g) => <div class="mt-10"><h2 class="text-xl font-semibold">{g.name}</h2>
+      <div class="mt-3 space-y-3">{g.items.map((a) => <details class="rounded-xl border border-line bg-surface p-4"><summary class="cursor-pointer font-semibold">{a.title}</summary><p class="mt-2 text-ink-2">{a.excerpt} <a href={`/yardim/${a.slug}`}>Devamı</a></p></details>)}</div></div>)}
+  </section>
+</Base>

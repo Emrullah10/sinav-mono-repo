@@ -33,3 +33,16 @@ export const flushAfter = async (ctx) => {
 
 /** Standart satır başlığı: [tenant, org, user] parametreleri için yardımcı. */
 export const own = (ctx) => [ctx.tenantCode, ctx.orgId, ctx.userId];
+
+/** Use-case sarmalayıcı: bağlamı yükler, işi çalıştırır, başarıda commit-sonrası işleri (Redis) akıtır. */
+export const withCtx = async (deps, caller, fn) => {
+  try {
+    const ctx = await loadCtx(deps, caller);
+    const out = await fn(ctx);
+    await flushAfter(ctx);
+    return out;
+  } catch (e) {
+    if (!(e instanceof DomainError)) console.error('[learning] unexpected error:', e?.stack || e);
+    throw e;
+  }
+};

@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+import { APP_URL, API_BASE } from '../lib/public-api.mjs';
+const { title, description = 'YDS, e-YDS ve YÖKDİL hazırlığı için kişisel plan, seviye tespiti ve sınav simülasyonu.', path = Astro.url.pathname } = Astro.props;
+const BRAND = 'ODAK';
+const full = title ? `${title} · ${BRAND}` : `${BRAND} · YDS hazırlık platformu`;
+const nav = [['/', 'Ana sayfa'], ['/fiyatlar', 'Fiyatlar'], ['/blog', 'Blog'], ['/yardim', 'Yardım'], ['/sss', 'SSS']];
+const canonical = new URL(path, Astro.site).href;
+---
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{full}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:title" content={full} />
+    <meta property="og:description" content={description} />
+    <meta name="theme-color" content="#0b5d5b" />
+    <meta name="api-base" content={API_BASE} />
+  </head>
+  <body class="min-h-screen bg-canvas text-ink antialiased">
+    <a href="#icerik" class="sr-only focus:not-sr-only focus:absolute focus:p-3 focus:bg-surface">İçeriğe geç</a>
+    <header class="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <a href="/" class="font-display text-xl font-bold text-brand no-underline">{BRAND}</a>
+        <nav aria-label="Ana menü" class="hidden gap-6 md:flex">
+          {nav.map(([h, l]) => <a href={h} class="text-sm font-medium text-ink no-underline hover:text-brand" aria-current={path === h ? 'page' : undefined}>{l}</a>)}
+        </nav>
+        <div class="flex items-center gap-2">
+          <a href={`${APP_URL}/giris`} class="hidden rounded-lg px-3 py-2 text-sm font-medium text-ink no-underline sm:block">Giriş yap</a>
+          <a href={`${APP_URL}/baslangic`} class="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white no-underline">Ücretsiz başla</a>
+        </div>
+      </div>
+      <nav aria-label="Mobil menü" class="flex gap-4 overflow-x-auto border-t border-line px-4 py-2 md:hidden">
+        {nav.map(([h, l]) => <a href={h} class="whitespace-nowrap text-sm text-ink no-underline">{l}</a>)}
+      </nav>
+    </header>
+    <main id="icerik"><slot /></main>
+    <footer class="mt-24 border-t border-line bg-surface">
+      <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
+        <div><p class="font-display text-lg font-bold text-brand">{BRAND}</p><p class="mt-2 text-sm text-ink-2">YDS, e-YDS ve YÖKDİL için sade, bilimsel hazırlık. ÖSYM ile bağlantısı yoktur.</p></div>
+        <div><p class="text-sm font-semibold">Keşfet</p><ul class="mt-2 space-y-1 text-sm"><li><a href="/fiyatlar">Fiyatlar</a></li><li><a href="/blog">Blog</a></li><li><a href="/yardim">Yardım merkezi</a></li><li><a href="/bekleme-listesi">Bekleme listesi</a></li><li><a href="/iletisim">İletişim</a></li></ul></div>
+        <div><p class="text-sm font-semibold">Yasal</p><ul class="mt-2 space-y-1 text-sm"><li><a href="/yasal/kvkk_notice">KVKK Aydınlatma</a></li><li><a href="/yasal/privacy_policy">Gizlilik</a></li><li><a href="/yasal/terms_of_use">Kullanım koşulları</a></li><li><a href="/yasal/cancellation_refund">İptal ve iade</a></li><li><a href="/yasal">Tüm belgeler</a></li></ul></div>
+      </div>
+      <p class="border-t border-line py-4 text-center text-xs text-ink-2">© 2026 {BRAND}. Tüm hakları saklıdır.</p>
+    </footer>
+  </body>
+</html>

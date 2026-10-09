@@ -1,0 +1,98 @@
+---
+import Base from '../layouts/Base.astro';
+import WaitlistForm from '../components/WaitlistForm.astro';
+import FormScript from '../components/FormScript.astro';
+import { APP_URL } from '../lib/public-api.mjs';
+import { getExams, getProducts, getArticles } from '../lib/data.mjs';
+import { fmtDate, tl } from '../lib/md.mjs';
+
+const exams = await getExams();
+const yds = exams.find((e) => e.key === 'yds');
+const session = yds?.tracks?.find((t) => t.isDefault)?.nextSession || yds?.nextSession || null;
+const days = session ? Math.max(0, Math.ceil((new Date(session.examDate) - new Date()) / 86400000)) : null;
+const products = await getProducts();
+const paid = products.filter((p) => p.tier === 'premium');
+const posts = (await getArticles('blog')).slice(0, 3);
+const steps = [
+  ['01', 'Seviye tespiti', '30 soruluk kısa tarama. Hangi soru tipinde nerede olduğunu gösterir; puan tahmini her zaman aralık olarak verilir.'],
+  ['02', 'Kişisel plan', 'Hedef puanına, sınav tarihine ve günlük müsait sürene göre günlük görevler; zayıf konular ve vadesi gelen tekrarlar öne alınır.'],
+  ['03', 'Öğretmenle çalış', 'Yanlışta ipucu merdiveni: odak, kural, eleme, çözüm. Cevabı hemen vermez, nedenini öğretir.'],
+];
+const types = [['Kelime bilgisi', 10], ['Dil bilgisi', 10], ['Cloze', 10], ['Cümle tamamlama', 6], ['Çeviri', 6], ['Paragraf', 20], ['Diyalog ve anlam bütünlüğü', 18]];
+const faq = [
+  ['ÖSYM ile bağlantınız var mı?', 'Hayır. ODAK bağımsız bir hazırlık platformudur; sınav bilgileri ÖSYM duyurularına dayanır.'],
+  ['Puan tahmini ne kadar güvenilir?', 'Tek rakam vermeyiz. Çözdükçe aralık daralır ve her tahminin yanında ne kadar kanıta dayandığı görünür.'],
+  ['Ücretsiz plan yeterli mi?', 'Başlamak için evet: günlük 15 soru, kart tekrarı ve seviye tespiti ücretsizdir.'],
+];
+---
+<Base>
+  <section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 lg:grid-cols-2">
+    <div>
+      {session && <p class="inline-block rounded-full bg-brand-soft px-3 py-1 text-sm font-medium text-brand">{session.name} · {fmtDate(session.examDate)}{days !== null && ` · ${days} gün kaldı`}</p>}
+      <h1 class="mt-5 font-display text-4xl font-bold leading-tight sm:text-5xl">Sınavı bilen bir öğretmen, kursun onda biri fiyatına.</h1>
+      <p class="mt-5 max-w-xl text-lg text-ink-2">Akademik İngilizce için YDS, e-YDS ve YÖKDİL odaklı kişisel plan. Önce seviyeni ölç, sonra hedef puanına giden adımları sırayla çöz.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={`${APP_URL}/baslangic`} class="rounded-lg bg-brand px-6 py-3 font-semibold text-white no-underline">Ücretsiz seviye tespiti</a>
+        <a href="/fiyatlar" class="rounded-lg border border-line bg-surface px-6 py-3 font-semibold text-ink no-underline">Fiyatları gör</a>
+      </div>
+      <p class="mt-4 text-sm text-ink-2">Kredi kartı gerekmez · 30 soruluk analitik tarama</p>
+    </div>
+    <div class="rounded-2xl border border-line bg-surface p-6 shadow-sm" aria-label="Örnek soru">
+      <p class="text-xs font-semibold uppercase tracking-wide text-ink-2">Cümle tamamlama</p>
+      <p class="mt-3 font-serif text-xl leading-relaxed">“Although empirical investigations in cognitive linguistics suggest that second language acquisition occurs noticeably faster, ________.”</p>
+      <ul class="mt-5 space-y-2 text-sm">
+        <li class="rounded-lg border border-line px-3 py-2"><b>A</b> adult learners still struggle with native-like accuracy</li>
+        <li class="rounded-lg border border-brand bg-brand-soft px-3 py-2"><b>B</b> therefore instructors must refrain from teaching grammar</li>
+        <li class="rounded-lg border border-line px-3 py-2"><b>C</b> neuroplasticity peaks earlier in bilingual children</li>
+      </ul>
+      <p class="mt-4 text-sm text-ink-2">Yanlışta ipucu merdiveni: odak → kural → eleme → çözüm.</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-12">
+    <h2 class="text-center font-display text-3xl font-bold">Üç aşamalı çalışma sistemi</h2>
+    <div class="mt-8 grid gap-5 md:grid-cols-3">
+      {steps.map(([n, t, d]) => <article class="rounded-2xl border border-line bg-surface p-6"><span class="text-sm font-bold text-brand">{n}</span><h3 class="mt-2 text-xl font-semibold">{t}</h3><p class="mt-2 text-ink-2">{d}</p></article>)}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-12">
+    <h2 class="font-display text-3xl font-bold">80 soru, 180 dakika</h2>
+    <p class="mt-2 text-ink-2">Soru dağılımını bilmek planın ilk adımı. Her tipin kendi çalışma yolu var.</p>
+    <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+      {types.map(([t, n]) => <li class="flex items-center justify-between rounded-xl border border-line bg-surface px-4 py-3"><span class="font-medium">{t}</span><span class="text-sm text-ink-2">{n} soru</span></li>)}
+    </ul>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-12">
+    <h2 class="text-center font-display text-3xl font-bold">Sade fiyatlar</h2>
+    <div class="mt-8 grid gap-5 md:grid-cols-3">
+      {products.slice(0, 3).map((p) => { const pr = p.prices[0]; return (
+        <article class={`rounded-2xl border bg-surface p-6 ${p.recommended ? 'border-brand ring-2 ring-brand' : 'border-line'}`}>
+          <h3 class="text-xl font-semibold">{p.name}</h3><p class="mt-1 text-sm text-ink-2">{p.description}</p>
+          <p class="mt-4 font-display text-3xl font-bold">{pr.amount === 0 ? '0 TL' : tl(pr.amount)}</p>
+        </article>); })}
+    </div>
+    <p class="mt-6 text-center"><a href="/fiyatlar">Karşılaştırmalı tabloyu aç</a>{paid.length ? ` · ${paid.length} ücretli plan` : ''}</p>
+  </section>
+
+  {posts.length > 0 && <section class="mx-auto max-w-6xl px-4 py-12">
+    <div class="flex items-end justify-between"><h2 class="font-display text-3xl font-bold">Blogdan</h2><a href="/blog">Tüm yazılar</a></div>
+    <div class="mt-6 grid gap-5 md:grid-cols-3">
+      {posts.map((a) => <a href={`/blog/${a.slug}`} class="rounded-2xl border border-line bg-surface p-5 no-underline text-ink"><p class="text-xs text-brand">{a.category?.name}</p><h3 class="mt-1 font-semibold">{a.title}</h3><p class="mt-2 text-sm text-ink-2">{a.excerpt}</p></a>)}
+    </div>
+  </section>}
+
+  <section class="mx-auto max-w-3xl px-4 py-12">
+    <h2 class="text-center font-display text-3xl font-bold">Sık sorulanlar</h2>
+    <div class="mt-6 space-y-3">{faq.map(([q, a]) => <details class="rounded-xl border border-line bg-surface p-4"><summary class="cursor-pointer font-semibold">{q}</summary><p class="mt-2 text-ink-2">{a}</p></details>)}</div>
+    <p class="mt-4 text-center"><a href="/sss">Tüm sorular</a></p>
+  </section>
+
+  <section class="mx-4 mx-auto my-12 max-w-4xl rounded-3xl bg-brand px-6 py-12 text-center text-white">
+    <h2 class="font-display text-3xl font-bold">Hedef puanına giden yolu gör.</h2>
+    <p class="mx-auto mt-3 max-w-xl opacity-90">Sınav takvimi ve yeni içerikler için bekleme listesine katıl.</p>
+    <div class="mx-auto mt-6 max-w-md rounded-2xl bg-surface p-5 text-left text-ink"><WaitlistForm source="home" /></div>
+  </section>
+  <FormScript />
+</Base>

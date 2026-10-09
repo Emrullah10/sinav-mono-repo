@@ -85,7 +85,9 @@ export const cacheSetJson = async (key, value, ttl) => {
 export const cacheDel = async (...keys) => {
   try { if (keys.length) await redis()?.del(...keys); } catch { /* best-effort */ }
 };
-export const itemPubKey = (code) => `content:item:${code}:pub`;
+// Not: `content:item:{code}:pub` paylaşılan okuyucuya (app-shared content-read) aittir ve FARKLI şekil taşır; bu servis kendi anahtarını kullanır.
+export const itemPubKey = (code) => `content:svc-item:${code}:pub`;
+export const itemPubKeys = (code) => [itemPubKey(code), `content:item:${code}:pub`];
 export const vocabKey = (lang, headword) => `content:vocab:${lang}:${normalizeHeadword(headword)}`;
 
 // ── Platform bağlamı: içerik sahibi organizasyon ──

@@ -115,7 +115,7 @@ export const makeCatalog = ({ rawQuery, nowFn }) => {
 
   const getTrack = async ({ key }) => {
     const ver = await catalogVersion();
-    const ck = `content:catalog:v${ver}:${key}`;
+    const ck = `content:public-track:v${ver}:${key}`;
     const hit = await cacheGetJson(ck);
     if (hit) return hit;
     const dto = await buildTrack(String(key));

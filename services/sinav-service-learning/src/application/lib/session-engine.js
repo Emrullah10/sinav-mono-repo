@@ -43,6 +43,8 @@ export const assertOpen = async (tx, ctx, session) => {
   throw new DomainError('SESSION_NOT_IN_PROGRESS', 'Session is not in progress', { status: session.status }, 409);
 };
 
+const pubMistake = (m) => { const { id: _id, ...rest } = m.mistake; return { added: true, created: m.created, ...rest }; };
+
 const PENDING_STATES = ['pending', 'seen', 'skipped'];
 const nextPosition = (items, from) => {
   const open = items.filter((i) => PENDING_STATES.includes(i.status));
@@ -76,7 +78,8 @@ export const buildItemView = ({ session, item, dto, policy, items, dtoMap }) => 
   let passage = null;
   if (dto.passage) {
     const siblings = items.filter((i) => dtoMap.get(i.questionId)?.passage?.itemId === dto.passage.itemId).map((i) => i.position);
-    passage = { ...dto.passage, questionPositions: siblings };
+    const { itemId: _pid, ...pub } = dto.passage;
+    passage = { ...pub, questionPositions: siblings };
   }
   const base = {
     sessionCode: session.code, position: item.position, total: items.length, kind: session.kind, mode: session.mode, sessionStatus: session.status,
@@ -224,7 +227,7 @@ export const submitAnswer = async (deps, ctx, a) => {
           newItem = { ...item, status: final ? 'answered' : 'skipped', selectedLabel: null, isCorrect: final ? false : null, timeSpentMs: item.timeSpentMs + timeMs };
           if (final && policy.recordMistakes && attempt.id) {
             const m = await upsertMistake(tx, ctx, { itemId: item.itemId, questionTypeId: dto.questionType.id, attemptId: attempt.id, suggestedType: suggestMistakeType({ dto, timeMs, selectedBlank: true }) });
-            mistake = { added: true, created: m.created, ...m.mistake };
+            mistake = pubMistake(m);
           }
         }
       } else {
@@ -251,7 +254,7 @@ export const submitAnswer = async (deps, ctx, a) => {
         };
         if (first && !correct && policy.recordMistakes) {
           const m = await upsertMistake(tx, ctx, { itemId: item.itemId, questionTypeId: dto.questionType.id, attemptId: attempt.id, suggestedType: suggestMistakeType({ dto, timeMs, selectedBlank: false }) });
-          mistake = { added: true, created: m.created, ...m.mistake };
+          mistake = pubMistake(m);
         } else if (first && correct && policy.recordMistakes) {
           const due = await findDueMistake(q, ctx.userId, item.itemId, ctx.now);
           if (due) await applyMistakeReview(tx, ctx, { mistakeId: due, correct: true });
@@ -347,7 +350,7 @@ const revealSolutionTx = async (tx, ctx, { session, policy, item, dto }) => {
     cur = { ...item, status: 'answered', isCorrect: false, solutionViewed: true };
     const act = await touchActivity(tx, ctx, { questionsAnswered: 1, correctAnswers: 0 });
     void act;
-    if (mistake) cur.mistake = { added: true, created: mistake.created, ...mistake.mistake };
+    if (mistake) cur.mistake = pubMistake(mistake);
   } else if (!item.solutionViewed) {
     await q('UPDATE learning.study_session_item SET study_session_item_solution_viewed=true WHERE study_session_item_id=$1', [item.id]);
     cur = { ...item, solutionViewed: true };

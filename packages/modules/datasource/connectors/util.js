@@ -26,8 +26,17 @@ export default {
         `${settings.name} Datasource Config Host Error. Url is ${settings.url}`,
       );
     }
-    if (!settings.port && Number(hostPort[1]) > 0) {
-      return { host: hostPort[0], server: hostPort[0], port: hostPort[1] };
+    // "host:6380/1" -> port 6380, db 1
+    const [portPart, dbPart] = hostPort[1].split('/');
+    const result = { host: hostPort[0], server: hostPort[0] };
+    if (dbPart !== undefined && /^\d+$/.test(dbPart) && settings.db === undefined) {
+      result.db = Number(dbPart);
+    }
+    if (!settings.port && Number(portPart) > 0) {
+      return { ...result, port: portPart };
+    }
+    if (result.db !== undefined) {
+      return result;
     }
     return { host: hostPort[0], server: hostPort[0] };
   },

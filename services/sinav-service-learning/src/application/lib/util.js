@@ -36,3 +36,11 @@ export const preview = (text, n = 140) => {
   const t = String(text || '').replace(/\s+/g, ' ').trim();
   return t.length > n ? `${t.slice(0, n - 1)}…` : t;
 };
+
+/** İstemci idempotency anahtarı: yoksa null, varsa UUID olmalı. */
+export const clientRefParam = (v, name = 'clientRef') => {
+  if (v === undefined || v === null || v === '') return null;
+  const u = uuidOrNull(v);
+  if (!u) throw new DomainError('VALIDATION_ERROR', `${name} must be a UUID`, { field: name }, 400);
+  return u;
+};

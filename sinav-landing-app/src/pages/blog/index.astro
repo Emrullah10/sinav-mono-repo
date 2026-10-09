@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getArticles } from '../../lib/data.mjs';
+import { fmtDate } from '../../lib/md.mjs';
+const posts = await getArticles('blog');
+---
+<Base title="Blog" description="YDS stratejisi, çalışma planları ve sınav bilgisi.">
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <h1 class="font-display text-4xl font-bold">Blog</h1>
+    {posts.length === 0 && <p class="mt-6 text-ink-2">Henüz yazı yok.</p>}
+    <div class="mt-8 grid gap-5 md:grid-cols-3">
+      {posts.map((a) => <a href={`/blog/${a.slug}`} class="rounded-2xl border border-line bg-surface p-5 no-underline text-ink">
+        <p class="text-xs font-medium text-brand">{a.category?.name} · {a.readingMinutes} dk</p><h2 class="mt-1 text-lg font-semibold">{a.title}</h2>
+        <p class="mt-2 text-sm text-ink-2">{a.excerpt}</p><p class="mt-3 text-xs text-ink-2">{a.author?.displayName} · {fmtDate(a.publishedAt)}</p></a>)}
+    </div>
+  </section>
+</Base>

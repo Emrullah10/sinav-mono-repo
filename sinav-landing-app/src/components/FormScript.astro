@@ -1,0 +1,35 @@
+---
+---
+<script>
+  // Tarayıcıdan gateway'e (landing CORS izinli) public POST; çerez/CSRF gerekmez.
+  const base = document.querySelector('meta[name="api-base"]')?.getAttribute('content') || '';
+  const ERR: Record<string, string> = {
+    AUTH_EMAIL_INVALID: 'E-posta adresi geçersiz.', CONTACT_BODY_INVALID: 'Mesaj 5–5000 karakter olmalı.',
+    RATE_LIMITED: 'Çok fazla deneme. Biraz sonra tekrar dene.',
+  };
+  document.querySelectorAll<HTMLFormElement>('form.odak-form').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = form.querySelector('.form-msg') as HTMLElement;
+      const fd = new FormData(form);
+      const email = String(fd.get('email') || '').trim();
+      if (!/^\S+@\S+\.\S+$/.test(email)) { msg.textContent = ERR.AUTH_EMAIL_INVALID; msg.className = 'form-msg text-sm text-danger'; return; }
+      const kind = form.dataset.kind;
+      const url = `${base}/api/sinav-service-identity/v1/public/${kind === 'waitlist' ? 'waitlist' : 'contact-messages'}`;
+      const body = kind === 'waitlist'
+        ? { email, examKey: form.dataset.exam, source: form.dataset.source, marketingConsent: fd.get('marketingConsent') === 'on' }
+        : { email, name: String(fd.get('name') || '') || undefined, topic: fd.get('topic'), subject: String(fd.get('subject') || '') || undefined, body: String(fd.get('body') || ''), platform: 'web' };
+      const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+      btn.disabled = true; msg.textContent = 'Gönderiliyor…'; msg.className = 'form-msg text-sm';
+      try {
+        const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json.success) {
+          msg.textContent = kind === 'waitlist' ? 'Teşekkürler! E-postana bir onay bağlantısı gönderdik.' : 'Mesajın bize ulaştı. En kısa sürede dönüş yapacağız.';
+          msg.className = 'form-msg text-sm text-success'; form.reset();
+        } else { msg.textContent = ERR[json?.error?.code] || 'Gönderilemedi. Lütfen tekrar dene.'; msg.className = 'form-msg text-sm text-danger'; }
+      } catch { msg.textContent = 'Bağlantı kurulamadı. Lütfen tekrar dene.'; msg.className = 'form-msg text-sm text-danger'; }
+      btn.disabled = false;
+    });
+  });
+</script>

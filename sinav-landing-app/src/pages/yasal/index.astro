@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getLegalList } from '../../lib/data.mjs';
+import { fmtDate } from '../../lib/md.mjs';
+const docs = await getLegalList();
+---
+<Base title="Yasal belgeler">
+  <section class="mx-auto max-w-2xl px-4 py-14">
+    <h1 class="font-display text-4xl font-bold">Yasal belgeler</h1>
+    <ul class="mt-8 space-y-2">{docs.map((d) => <li><a href={`/yasal/${d.type}`} class="block rounded-xl border border-line bg-surface p-4 no-underline text-ink"><b>{d.title}</b><span class="block text-xs text-ink-2">Sürüm {d.version} · {fmtDate(d.publishedAt)}</span></a></li>)}</ul>
+  </section>
+</Base>

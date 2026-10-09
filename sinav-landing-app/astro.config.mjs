@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
 
@@ -9,7 +8,7 @@ export default defineConfig({
   site: process.env.LANDING_SITE_URL || 'http://127.0.0.1:4321',
   server: { host: '127.0.0.1', port: 4321 },
   integrations: [sitemap(), icon({ include: { lucide: ['*'] } })],
-  vite: { plugins: [tailwindcss()], resolve: { alias: { '@': new URL('./src', import.meta.url).pathname } } },
+  vite: { resolve: { alias: { '@': new URL('./src', import.meta.url).pathname } } },
   trailingSlash: 'never',
   build: { format: 'file' },
 });

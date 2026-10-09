@@ -168,7 +168,9 @@ const validatePassage = (ctx, p) => {
   }
   if (p.passageKind === 'paragraph') {
     if (p.questions.length !== 1) e.push('paragraph metninde tam 1 soru olmalı');
-    if (!/\[\[I\]\]/.test(p.body ?? '')) e.push('paragraph gövdesinde [[I]] işaretleri yok');
+    const pt = p.questions[0]?.type ?? defType;
+    if (pt === 'irrelevant_sentence' && !/\[\[I\]\]/.test(p.body ?? '')) e.push('irrelevant_sentence gövdesinde [[I]] işaretleri yok');
+    if (pt === 'paragraph_completion' && !/_{3,}/.test(p.body ?? '')) e.push('paragraph_completion gövdesinde ______ boşluğu yok');
   }
   p.questions.forEach((q, i) => {
     const t = q.type ?? defType;

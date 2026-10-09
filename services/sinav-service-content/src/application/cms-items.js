@@ -1,7 +1,7 @@
 import { DomainError, withTransaction, writeAudit } from 'app-shared';
 import { normalizeBody, validateBody, replaceBody, loadBody, titleFromBody, KINDS } from '../shared/bodies.js';
 import {
-  num, iso, asArray, pageOf, like, trunc, slugify, normalizeHeadword, getPlatform, reqCode, cacheDel, itemPubKey, vocabKey, bumpCatalogVersion, assertAnyPerm, PERM, userRef,
+  num, iso, asArray, pageOf, like, trunc, slugify, normalizeHeadword, getPlatform, reqCode, cacheDel, itemPubKeys, vocabKey, bumpCatalogVersion, assertAnyPerm, PERM, userRef,
 } from '../shared/helpers.js';
 import { findItem, buildItemDto, findRevisionRow, EDITABLE, itemTags } from '../shared/item-read.js';
 
@@ -332,7 +332,7 @@ export const makeCmsItems = ({ rawQuery, nowFn }) => {
   };
 
   const dropCaches = async (q, item, revisionIds = []) => {
-    await cacheDel(itemPubKey(item.code));
+    await cacheDel(...itemPubKeys(item.code));
     if (item.kind === 'vocab_entry') {
       const ids = [...new Set([item.latestRevisionId, item.publishedRevisionId, ...revisionIds].filter(Boolean))];
       const { rows } = await q(`SELECT DISTINCT vocab_entry_headword_normalized AS h FROM content.vocab_entry WHERE vocab_entry_item_revision_id = ANY($1::bigint[])`, [ids]);
@@ -488,7 +488,7 @@ export const makeCmsItems = ({ rawQuery, nowFn }) => {
             }
             await q(`UPDATE content.item SET item_updated_by = $2 WHERE item_id = $1`, [item.id, ctx.userId]);
           });
-          if (action) await cacheDel(itemPubKey(code));
+          if (action) await cacheDel(...itemPubKeys(code));
         }
         results.push({ code, ok: true });
       } catch (e) {

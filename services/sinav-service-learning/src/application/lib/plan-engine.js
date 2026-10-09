@@ -188,15 +188,14 @@ const loadNoteQueue = async (q, ctx, catalog, tiers) => {
 };
 
 export const gatherPlanInputs = async (q, ctx, { enrollment, catalog, tier = 'free' }) => {
-  const [typeMastery, skillMastery, est, avail, diag, dueMistakes, cards] = await Promise.all([
-    loadMasteryMap(q, ctx.userId, 'type'),
-    loadMasteryMap(q, ctx.userId, 'skill'),
-    latestEstimate(q, ctx.userId, enrollment.id),
-    loadAvailability(q, ctx.userId),
-    diagnosticStatusOf(q, ctx.userId, enrollment.id),
-    countDueMistakes(q, ctx.userId, ctx.now),
-    q("SELECT count(*)::int AS n FROM learning.card WHERE card_user_account_id=$1 AND card_state <> 'suspended' AND card_due_at <= $2", [ctx.userId, ctx.now]),
-  ]);
+  // Aynı transaction istemcisinde sorgular sırayla çalışır (pg eşzamanlı sorguyu kuyruğa alır ve uyarır).
+  const typeMastery = await loadMasteryMap(q, ctx.userId, 'type');
+  const skillMastery = await loadMasteryMap(q, ctx.userId, 'skill');
+  const est = await latestEstimate(q, ctx.userId, enrollment.id);
+  const avail = await loadAvailability(q, ctx.userId);
+  const diag = await diagnosticStatusOf(q, ctx.userId, enrollment.id);
+  const dueMistakes = await countDueMistakes(q, ctx.userId, ctx.now);
+  const cards = await q("SELECT count(*)::int AS n FROM learning.card WHERE card_user_account_id=$1 AND card_state <> 'suspended' AND card_suspended_at IS NULL AND card_due_at <= $2 AND card_state <> 'new'", [ctx.userId, ctx.now]);
   const types = catalog.sections.map((s) => {
     const qt = catalog.questionTypes.find((t) => t.id === s.questionTypeId);
     const m = typeMastery.get(s.questionTypeId);
@@ -267,7 +266,7 @@ export const regeneratePlan = async (tx, ctx, o) => {
   const days = composePlan({
     fromDate: from, endDate: end < from ? from : end, examDate, availability: inp.availability, overrides, defaultMinutes: DEFAULT_DAY_MINUTES,
     types: inp.types, focus, dueMistakes: inp.dueMistakes, dueCards: inp.dueCards,
-    diagnosticPending: inp.diagnostic.status !== 'completed',
+    diagnosticPending: !['completed', 'skipped'].includes(inp.diagnostic.status),
     notes: inp.notes, keptToday: { minutes: keptMinutes, count: kept.length },
   });
   if (o.skipToday) { const t = days[0]; if (t) { t.tasks = []; t.status = 'skipped'; t.minutes = 0; t.adjustedReason = 'missed_days'; } }

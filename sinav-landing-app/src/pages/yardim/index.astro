@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getArticles, getCategories } from '../../lib/data.mjs';
+const articles = await getArticles('help');
+const cats = await getCategories('help');
+const groups = cats.map((c) => ({ ...c, items: articles.filter((a) => a.category?.key === c.key) })).filter((g) => g.items.length);
+const index = JSON.stringify(articles.map((a) => ({ s: a.slug, t: a.title, e: a.excerpt })));
+---
+<Base title="Yardım merkezi" description="Hesap, ödeme, plan ve çalışma yöntemi hakkında rehberler.">
+  <section class="mx-auto max-w-4xl px-4 py-14">
+    <h1 class="font-display text-4xl font-bold">Yardım merkezi</h1>
+    <label for="q" class="mt-6 block text-sm font-medium">Ara</label>
+    <input id="q" type="search" placeholder="Örn. iptal, şifre, sınav tarihi" class="w-full rounded-lg border border-line bg-surface px-3 py-2" />
+    <ul id="hits" class="mt-3 space-y-2" aria-live="polite"></ul>
+    <div id="groups">
+      {groups.map((g) => <div class="mt-10"><h2 class="text-xl font-semibold">{g.name}</h2><ul class="mt-3 grid gap-2 sm:grid-cols-2">{g.items.map((a) => <li><a href={`/yardim/${a.slug}`} class="block rounded-xl border border-line bg-surface p-3 no-underline text-ink">{a.title}</a></li>)}</ul></div>)}
+    </div>
+    <p class="mt-12 rounded-xl bg-brand-soft p-4">Çözemedin mi? <a href="/iletisim">Bize yaz</a>.</p>
+    <script id="idx" type="application/json" set:html={index} />
+    <script>
+      const data = JSON.parse(document.getElementById('idx')!.textContent || '[]') as { s: string; t: string; e: string }[];
+      const q = document.getElementById('q') as HTMLInputElement, hits = document.getElementById('hits')!, groups = document.getElementById('groups')!;
+      const norm = (x: string) => x.toLocaleLowerCase('tr');
+      q.addEventListener('input', () => {
+        const v = norm(q.value.trim()); hits.innerHTML = ''; groups.hidden = v.length > 1;
+        if (v.length < 2) return;
+        const r = data.filter((d) => norm(d.t + ' ' + d.e).includes(v)).slice(0, 10);
+        if (!r.length) { hits.textContent = 'Sonuç yok.'; return; }
+        r.forEach((d) => { const li = document.createElement('li'); const a = document.createElement('a'); a.href = '/yardim/' + d.s; a.textContent = d.t; a.className = 'block rounded-xl border border-line bg-surface p-3'; li.append(a); hits.append(li); });
+      });
+    </script>
+  </section>
+</Base>

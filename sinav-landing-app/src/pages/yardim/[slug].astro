@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getArticles, getArticle } from '../../lib/data.mjs';
+import { md, fmtDate } from '../../lib/md.mjs';
+export async function getStaticPaths() {
+  const list = await getArticles('help');
+  return Promise.all(list.map(async (a) => ({ params: { slug: a.slug }, props: { a: await getArticle('help', a.slug) } })));
+}
+const { a } = Astro.props;
+const html = await md(a.bodyMd);
+---
+<Base title={a.seoTitle || a.title} description={a.seoDescription || a.excerpt}>
+  <article class="mx-auto max-w-3xl px-4 py-14">
+    <p class="text-sm"><a href="/yardim">← Yardım merkezi</a></p>
+    <h1 class="mt-3 font-display text-4xl font-bold">{a.title}</h1>
+    <p class="mt-2 text-sm text-ink-2">{a.category?.name}{a.author?.displayName ? ` · ${a.author.displayName}` : ''} · {fmtDate(a.updatedAt || a.publishedAt)} · {a.readingMinutes} dk</p>
+    <div class="prose-odak mt-8" set:html={html} />
+    {a.related?.length > 0 && <aside class="mt-12 border-t border-line pt-6"><h2 class="font-semibold">İlgili yazılar</h2><ul class="mt-2 space-y-1">{a.related.map((r) => <li><a href={`/yardim/${r.slug}`}>{r.title}</a></li>)}</ul></aside>}
+  </article>
+</Base>

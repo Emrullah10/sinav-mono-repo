@@ -178,9 +178,9 @@ export const makeGeneration = ({ rawQuery, nowFn, fetchFn, items }) => {
     }
     const status = produced === 0 ? 'failed' : 'completed';
     await rawQuery(
-      `UPDATE content.generation_job SET generation_job_status=$2, generation_job_produced_count=$3, generation_job_failed_count=$4, generation_job_cost_micros=$5, generation_job_model=$6,
-              generation_job_finished_at=$7, generation_job_error=CASE WHEN $2='failed' THEN 'No valid draft was produced' END,
-              generation_job_metadata = CASE WHEN $2='failed' THEN generation_job_metadata || '{"errorCode":"CONTENT_AI_BAD_OUTPUT"}'::jsonb ELSE generation_job_metadata END WHERE generation_job_id=$1`,
+      `UPDATE content.generation_job SET generation_job_status=$2::varchar, generation_job_produced_count=$3, generation_job_failed_count=$4, generation_job_cost_micros=$5, generation_job_model=$6,
+              generation_job_finished_at=$7, generation_job_error=CASE WHEN $2::varchar='failed' THEN 'No valid draft was produced' END,
+              generation_job_metadata = CASE WHEN $2::varchar='failed' THEN generation_job_metadata || '{"errorCode":"CONTENT_AI_BAD_OUTPUT"}'::jsonb ELSE generation_job_metadata END WHERE generation_job_id=$1`,
       [job.id, status, Math.min(produced, 32000), Math.min(failed, 32000), cost, model, nowFn()]);
     return { failed: status === 'failed' };
   };
