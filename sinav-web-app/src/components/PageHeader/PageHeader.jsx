@@ -9,7 +9,7 @@ export default function PageHeader({ eyebrow, title, subtitle, actions, back }) 
         <h1 className="t-heading-1">{title}</h1>
         {subtitle && <p className="muted t-body-m">{subtitle}</p>}
       </div>
-      {actions && <div className="row">{actions}</div>}
+      {actions && <div className={`row ${styles.actions}`}>{actions}</div>}
     </header>
   );
 }
