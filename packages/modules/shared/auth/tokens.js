@@ -39,8 +39,26 @@ export const hashOtp = (phone, code) =>
 // ⚠️ BU TEK BAŞINA GİRİŞİ GÜVENLİ YAPMAZ. `verify-otp.use-case.js`'teki
 // `if (otp === '123456')` arka kapısı (bug-790 / bug-1917) hâlâ açık ve her
 // telefon için koşulsuz oturum açıyor. Ayrı bir tur bekliyor.
+//
+// Geçici: e-posta kanalı (SMTP) kurulana kadar OTP_STATIC_CODE ile sabit kod.
+// İKİ ANAHTAR (ARCHITECTURE §13 madde 6): kod env'de AÇIKÇA verilmeli VE
+// SMTP_HOST tanımsız olmalı. SMTP bağlanınca bu yol kendiliğinden kapanır.
+// Kod sabit olduğu için e-postasını bilen herkes o hesaba girebilir; yalnız
+// canlıya açılmadan önceki test dönemi içindir.
+let staticOtpWarned = false;
+const staticOtpCode = () => {
+  const code = (process.env.OTP_STATIC_CODE || '').trim();
+  if (!/^\d{6}$/.test(code)) return null;
+  if ((process.env.SMTP_HOST || '').trim()) return null;
+  if (!staticOtpWarned) {
+    staticOtpWarned = true;
+    console.warn('[otp] ⚠️ OTP_STATIC_CODE aktif: SMTP yok, tüm kodlar sabit. Canlıya açmadan önce kaldır.');
+  }
+  return code;
+};
+
 export const generateOtpCode = () =>
-  String(crypto.randomInt(0, 1_000_000)).padStart(6, '0');
+  staticOtpCode() ?? String(crypto.randomInt(0, 1_000_000)).padStart(6, '0');
 
 export const randomToken = (bytes = 32) =>
   crypto.randomBytes(bytes).toString('base64url');
