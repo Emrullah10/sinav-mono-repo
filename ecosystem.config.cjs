@@ -44,6 +44,8 @@ module.exports = {
     name,
     cwd: path.join(servicesDir, name),
     script: './main.js',
+    // Sunucuda sistem node'u v20; update.sh nvm'deki 24'ü SINAV_NODE_BIN ile verir.
+    interpreter: process.env.SINAV_NODE_BIN || 'node',
     instances: 1,
     exec_mode: 'fork',
     autorestart: true,
