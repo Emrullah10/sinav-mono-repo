@@ -99,6 +99,7 @@ function ImportCard({ imp }) {
       <p className="muted t-body-s">
         {imp.parsedCount != null && t('cmsx.cal.summary', { parsed: imp.parsedCount, proposals: imp.proposals.length, same: imp.unchangedCount ?? 0 })}
         {imp.parser === 'llm' && ` · ${t('cmsx.cal.parserLlm')}`}
+        {imp.parser === 'web' && ` · ${t('cmsx.cal.parserWeb')}`}
         {imp.decidedBy && ` · ${t('cmsx.cal.decidedBy', { name: imp.decidedBy.displayName })}`}
       </p>
       {imp.needsUpload && imp.status === 'failed' && (
@@ -109,6 +110,13 @@ function ImportCard({ imp }) {
         </Banner>
       )}
       {imp.error && !imp.needsUpload && <Banner tone="error">{imp.error}</Banner>}
+      {imp.webError && imp.status === 'failed' && <p className="muted t-body-s">{t('cmsx.cal.webError', { msg: imp.webError })}</p>}
+      {imp.sources?.length > 0 && (
+        <p className="muted t-body-s">
+          {t('cmsx.cal.sources')}:{' '}
+          {imp.sources.map((src, i) => <span key={src.url}>{i > 0 && ' · '}<a className={s.link} href={src.url} target="_blank" rel="noreferrer">{src.domain}</a></span>)}
+        </p>
+      )}
       {imp.problems?.length > 0 && <Banner tone="warning">{t('cmsx.cal.problems', { n: imp.problems.length })}: {imp.problems.map((p) => p.line).join(' · ')}</Banner>}
       {imp.proposals.length > 0 && (
         <>

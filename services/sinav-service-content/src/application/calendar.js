@@ -1,16 +1,21 @@
 // ÖSYM sınav takvimi içe aktarma (SYS/CMS) ve oturum durumlarının tarihten güncellenmesi.
 //   Haftalık tarama: ÖSYM ana sayfasında "<yıl> yılı sınav takvimi" duyurusunu ve içindeki PDF'i bulur, indirmeyi bir kez dener.
 //   ÖSYM dosyayı otomatik istemcilere kapatırsa (ör. "Erişim Engellendi") kayıt `failed` olur ve bağlantı panelde görünür;
-//   editör PDF'i tarayıcıdan indirip yükler. Öneriler doğrudan uygulanmaz; gözden geçiren onaylar.
+//   Bu durumda takvimi yeniden yayımlayan haber/eğitim sitelerine bakılır (calendar-web.js): web aramalı model oturumları ve
+//   kaynakları döner, her tarih kaynak sayfada kodla doğrulanır (≥2 alan adı). Editör isterse PDF'i yine elle yükleyebilir.
+//   Öneriler doğrudan uygulanmaz; gözden geçiren onaylar.
 //   Günlük iş: oturum durumu (announced → application_open → held → results_announced) tarihten hesaplanır.
 import { createHash } from 'node:crypto';
 import { DomainError, withTransaction, writeAudit, fetchInternal, internalHeaders } from 'app-shared';
 import { iso, dateOnly, pageOf, reqCode, getPlatform, bumpCatalogVersion, userRef, asArray } from '../shared/helpers.js';
 import { pdfToRows, parseCalendarRows, mentionsLanguageExams, matchCode, sessionProblems } from './calendar-parse.js';
+import { htmlToText, domainOf, confirmSessions, MIN_DOMAINS } from './calendar-web.js';
 
 const HOME_URL = () => process.env.OSYM_HOME_URL || 'https://www.osym.gov.tr/';
 const FALLBACK_PDF = (y) => `https://dokuman.osym.gov.tr/pdfdokuman/${y}/GENEL/sinavtakvimi${y}.pdf`;
 const MAX_PDF_BYTES = 10 * 1024 * 1024;
+const MAX_WEB_PAGES = 8;
+const webResearchOn = () => process.env.CALENDAR_WEB_RESEARCH !== '0';
 const FIELDS = ['name', 'date', 'applicationStart', 'applicationEnd', 'lateApplicationEnd', 'resultDate'];
 const tutorUrl = () => `${(process.env.SERVICE_TUTOR_REST_URL || process.env.TUTOR_REST_URL || 'http://127.0.0.1:2005').replace(/\/$/, '')}/api/sinav-service-tutor/v1`;
 
@@ -86,6 +91,66 @@ Return ONLY JSON {"sessions":[{"code": short code as written (e.g. "2027-YDS/1" 
       .filter((s) => s.key && !s.skip && !sessionProblems(s).length);
   };
 
+  /** Web aramalı model: takvimi yeniden yayımlayan sitelerden oturumlar + kaynak bağlantıları. */
+  const askWeb = async (year) => {
+    const system = `[gen:calendar-web]
+You research the official ÖSYM ${year} exam calendar as republished by Turkish news and education websites (the ÖSYM PDF itself is not reachable).
+Return ONLY JSON {"sessions":[{"code","date","applicationStart","applicationEnd","lateApplicationEnd","resultDate","sources":[page urls]}]}.
+"code" formats: "${year}-YDS/1", "${year}-YÖKDİL/1", "(e-YDS ${year}/4 İngilizce)", "(e-YÖKDİL ${year}/1 <alan>)". Include YDS, every e-YDS session (with its language), YÖKDİL and e-YÖKDİL.
+Dates as YYYY-MM-DD; null when a page does not state it. Never guess. Each session must list the exact page URLs where you saw its dates; prefer pages that list several sessions.`;
+    const res = await fetchInternal(`${tutorUrl()}/internal/ai/complete`, {
+      method: 'POST', headers: internalHeaders(null), timeoutMs: 120000, fetchFn,
+      body: { feature: 'content_draft', model: process.env.EVAL_MODEL || undefined, json: true, maxTokens: 6000, webSearch: { maxResults: 8 },
+        messages: [{ role: 'system', content: system }, { role: 'user', content: `ÖSYM ${year} sınav takvimi: YDS, e-YDS, YÖKDİL, e-YÖKDİL başvuru, sınav ve sonuç tarihleri.` }] },
+    });
+    const body = await res.json().catch(() => null);
+    const data = body?.data ?? body;
+    if (!res.ok) throw new Error(body?.error?.message || `tutor HTTP ${res.status}`);
+    const list = Array.isArray(data?.json?.sessions) ? data.json.sessions : [];
+    const urls = [...new Set([...list.flatMap((x) => asArray(x.sources)), ...(data?.citations || []).map((c) => c.url)].map(String).filter((u) => /^https?:\/\//.test(u)))];
+    return { list, urls, model: data?.model || null, costMicros: Number(data?.usage?.costMicros) || 0 };
+  };
+
+  /** Kaynak sayfaları açar; ÖSYM'nin kendi alan adı (PDF'i engelleyen) atlanır. */
+  const fetchPages = async (urls) => {
+    const pages = [];
+    for (const url of urls) {
+      if (pages.length >= MAX_WEB_PAGES) break;
+      const domain = domainOf(url);
+      if (!domain || /(^|\.)osym\.gov\.tr$/.test(domain)) continue;
+      try {
+        const html = await getText(url);
+        if (html) pages.push({ url, domain, text: htmlToText(html) });
+      } catch { /* erişilemeyen kaynak sayılmaz */ }
+    }
+    return pages;
+  };
+
+  /** PDF'e ulaşılamadığında: web kaynaklarından doğrulanmış oturumlar → öneri kaydı (ya da bulunamadı). */
+  const webResearch = async ({ year, pdfUrl, pageUrl, userId = null }) => {
+    let ask;
+    try { ask = await askWeb(year); } catch (e) { return { error: `web araştırması başarısız: ${e.message}`.slice(0, 500) }; }
+    const ids = ask.list.map((x) => ({ ...matchCode(String(x.code || '')), date: x.date || null, applicationStart: x.applicationStart || null, applicationEnd: x.applicationEnd || null, lateApplicationEnd: x.lateApplicationEnd || null, resultDate: x.resultDate || null }))
+      .filter((s) => s.key && !s.skip && s.year === year);
+    const pages = await fetchPages(ask.urls);
+    const { sessions, rejected } = confirmSessions(ids, pages);
+    const ok = sessions.filter((s) => !sessionProblems(Object.fromEntries(Object.entries(s).map(([k, v]) => [k, v ?? null]))).length);
+    const meta = {
+      pageUrl, web: true, model: ask.model, costMicros: ask.costMicros, minDomains: MIN_DOMAINS,
+      sources: pages.map((p) => ({ url: p.url, domain: p.domain })), suggested: ids.length,
+      confirmations: Object.fromEntries(ok.map((s) => [s.key, s.confirmations])),
+      problems: rejected.map((r) => ({ line: r.key, errors: [r.reason], seenIn: r.seenIn })),
+    };
+    if (!ok.length) return { error: `web kaynaklarında doğrulanmış oturum bulunamadı (${pages.length} sayfa, ${ids.length} öneri)`, metadata: meta };
+    // Web sonucu eksik olabilir: listede olmayan tahmini oturumlar iptal ÖNERİLMEZ.
+    const { proposals, same } = await diff(ok.map(({ confirmations, ...s }) => s), { cancelEstimated: false });
+    const code = await insertImport({
+      status: proposals.length ? 'pending' : 'no_change', sourceUrl: pdfUrl, year, parser: 'web', proposals,
+      metadata: { ...meta, parsedCount: ok.length, unchangedCount: same }, userId,
+    });
+    return { code };
+  };
+
   /** Ayrıştırılan oturumları veritabanıyla karşılaştırır → öneriler. */
   const diff = async (sessions, { cancelEstimated }) => {
     const keys = sessions.map((s) => s.key);
@@ -102,7 +167,8 @@ Return ONLY JSON {"sessions":[{"code": short code as written (e.g. "2027-YDS/1" 
     let same = 0;
     for (const s of sessions) {
       const cur = existing.get(s.key);
-      const next = Object.fromEntries(FIELDS.map((f) => [f, s[f] ?? null]));
+      // undefined = kaynakta doğrulanamadı → mevcut değer korunur (null ise alan gerçekten boş demektir).
+      const next = Object.fromEntries(FIELDS.map((f) => [f, s[f] === undefined && cur ? cur[f] ?? null : s[f] ?? null]));
       if (!cur) { proposals.push({ action: 'create', key: s.key, exam: s.exam, deliveryMode: s.deliveryMode, ...next }); continue; }
       const changes = Object.fromEntries(FIELDS.filter((f) => (cur[f] ?? null) !== next[f]).map((f) => [f, { from: cur[f] ?? null, to: next[f] }]));
       if (cur.isEstimated) changes.isEstimated = { from: true, to: false };
@@ -169,11 +235,19 @@ Return ONLY JSON {"sessions":[{"code": short code as written (e.g. "2027-YDS/1" 
       if (seen.rows.length && seen.rows[0].status !== 'failed') { results.push({ year: f.year, pdfUrl: f.pdfUrl, code: Number(seen.rows[0].code), outcome: 'already_imported' }); continue; }
       const got = await fetchPdf(f.pdfUrl);
       if (got.error) {
-        // Tahmin edilen yedek adres yoksa sessiz geç (takvim henüz yayımlanmamış olabilir); duyurusu bulunan dosya indirilemiyorsa panelde görünsün.
+        // Tahmin edilen yedek adres yoksa sessiz geç (takvim henüz yayımlanmamış olabilir); duyurusu bulunan dosya indirilemiyorsa önce web kaynakları.
         if (f.fallback) { results.push({ year: f.year, pdfUrl: f.pdfUrl, outcome: 'not_published' }); continue; }
-        if (seen.rows.length) { results.push({ year: f.year, pdfUrl: f.pdfUrl, code: Number(seen.rows[0].code), outcome: 'still_blocked' }); continue; }
-        const code = await insertImport({ status: 'failed', sourceUrl: f.pdfUrl, year: f.year, error: got.message, metadata: { reason: got.error, pageUrl: f.pageUrl, needsUpload: true }, userId: caller ? Number(caller.callerUserId) : null });
-        results.push({ year: f.year, pdfUrl: f.pdfUrl, code, outcome: 'download_failed', reason: got.error });
+        const userId = caller ? Number(caller.callerUserId) : null;
+        const web = webResearchOn() ? await webResearch({ year: f.year, pdfUrl: f.pdfUrl, pageUrl: f.pageUrl, userId }) : { error: 'web araştırması kapalı (CALENDAR_WEB_RESEARCH=0)' };
+        if (web.code) { results.push({ year: f.year, pdfUrl: f.pdfUrl, code: web.code, outcome: 'web_imported', reason: got.error }); continue; }
+        const failMeta = { reason: got.error, pageUrl: f.pageUrl, needsUpload: true, webError: web.error || null, ...(web.metadata ? { webTried: web.metadata } : {}) };
+        if (seen.rows.length) {
+          await rawQuery(`UPDATE content.exam_calendar_import SET exam_calendar_import_metadata = exam_calendar_import_metadata || $2::jsonb WHERE exam_calendar_import_code = $1`, [seen.rows[0].code, JSON.stringify(failMeta)]);
+          results.push({ year: f.year, pdfUrl: f.pdfUrl, code: Number(seen.rows[0].code), outcome: 'still_blocked', webError: web.error });
+          continue;
+        }
+        const code = await insertImport({ status: 'failed', sourceUrl: f.pdfUrl, year: f.year, error: got.message, metadata: failMeta, userId });
+        results.push({ year: f.year, pdfUrl: f.pdfUrl, code, outcome: 'download_failed', reason: got.error, webError: web.error });
         continue;
       }
       const r = await importPdf({ buffer: got.buffer, sourceUrl: f.pdfUrl, year: f.year, userId: caller ? Number(caller.callerUserId) : null, metadata: { pageUrl: f.pageUrl } });
@@ -202,7 +276,7 @@ Return ONLY JSON {"sessions":[{"code": short code as written (e.g. "2027-YDS/1" 
   const dto = (r) => ({
     code: Number(r.code), status: r.status, sourceUrl: r.sourceUrl, year: r.year, parser: r.parser, proposals: r.proposals, error: r.error,
     pageUrl: r.metadata?.pageUrl || null, needsUpload: !!r.metadata?.needsUpload, parsedCount: r.metadata?.parsedCount ?? null, unchangedCount: r.metadata?.unchangedCount ?? null,
-    problems: r.metadata?.problems || [], appliedKeys: r.metadata?.appliedKeys || null, decidedBy: userRef(r.deciderCode, r.deciderName), decidedAt: iso(r.decidedAt), createdAt: iso(r.createdAt),
+    problems: r.metadata?.problems || [], sources: r.metadata?.sources || [], webError: r.metadata?.webError || null, appliedKeys: r.metadata?.appliedKeys || null, decidedBy: userRef(r.deciderCode, r.deciderName), decidedAt: iso(r.decidedAt), createdAt: iso(r.createdAt),
   });
 
   const list = async ({ query = {} }) => {

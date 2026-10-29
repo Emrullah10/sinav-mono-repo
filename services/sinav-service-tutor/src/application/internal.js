@@ -6,7 +6,7 @@ const ROLES = new Set(['system', 'user', 'assistant']);
 
 export const makeInternal = ({ rawQuery, llm }) => {
   /** İçerik servisi (CMS taslakları) için: tek seferlik tamamlama + maliyet defteri. */
-  const aiComplete = async ({ caller, feature = 'content_draft', model, messages, json = false, maxTokens }) => {
+  const aiComplete = async ({ caller, feature = 'content_draft', model, messages, json = false, maxTokens, webSearch = null }) => {
     if (!FEATURES.includes(feature)) throw new DomainError('TUTOR_AI_FEATURE_INVALID', 'Unknown feature');
     if (!Array.isArray(messages) || !messages.length || messages.length > 40) throw new DomainError('TUTOR_AI_MESSAGES_INVALID', 'messages must be 1-40 items');
     let total = 0;
@@ -20,9 +20,10 @@ export const makeInternal = ({ rawQuery, llm }) => {
     const userId = Number(caller?.callerUserId) || null;
     const started = Date.now();
     try {
-      const r = await llm.complete({ messages, model: useModel, json: !!json, maxTokens: Math.min(Number(maxTokens) || 4000, 16000), task: 'internal' });
-      await insertAiUsage(rawQuery, { caller, userId, feature, model: r.model || useModel, usage: r.usage, latencyMs: Date.now() - started, succeeded: true, metadata: { internal: true } });
-      return { text: r.text, json: r.json ?? null, model: r.model || useModel, usage: r.usage, finishReason: r.finishReason || null };
+      const web = webSearch ? { maxResults: Number(webSearch.maxResults) || 8 } : null;
+      const r = await llm.complete({ messages, model: useModel, json: !!json, maxTokens: Math.min(Number(maxTokens) || 4000, 16000), task: 'internal', webSearch: web });
+      await insertAiUsage(rawQuery, { caller, userId, feature, model: r.model || useModel, usage: r.usage, latencyMs: Date.now() - started, succeeded: true, metadata: { internal: true, ...(web ? { webSearch: true } : {}) } });
+      return { text: r.text, json: r.json ?? null, model: r.model || useModel, usage: r.usage, finishReason: r.finishReason || null, citations: r.citations || [] };
     } catch (e) {
       if (llm.configured) await insertAiUsage(rawQuery, { caller, userId, feature, model: useModel, latencyMs: Date.now() - started, succeeded: false, metadata: { internal: true, errorCode: e.code || null } });
       throw e;
