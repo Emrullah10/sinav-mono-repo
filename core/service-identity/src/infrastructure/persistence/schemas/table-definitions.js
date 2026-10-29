@@ -997,6 +997,69 @@ const bookmarkKind = {
   },
 };
 
+const calendarImportStatus = {
+  table: {
+    dbName: 'sinav',
+    schemaName: 'enums',
+    tableName: 'calendar_import_status',
+    tableNameWithSchema: 'enums.calendar_import_status',
+  },
+  calendarImportStatus: {
+    calendarImportStatusId: {
+      original: 'calendar_import_status_id',
+      camelCase: 'calendarImportStatusId',
+      udtName: 'int8',
+      dataType: 'bigint',
+      characterMaximumLength: null,
+      isIdentity: true,
+      isNullable: false,
+      isPrimaryKey: false,
+      isForeignKey: false,
+      isUnique: false,
+      isIndex: false,
+    },
+    calendarImportStatusLabel: {
+      original: 'calendar_import_status_label',
+      camelCase: 'calendarImportStatusLabel',
+      udtName: 'varchar',
+      dataType: 'character varying',
+      characterMaximumLength: 255,
+      isIdentity: false,
+      isNullable: false,
+      isPrimaryKey: false,
+      isForeignKey: false,
+      isUnique: false,
+      isIndex: false,
+    },
+    calendarImportStatusSortOrder: {
+      original: 'calendar_import_status_sort_order',
+      camelCase: 'calendarImportStatusSortOrder',
+      udtName: 'int4',
+      dataType: 'integer',
+      characterMaximumLength: null,
+      isIdentity: false,
+      isNullable: false,
+      isPrimaryKey: false,
+      isForeignKey: false,
+      isUnique: false,
+      isIndex: false,
+    },
+    calendarImportStatusValue: {
+      original: 'calendar_import_status_value',
+      camelCase: 'calendarImportStatusValue',
+      udtName: 'varchar',
+      dataType: 'character varying',
+      characterMaximumLength: 100,
+      isIdentity: false,
+      isNullable: false,
+      isPrimaryKey: false,
+      isForeignKey: false,
+      isUnique: false,
+      isIndex: false,
+    },
+  },
+};
+
 const campaignKind = {
   table: {
     dbName: 'sinav',
@@ -10011,6 +10074,7 @@ export default applyDefaultPermissions({
   billingPartyType,
   blob,
   bookmarkKind,
+  calendarImportStatus,
   campaignKind,
   cancelReason,
   cardSource,

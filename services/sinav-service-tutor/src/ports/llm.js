@@ -78,7 +78,20 @@ const withTimeout = (signal, ms) => {
 };
 
 // ── OpenRouter ──────────────────────────────────────────────────────────────
-export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThis.fetch, timeoutMs = 90000 }) => {
+// `openrouter/auto` yönlendiricisini izin listesiyle sınırlar; `maxPrice` ($/milyon token) her istekte tavan koyar.
+// `reasoningEffort` düşünme payını sınırlar (low|medium|high); düşünen modeller çıktı bütçesini yemesin.
+const routing = (m, { autoAllowed = [], maxPrice = null, reasoningEffort = null }) => ({
+  ...(m === 'openrouter/auto' && autoAllowed.length ? { plugins: [{ id: 'auto-router', allowed_models: autoAllowed }] } : {}),
+  ...(maxPrice ? { provider: { max_price: maxPrice } } : {}),
+  ...(reasoningEffort ? { reasoning: { effort: reasoningEffort } } : {}),
+});
+const splitList = (v) => String(v || '').split(',').map((x) => x.trim()).filter(Boolean);
+const priceCap = (v) => {
+  const [prompt, completion] = splitList(v).map(Number);
+  return Number.isFinite(prompt) && Number.isFinite(completion) ? { prompt, completion } : null;
+};
+
+export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThis.fetch, timeoutMs = 90000, autoAllowed = [], maxPrice = null, reasoningEffort = null }) => {
   const url = `${String(baseUrl || 'https://openrouter.ai/api/v1').replace(/\/+$/, '')}/chat/completions`;
   const headers = {
     'Content-Type': 'application/json',
@@ -88,7 +101,7 @@ export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThi
 
   const complete = async ({ messages, model, json = false, maxTokens = 1500, signal } = {}) => {
     const m = model || models.tutor;
-    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, usage: { include: true }, ...(json ? { response_format: { type: 'json_object' } } : {}) };
+    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, usage: { include: true }, ...(json ? { response_format: { type: 'json_object' } } : {}), ...routing(m, { autoAllowed, maxPrice, reasoningEffort }) };
     try {
       const res = await fetchFn(url, { method: 'POST', headers, body: JSON.stringify(body), signal: withTimeout(signal, timeoutMs) });
       const raw = await res.text();
@@ -102,7 +115,7 @@ export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThi
 
   const stream = async ({ messages, model, onToken, signal, maxTokens = 1500 } = {}) => {
     const m = model || models.tutor;
-    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, stream: true, usage: { include: true } };
+    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, stream: true, usage: { include: true }, ...routing(m, { autoAllowed, maxPrice, reasoningEffort }) };
     try {
       const res = await fetchFn(url, { method: 'POST', headers: { ...headers, Accept: 'text/event-stream' }, body: JSON.stringify(body), signal: withTimeout(signal, timeoutMs) });
       if (!res.ok) throw upstreamError(res.status, await res.text().catch(() => ''));
@@ -160,6 +173,56 @@ const FAKE_MINI = {
 const approxTokens = (s) => Math.ceil(String(s || '').length / 4);
 const lastUser = (messages) => [...messages].reverse().find((m) => m.role === 'user')?.content || '';
 
+// ── Sahte içerik üretimi (yalnız FAKE_LLM=1): content servisinin `[gen:<tür>]` istemlerine geçerli JSON döner ──
+let fakeSeq = 0;
+const FAKE_LABELS = ['A', 'B', 'C', 'D', 'E'];
+const filler = (n) => Array.from({ length: n }, (_, i) => `Research on topic ${fakeSeq} shows result number ${i + 1} in this study.`).join(' ');
+const fakeQuestion = (extra = {}) => {
+  fakeSeq += 1;
+  return {
+    stem: `Fake question ${fakeSeq}: the committee decided to ______ the plan.`,
+    options: FAKE_LABELS.map((l, k) => ({ label: l, text: `option ${l} of question ${fakeSeq}`, rationale: k === 0 ? null : 'Bu şık bağlama uymuyor.' })),
+    correctLabel: 'A', shortReason: 'Doğru. Bağlama uyan tek şık bu.', explanation: 'Cümlenin yönü bu şıkkı gerektiriyor. Diğer şıklar anlamı bozuyor.',
+    hints: [
+      { kind: 'focus', body: 'Cümlenin yönüne bak.' }, { kind: 'rule', body: 'Bağlaç ve eşdizim ilişkisini düşün.' },
+      { kind: 'eliminate', body: 'İki şık anlamı bozuyor.', eliminatesLabels: ['B', 'C'] }, { kind: 'solution', body: 'A şıkkı cümleyi tamamlar.' },
+    ],
+    difficulty: 3, estimatedSeconds: 45, ...extra,
+  };
+};
+const fakeGenerate = (gen, userMsg) => {
+  const count = Number(/Write (\d+)/.exec(userMsg)?.[1]) || 1;
+  if (gen === 'question') return { questions: Array.from({ length: count }, () => fakeQuestion()) };
+  if (gen === 'note') {
+    fakeSeq += 1;
+    return { note: {
+      title: `Sahte not ${fakeSeq}`, summary: 'Tek cümlelik sahte özet.', readingSeconds: 80, ruleMd: '- Birinci kural\n- İkinci kural: *although* zıtlık kurar',
+      examples: [{ en: 'Although it rained, we left.', tr: 'Yağmur yağmasına rağmen çıktık.' }], trapMd: 'Sık yapılan hata: bağlacı yönüne bakmadan seçmek.',
+      checks: [fakeQuestion(), fakeQuestion()],
+    } };
+  }
+  if (gen === 'check') {
+    const n = [...userMsg.matchAll(/^Q(\d+)\./gm)].length;
+    return { answers: Array.from({ length: n }, (_, i) => ({ n: i + 1, label: process.env.FAKE_CHECK_MISMATCH === '1' && i === 0 ? 'B' : 'A' })) };
+  }
+  const kind = gen.split(':')[1];
+  const mk = () => {
+    fakeSeq += 1;
+    if (kind === 'reading') {
+      const kinds = ['main_idea', 'inference', 'detail', 'vocabulary_in_context'];
+      return { title: `Fake reading ${fakeSeq}`, body: `${filler(14)}\n\n${filler(8)}`, terms: [{ term: 'study', definitionTr: 'çalışma' }], questions: kinds.map((k) => fakeQuestion({ readingQuestionKind: k })) };
+    }
+    if (kind === 'cloze') {
+      const body = `${filler(5)} {{1}} ${filler(3)} {{2}} ${filler(3)} {{3}} ${filler(3)} {{4}} ${filler(3)} {{5}} ${filler(2)}`;
+      return { title: `Fake cloze ${fakeSeq}`, body, terms: [], questions: [1, 2, 3, 4, 5].map((b) => fakeQuestion({ blankNo: b, stem: `Blank ${b}: choose the option that best completes the passage.` })) };
+    }
+    const irrelevant = /Question type: irrelevant_sentence/.test(userMsg);
+    const body = irrelevant ? `[[I]] ${filler(2)} [[II]] ${filler(2)} [[III]] ${filler(2)} [[IV]] ${filler(2)} [[V]] ${filler(2)}` : `${filler(4)} ______ ${filler(2)}`;
+    return { title: `Fake paragraph ${fakeSeq}`, body, terms: [], questions: [fakeQuestion({ stem: irrelevant ? 'Which numbered sentence breaks the flow of the paragraph?' : 'Choose the sentence that best completes the paragraph.' })] };
+  };
+  return { passages: Array.from({ length: count }, mk) };
+};
+
 export const makeFakeLlm = ({ models }) => {
   const stream = async ({ messages, model, onToken, signal } = {}) => {
     const user = lastUser(messages);
@@ -198,6 +261,7 @@ export const makeFakeLlm = ({ models }) => {
   const complete = async ({ messages, model, json, task } = {}) => {
     const all = messages.map((m) => m.content).join('\n');
     const userMsg = lastUser(messages);
+    const gen = /\[gen:([a-z:]+)\]/.exec(messages.filter((m) => m.role === 'system').map((m) => m.content).join('\n'))?.[1];
     let out;
     if (task === 'translation_eval') {
       const keys = [...userMsg.matchAll(/CRITERION:([a-z_]+)/g)].map((m) => m[1]);
@@ -210,6 +274,8 @@ export const makeFakeLlm = ({ models }) => {
         summary: 'Anlamı büyük ölçüde yakalamışsın; birkaç küçük düzeltmeyle daha doğal olur.',
         changes: [{ from: '', to: '', explanation: 'Kelime seçimi bağlama göre ayarlandı.' }],
       };
+    } else if (gen) {
+      out = fakeGenerate(gen, userMsg);
     } else {
       out = { ok: true, echo: approxTokens(all) };
     }
@@ -236,5 +302,8 @@ export const createLlm = ({ env = process.env, fetchFn } = {}) => {
     }
   }
   if (!env.OPENROUTER_API_KEY) return makeUnconfiguredLlm({ models });
-  return makeOpenRouterLlm({ apiKey: env.OPENROUTER_API_KEY, baseUrl: env.OPENROUTER_BASE_URL, models, fetchFn });
+  return makeOpenRouterLlm({
+    apiKey: env.OPENROUTER_API_KEY, baseUrl: env.OPENROUTER_BASE_URL, models, fetchFn,
+    autoAllowed: splitList(env.OPENROUTER_AUTO_ALLOWED), maxPrice: priceCap(env.OPENROUTER_MAX_PRICE), reasoningEffort: env.OPENROUTER_REASONING_EFFORT || null,
+  });
 };

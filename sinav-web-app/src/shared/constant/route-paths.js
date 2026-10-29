@@ -59,6 +59,7 @@ const Routes = {
   cmsAi: '/cms/yapay-zeka',
   cmsReports: '/cms/bildirimler',
   cmsExamBuilder: '/cms/deneme-olustur',
+  cmsCalendar: '/cms/sinav-takvimi',
   notFound: '*',
   serverError: '/hata',
   maintenance: '/bakim',

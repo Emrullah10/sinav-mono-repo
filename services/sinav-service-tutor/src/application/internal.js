@@ -20,7 +20,7 @@ export const makeInternal = ({ rawQuery, llm }) => {
     const userId = Number(caller?.callerUserId) || null;
     const started = Date.now();
     try {
-      const r = await llm.complete({ messages, model: useModel, json: !!json, maxTokens: Math.min(Number(maxTokens) || 4000, 8000), task: 'internal' });
+      const r = await llm.complete({ messages, model: useModel, json: !!json, maxTokens: Math.min(Number(maxTokens) || 4000, 16000), task: 'internal' });
       await insertAiUsage(rawQuery, { caller, userId, feature, model: r.model || useModel, usage: r.usage, latencyMs: Date.now() - started, succeeded: true, metadata: { internal: true } });
       return { text: r.text, json: r.json ?? null, model: r.model || useModel, usage: r.usage, finishReason: r.finishReason || null };
     } catch (e) {

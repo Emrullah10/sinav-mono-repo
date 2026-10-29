@@ -802,6 +802,23 @@ INSERT INTO enums.generation_job_status (generation_job_status_value, generation
     ('canceled', 'Canceled', 5);
 
 -- -----------------------------------------------------
+-- Table: enums.calendar_import_status
+-- Purpose: Allowed values of calendar_import_status
+-- -----------------------------------------------------
+CREATE TABLE enums.calendar_import_status (
+    calendar_import_status_id BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE NOT NULL,
+    calendar_import_status_value VARCHAR(100) PRIMARY KEY,
+    calendar_import_status_label VARCHAR(255) NOT NULL,
+    calendar_import_status_sort_order INT NOT NULL DEFAULT 0
+);
+INSERT INTO enums.calendar_import_status (calendar_import_status_value, calendar_import_status_label, calendar_import_status_sort_order) VALUES
+    ('pending', 'Pending review', 1),
+    ('applied', 'Applied', 2),
+    ('rejected', 'Rejected', 3),
+    ('no_change', 'No change', 4),
+    ('failed', 'Failed', 5);
+
+-- -----------------------------------------------------
 -- Table: enums.enrollment_status
 -- Purpose: Allowed values of enrollment_status
 -- -----------------------------------------------------

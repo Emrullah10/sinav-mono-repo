@@ -4,7 +4,7 @@ import Chip from '@components/Chip/Chip';
 const TONE = {
   published: 'success', approved: 'success', completed: 'success', resolved: 'success',
   in_review: 'warning', submitted: 'warning', pilot: 'warning', queued: 'warning', running: 'warning', open: 'warning',
-  changes_requested: 'danger', rejected: 'danger', failed: 'danger', retired: 'default', canceled: 'default', draft: 'default', superseded: 'default',
+  pending: 'warning', applied: 'success', no_change: 'default', changes_requested: 'danger', rejected: 'danger', failed: 'danger', retired: 'default', canceled: 'default', draft: 'default', superseded: 'default',
 };
 
 // Durum etiketi: ad her zaman metinle de gösterilir (renk tek başına anlam taşımaz).

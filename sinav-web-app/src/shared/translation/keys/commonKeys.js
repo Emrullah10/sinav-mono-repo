@@ -25,6 +25,7 @@ export default {
   'cms.nav.items': { tr: 'İçerikler', en: 'Items' },
   'cms.nav.new': { tr: 'Yeni içerik', en: 'New item' },
   'cms.nav.ai': { tr: 'Yapay zekâ taslakları', en: 'AI drafts' },
+  'cms.nav.calendar': { tr: 'Sınav takvimi', en: 'Exam calendar' },
   'cms.nav.review': { tr: 'İnceleme kuyruğu', en: 'Review queue' },
   'cms.nav.reports': { tr: 'Hata bildirimleri', en: 'Reports' },
   'cms.nav.examBuilder': { tr: 'Deneme oluşturucu', en: 'Exam builder' },

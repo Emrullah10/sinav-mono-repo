@@ -49,6 +49,13 @@ export const createContentApi = (http, { api = '/api' } = {}) => {
     contentCmsGenerationJobCancel: (code) => http.post(`${B}/cms/generation-jobs/${code}/cancel`, {}),
     contentCmsDraftAccept: (jobCode, itemCode) => http.post(`${B}/cms/generation-jobs/${jobCode}/drafts/${itemCode}/accept`, {}),
     contentCmsDraftReject: (jobCode, itemCode, body) => http.post(`${B}/cms/generation-jobs/${jobCode}/drafts/${itemCode}/reject`, body || {}),
+    // ── CMS: ÖSYM sınav takvimi içe aktarma ──
+    contentCmsCalendarImportsList: (params) => http.get(`${B}/cms/calendar-imports`, { params }),
+    contentCmsCalendarImportGet: (code) => http.get(`${B}/cms/calendar-imports/${code}`),
+    contentCmsCalendarScan: () => http.post(`${B}/cms/calendar-imports/scan`, {}),
+    contentCmsCalendarUpload: (body) => http.post(`${B}/cms/calendar-imports/upload`, body),
+    contentCmsCalendarImportApply: (code, body) => http.post(`${B}/cms/calendar-imports/${code}/apply`, body || {}),
+    contentCmsCalendarImportReject: (code, body) => http.post(`${B}/cms/calendar-imports/${code}/reject`, body || {}),
     // ── CMS: istatistik ──
     contentCmsItemStatsRefresh: () => http.post(`${B}/cms/item-stats/refresh`, {}),
   };

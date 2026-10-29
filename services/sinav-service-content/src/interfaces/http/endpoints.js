@@ -65,6 +65,14 @@ export default defineEndpoints([
   { method: 'post', path: '/v1/cms/generation-jobs/{code}/drafts/{itemCode}/accept', permission: P.contentGenerate, body: true, handler: (req, caller) => uc().generation.acceptDraft({ caller, jobCode: req.params.code, itemCode: req.params.itemCode }) },
   { method: 'post', path: '/v1/cms/generation-jobs/{code}/drafts/{itemCode}/reject', permission: P.contentGenerate, body: true, handler: (req, caller) => uc().generation.rejectDraft({ caller, jobCode: req.params.code, itemCode: req.params.itemCode, note: b(req).note }) },
 
+  // ── CMS: ÖSYM sınav takvimi içe aktarma ──
+  { method: 'get', path: '/v1/cms/calendar-imports', permission: P.contentRead, handler: (req) => uc().calendar.list({ query: q(req) }) },
+  { method: 'post', path: '/v1/cms/calendar-imports/scan', permission: P.contentWrite, body: true, handler: (req, caller) => uc().calendar.scan({ caller }) },
+  { method: 'post', path: '/v1/cms/calendar-imports/upload', permission: P.contentWrite, body: true, handler: (req, caller) => uc().calendar.upload({ caller, pdfBase64: b(req).pdfBase64, sourceUrl: b(req).sourceUrl }) },
+  { method: 'get', path: '/v1/cms/calendar-imports/{code}', permission: P.contentRead, handler: (req) => uc().calendar.get({ code: req.params.code }) },
+  { method: 'post', path: '/v1/cms/calendar-imports/{code}/apply', permission: P.contentReview, body: true, handler: (req, caller) => uc().calendar.apply({ caller, code: req.params.code, keys: b(req).keys }) },
+  { method: 'post', path: '/v1/cms/calendar-imports/{code}/reject', permission: P.contentReview, body: true, handler: (req, caller) => uc().calendar.reject({ caller, code: req.params.code, note: b(req).note }) },
+
   // ── CMS: istatistik ──
   { method: 'post', path: '/v1/cms/item-stats/refresh', permission: P.contentReview, body: true, handler: () => uc().misc.refreshItemStats() },
 ], { tag: 'content' });
