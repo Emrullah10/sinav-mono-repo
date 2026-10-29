@@ -78,11 +78,14 @@ const withTimeout = (signal, ms) => {
 };
 
 // ── OpenRouter ──────────────────────────────────────────────────────────────
-// `openrouter/auto` yönlendiricisini izin listesiyle sınırlar; `maxPrice` ($/milyon token) her istekte tavan koyar.
+// `openrouter/auto`: `autoCostTier` (low|medium|high|xhigh|max) fiyat bandını seçer (low = en ucuz modeller, band içinde popülerlik sırası);
+// `autoAllowed` boşsa tüm modeller aday olur. Yönlendiriciyi izin listesiyle de sınırlayabilirsin; `maxPrice` ($/milyon token) her istekte tavan koyar;
+// `providerSort` ('price' | 'throughput' | 'latency') aynı modeli satan sağlayıcılar arasında seçimi belirler.
 // `reasoningEffort` düşünme payını sınırlar (low|medium|high); düşünen modeller çıktı bütçesini yemesin.
-const routing = (m, { autoAllowed = [], maxPrice = null, reasoningEffort = null }) => ({
-  ...(m === 'openrouter/auto' && autoAllowed.length ? { plugins: [{ id: 'auto-router', allowed_models: autoAllowed }] } : {}),
-  ...(maxPrice ? { provider: { max_price: maxPrice } } : {}),
+const autoPlugin = (autoAllowed, autoCostTier) => ({ id: 'auto-router', ...(autoAllowed.length ? { allowed_models: autoAllowed } : {}), ...(autoCostTier ? { cost_tier: autoCostTier } : {}) });
+const routing = (m, { autoAllowed = [], autoCostTier = null, maxPrice = null, reasoningEffort = null, providerSort = null }) => ({
+  ...(m === 'openrouter/auto' && (autoAllowed.length || autoCostTier) ? { plugins: [autoPlugin(autoAllowed, autoCostTier)] } : {}),
+  ...(maxPrice || providerSort ? { provider: { ...(maxPrice ? { max_price: maxPrice } : {}), ...(providerSort ? { sort: providerSort } : {}) } } : {}),
   ...(reasoningEffort ? { reasoning: { effort: reasoningEffort } } : {}),
 });
 const splitList = (v) => String(v || '').split(',').map((x) => x.trim()).filter(Boolean);
@@ -91,7 +94,7 @@ const priceCap = (v) => {
   return Number.isFinite(prompt) && Number.isFinite(completion) ? { prompt, completion } : null;
 };
 
-export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThis.fetch, timeoutMs = 90000, autoAllowed = [], maxPrice = null, reasoningEffort = null }) => {
+export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThis.fetch, timeoutMs = 90000, autoAllowed = [], autoCostTier = null, maxPrice = null, reasoningEffort = null, providerSort = null }) => {
   const url = `${String(baseUrl || 'https://openrouter.ai/api/v1').replace(/\/+$/, '')}/chat/completions`;
   const headers = {
     'Content-Type': 'application/json',
@@ -101,7 +104,7 @@ export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThi
 
   const complete = async ({ messages, model, json = false, maxTokens = 1500, signal } = {}) => {
     const m = model || models.tutor;
-    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, usage: { include: true }, ...(json ? { response_format: { type: 'json_object' } } : {}), ...routing(m, { autoAllowed, maxPrice, reasoningEffort }) };
+    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, usage: { include: true }, ...(json ? { response_format: { type: 'json_object' } } : {}), ...routing(m, { autoAllowed, autoCostTier, maxPrice, reasoningEffort, providerSort }) };
     try {
       const res = await fetchFn(url, { method: 'POST', headers, body: JSON.stringify(body), signal: withTimeout(signal, timeoutMs) });
       const raw = await res.text();
@@ -115,7 +118,7 @@ export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThi
 
   const stream = async ({ messages, model, onToken, signal, maxTokens = 1500 } = {}) => {
     const m = model || models.tutor;
-    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, stream: true, usage: { include: true }, ...routing(m, { autoAllowed, maxPrice, reasoningEffort }) };
+    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, stream: true, usage: { include: true }, ...routing(m, { autoAllowed, autoCostTier, maxPrice, reasoningEffort, providerSort }) };
     try {
       const res = await fetchFn(url, { method: 'POST', headers: { ...headers, Accept: 'text/event-stream' }, body: JSON.stringify(body), signal: withTimeout(signal, timeoutMs) });
       if (!res.ok) throw upstreamError(res.status, await res.text().catch(() => ''));
@@ -304,6 +307,6 @@ export const createLlm = ({ env = process.env, fetchFn } = {}) => {
   if (!env.OPENROUTER_API_KEY) return makeUnconfiguredLlm({ models });
   return makeOpenRouterLlm({
     apiKey: env.OPENROUTER_API_KEY, baseUrl: env.OPENROUTER_BASE_URL, models, fetchFn,
-    autoAllowed: splitList(env.OPENROUTER_AUTO_ALLOWED), maxPrice: priceCap(env.OPENROUTER_MAX_PRICE), reasoningEffort: env.OPENROUTER_REASONING_EFFORT || null,
+    autoAllowed: splitList(env.OPENROUTER_AUTO_ALLOWED), maxPrice: priceCap(env.OPENROUTER_MAX_PRICE), reasoningEffort: env.OPENROUTER_REASONING_EFFORT || null, providerSort: env.OPENROUTER_PROVIDER_SORT || null, autoCostTier: env.OPENROUTER_AUTO_COST_TIER || null,
   });
 };
