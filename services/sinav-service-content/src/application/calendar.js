@@ -16,6 +16,8 @@ const FALLBACK_PDF = (y) => `https://dokuman.osym.gov.tr/pdfdokuman/${y}/GENEL/s
 const MAX_PDF_BYTES = 10 * 1024 * 1024;
 const MAX_WEB_PAGES = 8;
 const webResearchOn = () => process.env.CALENDAR_WEB_RESEARCH !== '0';
+// Takvim AI işleri (yedek PDF okuma, web araştırması) içerik modeliyle: openrouter/auto + cost_tier low = en ucuz bant.
+const calendarModel = () => process.env.CONTENT_MODEL || undefined;
 const FIELDS = ['name', 'date', 'applicationStart', 'applicationEnd', 'lateApplicationEnd', 'resultDate'];
 const tutorUrl = () => `${(process.env.SERVICE_TUTOR_REST_URL || process.env.TUTOR_REST_URL || 'http://127.0.0.1:2005').replace(/\/$/, '')}/api/sinav-service-tutor/v1`;
 
@@ -81,7 +83,7 @@ You extract Turkish ÖSYM exam calendar rows. Each exam is a block of 3 lines: (
 Return ONLY JSON {"sessions":[{"code": short code as written (e.g. "2027-YDS/1" or "(e-YDS 2027/3 İngilizce)"), "date","applicationStart","applicationEnd","lateApplicationEnd","resultDate"}]} with dates as YYYY-MM-DD or null. Include only YDS, e-YDS, YÖKDİL and e-YÖKDİL rows.`;
     const res = await fetchInternal(`${tutorUrl()}/internal/ai/complete`, {
       method: 'POST', headers: internalHeaders(null), timeoutMs: 60000, fetchFn,
-      body: { feature: 'content_draft', model: process.env.EVAL_MODEL || undefined, json: true, maxTokens: 4000, messages: [{ role: 'system', content: system }, { role: 'user', content: lines.join('\n').slice(0, 60000) }] },
+      body: { feature: 'content_draft', model: calendarModel(), json: true, maxTokens: 4000, messages: [{ role: 'system', content: system }, { role: 'user', content: lines.join('\n').slice(0, 60000) }] },
     });
     const body = await res.json().catch(() => null);
     const data = body?.data ?? body;
@@ -100,7 +102,7 @@ Return ONLY JSON {"sessions":[{"code","date","applicationStart","applicationEnd"
 Dates as YYYY-MM-DD; null when a page does not state it. Never guess. Each session must list the exact page URLs where you saw its dates; prefer pages that list several sessions.`;
     const res = await fetchInternal(`${tutorUrl()}/internal/ai/complete`, {
       method: 'POST', headers: internalHeaders(null), timeoutMs: 120000, fetchFn,
-      body: { feature: 'content_draft', model: process.env.EVAL_MODEL || undefined, json: true, maxTokens: 6000, webSearch: { maxResults: 8 },
+      body: { feature: 'content_draft', model: calendarModel(), json: true, maxTokens: 6000, webSearch: { maxResults: 8 },
         messages: [{ role: 'system', content: system }, { role: 'user', content: `ÖSYM ${year} sınav takvimi: YDS, e-YDS, YÖKDİL, e-YÖKDİL başvuru, sınav ve sonuç tarihleri.` }] },
     });
     const body = await res.json().catch(() => null);
