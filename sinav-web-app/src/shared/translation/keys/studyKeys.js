@@ -206,6 +206,7 @@ export default {
   'study.vocab.review.ratings': { tr: 'Tekrar {{again}} · Zor {{hard}} · İyi {{good}} · Kolay {{easy}}', en: 'Again {{again}} · Hard {{hard}} · Good {{good}} · Easy {{easy}}' },
   'study.vocab.review.back': { tr: 'Kelime merkezine dön', en: 'Back to vocabulary' },
   'study.vocab.review.exit': { tr: 'Bitir ve çık', en: 'Finish and leave' },
+  'study.vocab.word.details': { tr: 'Kelime ayrıntısı', en: 'Word details' },
   'study.vocab.word.title': { tr: 'Kelime ayrıntısı', en: 'Word details' },
   'study.vocab.word.addCard': { tr: 'Kartlara ekle', en: 'Add to cards' },
   'study.vocab.word.hasCard': { tr: 'Kartlarında', en: 'In your cards' },

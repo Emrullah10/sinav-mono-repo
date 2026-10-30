@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuid } from 'uuid';
 import { Undo2 } from 'lucide-react';
 import api from '@api';
 import useApiQuery from '@hooks/useApiQuery';
 import useApiMutation from '@hooks/useApiMutation';
-import Routes from '@shared/constant/route-paths';
+import Routes, { path } from '@shared/constant/route-paths';
 import { queryClient } from '@shared/providers/QueryProvider';
 import Button from '@components/Button/Button';
 import Card from '@components/Card/Card';
@@ -114,6 +114,7 @@ export default function VocabReview() {
                   </div>
                 )}
                 {w.synonyms?.length > 0 && <p className="t-body-s"><strong>{t('study.vocab.review.synonyms')}:</strong> <span lang="en">{w.synonyms.join(', ')}</span></p>}
+                {w.itemCode && <p className="t-body-s"><Link to={path(Routes.vocabWord, { id: w.itemCode })}>{t('study.vocab.word.details')}</Link></p>}
                 <div className={styles.tools} style={{ justifyContent: 'stretch' }} role="group" aria-label={t('study.vocab.review.title')}>
                   {RATINGS.map((r, i) => (
                     <Button key={r} variant={r === 'good' ? 'primary' : 'secondary'} disabled={rate.isPending} onClick={() => rate.mutate(r)} style={{ flex: 1, flexDirection: 'column' }}>
