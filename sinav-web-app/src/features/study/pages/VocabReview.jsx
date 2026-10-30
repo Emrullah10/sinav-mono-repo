@@ -16,6 +16,7 @@ import ErrorState from '@components/ErrorState/ErrorState';
 import BubbleLoader from '@components/BubbleLoader/BubbleLoader';
 import SessionTop from '../components/SessionTop';
 import useHeartbeat from '../hooks/useHeartbeat';
+import TapText from '@features/lexicon/TapText';
 import styles from './Session.module.scss';
 
 const RATINGS = ['again', 'hard', 'good', 'easy'];
@@ -110,7 +111,7 @@ export default function VocabReview() {
                 {w.examples?.length > 0 && (
                   <div className="stack-sm">
                     <p className="t-label-m">{t('study.vocab.review.examples')}</p>
-                    {w.examples.slice(0, 2).map((e, i) => <div key={i}><p className="reading t-reading-m" lang="en">{e.en}</p><p className="muted t-body-s">{e.tr}</p></div>)}
+                    {w.examples.slice(0, 2).map((e, i) => <div key={i}><p className="reading t-reading-m" lang="en"><TapText text={e.en} /></p><p className="muted t-body-s">{e.tr}</p></div>)}
                   </div>
                 )}
                 {w.synonyms?.length > 0 && <p className="t-body-s"><strong>{t('study.vocab.review.synonyms')}:</strong> <span lang="en">{w.synonyms.join(', ')}</span></p>}

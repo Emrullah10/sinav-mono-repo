@@ -13,6 +13,9 @@ import Button from '@components/Button/Button';
 import Chip from '@components/Chip/Chip';
 import Banner from '@components/Banner/Banner';
 import Markdown from '@components/Markdown/Markdown';
+import TapText from '@features/lexicon/TapText';
+
+const LEX_AUTO = { lang: 'auto' };
 import IconButton from '@components/IconButton/IconButton';
 import ErrorState from '@components/ErrorState/ErrorState';
 import Skeleton from '@components/Skeleton/Skeleton';
@@ -48,16 +51,16 @@ export default function Note() {
         <Banner tone="warning" title={t('study.note.locked')} action={<Button size="sm" onClick={() => nav(Routes.premium)}>{t('study.note.upgrade')}</Button>}><Lock size={0} aria-hidden />{t('study.note.lockedBody')}</Banner>
       ) : (
         <>
-          {n.ruleMd && <Card><div className="stack-sm"><h2 className="t-heading-3">{t('study.note.rule')}</h2><div className="reading t-reading-m"><Markdown source={n.ruleMd} /></div></div></Card>}
+          {n.ruleMd && <Card><div className="stack-sm"><h2 className="t-heading-3">{t('study.note.rule')}</h2><div className="reading t-reading-m"><Markdown source={n.ruleMd} lexicon={LEX_AUTO} /></div></div></Card>}
           {n.examples?.length > 0 && (
             <Card>
               <div className="stack-sm">
                 <h2 className="t-heading-3">{t('study.note.examples')}</h2>
-                {n.examples.map((e, i) => <div key={i}><p className="reading t-reading-m" lang="en">{e.en}</p><p className="muted t-body-s">{e.tr}</p></div>)}
+                {n.examples.map((e, i) => <div key={i}><p className="reading t-reading-m" lang="en"><TapText text={e.en} /></p><p className="muted t-body-s">{e.tr}</p></div>)}
               </div>
             </Card>
           )}
-          {n.trapMd && <Card tone="reward"><div className="stack-sm"><h2 className="t-heading-3">{t('study.note.trap')}</h2><div className="reading t-reading-m"><Markdown source={n.trapMd} /></div></div></Card>}
+          {n.trapMd && <Card tone="reward"><div className="stack-sm"><h2 className="t-heading-3">{t('study.note.trap')}</h2><div className="reading t-reading-m"><Markdown source={n.trapMd} lexicon={LEX_AUTO} /></div></div></Card>}
           {n.relatedSkills?.length > 0 && (
             <div className="stack-sm">
               <p className="t-label-m">{t('study.note.related')}</p>

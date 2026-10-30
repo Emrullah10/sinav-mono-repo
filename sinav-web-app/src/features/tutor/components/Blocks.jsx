@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import OptionRow from '@components/OptionRow/OptionRow';
 import Card from '@components/Card/Card';
+import TapText from '@features/lexicon/TapText';
 import styles from './Blocks.module.scss';
 
 function MiniQuestion({ block }) {
@@ -17,7 +18,7 @@ function MiniQuestion({ block }) {
   return (
     <Card tone="accent" className={styles.block}>
       <p className="t-label-m">{t('tutor.block.miniQuestion')}</p>
-      <p className="reading t-reading-m" lang="en">{block.stem}</p>
+      <p className="reading t-reading-m" lang="en"><TapText text={block.stem} sentences={answered} sentenceLock="lex.lock.answerFirst" /></p>
       <div className="stack-sm">
         {block.options.map((o) => (
           <OptionRow key={o.label} letter={o.label} state={stateOf(o.label)} disabled={answered} onClick={() => setPicked(o.label)}
@@ -36,7 +37,7 @@ function SentenceXray({ block }) {
   return (
     <Card className={styles.block}>
       <p className="t-label-m">{t('tutor.block.xray')}</p>
-      <p className="reading t-reading-m" lang="en">{block.sentence}</p>
+      <p className="reading t-reading-m" lang="en"><TapText text={block.sentence} /></p>
       <ol className={styles.parts}>
         {block.parts.map((p) => (
           <li key={p.no} className={p.main ? styles.main : undefined}>

@@ -635,7 +635,8 @@ INSERT INTO enums.content_origin (content_origin_value, content_origin_label, co
     ('manual', 'Manual', 1),
     ('ai_draft', 'AI draft', 2),
     ('import', 'Import', 3),
-    ('seed', 'Seed', 4);
+    ('seed', 'Seed', 4),
+    ('ai_gloss', 'AI dictionary gloss', 5);
 
 -- -----------------------------------------------------
 -- Table: enums.access_tier
@@ -732,7 +733,11 @@ INSERT INTO enums.part_of_speech (part_of_speech_value, part_of_speech_label, pa
     ('conjunction', 'Conjunction', 6),
     ('preposition', 'Preposition', 7),
     ('idiom', 'Idiom', 8),
-    ('collocation', 'Collocation', 9);
+    ('collocation', 'Collocation', 9),
+    ('pronoun', 'Pronoun', 10),
+    ('determiner', 'Determiner', 11),
+    ('interjection', 'Interjection', 12),
+    ('numeral', 'Numeral', 13);
 
 -- -----------------------------------------------------
 -- Table: enums.exam_form_type
@@ -1543,7 +1548,9 @@ CREATE TABLE enums.ai_feature (
 INSERT INTO enums.ai_feature (ai_feature_value, ai_feature_label, ai_feature_sort_order) VALUES
     ('tutor_chat', 'Tutor chat', 1),
     ('translation_eval', 'Translation eval', 2),
-    ('content_draft', 'Content draft', 3);
+    ('content_draft', 'Content draft', 3),
+    ('word_gloss', 'Word gloss', 4),
+    ('sentence_translation', 'Sentence translation', 5);
 
 -- -----------------------------------------------------
 -- Table: enums.ai_job_status

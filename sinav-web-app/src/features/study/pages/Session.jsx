@@ -20,6 +20,8 @@ import BubbleLoader from '@components/BubbleLoader/BubbleLoader';
 import Modal from '@components/Modal/Modal';
 import SessionTop from '../components/SessionTop';
 import QuestionNav from '../components/QuestionNav';
+import TapText from '@features/lexicon/TapText';
+import LexiconTip from '@features/lexicon/LexiconTip';
 import useHeartbeat from '../hooks/useHeartbeat';
 import useNow from '../hooks/useNow';
 import styles from './Session.module.scss';
@@ -167,6 +169,9 @@ export default function Session() {
   const mistake = mistakes[position];
   const showFeedback = immediate && (final || (fb && !fb.isCorrect && st?.canRetry));
   const title = t(`study.mode.${session?.mode || 'learning'}`);
+  // Dokun-çevir: kelimeler hep açık; cümle çevirisi ve şıklar cevaptan sonra (önceden açık olsa cevabı verir).
+  const lex = { lang: 'en', sentences: Boolean(final), sentenceLock: 'lex.lock.answerFirst' };
+  const lexAuto = { lang: 'auto' };
 
   return (
     <>
@@ -176,19 +181,20 @@ export default function Session() {
         {!view && <Skeleton height={260} />}
         {view && (
           <div className="stack">
+            <LexiconTip />
             <div className={`${styles.grid} ${p ? styles.two : ''}`}>
               {p && (
                 <Card className={styles.passage}>
                   <p className="t-caption muted">{p.title || t('study.session.passage')}{p.wordCount ? ` · ${t('study.session.words', { n: p.wordCount })}` : ''}</p>
-                  <div className="reading t-reading-m" lang="en"><Markdown source={p.body} /></div>
+                  <div className="reading t-reading-m" lang="en"><Markdown source={p.body} lexicon={lex} /></div>
                 </Card>
               )}
               <div className="stack">
                 <p className="t-caption muted">{t('study.session.questionOf', { n: view.position, total: view.total })} · {q.questionType.name}</p>
-                <div className="reading t-reading-m" lang="en"><Markdown source={q.stem} /></div>
+                <div className="reading t-reading-m" lang="en"><Markdown source={q.stem} lexicon={lex} /></div>
                 <div className="stack-sm" role="group" aria-label={t('study.session.options')}>
                   {options.map((o) => (
-                    <OptionRow key={o.label} letter={o.label} state={optState(o)} statusLabel={statusLabel(o)} disabled={final || busy || st?.eliminatedLabels?.includes(o.label)} onClick={() => setSel(o.label)}>{o.text}</OptionRow>
+                    <OptionRow key={o.label} letter={o.label} state={optState(o)} statusLabel={statusLabel(o)} disabled={final || busy || st?.eliminatedLabels?.includes(o.label)} readOnly={Boolean(final)} text={o.text} onClick={() => setSel(o.label)}>{final ? <TapText text={o.text} {...lex} /> : o.text}</OptionRow>
                   ))}
                 </div>
 
@@ -203,13 +209,13 @@ export default function Session() {
                         <p className={`t-title ${lastOutcomeCorrect ? styles.ok : styles.bad}`}>{lastOutcomeCorrect ? (fb?.correctOnFirstTry === false ? t('study.session.correctRetry') : t('study.session.correct')) : t('study.session.wrong')}</p>
                       ) : <p className={`t-title ${styles.bad}`}>{t('study.session.wrongRetry')}</p>}
                       {final && correct && <p className="t-body-m">{t('study.session.correctIs', { label: correct })}</p>}
-                      {final && (fb?.shortReason || sol?.shortReason) && <Markdown source={fb?.shortReason || sol?.shortReason} />}
+                      {final && (fb?.shortReason || sol?.shortReason) && <Markdown source={fb?.shortReason || sol?.shortReason} lexicon={lexAuto} />}
                       {sol && (
                         <>
                           <h3 className="t-heading-3">{t('study.session.solutionTitle')}</h3>
-                          {sol.explanation && <Markdown source={sol.explanation} />}
+                          {sol.explanation && <Markdown source={sol.explanation} lexicon={lexAuto} />}
                           <ul className={styles.rationale}>
-                            {sol.options.filter((o) => o.rationale).map((o) => <li key={o.label}><strong>{o.label}.</strong> {o.rationale}</li>)}
+                            {sol.options.filter((o) => o.rationale).map((o) => <li key={o.label}><strong>{o.label}.</strong> <TapText text={o.rationale} lang="auto" /></li>)}
                           </ul>
                           {sol.noteLink && <Link to={path(Routes.note, { id: sol.noteLink.itemCode })}>{t('study.session.noteLink', { title: sol.noteLink.title })}</Link>}
                         </>

@@ -37,4 +37,9 @@ export default {
   'apiErrors.CONTENT_JOB_NOT_FOUND': { tr: 'Bu üretim işi bulunamadı.', en: 'This generation job was not found.' },
   'apiErrors.CONTENT_JOB_NOT_ACTIVE': { tr: 'Bu üretim işi artık etkin değil.', en: 'This generation job is no longer active.' },
   'apiErrors.CONTENT_DRAFT_NOT_FROM_JOB': { tr: 'Bu taslak seçilen işe ait değil.', en: 'This draft does not belong to the selected job.' },
+  'apiErrors.CONTENT_LEXICON_WORD_INVALID': { tr: 'Bu bir kelime değil. Bir İngilizce kelimeye dokun.', en: 'This is not a word. Tap an English word.' },
+  'apiErrors.CONTENT_LEXICON_SENTENCE_INVALID': { tr: 'Bu cümle çevrilemiyor. Daha kısa bir cümle dene.', en: 'This sentence cannot be translated. Try a shorter one.' },
+  'apiErrors.CONTENT_LEXICON_LIMIT': { tr: 'Bugünlük yeni çeviri hakkın doldu. Daha önce çevrilenler açılmaya devam eder; yarın yenilenir.', en: 'You have used today\'s new translations. Earlier ones still open; the limit resets tomorrow.' },
+  'apiErrors.CONTENT_LEXICON_UNAVAILABLE': { tr: 'Çeviri şu an alınamadı. Biraz sonra yeniden dene.', en: 'The translation is not available right now. Try again shortly.' },
+  'apiErrors.CONTENT_LEXICON_NOT_A_WORD': { tr: 'Bu kelime kartlara eklenemiyor (özel ad ya da kelime değil).', en: 'This cannot be added to your cards (a name or not a word).' },
 };

@@ -25,6 +25,10 @@ export default defineEndpoints([
 
   // ── Öğrenci okumaları ──
   { method: 'get', path: '/v1/vocab/lookup', permission: P.studyContentRead, handler: (req) => uc().study.vocabLookup({ word: q(req).word, lang: q(req).lang || 'en' }) },
+  // Dokun-çevir: kelime (küratörlü → önbellek → AI), kartlara eklenebilir kayıt, cümle çevirisi
+  { method: 'post', path: '/v1/lexicon/word', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().lexicon.word({ caller, word: b(req).word }) },
+  { method: 'post', path: '/v1/lexicon/word/item', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().lexicon.ensureItem({ caller, word: b(req).word }) },
+  { method: 'post', path: '/v1/lexicon/sentence', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().lexicon.sentence({ caller, sentences: b(req).sentences, index: b(req).index }) },
   { method: 'get', path: '/v1/vocab/{itemCode}', permission: P.studyContentRead, handler: (req) => uc().study.vocabDetail({ itemCode: req.params.itemCode }) },
   { method: 'get', path: '/v1/notes/{itemCode}', permission: P.studyContentRead, handler: (req, caller) => uc().study.getNote({ caller, itemCode: req.params.itemCode }) },
   { method: 'post', path: '/v1/content-reports', permission: P.contentReportCreate, body: true, handler: (req, caller) => uc().study.createReport({ caller, ...b(req) }) },

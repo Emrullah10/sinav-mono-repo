@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import TapText from '@features/lexicon/TapText';
 import styles from './Markdown.module.scss';
 
 // Küçük, güvenli Markdown çevirici: HTML üretmez, React düğümleri üretir (dangerouslySetInnerHTML yok).
@@ -60,18 +61,43 @@ const parse = (src) => {
   return blocks;
 };
 
-export default function Markdown({ source, className }) {
+// Dokun-çevir için satırı düz parçalara ayırır (iç içe biçim tek düzeye iner): { text, bold?, italic?, code?, href? }.
+const runsOf = (text) => {
+  const out = [];
+  const re = /(\*\*[^*]+\*\*|\*[^*\s][^*]*\*|`[^`]+`|\[[^\]]+\]\([^)\s]+\))/g;
+  let last = 0;
+  let m;
+  while ((m = re.exec(text))) {
+    if (m.index > last) out.push({ text: text.slice(last, m.index) });
+    const tok = m[0];
+    if (tok.startsWith('**')) out.push({ text: tok.slice(2, -2).replace(/\*/g, ''), bold: true });
+    else if (tok.startsWith('`')) out.push({ text: tok.slice(1, -1), code: true });
+    else if (tok.startsWith('[')) {
+      const mm = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(tok);
+      out.push(mm ? { text: mm[1], href: mm[2] } : { text: tok });
+    } else out.push({ text: tok.slice(1, -1), italic: true });
+    last = m.index + tok.length;
+  }
+  if (last < text.length) out.push({ text: text.slice(last) });
+  return out;
+};
+
+/**
+ * lexicon: dokun-çevir ayarı (TapText özellikleri: { lang, words, sentences, sentenceLock, onAsk }); verilmezse düz Markdown.
+ */
+export default function Markdown({ source, className, lexicon }) {
   const blocks = parse(source);
+  const line = (text, key) => (lexicon ? <TapText runs={runsOf(text)} {...lexicon} /> : inline(text, key));
   return (
     <div className={`${styles.md} ${className || ''}`}>
       {blocks.map((b, i) => {
         switch (b.type) {
-          case 'h': { const H = `h${Math.min(b.level + 1, 5)}`; return <H key={i}>{inline(b.text, `b${i}`)}</H>; }
+          case 'h': { const H = `h${Math.min(b.level + 1, 5)}`; return <H key={i}>{line(b.text, `b${i}`)}</H>; }
           case 'hr': return <hr key={i} />;
-          case 'quote': return <blockquote key={i}>{inline(b.text, `b${i}`)}</blockquote>;
-          case 'ul': return <ul key={i}>{b.items.map((t, j) => <li key={j}>{inline(t, `b${i}-${j}`)}</li>)}</ul>;
-          case 'ol': return <ol key={i}>{b.items.map((t, j) => <li key={j}>{inline(t, `b${i}-${j}`)}</li>)}</ol>;
-          default: return <p key={i}>{inline(b.text, `b${i}`)}</p>;
+          case 'quote': return <blockquote key={i}>{line(b.text, `b${i}`)}</blockquote>;
+          case 'ul': return <ul key={i}>{b.items.map((t, j) => <li key={j}>{line(t, `b${i}-${j}`)}</li>)}</ul>;
+          case 'ol': return <ol key={i}>{b.items.map((t, j) => <li key={j}>{line(t, `b${i}-${j}`)}</li>)}</ol>;
+          default: return <p key={i}>{line(b.text, `b${i}`)}</p>;
         }
       })}
     </div>

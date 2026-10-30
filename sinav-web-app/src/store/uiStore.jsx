@@ -9,6 +9,8 @@ export const useUiStore = create(
       readingFont: 'literata', // literata | figtree | atkinson
       readingScale: 0, // -1..2
       reduceMotion: false,
+      lexiconTipSeen: false, // dokun-çevir ipucu bir kez gösterilir
+      setLexiconTipSeen: (v) => set({ lexiconTipSeen: v }),
       setSidebarCollapsed: (v) => set({ sidebarCollapsed: v }),
       setTutorPanelOpen: (v) => set({ tutorPanelOpen: v }),
       setReading: (p) => set(p),

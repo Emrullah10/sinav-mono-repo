@@ -16,6 +16,12 @@ export const createContentApi = (http, { api = '/api' } = {}) => {
     contentVocabLookup: (word, lang = 'en') => http.get(`${B}/vocab/lookup`, { params: { word, lang } }),
     contentVocabGet: (itemCode) => http.get(`${B}/vocab/${itemCode}`),
     contentNoteGet: (itemCode) => http.get(`${B}/notes/${itemCode}`),
+    /** Dokun-çevir: kelime kaydı (küratörlü sözlük → önbellek → AI). body: { word } */
+    contentLexiconWord: (word) => http.post(`${B}/lexicon/word`, { word }),
+    /** Kelimeyi kartlara eklenebilir sözlük kaydına çevirir → { itemCode }; ardından learningVocabCardAdd(itemCode). */
+    contentLexiconWordItem: (word) => http.post(`${B}/lexicon/word/item`, { word }),
+    /** Cümle çevirisi: sentences = aynı metnin cümleleri (sırayla), index = basılı tutulan → { translation, translations[] } */
+    contentLexiconSentence: (sentences, index) => http.post(`${B}/lexicon/sentence`, { sentences, index }),
     contentReportCreate: (body) => http.post(`${B}/content-reports`, body),
     // ── CMS: maddeler ──
     contentCmsItemsList: (params) => http.get(`${B}/cms/items`, { params }),

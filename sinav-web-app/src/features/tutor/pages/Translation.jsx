@@ -5,6 +5,7 @@ import api from '@api';
 import useApiQuery from '@hooks/useApiQuery';
 import useApiMutation from '@hooks/useApiMutation';
 import { apiErrorCode } from '@sinav/client-sdk';
+import TapText from '@features/lexicon/TapText';
 import PageHeader from '@components/PageHeader/PageHeader';
 import Card from '@components/Card/Card';
 import Button from '@components/Button/Button';
@@ -53,7 +54,7 @@ export default function Translation() {
       {prompt.data && (
         <div className="stack">
           {prompt.data.usage?.limit != null && <p className="muted t-caption">{t('tutor.tr.usage', { n: prompt.data.usage.remaining })}</p>}
-          <Card><p className="reading t-reading-l" lang={direction === 'en_tr' ? 'en' : 'tr'}>{prompt.data.sourceText}</p></Card>
+          <Card><p className="reading t-reading-l" lang={direction === 'en_tr' ? 'en' : 'tr'}><TapText text={prompt.data.sourceText} lang="auto" sentences={Boolean(result)} sentenceLock="lex.lock.translateFirst" /></p></Card>
           {result ? (
             <div className="stack">
               <Card className="stack-sm">
@@ -71,7 +72,7 @@ export default function Translation() {
               </Card>
               <Card className="stack-sm">
                 <h2 className="t-heading-3">{t('tutor.tr.suggested')}</h2>
-                <p className="t-body-l">{result.suggestedTranslation}</p>
+                <p className="t-body-l"><TapText text={result.suggestedTranslation} lang="auto" /></p>
               </Card>
               {result.feedback?.parts?.length > 0 && (
                 <Card className="stack-sm">

@@ -11,7 +11,7 @@ export const queryKeys = {
   content: {
     exams: () => ['content', 'exams'], track: (key) => ['content', 'track', key], featured: (placement) => ['content', 'featured', placement],
     articles: (params) => ['content', 'articles', params], article: (type, slug) => ['content', 'article', type, slug], articleCategories: (params) => ['content', 'articleCategories', params],
-    vocabLookup: (word) => ['content', 'vocabLookup', word], vocab: (itemCode) => ['content', 'vocab', itemCode], note: (itemCode) => ['content', 'note', itemCode],
+    vocabLookup: (word) => ['content', 'vocabLookup', word], lexiconWord: (form) => ['content', 'lexiconWord', form], lexiconSentence: (text) => ['content', 'lexiconSentence', text], vocab: (itemCode) => ['content', 'vocab', itemCode], note: (itemCode) => ['content', 'note', itemCode],
     cms: {
       items: (params) => ['content', 'cms', 'items', params], item: (code) => ['content', 'cms', 'item', code], taxonomy: () => ['content', 'cms', 'taxonomy'],
       reviewQueue: (params) => ['content', 'cms', 'reviewQueue', params], revision: (code) => ['content', 'cms', 'revision', code], comments: (code) => ['content', 'cms', 'comments', code],

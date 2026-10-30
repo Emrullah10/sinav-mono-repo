@@ -218,7 +218,22 @@ const fakeQuestion = (extra = {}) => {
     difficulty: 3, estimatedSeconds: 45, ...extra,
   };
 };
+// Dokun-çevir (`[gen:lex:word]` / `[gen:lex:sentence]`): kelime için sözlük kaydı, cümleler için sırayla çeviri.
+const fakeLexicon = (kind, userMsg) => {
+  if (kind === 'word') {
+    const w = /<kelime>([^<]*)<\/kelime>/.exec(userMsg)?.[1]?.trim().toLowerCase() || 'word';
+    const lemma = w.replace(/ie[sd]$/, 'y').replace(/(ing|ed|s)$/, '') || w;
+    return {
+      isWord: true, lemma, partOfSpeech: 'verb', ipa: `/${lemma}/`, formNote: lemma === w ? null : `"${lemma}" kelimesinin çekimli hâli`,
+      meanings: [{ tr: `sahte anlam (${lemma})`, note: 'en sık kullanım' }, { tr: 'ikinci sahte anlam', note: null }],
+      examples: [{ en: `They ${lemma} every day.`, tr: `Her gün ${lemma} yaparlar.` }],
+    };
+  }
+  const n = [...userMsg.matchAll(/^\[(\d+)\] /gm)].length;
+  return { translations: Array.from({ length: n }, (_, i) => `Sahte çeviri ${i + 1}: ${/^\[\d+\] (.*)$/m.exec(userMsg.split('\n').filter((l) => /^\[\d+\] /.test(l))[i] || '')?.[1]?.slice(0, 40) || ''}`) };
+};
 const fakeGenerate = (gen, userMsg) => {
+  if (gen.startsWith('lex:')) return fakeLexicon(gen.split(':')[1], userMsg);
   const count = Number(/Write (\d+)/.exec(userMsg)?.[1]) || 1;
   if (gen === 'question') return { questions: Array.from({ length: count }, () => fakeQuestion()) };
   if (gen === 'note') {

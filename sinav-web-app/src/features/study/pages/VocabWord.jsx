@@ -12,6 +12,7 @@ import Button from '@components/Button/Button';
 import Chip from '@components/Chip/Chip';
 import IconButton from '@components/IconButton/IconButton';
 import ErrorState from '@components/ErrorState/ErrorState';
+import TapText from '@features/lexicon/TapText';
 import Skeleton from '@components/Skeleton/Skeleton';
 
 const List = ({ title, items }) => (items?.length > 0 ? (
@@ -39,7 +40,7 @@ export default function VocabWord() {
       <Card>
         <div className="stack">
           <ul style={{ margin: 0, paddingLeft: 'var(--space-5)' }}>{(w.meanings || []).map((m, i) => <li key={i} className="t-body-l">{m.tr}{m.note && <span className="muted t-body-s"> ({m.note})</span>}</li>)}</ul>
-          {w.examples?.length > 0 && <div className="stack-sm"><p className="t-label-m">{t('study.vocab.review.examples')}</p>{w.examples.map((e, i) => <div key={i}><p className="reading t-reading-m" lang="en">{e.en}</p><p className="muted t-body-s">{e.tr}</p></div>)}</div>}
+          {w.examples?.length > 0 && <div className="stack-sm"><p className="t-label-m">{t('study.vocab.review.examples')}</p>{w.examples.map((e, i) => <div key={i}><p className="reading t-reading-m" lang="en"><TapText text={e.en} /></p><p className="muted t-body-s">{e.tr}</p></div>)}</div>}
           <List title={t('study.vocab.review.collocations')} items={w.collocations} />
           <List title={t('study.vocab.review.synonyms')} items={w.synonyms} />
           <List title={t('study.vocab.word.antonyms')} items={w.antonyms} />

@@ -145,7 +145,7 @@ export default function Chat() {
       <div className={styles.thread} role="log" aria-label={t('tutor.thread')}>
         {!isNew && conv.isLoading && <Skeleton height={120} />}
         {isNew && !pending && <p className="muted t-body-m">{t('tutor.empty.body')}</p>}
-        {messages.map((m) => <Message key={m.code} message={m} onReport={setReporting} />)}
+        {messages.map((m) => <Message key={m.code} message={m} onReport={setReporting} onAsk={(text) => send({ content: text })} />)}
         {pending && <Message message={{ role: 'user', content: pending.content }} />}
         {pending && <Message live message={{ role: 'assistant', content: stream.text, blocks: stream.blocks }} />}
         {canPreset && (

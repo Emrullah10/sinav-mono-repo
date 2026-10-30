@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { GraduationCap, CalendarCheck, NotebookPen } from 'lucide-react';
+import { GraduationCap, CalendarCheck, NotebookPen, Languages } from 'lucide-react';
 import Button from '@components/Button/Button';
 import Card from '@components/Card/Card';
+import BrandMark from '@components/BrandMark/BrandMark';
+import TapDemo from '../components/TapDemo';
 import Routes from '@shared/constant/route-paths';
 import { ensureSession } from '@shared/auth/session';
 import { notify } from '@shared/utils/notify';
@@ -34,7 +36,7 @@ export default function Welcome() {
   return (
     <div className={styles.page}>
       <header className={styles.top}>
-        <span className={styles.brand}>{t('app.name')}</span>
+        <span className={styles.brand}><BrandMark size={32} />{t('app.name')}</span>
         <Button variant="tertiary" onClick={() => nav(Routes.signIn)}>{t('auth.signIn.title')}</Button>
       </header>
       <section className={styles.hero}>
@@ -45,6 +47,14 @@ export default function Welcome() {
           <Button size="lg" variant="tertiary" onClick={() => nav(Routes.signIn)}>{t('auth.welcome.haveAccount')}</Button>
         </div>
         <p className="t-caption muted">{t('auth.welcome.trust')}</p>
+      </section>
+      <section className={styles.tap} aria-labelledby="intro-tap">
+        <div className={styles.tapText}>
+          <span className={styles.ico}><Languages size={24} aria-hidden /></span>
+          <h2 id="intro-tap" className="t-heading-2">{t('intro.tap.title')}</h2>
+          <p className="t-body-l muted">{t('intro.tap.body')}</p>
+        </div>
+        <TapDemo />
       </section>
       <section className={styles.cards} aria-label={t('auth.welcome.title')}>
         {CARDS.map(({ icon: I, k }) => (

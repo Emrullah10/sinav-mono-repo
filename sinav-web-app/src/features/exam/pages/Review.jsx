@@ -10,6 +10,10 @@ import Button from '@components/Button/Button';
 import Segmented from '@components/Segmented/Segmented';
 import OptionRow from '@components/OptionRow/OptionRow';
 import Markdown from '@components/Markdown/Markdown';
+import TapText from '@features/lexicon/TapText';
+
+const LEX = { lang: 'en' };
+const LEX_AUTO = { lang: 'auto' };
 import EmptyState from '@components/EmptyState/EmptyState';
 import ErrorState from '@components/ErrorState/ErrorState';
 import { SkeletonList } from '@components/Skeleton/Skeleton';
@@ -34,16 +38,16 @@ function Detail({ code, n }) {
   return (
     <Card className="stack">
       <p className="t-caption muted tnum">{t('exam.sitting.questionOf', { n: d.position, total: d.total })} · {d.question.questionType.name}</p>
-      {d.passage && <div className={styles.passage}><div className="reading t-reading-s" lang="en"><Markdown source={d.passage.body} /></div></div>}
-      <div className="reading t-reading-m" lang="en">{d.question.stemFormat === 'plain' ? <p>{d.question.stem}</p> : <Markdown source={d.question.stem} />}</div>
+      {d.passage && <div className={styles.passage}><div className="reading t-reading-s" lang="en"><Markdown source={d.passage.body} lexicon={LEX} /></div></div>}
+      <div className="reading t-reading-m" lang="en">{d.question.stemFormat === 'plain' ? <p><TapText text={d.question.stem} /></p> : <Markdown source={d.question.stem} lexicon={LEX} />}</div>
       <div className="stack-sm">
         {d.question.options.map((o) => {
           const s = stateOf(o);
-          return <OptionRow key={o.label} letter={o.label} state={s} disabled statusLabel={o.label === rv.correctLabel ? t('exam.review.correctOption') : o.label === rv.selectedLabel ? t('exam.review.yourOption') : undefined}>{o.text}</OptionRow>;
+          return <OptionRow key={o.label} letter={o.label} state={s} disabled readOnly text={o.text} statusLabel={o.label === rv.correctLabel ? t('exam.review.correctOption') : o.label === rv.selectedLabel ? t('exam.review.yourOption') : undefined}><TapText text={o.text} /></OptionRow>;
         })}
       </div>
       <p className="t-title">{t(`exam.review.result.${rv.result}`)}</p>
-      {sol?.explanation && <div className="stack-sm"><h3 className="t-heading-3">{t('exam.review.explanation')}</h3><Markdown source={sol.explanation} />{sol.options?.filter((o) => o.rationale).map((o) => <p key={o.label} className="t-body-s muted"><strong>{o.label}.</strong> {o.rationale}</p>)}</div>}
+      {sol?.explanation && <div className="stack-sm"><h3 className="t-heading-3">{t('exam.review.explanation')}</h3><Markdown source={sol.explanation} lexicon={LEX_AUTO} />{sol.options?.filter((o) => o.rationale).map((o) => <p key={o.label} className="t-body-s muted"><strong>{o.label}.</strong> <TapText text={o.rationale} lang="auto" /></p>)}</div>}
       <Button variant="secondary" startIcon={<MessagesSquare size={16} />} onClick={() => nav(`${Routes.tutorChat.replace(':code', 'yeni')}?kind=mock_review&sessionCode=${code}&position=${n}`)}>{t('exam.review.askTutor')}</Button>
     </Card>
   );

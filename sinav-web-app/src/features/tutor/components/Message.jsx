@@ -13,7 +13,8 @@ import Blocks from './Blocks';
 import styles from './Message.module.scss';
 
 // Tek mesaj: kullanıcı baloncuğu ya da öğretmen yanıtı (metin + bloklar + kaynak çipleri + geri bildirim).
-export default function Message({ message, live = false, onReport }) {
+// onAsk(metin): dokun-çevir "Öğretmene sor" bu sohbete gönderir.
+export default function Message({ message, live = false, onReport, onAsk }) {
   const { t } = useTranslation();
   const isUser = message.role === 'user';
   const [vote, setVote] = useState(message.feedback ?? null);
@@ -26,7 +27,7 @@ export default function Message({ message, live = false, onReport }) {
     <article className={styles.bot} aria-live={live ? 'polite' : undefined} aria-busy={live || undefined}>
       <p className="t-caption muted">{t('tutor.teacher')}</p>
       <div className={classNames(styles.bubble, 'reading')}>
-        {message.content ? <Markdown source={message.content} /> : <span className="muted">{t('tutor.thinking')}</span>}
+        {message.content ? <Markdown source={message.content} lexicon={live ? undefined : { lang: 'auto', onAsk }} /> : <span className="muted">{t('tutor.thinking')}</span>}
         {live && message.content && <span className={styles.caret} aria-hidden />}
       </div>
       {message.blocks?.length > 0 && <div className="stack-sm"><Blocks blocks={message.blocks} /></div>}
