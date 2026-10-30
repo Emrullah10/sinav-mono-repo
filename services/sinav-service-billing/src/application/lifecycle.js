@@ -127,11 +127,11 @@ export const makeLifecycle = ({ rawQuery, nowFn, provider, subscription, checkou
     changed += track(await rawQuery(
       `UPDATE billing.subscription s SET subscription_status='expired' FROM billing.product p
         WHERE p.product_id = s.subscription_product_id AND p.product_kind = 'subscription' AND s.subscription_status IN ('trialing','active') AND NOT s.subscription_cancel_at_period_end
-          AND s.subscription_current_period_end <= now()
+          AND s.subscription_channel = 'web' AND s.subscription_current_period_end <= now()
           AND NOT EXISTS (SELECT 1 FROM billing.payment_method pm WHERE pm.payment_method_id = s.subscription_payment_method_id AND pm.payment_method_status = 'active')
         RETURNING s.subscription_user_account_id AS uid`));
     changed += track(await rawQuery(
-      `UPDATE billing.subscription SET subscription_status='expired' WHERE subscription_status='past_due' AND subscription_current_period_end + make_interval(days => ${GRACE_DAYS}) <= now() RETURNING subscription_user_account_id AS uid`));
+      `UPDATE billing.subscription SET subscription_status='expired' WHERE subscription_status='past_due' AND subscription_channel = 'web' AND subscription_current_period_end + make_interval(days => ${GRACE_DAYS}) <= now() RETURNING subscription_user_account_id AS uid`));
     // dondurma sonu
     const paused = (await rawQuery(
       `SELECT s.subscription_id AS id, s.subscription_code AS code, s.subscription_user_account_id AS "userId", s.subscription_price_id AS "priceId", s.subscription_metadata AS metadata
@@ -152,7 +152,7 @@ export const makeLifecycle = ({ rawQuery, nowFn, provider, subscription, checkou
     const { rows } = await rawQuery(
       `SELECT s.subscription_code AS code, s.subscription_user_account_id AS "userId", s.subscription_trial_ends_at AS "trialEndsAt", s.subscription_payment_method_id IS NOT NULL AS "hasMethod",
               s.subscription_price_id AS "priceId"
-         FROM billing.subscription s WHERE s.subscription_status='trialing' AND NOT s.subscription_cancel_at_period_end
+         FROM billing.subscription s WHERE s.subscription_status='trialing' AND NOT s.subscription_cancel_at_period_end AND s.subscription_channel = 'web'
           AND s.subscription_trial_ends_at > now() AND s.subscription_trial_ends_at <= now() + interval '2 days'`);
     let changed = 0;
     for (const s of rows) {

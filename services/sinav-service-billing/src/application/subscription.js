@@ -31,7 +31,8 @@ export const makeSubscription = ({ rawQuery, nowFn, checkoutFn }) => {
     const pm = s.paymentMethodId ? (await rawQuery(
       `SELECT payment_method_code AS code, payment_method_card_brand AS brand, payment_method_card_last4 AS last4, payment_method_exp_month AS "expMonth", payment_method_exp_year AS "expYear"
          FROM billing.payment_method WHERE payment_method_id = $1 AND payment_method_status = 'active'`, [s.paymentMethodId])).rows[0] : null;
-    const willRenew = live && s.kind === 'subscription' && !s.cancelAtPeriodEnd && s.status !== 'paused' && !!pm;
+    const isStore = !!STORE[s.channel];
+    const willRenew = live && s.kind === 'subscription' && !s.cancelAtPeriodEnd && s.status !== 'paused' && (isStore || !!pm);
     const graceEndsAt = s.status === 'past_due' ? addDays(s.periodEnd, GRACE_DAYS) : null;
     return {
       tier: ent.tier, hasSubscription: live, status: s.status,

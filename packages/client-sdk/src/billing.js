@@ -22,6 +22,8 @@ export const createBillingApi = (http, { api = '/api' } = {}) => {
     billingOfferAccept: (offerKey, body, config) => http.post(`${B}/subscription/offers/${offerKey}/accept`, body || {}, config),
     billingSubscriptionCancel: (body) => http.post(`${B}/subscription/cancel`, body),
     billingSubscriptionResume: () => http.post(`${B}/subscription/resume`, {}),
+    /** Mağaza satın almasından/geri yüklemeden sonra çağrılır: RevenueCat durumunu okuyup erişimi hemen açar. → { synced, active, tier, validUntil } */
+    billingStoreSync: () => http.post(`${B}/store/sync`, {}),
     // Ödeme yöntemleri ve faturalar
     billingPaymentMethodsList: () => http.get(`${B}/payment-methods`),
     billingPaymentMethodAdd: (body) => http.post(`${B}/payment-methods`, body),

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import crypto from 'node:crypto';
 import {
-  DomainError, withTransaction, writeAudit, revokeAllSessionsForUser, hashOtp, randomToken, storagePut,
+  DomainError, withTransaction, writeAudit, revokeAllSessionsForUser, hashOtp, randomToken, storagePut, fetchInternal, internalHeaders, INTERNAL_TIMEOUTS,
 } from 'app-shared';
 import {
   normalizeEmail, findUserById, listMemberships, getTenantCode, DELETION_GRACE_DAYS, sha256, subjectHash,
@@ -232,8 +232,14 @@ export const makeAccount = ({ rawQuery, nowFn, mailer, auth }) => {
         WHERE (user_account_status='pending_deletion' AND user_account_deletion_scheduled_for <= now())
            OR (user_account_status='guest' AND user_account_guest_expires_at <= now()) LIMIT 200`);
     let changed = 0;
+    const billingBase = (process.env.SERVICE_BILLING_REST_URL || 'http://127.0.0.1:2004').replace(/\/$/, '');
     for (const r of rows) {
       try {
+        // Mağaza (RevenueCat) erişimi ve müşteri kaydı silinmeden hesap silinmez; misafirlerin satın alması olmaz.
+        if (r.status !== 'guest') {
+          const res = await fetchInternal(`${billingBase}/api/sinav-service-billing/v1/internal/store/purge/${r.id}`, { method: 'POST', headers: internalHeaders(null), timeoutMs: INTERNAL_TIMEOUTS.bestEffort(), body: {} });
+          if (!res.ok) throw new Error(`billing purge HTTP ${res.status}`);
+        }
         await withTransaction(async (tx) => {
           await tx.query(`DELETE FROM identity.organization WHERE organization_id=$1 AND organization_type='individual'`, [r.orgId]);
         });

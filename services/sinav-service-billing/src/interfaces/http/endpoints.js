@@ -23,6 +23,8 @@ export default defineEndpoints([
       return res.redirect(303, r.redirectTo);
     } },
 
+  { method: 'post', path: '/v1/public/revenuecat/webhook', isPublic: true, body: true, handler: (req) => uc().store.webhook({ authorization: req.headers.authorization, body: b(req) }) },
+
   // ── Haklar ──
   { method: 'get', path: '/v1/entitlements', permission: P.billingRead, handler: (_req, caller) => uc().catalog.getMyEntitlements({ caller }) },
 
@@ -34,6 +36,8 @@ export default defineEndpoints([
   { method: 'post', path: '/v1/checkout', permission: P.billingPurchase, body: true, handler: (req, caller) => uc().checkout.checkout({ caller, body: b(req), headers: req.headers }) },
   { method: 'get', path: '/v1/payments/{code}', permission: P.billingRead, handler: (req, caller) => uc().checkout.getPayment({ caller, code: req.params.code }) },
   { method: 'post', path: '/v1/payments/{code}/cancel', permission: P.billingPurchase, handler: (req, caller) => uc().checkout.cancelPayment({ caller, code: req.params.code }) },
+
+  { method: 'post', path: '/v1/store/sync', permission: P.billingRead, handler: (_req, caller) => uc().store.sync({ caller }) },
 
   // ── Abonelik ──
   { method: 'get', path: '/v1/subscription', permission: P.billingRead, handler: (_req, caller) => uc().subscription.getSubscription({ caller }) },
@@ -52,5 +56,6 @@ export default defineEndpoints([
   { method: 'get', path: '/v1/invoices/{code}/pdf', permission: P.billingRead, handler: (req, caller, res) => uc().profile.getInvoiceDocument({ caller, code: req.params.code, format: q(req).format, res }) },
 
   // ── Dahili ──
+  { method: 'post', path: '/v1/internal/store/purge/{userId}', internal: true, handler: (req) => uc().store.purgeUser({ userId: req.params.userId }) },
   { method: 'get', path: '/v1/internal/entitlements/{userId}', internal: true, handler: (req) => uc().catalog.getInternalEntitlements({ userId: req.params.userId }) },
 ], { tag: 'billing' });

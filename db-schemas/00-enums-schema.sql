@@ -1368,7 +1368,8 @@ CREATE TABLE enums.payment_provider (
 );
 INSERT INTO enums.payment_provider (payment_provider_value, payment_provider_label, payment_provider_sort_order) VALUES
     ('fake', 'Fake', 1),
-    ('iyzico', 'Iyzico', 2);
+    ('iyzico', 'Iyzico', 2),
+    ('revenuecat', 'RevenueCat', 3);
 
 -- -----------------------------------------------------
 -- Table: enums.invoice_status

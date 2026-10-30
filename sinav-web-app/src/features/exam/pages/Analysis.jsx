@@ -39,7 +39,7 @@ export default function Analysis() {
           <h2 className="t-heading-3">{t('exam.analysis.habits')}</h2>
           <p className="t-body-m tnum">{t('exam.analysis.rushed', { n: a.habits.rushedWrongCount })}</p>
           <p className="t-body-m tnum">{t('exam.analysis.slow', { n: a.habits.slowCorrectCount })}</p>
-          <p className="t-body-m tnum">{t('exam.analysis.blankRate', { n: Math.round((a.habits.blankRate ?? 0) * 100) })}</p>
+          <p className="t-body-m tnum">{t('exam.analysis.blankRate', { n: Math.round(a.habits.blankRate ?? 0) })}</p>
         </Card>
         <Card className="stack-sm">
           <h2 className="t-heading-3">{t('exam.analysis.focus')}</h2>

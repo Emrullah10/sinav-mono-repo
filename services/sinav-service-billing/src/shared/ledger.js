@@ -22,6 +22,7 @@ export const insertGrant = (tx, { user, productId, source, subscriptionId, start
  */
 export const writeSubscription = async (tx, {
   user, price, period, status, source, existing = null, trialEndsAt = null, paymentMethodId = null, lockedAmount = null, metadataPatch = {}, revokeOld = true, grantEndsAt = null, now,
+  channel = 'web', providerRef = null,
 }) => {
   let id; let code;
   if (existing) {
@@ -29,21 +30,22 @@ export const writeSubscription = async (tx, {
       `UPDATE billing.subscription SET subscription_product_id=$2, subscription_price_id=$3, subscription_status=$4, subscription_current_period_start=$5, subscription_current_period_end=$6,
               subscription_trial_ends_at = COALESCE($7, subscription_trial_ends_at), subscription_cancel_at_period_end=false, subscription_canceled_at=NULL, subscription_cancel_reason=NULL,
               subscription_cancel_note=NULL, subscription_paused_until=NULL, subscription_exam_session_id=$8, subscription_payment_method_id=COALESCE($9, subscription_payment_method_id),
-              subscription_locked_amount=$10, subscription_renewal_attempts=0, subscription_metadata = subscription_metadata || $11::jsonb, subscription_updated_by=$12
+              subscription_locked_amount=$10, subscription_renewal_attempts=0, subscription_metadata = subscription_metadata || $11::jsonb, subscription_updated_by=$12,
+              subscription_channel=$13, subscription_provider_ref=COALESCE($14, subscription_provider_ref)
         WHERE subscription_id=$1 RETURNING subscription_id AS id, subscription_code AS code`,
-      [existing.id, price.productId, price.id, status, period.start, period.end, trialEndsAt, period.examSessionId, paymentMethodId, lockedAmount, JSON.stringify(metadataPatch), user.id]);
+      [existing.id, price.productId, price.id, status, period.start, period.end, trialEndsAt, period.examSessionId, paymentMethodId, lockedAmount, JSON.stringify(metadataPatch), user.id, channel, providerRef]);
     ({ id, code } = r.rows[0]);
     if (revokeOld) await tx.query(`UPDATE billing.entitlement_grant SET entitlement_grant_revoked_at = $2 WHERE entitlement_grant_subscription_id = $1 AND entitlement_grant_revoked_at IS NULL`, [id, now]);
   } else {
     const r = await tx.query(
       `INSERT INTO billing.subscription (subscription_tenant_code, subscription_organization_id, subscription_user_account_id, subscription_product_id, subscription_price_id, subscription_status,
           subscription_channel, subscription_current_period_start, subscription_current_period_end, subscription_trial_ends_at, subscription_exam_session_id, subscription_payment_method_id,
-          subscription_locked_amount, subscription_metadata, subscription_created_by, subscription_updated_by)
-       VALUES ($1,$2,$3,$4,$5,$6,'web',$7,$8,$9,$10,$11,$12,$13::jsonb,$3,$3) RETURNING subscription_id AS id, subscription_code AS code`,
-      [user.tenantCode, user.orgId, user.id, price.productId, price.id, status, period.start, period.end, trialEndsAt, period.examSessionId, paymentMethodId, lockedAmount, JSON.stringify(metadataPatch)]);
+          subscription_locked_amount, subscription_metadata, subscription_provider_ref, subscription_created_by, subscription_updated_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$14,$7,$8,$9,$10,$11,$12,$13::jsonb,$15,$3,$3) RETURNING subscription_id AS id, subscription_code AS code`,
+      [user.tenantCode, user.orgId, user.id, price.productId, price.id, status, period.start, period.end, trialEndsAt, period.examSessionId, paymentMethodId, lockedAmount, JSON.stringify(metadataPatch), channel, providerRef]);
     ({ id, code } = r.rows[0]);
   }
-  await insertGrant(tx, { user, productId: price.productId, source, subscriptionId: id, startsAt: period.start, endsAt: grantEndsAt || period.end });
+  await insertGrant(tx, { user, productId: price.productId, source, subscriptionId: id, startsAt: period.start, endsAt: grantEndsAt || period.end, sourceRef: providerRef });
   return { id, code };
 };
 

@@ -55,6 +55,14 @@ export default function Session() {
   const st = view?.state;
   useEffect(() => { setSel(null); shownAt.current = Date.now(); }, [position, st?.tries]);
 
+  // Duraklatılmış oturum açılınca devam ettirilir; aksi halde cevap/ipucu uçları 409 SESSION_NOT_IN_PROGRESS döner.
+  const resumed = useRef(false);
+  useEffect(() => {
+    if (session?.status !== 'paused' || resumed.current) return;
+    resumed.current = true;
+    api.learningSessionResume(code).then(() => queryClient.invalidateQueries({ queryKey: sessionKey(code) })).catch(() => { resumed.current = false; });
+  }, [session?.status, code]);
+
   const immediate = session?.feedbackMode === 'immediate';
   const inProgress = session?.status === 'in_progress';
   useHeartbeat(code, inProgress);

@@ -158,6 +158,11 @@ export const seedCatalog = async (ctx) => {
         bump(rep, 'özellik limiti', fr.created);
       }
     }
+    for (const sp of d.storeProducts ?? []) {
+      if (!product[sp.product]) { err(rep, sp.storeId, `ürün yok: ${sp.product}`); continue; }
+      const r = await upsert(ctx, 'billing', 'store_product', { channel: sp.channel, store_id: sp.storeId }, { product_id: product[sp.product], is_active: true });
+      bump(rep, 'mağaza ürünü', r.created);
+    }
     const price = Object.fromEntries((await ctx.db.query('SELECT price_key k, price_id v FROM billing.price WHERE price_tenant_code=$1', [ctx.tenant])).rows.map((r) => [r.k, r.v]));
     for (const o of d.retentionOffers ?? []) {
       if (o.price && !price[o.price]) { err(rep, o.cancelReason, `fiyat yok: ${o.price}`); continue; }
