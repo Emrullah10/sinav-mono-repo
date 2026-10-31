@@ -14,7 +14,8 @@ import IconButton from '@components/IconButton/IconButton';
 import Skeleton from '@components/Skeleton/Skeleton';
 import styles from './Lexicon.module.scss';
 
-const NO_RETRY = ['CONTENT_LEXICON_LIMIT', 'CONTENT_LEXICON_WORD_INVALID', 'CONTENT_LEXICON_SENTENCE_INVALID'];
+// UNAVAILABLE da yeniden denenmez: her deneme yeni bir AI çağrısı (birkaç sn + ücret); kullanıcıda "Tekrar dene" düğmesi var.
+const NO_RETRY = ['CONTENT_LEXICON_LIMIT', 'CONTENT_LEXICON_WORD_INVALID', 'CONTENT_LEXICON_SENTENCE_INVALID', 'CONTENT_LEXICON_UNAVAILABLE'];
 const retry = (n, e) => n < 1 && !NO_RETRY.includes(apiErrorCode(e));
 const data = (res) => res?.data?.data;
 const wordKey = (form) => ['content', 'lexiconWord', form];

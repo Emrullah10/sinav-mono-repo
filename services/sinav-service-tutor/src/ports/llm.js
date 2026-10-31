@@ -4,15 +4,16 @@ import { DomainError } from 'app-shared';
 //   llm.configured                         -> boolean (false iken her çağrı LLM_NOT_CONFIGURED fırlatır)
 //   llm.provider                           -> 'openrouter' | 'fake' | 'not_configured'
 //   llm.models.{tutor,eval,content}        -> varsayılan model adları (env)
-//   llm.complete({ messages, model, json, maxTokens, task, signal })
+//   llm.complete({ messages, model, json, maxTokens, task, signal, reasoning })
 //        -> { text, json?, model, usage, finishReason }
+//        reasoning: istek başına düşünme ayarı (ör. 'none'); verilmezse env OPENROUTER_REASONING_EFFORT
 //   llm.stream({ messages, model, onToken, signal, maxTokens, task })
 //        -> { text, model, usage, finishReason }
-//   usage = { inputTokens, outputTokens, cacheReadTokens, costMicros }
+//   usage = { inputTokens, outputTokens, cacheReadTokens, reasoningTokens, costMicros }
 // Mesaj: { role: 'system'|'user'|'assistant', content: string, cache?: true }
 //   `cache: true` -> sağlayıcı istem önbelleği için kararlı önek (Anthropic modellerinde cache_control eklenir).
 
-const EMPTY_USAGE = Object.freeze({ inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, costMicros: 0 });
+const EMPTY_USAGE = Object.freeze({ inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, reasoningTokens: 0, costMicros: 0 });
 const sleep = (ms, signal) => new Promise((resolve, reject) => {
   const t = setTimeout(resolve, ms);
   signal?.addEventListener('abort', () => { clearTimeout(t); reject(Object.assign(new Error('aborted'), { name: 'AbortError' })); }, { once: true });
@@ -55,6 +56,7 @@ const usageFrom = (u) => {
     inputTokens: Number(u.prompt_tokens) || 0,
     outputTokens: Number(u.completion_tokens) || 0,
     cacheReadTokens: Number(u.prompt_tokens_details?.cached_tokens) || 0,
+    reasoningTokens: Number(u.completion_tokens_details?.reasoning_tokens) || 0,
     costMicros: Number.isFinite(cost) ? Math.round(cost * 1e6) : 0,
   };
 };
@@ -81,16 +83,18 @@ const withTimeout = (signal, ms) => {
 // `openrouter/auto`: `autoCostTier` (low|medium|high|xhigh|max) fiyat bandını seçer (low = en ucuz modeller, band içinde popülerlik sırası);
 // `autoAllowed` boşsa tüm modeller aday olur. Yönlendiriciyi izin listesiyle de sınırlayabilirsin; `maxPrice` ($/milyon token) her istekte tavan koyar;
 // `providerSort` ('price' | 'throughput' | 'latency') aynı modeli satan sağlayıcılar arasında seçimi belirler.
-// `reasoningEffort` düşünme payını sınırlar (low|medium|high); düşünen modeller çıktı bütçesini yemesin.
+// `reasoningEffort` düşünme payını sınırlar (low|medium|high); düşünen modeller çıktı bütçesini yemesin. İstek başına `reasoning`
+// (ör. 'none') bunu ezer: düşünme token'ları max_tokens'tan yer, kısa JSON işlerinde cevabı yarıda keser.
 // `webSearch` (yalnız complete): OpenRouter web eklentisi (Exa); kaynaklar yanıtta `citations` olarak döner.
 const autoPlugin = (autoAllowed, autoCostTier) => ({ id: 'auto-router', ...(autoAllowed.length ? { allowed_models: autoAllowed } : {}), ...(autoCostTier ? { cost_tier: autoCostTier } : {}) });
 const webPlugin = (w) => ({ id: 'web', engine: 'exa', max_results: Math.min(Math.max(Number(w?.maxResults) || 8, 1), 10) });
-const routing = (m, { autoAllowed = [], autoCostTier = null, maxPrice = null, reasoningEffort = null, providerSort = null }, webSearch = null) => {
+const routing = (m, { autoAllowed = [], autoCostTier = null, maxPrice = null, reasoningEffort = null, providerSort = null }, webSearch = null, reasoning = null) => {
+  const effort = reasoning || reasoningEffort;
   const plugins = [...(m === 'openrouter/auto' && (autoAllowed.length || autoCostTier) ? [autoPlugin(autoAllowed, autoCostTier)] : []), ...(webSearch ? [webPlugin(webSearch)] : [])];
   return {
     ...(plugins.length ? { plugins } : {}),
     ...(maxPrice || providerSort ? { provider: { ...(maxPrice ? { max_price: maxPrice } : {}), ...(providerSort ? { sort: providerSort } : {}) } } : {}),
-    ...(reasoningEffort ? { reasoning: { effort: reasoningEffort } } : {}),
+    ...(effort ? { reasoning: { effort } } : {}),
   };
 };
 const citationsOf = (msg) => (Array.isArray(msg?.annotations) ? msg.annotations : [])
@@ -109,9 +113,9 @@ export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThi
     'X-Title': 'Odak',
   };
 
-  const complete = async ({ messages, model, json = false, maxTokens = 1500, signal, webSearch = null } = {}) => {
+  const completeOnce = async ({ messages, model, json = false, maxTokens = 1500, signal, webSearch = null, reasoning = null } = {}) => {
     const m = model || models.tutor;
-    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, usage: { include: true }, ...(json ? { response_format: { type: 'json_object' } } : {}), ...routing(m, { autoAllowed, autoCostTier, maxPrice, reasoningEffort, providerSort }, webSearch) };
+    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, usage: { include: true }, ...(json ? { response_format: { type: 'json_object' } } : {}), ...routing(m, { autoAllowed, autoCostTier, maxPrice, reasoningEffort, providerSort }, webSearch, reasoning) };
     try {
       const res = await fetchFn(url, { method: 'POST', headers, body: JSON.stringify(body), signal: withTimeout(signal, timeoutMs) });
       const raw = await res.text();
@@ -121,6 +125,18 @@ export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThi
       const text = data?.choices?.[0]?.message?.content ?? '';
       return { text, json: json ? parseJsonLoose(text) : undefined, model: data?.model || m, usage: usageFrom(data?.usage), finishReason: data?.choices?.[0]?.finish_reason || null, citations: citationsOf(data?.choices?.[0]?.message) };
     } catch (e) { throw wrapNetwork(e); }
+  };
+  // `openrouter/auto` düşünmesi zorunlu bir model seçerse effort:'none' reddedilir (400, ücretlenmez); o zaman varsayılan ayarla bir kez daha.
+  const complete = async (opts = {}) => {
+    try {
+      return await completeOnce(opts);
+    } catch (e) {
+      if (opts.reasoning === 'none' && e?.code === 'LLM_UPSTREAM_ERROR' && (e.details?.status === 400 || /reason/i.test(e.message))) {
+        console.warn(`[tutor] reasoning:none reddedildi, varsayılan ayarla yeniden: ${String(e.message).slice(0, 200)}`);
+        return completeOnce({ ...opts, reasoning: null });
+      }
+      throw e;
+    }
   };
 
   // Ağ geçidi (ör. AIGW) akışı desteklemiyorsa tek seferlik tamamlamaya düşülür; cevap parça parça onToken'a verilir.

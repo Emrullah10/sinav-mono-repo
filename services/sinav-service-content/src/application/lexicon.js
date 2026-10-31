@@ -8,10 +8,14 @@ import { getPublishedItem } from '../shared/item-read.js';
 // Dokun-çevir. Kelime: önce küratörlü sözlük (vocab_entry), sonra content.word_gloss önbelleği, en son AI (biçim başına
 // bir kez; herkes için saklanır). Cümle: content.sentence_translation (normalize metnin SHA-256'sı); eksikler tek AI
 // isteğinde bloğun tamamıyla çevrilir ki aynı metinde sonraki basışlar anında açılsın. AI'a giden istekler günlük
-// sınırlıdır (önbellekten gelenler sayılmaz). Model: CONTENT_MODEL (openrouter/auto + cost_tier low).
+// sınırlıdır (önbellekten gelenler sayılmaz). Model: CONTENT_MODEL (openrouter/auto + cost_tier low), düşünme kapalı (reasoning:'none'):
+// düşünme token'ları max_tokens'tan yiyip JSON'u yarıda kesiyordu (2026-10-31: kelime çağrılarının %78'i 503). Tavanlar, model düşünmeyi
+// reddedip tutor varsayılan ayara döndüğünde de cevap sığsın diye geniş tutulur (yalnız üretilen token ücretlenir).
 
 const tutorUrl = () => `${(process.env.SERVICE_TUTOR_REST_URL || process.env.TUTOR_REST_URL || 'http://127.0.0.1:2005').replace(/\/$/, '')}/api/sinav-service-tutor/v1`;
 const aiTimeout = () => Number(process.env.LEXICON_AI_TIMEOUT_MS) || 35000;
+const WORD_MAX_TOKENS = 1500;
+const sentenceMaxTokens = (chars) => Math.min(6000, Math.ceil(chars / 2) + 1000);
 const LIMITS = { word: { free: 60, premium: 300 }, sentence: { free: 20, premium: 100 } };
 const POS = ['noun', 'verb', 'adjective', 'adverb', 'phrasal_verb', 'conjunction', 'preposition', 'pronoun', 'determiner', 'interjection', 'numeral', 'idiom', 'collocation'];
 const POS_ALIAS = { auxiliary: 'verb', modal: 'verb', 'modal verb': 'verb', 'auxiliary verb': 'verb', article: 'determiner', phrase: 'idiom', 'proper noun': 'noun', number: 'numeral', 'phrasal verb': 'phrasal_verb' };
@@ -20,7 +24,7 @@ const WORD_OK = /^(?:[a-z]\.){2,}$|^[a-zà-ɏ]+(?:['-][a-zà-ɏ]+)*$/;
 const WORD_SYSTEM = `[gen:lex:word] You are a concise English→Turkish learner's dictionary for Turkish students preparing for YDS/YÖKDİL (B1–C1).
 You get one English word exactly as it appeared in a text. Return ONLY JSON:
 {"isWord":true,"lemma":"base form","partOfSpeech":"${POS.join('|')}","ipa":"/IPA/","formNote":"short Turkish note on the inflected form or null","meanings":[{"tr":"Turkish meaning","pos":"part of speech of this sense","note":"short Turkish usage note or null"}],"examples":[{"en":"short natural example sentence","tr":"its Turkish translation"}]}
-Rules: lemma is the dictionary form (went→go, studies→study, better→good). formNote only when the given form differs from the lemma, e.g. "'go' fiilinin geçmiş zaman hâli". 1–4 meanings covering the common senses, most common first; each Turkish meaning is 1–5 words. 1–2 examples at exam level. If it is a proper name, a typo, a number or not English, set "isWord":false and explain briefly in Turkish in formNote (meanings may then be empty).`;
+Rules: lemma is the dictionary form (went→go, studies→study, better→good). formNote only when the given form differs from the lemma, e.g. "'go' fiilinin geçmiş zaman hâli". 1–3 meanings covering the common senses, most common first; each Turkish meaning is 1–5 words; notes only when really needed. Exactly 1 short example at exam level. If it is a proper name, a typo, a number or not English, set "isWord":false and explain briefly in Turkish in formNote (meanings may then be empty).`;
 
 const SENTENCE_SYSTEM = `[gen:lex:sentence] You translate English sentences from exam-preparation texts into natural, accurate Turkish for Turkish learners.
 Translate every numbered sentence separately, in order; use the neighbouring sentences only as context. Keep blank and placeholder markers exactly as written (----, ______, {{1}}, [[II]], (A)…) and NEVER guess or fill in a missing word. No explanations.
@@ -31,6 +35,12 @@ const sentenceHash = (text) => sha(`en>tr|${normalizeSentence(text)}`);
 const clean = (v, n) => (v == null ? null : String(v).replace(/\s+/g, ' ').trim().slice(0, n) || null);
 
 const userIdOf = (caller) => Number(caller?.callerUserId) || null;
+
+/** 503 + log: içerik servisi DomainError'ları loglamaz; kesilen/bozuk cevaplar böyle görünür kalır (metin değil, yalnız ölçüler loglanır). */
+const lexFail = (feature, message, ctx = {}, details = undefined) => {
+  console.warn(`[lexicon] ${feature}: ${message} ${JSON.stringify(ctx)}`);
+  return new DomainError('CONTENT_LEXICON_UNAVAILABLE', message, details, 503);
+};
 
 export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
   const inflight = new Map();
@@ -62,21 +72,24 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     try {
       res = await fetchInternal(`${tutorUrl()}/internal/ai/complete`, {
         method: 'POST', headers: internalHeaders(caller), timeoutMs: aiTimeout(), fetchFn,
-        body: { feature, model: process.env.CONTENT_MODEL || undefined, messages, json: true, maxTokens, userAccountId: userIdOf(caller) },
+        body: { feature, model: process.env.CONTENT_MODEL || undefined, messages, json: true, maxTokens, reasoning: 'none', userAccountId: userIdOf(caller) },
       });
     } catch (e) {
-      throw new DomainError('CONTENT_LEXICON_UNAVAILABLE', `Translation service unreachable: ${e.message}`, undefined, 503);
+      throw lexFail(feature, `Translation service unreachable: ${e.message}`);
     }
     let body = null;
     try { body = await res.json(); } catch { body = null; }
-    if (!res.ok || body?.success === false) throw new DomainError('CONTENT_LEXICON_UNAVAILABLE', body?.error?.message || `Translation failed (${res.status})`, { upstream: body?.error?.code || res.status }, 503);
+    if (!res.ok || body?.success === false) {
+      throw lexFail(feature, body?.error?.message || `Translation failed (${res.status})`, { status: res.status, upstream: body?.error?.code || null }, { upstream: body?.error?.code || res.status });
+    }
     const data = body?.data ?? body;
+    const meta = { model: data?.model || null, finishReason: data?.finishReason || null, maxTokens, outputTokens: data?.usage?.outputTokens ?? null, reasoningTokens: data?.usage?.reasoningTokens ?? null };
     let out = data?.json;
     if (!out && typeof data?.text === 'string') {
       try { out = JSON.parse(data.text.replace(/^```(?:json)?\s*|\s*```$/g, '')); } catch { out = null; }
     }
-    if (!out || typeof out !== 'object') throw new DomainError('CONTENT_LEXICON_UNAVAILABLE', 'Translation returned no JSON', undefined, 503);
-    return { out, model: data?.model || null };
+    if (!out || typeof out !== 'object') throw lexFail(feature, meta.finishReason === 'length' ? 'Translation was cut off' : 'Translation returned no JSON', meta);
+    return { out, model: meta.model, meta };
   };
 
   // ── kelime ──
@@ -137,10 +150,10 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     let g;
     let model;
     try {
-      const r = await askAi(caller, 'word_gloss', [{ role: 'system', content: WORD_SYSTEM }, { role: 'user', content: `<kelime>${form}</kelime>` }], 700);
+      const r = await askAi(caller, 'word_gloss', [{ role: 'system', content: WORD_SYSTEM }, { role: 'user', content: `<kelime>${form}</kelime>` }], WORD_MAX_TOKENS);
       g = parseGloss(r.out);
       model = r.model;
-      if (!g) throw new DomainError('CONTENT_LEXICON_UNAVAILABLE', 'Translation was incomplete', undefined, 503);
+      if (!g) throw lexFail('word_gloss', 'Translation was incomplete', { form, ...r.meta });
     } catch (e) {
       await refund(caller, 'word');
       throw e;
@@ -259,10 +272,10 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
       await consume(caller, 'sentence');
       let out;
       let model;
+      let meta;
       try {
         const user = missing.map((m, i) => `[${i + 1}] ${m.text}`).join('\n');
-        const maxTokens = Math.min(4000, Math.ceil(user.length / 2) + 300);
-        ({ out, model } = await askAi(caller, 'sentence_translation', [{ role: 'system', content: SENTENCE_SYSTEM }, { role: 'user', content: user }], maxTokens));
+        ({ out, model, meta } = await askAi(caller, 'sentence_translation', [{ role: 'system', content: SENTENCE_SYSTEM }, { role: 'user', content: user }], sentenceMaxTokens(user.length)));
       } catch (e) {
         await refund(caller, 'sentence');
         throw e;
@@ -281,7 +294,7 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
       }
       if (!known.has(target.hash)) {
         await refund(caller, 'sentence');
-        throw new DomainError('CONTENT_LEXICON_UNAVAILABLE', 'Translation was incomplete', undefined, 503);
+        throw lexFail('sentence_translation', 'Translation was incomplete', { sentences: missing.length, translations: tr.length, ...meta });
       }
     } else {
       rawQuery(`UPDATE content.sentence_translation SET sentence_translation_hit_count = sentence_translation_hit_count + 1 WHERE sentence_translation_tenant_code = $1 AND sentence_translation_hash = $2`,

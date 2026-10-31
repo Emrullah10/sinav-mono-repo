@@ -34,5 +34,5 @@ export default defineEndpoints([
   { method: 'post', path: '/v1/cms/message-reports/{code}/resolve', permission: P.contentReportManage, body: true, handler: (req, caller) => uc().cms.resolveReport({ caller, code: req.params.code, status: b(req).status, note: b(req).note }) },
 
   // ── Dahili ──
-  { method: 'post', path: '/v1/internal/ai/complete', internal: true, body: true, handler: (req, caller) => uc().internal.aiComplete({ caller, feature: b(req).feature, model: b(req).model, messages: b(req).messages, json: b(req).json, maxTokens: b(req).maxTokens, webSearch: b(req).webSearch }) },
+  { method: 'post', path: '/v1/internal/ai/complete', internal: true, body: true, handler: (req, caller) => uc().internal.aiComplete({ caller, feature: b(req).feature, model: b(req).model, messages: b(req).messages, json: b(req).json, maxTokens: b(req).maxTokens, webSearch: b(req).webSearch, reasoning: b(req).reasoning }) },
 ], { tag: 'tutor' });
