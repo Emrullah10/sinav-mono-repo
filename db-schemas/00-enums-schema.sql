@@ -587,6 +587,21 @@ INSERT INTO enums.contact_topic (contact_topic_value, contact_topic_label, conta
     ('other', 'Other', 7);
 
 -- -----------------------------------------------------
+-- Table: enums.feedback_kind
+-- Purpose: Allowed values of feedback_kind
+-- -----------------------------------------------------
+CREATE TABLE enums.feedback_kind (
+    feedback_kind_id BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE NOT NULL,
+    feedback_kind_value VARCHAR(100) PRIMARY KEY,
+    feedback_kind_label VARCHAR(255) NOT NULL,
+    feedback_kind_sort_order INT NOT NULL DEFAULT 0
+);
+INSERT INTO enums.feedback_kind (feedback_kind_value, feedback_kind_label, feedback_kind_sort_order) VALUES
+    ('bug', 'Bug', 1),
+    ('suggestion', 'Suggestion', 2),
+    ('other', 'Other', 3);
+
+-- -----------------------------------------------------
 -- Table: enums.content_status
 -- Purpose: Allowed values of content_status
 -- -----------------------------------------------------

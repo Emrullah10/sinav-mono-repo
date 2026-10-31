@@ -6,6 +6,7 @@ import Routes from '@shared/constant/route-paths';
 import { useAuthStore, isGuestUser } from '@store/authStore';
 import IconButton from '@components/IconButton/IconButton';
 import Avatar from '@components/Avatar/Avatar';
+import FeedbackButton from '@features/feedback/FeedbackButton';
 import styles from './AppShell.module.scss';
 
 const NAV = [
@@ -42,6 +43,7 @@ export default function AppShell() {
       <div className={styles.main}>
         <header className={styles.top}>
           <div className="grow" />
+          <FeedbackButton />
           <IconButton label={t('nav.notifications')}><Bell size={20} /></IconButton>
           <button type="button" className={styles.profile} onClick={() => navigate(Routes.me)} aria-label={t('nav.me')}>
             <Avatar name={name} size={32} />

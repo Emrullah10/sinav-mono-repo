@@ -31,6 +31,13 @@ export const createIdentityApi = (http, { api = '/api' } = {}) => {
     identityNotificationOpened: (code) => http.post(`${B}/notifications/${code}/opened`, {}),
     identityContactSend: (body) => http.post(`${B}/contact-messages`, body),
     identityPublicContactSend: (body) => http.post(`${B}/public/contact-messages`, body),
+    // Geri bildirim: { kind, message, screen, platform, appVersion, locale, context, attachments: [{ data(base64), durationMs?, source? }] }.
+    identityFeedbackSend: (body, config) => http.post(`${B}/feedback`, body, config),
+    identityCmsFeedbackList: (params) => http.get(`${B}/cms/feedback`, { params }),
+    identityCmsFeedbackGet: (code) => http.get(`${B}/cms/feedback/${code}`),
+    identityCmsFeedbackUpdate: (code, body) => http.patch(`${B}/cms/feedback/${code}`, body),
+    /** <img>/<audio> kaynağı (web çerezle yetkilenir). */
+    identityCmsFeedbackAttachmentUrl: (code, index) => `${B}/cms/feedback/${code}/attachments/${index}`,
     identityPublicWaitlistJoin: (body) => http.post(`${B}/public/waitlist`, body),
     identityPublicLegalList: (params) => http.get(`${B}/public/legal-documents`, { params }),
     identityPublicLegalGet: (type, params) => http.get(`${B}/public/legal-documents/${type}`, { params }),

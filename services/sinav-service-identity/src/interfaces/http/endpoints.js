@@ -47,6 +47,19 @@ export default defineEndpoints([
   { method: 'get', path: '/v1/notifications', permission: P.accountRead, handler: (req, caller) => uc().notify.listNotifications({ caller, limit: q(req).limit }) },
   { method: 'post', path: '/v1/notifications/{code}/opened', permission: P.accountManage, handler: (req, caller) => uc().notify.markOpened({ caller, code: req.params.code }) },
   { method: 'post', path: '/v1/contact-messages', permission: P.accountRead, body: true, handler: (req, caller) => uc().public.submitContact({ caller, ...b(req), platform: b(req).platform || platformOf(req) }) },
+  { method: 'post', path: '/v1/feedback', permission: P.accountRead, body: true, handler: (req, caller) => uc().feedback.submit({ caller, ...b(req), platform: b(req).platform || platformOf(req) }) },
+
+  // ── CMS: geri bildirimler (içerik/öğretmen bildirimleriyle aynı yetki) ──
+  { method: 'get', path: '/v1/cms/feedback', permission: P.contentReportManage, handler: (req) => uc().feedback.adminList(q(req)) },
+  { method: 'get', path: '/v1/cms/feedback/{code}', permission: P.contentReportManage, handler: (req) => uc().feedback.adminGet({ code: req.params.code }) },
+  { method: 'patch', path: '/v1/cms/feedback/{code}', permission: P.contentReportManage, body: true, handler: (req, caller) => uc().feedback.adminUpdate({ caller, code: req.params.code, status: b(req).status, note: b(req).note }) },
+  {
+    method: 'get', path: '/v1/cms/feedback/{code}/attachments/{index}', permission: P.contentReportManage,
+    handler: async (req, _c, res) => {
+      const a = await uc().feedback.adminAttachment({ code: req.params.code, index: req.params.index });
+      res.status(200).set({ 'Content-Type': a.contentType, 'Content-Disposition': 'inline', 'Cache-Control': 'private, max-age=3600', 'X-Content-Type-Options': 'nosniff' }).send(a.data);
+    },
+  },
 
   // ── Dahili ──
   { method: 'post', path: '/v1/internal/notifications', internal: true, body: true, handler: (req) => uc().notify.enqueue(b(req)) },

@@ -11,6 +11,7 @@ export const deepLinks = {
   dayDone: '/bugun/tamam',
   goal: '/ben/hedef',
   support: '/destek',
+  feedback: '/geri-bildirim', // mobil: sallayınca / Ben; web'de pencere (rota yok)
   tutor: (chat) => `/ogretmen/${chat}`,
   premium: '/premium',
   diagnostic: '/seviye-tespiti',

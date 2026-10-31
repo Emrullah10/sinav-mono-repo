@@ -22,4 +22,12 @@ export default {
   'apiErrors.WAITLIST_TOKEN_INVALID': { tr: 'Onay bağlantısı geçersiz.', en: 'Invalid confirmation link.' },
   'apiErrors.CONTACT_BODY_INVALID': { tr: 'Mesaj 5 ile 5000 karakter arasında olmalı.', en: 'Message must be 5-5000 characters.' },
   'apiErrors.NOTIFICATION_INVALID': { tr: 'Bildirim bilgisi eksik.', en: 'Notification incomplete.' },
+  'apiErrors.FEEDBACK_EMPTY': { tr: 'Birkaç kelime yaz ya da fotoğraf veya sesli kayıt ekle.', en: 'Write a few words or add a photo or a recording.' },
+  'apiErrors.FEEDBACK_MESSAGE_INVALID': { tr: 'Mesaj en fazla 5000 karakter olabilir.', en: 'The message can be at most 5000 characters.' },
+  'apiErrors.FEEDBACK_ATTACHMENT_INVALID': { tr: 'Ek okunamadı ya da türü desteklenmiyor.', en: 'An attachment could not be read or is not supported.' },
+  'apiErrors.FEEDBACK_ATTACHMENT_TOO_LARGE': { tr: 'Ek çok büyük.', en: 'An attachment is too large.' },
+  'apiErrors.FEEDBACK_ATTACHMENT_LIMIT': { tr: 'En fazla 3 fotoğraf ve 1 sesli kayıt eklenebilir.', en: 'You can add up to 3 photos and 1 recording.' },
+  'apiErrors.FEEDBACK_RATE_LIMITED': { tr: 'Bugün çok sayıda geri bildirim gönderdin; yarın yeniden deneyebilirsin.', en: 'You have sent a lot of feedback today; please try again tomorrow.' },
+  'apiErrors.FEEDBACK_NOT_FOUND': { tr: 'Geri bildirim bulunamadı.', en: 'Feedback not found.' },
+  'apiErrors.FEEDBACK_STATUS_INVALID': { tr: 'Geçersiz durum.', en: 'Invalid status.' },
 };

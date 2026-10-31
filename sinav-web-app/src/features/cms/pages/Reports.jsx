@@ -23,7 +23,7 @@ import s from '../components/Cms.module.scss';
 
 const FILTERS = ['open,in_review', 'open', 'in_review', 'resolved', 'rejected'];
 
-function ResolveModal({ report, onClose, onSubmit, pending }) {
+function ResolveModal({ report, onClose, onSubmit, pending, showNotify = true }) {
   const { t } = useTranslation();
   const [status, setStatus] = useState('resolved');
   const [note, setNote] = useState('');
@@ -36,7 +36,7 @@ function ResolveModal({ report, onClose, onSubmit, pending }) {
       <div className="stack-sm">
         <Select label={t('cmsx.col.status')} value={status} onChange={(e) => setStatus(e.target.value)} options={['resolved', 'rejected', 'in_review'].map((v) => ({ value: v, label: t(`cmsx.status.${v}`) }))} />
         <TextInput label={t('cmsx.note')} multiline rows={3} value={note} onChange={(e) => setNote(e.target.value)} helper={needsNote ? t('cmsx.review.noteRequired') : undefined} />
-        <label className="row t-body-s"><input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} /> {t('cmsx.reports.notify')}</label>
+        {showNotify && <label className="row t-body-s"><input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} /> {t('cmsx.reports.notify')}</label>}
       </div>
     </Modal>
   );
@@ -118,15 +118,81 @@ function TutorReports() {
   );
 }
 
-// CMS-08: hata bildirimleri (içerik + öğretmen yanıtı).
+const senderOf = (t, f) => {
+  if (!f.sender) return t('cmsx.feedback.anonymous');
+  if (f.sender.isGuest) return `${t('cmsx.feedback.guest')} #${f.sender.code}`;
+  return f.sender.displayName ? `${f.sender.displayName} · ${f.sender.email || ''}` : f.sender.email || `#${f.sender.code}`;
+};
+const deviceOf = (c = {}) => [c.model, c.os, c.viewport, c.userAgent && !c.model ? String(c.userAgent).slice(0, 90) : null].filter(Boolean).join(' · ');
+
+// Uygulama içi geri bildirimler (identity): metin + fotoğraf/ekran görüntüsü + sesli kayıt.
+function FeedbackReports() {
+  const { t } = useTranslation();
+  const qc = useQueryClient();
+  const [status, setStatus] = useState(FILTERS[0]);
+  const [kind, setKind] = useState('');
+  const [platform, setPlatform] = useState('');
+  const [page, setPage] = useState(1);
+  const [target, setTarget] = useState(null);
+  const params = { status, page, pageSize: 20, ...(kind && { kind }), ...(platform && { platform }) };
+  const { data, isLoading, error, refetch } = useApiQuery(['identity', 'cms', 'feedback', params], () => api.identityCmsFeedbackList(params));
+  const update = useApiMutation(({ code, status: st, note }) => api.identityCmsFeedbackUpdate(code, { status: st, ...(note && { note }) }), {
+    successMessage: 'cmsx.reports.done', onSuccess: () => { setTarget(null); qc.invalidateQueries({ queryKey: ['identity', 'cms', 'feedback'] }); },
+  });
+  const all = { value: '', label: t('cmsx.feedback.all') };
+  return (
+    <div className="stack">
+      <div className="row" style={{ flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+        <Select label={t('cmsx.col.status')} value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} options={FILTERS.map((v) => ({ value: v, label: t(`cmsx.reports.f.${v.replace(',', '_')}`) }))} className={s.filter} />
+        <Select label={t('cmsx.feedback.kind')} value={kind} onChange={(e) => { setKind(e.target.value); setPage(1); }} options={[all, ...['bug', 'suggestion', 'other'].map((v) => ({ value: v, label: t(`feedback.kind.${v}`) }))]} className={s.filter} />
+        <Select label={t('cmsx.feedback.platform')} value={platform} onChange={(e) => { setPlatform(e.target.value); setPage(1); }} options={[all, ...['ios', 'android', 'web'].map((v) => ({ value: v, label: v }))]} className={s.filter} />
+      </div>
+      {isLoading && <Skeleton height={240} />}
+      {error && <ErrorState error={error} onRetry={refetch} />}
+      {data?.items.length === 0 && <EmptyState title={t('cmsx.feedback.emptyTitle')} body={t('cmsx.feedback.emptyBody')} />}
+      {data?.items.map((f) => (
+        <Card key={f.code}>
+          <div className="row" style={{ flexWrap: 'wrap' }}>
+            <strong className="grow">{t(`feedback.kind.${f.kind}`, { defaultValue: f.kind })} · #{f.code}</strong>
+            <StatusChip status={f.status} />
+            <span className="muted t-caption tnum">{dayjs(f.createdAt).format('D MMM YYYY HH:mm')}</span>
+          </div>
+          <p className="t-body-m" style={{ margin: 'var(--space-2) 0', whiteSpace: 'pre-wrap' }}>{f.message || <span className="muted">{t('cmsx.feedback.noText')}</span>}</p>
+          <p className="muted t-body-s">
+            {senderOf(t, f)} · {f.platform}{f.appVersion ? ` ${f.appVersion}` : ''}{f.screen ? <> · {t('cmsx.feedback.screen')}: <code>{f.screen}</code></> : null}
+          </p>
+          {deviceOf(f.context) && <p className="muted t-caption">{t('cmsx.feedback.device')}: {deviceOf(f.context)}</p>}
+          {f.attachments.length > 0 && (
+            <div className="row" style={{ flexWrap: 'wrap', gap: 'var(--space-2)', marginTop: 'var(--space-3)', alignItems: 'center' }}>
+              {f.attachments.map((a) => {
+                const src = api.identityCmsFeedbackAttachmentUrl(f.code, a.index);
+                return a.kind === 'audio'
+                  ? <audio key={a.index} controls preload="none" src={src} style={{ maxWidth: '100%' }} />
+                  : <a key={a.index} href={src} target="_blank" rel="noopener noreferrer"><img src={src} alt={t('cmsx.feedback.photo', { n: a.index + 1 })} loading="lazy" style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border-default)' }} /></a>;
+              })}
+            </div>
+          )}
+          {f.resolutionNote && <p className="muted t-body-s">{t('cmsx.note')}: {f.resolutionNote}</p>}
+          {(f.status === 'open' || f.status === 'in_review') && <div style={{ marginTop: 'var(--space-3)' }}><Button size="sm" variant="secondary" onClick={() => setTarget(f)}>{t('cmsx.feedback.update')}</Button></div>}
+        </Card>
+      ))}
+      {data && <Pager page={data.page} pageSize={data.pageSize} total={data.total} onPage={setPage} />}
+      <ResolveModal key={target?.code} report={target} showNotify={false} onClose={() => setTarget(null)} pending={update.isPending} onSubmit={(b) => update.mutate({ code: target.code, ...b })} />
+    </div>
+  );
+}
+
+// CMS-08: hata bildirimleri (içerik + öğretmen yanıtı) ve uygulama içi geri bildirimler.
 export default function Reports() {
   const { t } = useTranslation();
   const [tab, setTab] = useState('content');
   return (
     <div className={s.page}>
       <PageHeader title={t('cmsx.reports.title')} subtitle={t('cmsx.reports.subtitle')} />
-      <Tabs label={t('cmsx.reports.title')} value={tab} onChange={setTab} tabs={[{ value: 'content', label: t('cmsx.reports.tabContent') }, { value: 'tutor', label: t('cmsx.reports.tabTutor') }]} />
-      {tab === 'content' ? <ContentReports /> : <TutorReports />}
+      <Tabs label={t('cmsx.reports.title')} value={tab} onChange={setTab} tabs={[{ value: 'content', label: t('cmsx.reports.tabContent') }, { value: 'tutor', label: t('cmsx.reports.tabTutor') }, { value: 'feedback', label: t('cmsx.reports.tabFeedback') }]} />
+      {tab === 'content' && <ContentReports />}
+      {tab === 'tutor' && <TutorReports />}
+      {tab === 'feedback' && <FeedbackReports />}
     </div>
   );
 }

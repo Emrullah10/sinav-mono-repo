@@ -80,6 +80,10 @@ const waitlistLimiter = make('waitlist', 60 * 60 * 1000, num('RATE_LIMIT_WAITLIS
 const contactLimiter = make('contact', 60 * 60 * 1000, num('RATE_LIMIT_CONTACT_MAX', 10), ipKey);
 const paymentCallbackLimiter = make('paycb', 15 * 60 * 1000, num('RATE_LIMIT_PAYMENT_CALLBACK_MAX', 60), ipKey);
 const paymentWebhookLimiter = make('paywh', 15 * 60 * 1000, num('RATE_LIMIT_PAYMENT_WEBHOOK_MAX', 300), ipKey);
+const feedbackLimiter = make('feedback', 60 * 60 * 1000, num('RATE_LIMIT_FEEDBACK_MAX', 20), (req) => {
+  const t = sessionKey(req);
+  return t ? `t:${hash(t)}` : anonKey(req);
+});
 const tutorLimiter = make('tutor', 60 * 1000, num('RATE_LIMIT_TUTOR_MAX', 30), (req) => {
   const t = sessionKey(req);
   return t ? `t:${hash(t)}` : anonKey(req);
@@ -93,6 +97,7 @@ export {
   loginLimiter,
   waitlistLimiter,
   contactLimiter,
+  feedbackLimiter,
   paymentCallbackLimiter,
   paymentWebhookLimiter,
   tutorLimiter,

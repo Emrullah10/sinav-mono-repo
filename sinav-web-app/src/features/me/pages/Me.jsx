@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Target, CreditCard, Receipt, Settings as Cog, LogOut, Flame } from 'lucide-react';
+import { Target, CreditCard, Receipt, Settings as Cog, LogOut, Flame, MessageSquareWarning } from 'lucide-react';
+import { useFeedbackStore } from '@features/feedback/feedbackStore';
 import api from '@api';
 import useApiQuery from '@hooks/useApiQuery';
 import { signOut } from '@shared/auth/session';
@@ -21,6 +22,7 @@ import styles from '../components/page.module.scss';
 export default function Me() {
   const { t } = useTranslation();
   const nav = useNavigate();
+  const showFeedback = useFeedbackStore((s) => s.show);
   const [range, setRange] = useState(30);
   const account = useApiQuery(['me', 'account'], () => api.identityAccountGet());
   const progress = useApiQuery(['me', 'progress', range], () => api.learningProgressOverviewGet(range), { placeholderData: (prev) => prev });
@@ -95,6 +97,7 @@ export default function Me() {
         <ListRow icon={<CreditCard size={20} />} title={t('me.nav.subscription')} onClick={() => nav(Routes.meSubscription)} />
         <ListRow icon={<Receipt size={20} />} title={t('me.nav.payment')} onClick={() => nav(Routes.mePayment)} />
         <ListRow icon={<Cog size={20} />} title={t('me.nav.settings')} onClick={() => nav(Routes.meSettings)} />
+        <ListRow icon={<MessageSquareWarning size={20} />} title={t('feedback.title')} subtitle={t('feedback.open')} onClick={showFeedback} />
       </Card>
       <div><Button variant="tertiary" startIcon={<LogOut size={18} />} onClick={() => signOut().then(() => nav(Routes.welcome, { replace: true }))}>{t('me.signOut')}</Button></div>
     </div>

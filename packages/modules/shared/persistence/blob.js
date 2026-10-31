@@ -2,16 +2,16 @@ import crypto from 'node:crypto';
 import { rawQuery } from './tx.js';
 
 // storage.blob yazımı (şablon §11.3; kalıcı sağlayıcı = Postgres). `key` UNIQUE: aynı anahtar üzerine yazılır.
-export const storagePut = async ({ key, contentType, data, ownerSchema, ownerCode = null, organizationId = null, expiresAt = null, tenantCode = 1 }) => {
+export const storagePut = async ({ key, contentType, data, ownerSchema, ownerCode = null, organizationId = null, expiresAt = null, metadata = {}, tenantCode = 1, run = rawQuery }) => {
   const buf = Buffer.isBuffer(data) ? data : Buffer.from(data);
   const sha = crypto.createHash('sha256').update(buf).digest('hex');
-  const { rows } = await rawQuery(
-    `INSERT INTO storage.blob (blob_tenant_code, blob_organization_id, blob_key, blob_content_type, blob_byte_size, blob_sha256, blob_data, blob_owner_schema, blob_owner_code, blob_expires_at)
-     VALUES ((SELECT tenant_code FROM identity.tenant ORDER BY tenant_id LIMIT 1),$1,$2,$3,$4,$5,$6,$7,$8,$9)
+  const { rows } = await run(
+    `INSERT INTO storage.blob (blob_tenant_code, blob_organization_id, blob_key, blob_content_type, blob_byte_size, blob_sha256, blob_data, blob_owner_schema, blob_owner_code, blob_expires_at, blob_metadata)
+     VALUES ((SELECT tenant_code FROM identity.tenant ORDER BY tenant_id LIMIT 1),$1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
      ON CONFLICT (blob_key) DO UPDATE SET blob_content_type=EXCLUDED.blob_content_type, blob_byte_size=EXCLUDED.blob_byte_size, blob_sha256=EXCLUDED.blob_sha256,
-            blob_data=EXCLUDED.blob_data, blob_expires_at=EXCLUDED.blob_expires_at
+            blob_data=EXCLUDED.blob_data, blob_expires_at=EXCLUDED.blob_expires_at, blob_metadata=EXCLUDED.blob_metadata
      RETURNING blob_id AS id, blob_code AS code`,
-    [organizationId, `db://${key}`, contentType, buf.length, sha, buf, ownerSchema, ownerCode, expiresAt]);
+    [organizationId, `db://${key}`, contentType, buf.length, sha, buf, ownerSchema, ownerCode, expiresAt, metadata]);
   return rows[0];
 };
 

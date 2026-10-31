@@ -241,6 +241,10 @@ export const makeAccount = ({ rawQuery, nowFn, mailer, auth }) => {
           if (!res.ok) throw new Error(`billing purge HTTP ${res.status}`);
         }
         await withTransaction(async (tx) => {
+          // Geri bildirim ekleri (ses/fotoğraf) kişisel veridir: silinir; metin anonim kalır (gönderen SET NULL).
+          // identity.feedback satırına burada dokunma: aynı işlemde önceden güncellenen satır, organizasyon silinirken
+          // SET NULL zincirinde fk_feedback_user_account hatası verir.
+          await tx.query(`DELETE FROM storage.blob WHERE blob_organization_id=$1 AND blob_key LIKE 'db://feedback/%'`, [r.orgId]);
           await tx.query(`DELETE FROM identity.organization WHERE organization_id=$1 AND organization_type='individual'`, [r.orgId]);
         });
         changed += 1;

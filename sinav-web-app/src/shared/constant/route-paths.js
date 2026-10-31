@@ -18,6 +18,7 @@ const Routes = {
   diagnosticPlan: '/seviye-tespiti/plan',
   diagnosticStart: '/seviye-tespiti',
   today: '/bugun',
+  feedback: '/geri-bildirim', // pencereyi açar, bugüne döner (mobilde ekran)
   dayDone: '/bugun/tamam',
   study: '/calis',
   studyType: '/calis/tip/:type',
