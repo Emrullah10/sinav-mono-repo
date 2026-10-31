@@ -234,8 +234,12 @@ const fakeQuestion = (extra = {}) => {
     difficulty: 3, estimatedSeconds: 45, ...extra,
   };
 };
-// Dokun-çevir (`[gen:lex:word]` / `[gen:lex:sentence]`): kelime için sözlük kaydı, cümleler için sırayla çeviri.
+// Dokun-çevir (`[gen:lex:word]` / `[gen:lex:words]` / `[gen:lex:sentence]`): kelime için sözlük kaydı, cümleler için sırayla çeviri.
 const fakeLexicon = (kind, userMsg) => {
+  if (kind === 'words') {
+    const list = [...userMsg.matchAll(/^\[\d+\] (.+)$/gm)].map((m) => m[1].trim());
+    return { entries: list.map((w) => ({ word: w, ...fakeLexicon('word', `<kelime>${w}</kelime>`) })) };
+  }
   if (kind === 'word') {
     const w = /<kelime>([^<]*)<\/kelime>/.exec(userMsg)?.[1]?.trim().toLowerCase() || 'word';
     const lemma = w.replace(/ie[sd]$/, 'y').replace(/(ing|ed|s)$/, '') || w;

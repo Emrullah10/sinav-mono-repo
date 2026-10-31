@@ -21,17 +21,27 @@ const POS = ['noun', 'verb', 'adjective', 'adverb', 'phrasal_verb', 'conjunction
 const POS_ALIAS = { auxiliary: 'verb', modal: 'verb', 'modal verb': 'verb', 'auxiliary verb': 'verb', article: 'determiner', phrase: 'idiom', 'proper noun': 'noun', number: 'numeral', 'phrasal verb': 'phrasal_verb' };
 const WORD_OK = /^(?:[a-z]\.){2,}$|^[a-zà-ɏ]+(?:['-][a-zà-ɏ]+)*$/;
 
+const WORD_SHAPE = `{"isWord":true,"lemma":"base form","partOfSpeech":"${POS.join('|')}","ipa":"/IPA/","formNote":"short Turkish note on the inflected form or null","meanings":[{"tr":"Turkish meaning","pos":"part of speech of this sense","note":"short Turkish usage note or null"}],"examples":[{"en":"short natural example sentence","tr":"its Turkish translation"}]}`;
+const WORD_RULES = `Rules: lemma is the dictionary form (went→go, studies→study, better→good). formNote only when the given form differs from the lemma, e.g. "'go' fiilinin geçmiş zaman hâli". 1–3 meanings covering the common senses, most common first; each Turkish meaning is 1–5 words; notes only when really needed. Exactly 1 short example at exam level. If it is a proper name, a typo, a number or not English, set "isWord":false and explain briefly in Turkish in formNote (meanings may then be empty).`;
 const WORD_SYSTEM = `[gen:lex:word] You are a concise English→Turkish learner's dictionary for Turkish students preparing for YDS/YÖKDİL (B1–C1).
 You get one English word exactly as it appeared in a text. Return ONLY JSON:
-{"isWord":true,"lemma":"base form","partOfSpeech":"${POS.join('|')}","ipa":"/IPA/","formNote":"short Turkish note on the inflected form or null","meanings":[{"tr":"Turkish meaning","pos":"part of speech of this sense","note":"short Turkish usage note or null"}],"examples":[{"en":"short natural example sentence","tr":"its Turkish translation"}]}
-Rules: lemma is the dictionary form (went→go, studies→study, better→good). formNote only when the given form differs from the lemma, e.g. "'go' fiilinin geçmiş zaman hâli". 1–3 meanings covering the common senses, most common first; each Turkish meaning is 1–5 words; notes only when really needed. Exactly 1 short example at exam level. If it is a proper name, a typo, a number or not English, set "isWord":false and explain briefly in Turkish in formNote (meanings may then be empty).`;
+${WORD_SHAPE}
+${WORD_RULES}`;
+// Ön-çeviri (lexicon-prefill): aynı kurallar, numaralı kelime listesi → entries dizisi.
+const WORDS_SYSTEM = `[gen:lex:words] You are a concise English→Turkish learner's dictionary for Turkish students preparing for YDS/YÖKDİL (B1–C1).
+You get a numbered list of English words exactly as they appeared in exam texts. Return ONLY JSON: {"entries":[...]} with exactly one entry per numbered word, in the same order.
+Each entry is this object plus a "word" field holding the word exactly as given:
+${WORD_SHAPE}
+${WORD_RULES}`;
 
 const SENTENCE_SYSTEM = `[gen:lex:sentence] You translate English sentences from exam-preparation texts into natural, accurate Turkish for Turkish learners.
 Translate every numbered sentence separately, in order; use the neighbouring sentences only as context. Keep blank and placeholder markers exactly as written (----, ______, {{1}}, [[II]], (A)…) and NEVER guess or fill in a missing word. No explanations.
 Return ONLY JSON: {"translations":["Turkish of [1]","Turkish of [2]", ...]} with exactly one string per numbered sentence.`;
 
 const sha = (s) => createHash('sha256').update(s).digest('hex');
-const sentenceHash = (text) => sha(`en>tr|${normalizeSentence(text)}`);
+export const sentenceHash = (text) => sha(`en>tr|${normalizeSentence(text)}`);
+/** Dokunulan kelimenin sözlük anahtarı geçerli mi (word() ile aynı kural; ön-çeviri adaylarını süzer). */
+export const isLexiconForm = (form) => Boolean(form) && form.length <= LEXICON_LIMITS.wordMax && WORD_OK.test(form);
 const clean = (v, n) => (v == null ? null : String(v).replace(/\s+/g, ' ').trim().slice(0, n) || null);
 
 const userIdOf = (caller) => Number(caller?.callerUserId) || null;
@@ -67,12 +77,12 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     try { if (uid) await redis()?.decr(`lexicon:${uid}:${kind}:${localDate(nowFn(), 'Europe/Istanbul')}`); } catch { /* best-effort */ }
   };
 
-  const askAi = async (caller, feature, messages, maxTokens) => {
+  const askAi = async (caller, feature, messages, maxTokens, { model, timeoutMs } = {}) => {
     let res;
     try {
       res = await fetchInternal(`${tutorUrl()}/internal/ai/complete`, {
-        method: 'POST', headers: internalHeaders(caller), timeoutMs: aiTimeout(), fetchFn,
-        body: { feature, model: process.env.CONTENT_MODEL || undefined, messages, json: true, maxTokens, reasoning: 'none', userAccountId: userIdOf(caller) },
+        method: 'POST', headers: internalHeaders(caller), timeoutMs: timeoutMs || aiTimeout(), fetchFn,
+        body: { feature, model: model || process.env.CONTENT_MODEL || undefined, messages, json: true, maxTokens, reasoning: 'none', userAccountId: userIdOf(caller) },
       });
     } catch (e) {
       throw lexFail(feature, `Translation service unreachable: ${e.message}`);
@@ -83,7 +93,7 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
       throw lexFail(feature, body?.error?.message || `Translation failed (${res.status})`, { status: res.status, upstream: body?.error?.code || null }, { upstream: body?.error?.code || res.status });
     }
     const data = body?.data ?? body;
-    const meta = { model: data?.model || null, finishReason: data?.finishReason || null, maxTokens, outputTokens: data?.usage?.outputTokens ?? null, reasoningTokens: data?.usage?.reasoningTokens ?? null };
+    const meta = { model: data?.model || null, finishReason: data?.finishReason || null, maxTokens, outputTokens: data?.usage?.outputTokens ?? null, reasoningTokens: data?.usage?.reasoningTokens ?? null, costMicros: Number(data?.usage?.costMicros) || 0 };
     let out = data?.json;
     if (!out && typeof data?.text === 'string') {
       try { out = JSON.parse(data.text.replace(/^```(?:json)?\s*|\s*```$/g, '')); } catch { out = null; }
@@ -95,7 +105,7 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
   // ── kelime ──
   const formOf = (word) => {
     const form = lexiconForm(word);
-    if (!form || form.length > LEXICON_LIMITS.wordMax || !WORD_OK.test(form)) throw new DomainError('CONTENT_LEXICON_WORD_INVALID', 'word must be a single English word', { field: 'word' });
+    if (!isLexiconForm(form)) throw new DomainError('CONTENT_LEXICON_WORD_INVALID', 'word must be a single English word', { field: 'word' });
     return form;
   };
 
@@ -145,19 +155,8 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     return { isWord, lemma: lemma || null, pos, ipa: clean(out.ipa, 120), formNote: clean(out.formNote, 200), meanings, examples };
   };
 
-  const glossFromAi = async (caller, p, form) => {
-    await consume(caller, 'word');
-    let g;
-    let model;
-    try {
-      const r = await askAi(caller, 'word_gloss', [{ role: 'system', content: WORD_SYSTEM }, { role: 'user', content: `<kelime>${form}</kelime>` }], WORD_MAX_TOKENS);
-      g = parseGloss(r.out);
-      model = r.model;
-      if (!g) throw lexFail('word_gloss', 'Translation was incomplete', { form, ...r.meta });
-    } catch (e) {
-      await refund(caller, 'word');
-      throw e;
-    }
+  /** AI açıklamasını önbelleğe yazar (çakışmada ilk kayıt kalır). lookups: dokunuştan 1, ön-çeviriden 0. */
+  const saveGloss = async (p, form, g, model, userId, lookups = 1) => {
     // Kök küratörlü sözlükte varsa (went → go) kayıt ona bağlanır; sonraki dokunuşlar doğrudan küratörlü kaydı açar.
     let curated = null;
     if (g.isWord && g.lemma && g.lemma !== form) {
@@ -171,9 +170,25 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
       `INSERT INTO content.word_gloss (word_gloss_tenant_code, word_gloss_organization_id, word_gloss_language, word_gloss_form, word_gloss_lemma, word_gloss_part_of_speech,
               word_gloss_pronunciation_ipa, word_gloss_form_note, word_gloss_meanings, word_gloss_examples, word_gloss_is_word, word_gloss_vocab_item_id, word_gloss_model,
               word_gloss_lookup_count, word_gloss_created_by, word_gloss_updated_by)
-       VALUES ($1,$2,'en',$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,1,$13,$13)
+       VALUES ($1,$2,'en',$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$14,$13,$13)
        ON CONFLICT (word_gloss_tenant_code, word_gloss_language, word_gloss_form) DO NOTHING`,
-      [p.tenantCode, p.organizationId, form, g.lemma || form, g.pos, g.ipa, g.formNote, JSON.stringify(g.meanings), JSON.stringify(g.examples), g.isWord, vocabItemId, model, userIdOf(caller)]);
+      [p.tenantCode, p.organizationId, form, g.lemma || form, g.pos, g.ipa, g.formNote, JSON.stringify(g.meanings), JSON.stringify(g.examples), g.isWord, vocabItemId, model, userId, lookups]);
+  };
+
+  const glossFromAi = async (caller, p, form) => {
+    await consume(caller, 'word');
+    let g;
+    let model;
+    try {
+      const r = await askAi(caller, 'word_gloss', [{ role: 'system', content: WORD_SYSTEM }, { role: 'user', content: `<kelime>${form}</kelime>` }], WORD_MAX_TOKENS);
+      g = parseGloss(r.out);
+      model = r.model;
+      if (!g) throw lexFail('word_gloss', 'Translation was incomplete', { form, ...r.meta });
+    } catch (e) {
+      await refund(caller, 'word');
+      throw e;
+    }
+    await saveGloss(p, form, g, model, userIdOf(caller));
     const row = await findGloss(rawQuery, p, form);
     return fromGloss(row);
   };
@@ -306,5 +321,52 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     };
   };
 
-  return Object.freeze({ word, ensureItem, sentence });
+  // ── ön-çeviri (lexicon-prefill işi) ──
+  // Kullanıcı beklemesin diye yayındaki içeriğin kelime/cümleleri arka planda, gruplar halinde çevrilir. Sonuç aynı önbelleğe
+  // (word_gloss / sentence_translation) yazılır; kullanıcı sınırı düşmez. Model çağıran verir (iş yalnız ':free' modele izin verir).
+  /** forms: geçerli sözlük anahtarları → { saved, failed: [form], meta } */
+  const prefillWords = async (forms, { model, timeoutMs } = {}) => {
+    const p = await platform();
+    const user = forms.map((f, i) => `[${i + 1}] ${f}`).join('\n');
+    const { out, model: used, meta } = await askAi(null, 'word_gloss', [{ role: 'system', content: WORDS_SYSTEM }, { role: 'user', content: user }],
+      Math.min(8000, forms.length * 220 + 400), { model, timeoutMs });
+    const entries = Array.isArray(out.entries) ? out.entries : [];
+    const byWord = new Map(entries.map((e) => [lexiconForm(String(e?.word || '')), e]));
+    let saved = 0;
+    const failed = [];
+    for (let i = 0; i < forms.length; i++) {
+      const f = forms[i];
+      // Sıra kaymasına karşı önce kelimeyle eşle; kelime alanı yoksa ve sayı tutuyorsa sıraya güven.
+      const e = byWord.get(f) || (entries.length === forms.length && !entries[i]?.word ? entries[i] : null);
+      const g = e ? parseGloss(e) : null;
+      if (!g) { failed.push(f); continue; }
+      await saveGloss(p, f, g, used, null, 0);
+      saved++;
+    }
+    return { saved, failed, meta };
+  };
+
+  /** sentences: aynı metinden sıralı, normalize cümleler (bağlam için) → { saved, failed, meta } */
+  const prefillSentences = async (sentences, { model, timeoutMs } = {}) => {
+    const p = await platform();
+    const user = sentences.map((t, i) => `[${i + 1}] ${t}`).join('\n');
+    const { out, model: used, meta } = await askAi(null, 'sentence_translation', [{ role: 'system', content: SENTENCE_SYSTEM }, { role: 'user', content: user }],
+      sentenceMaxTokens(user.length), { model, timeoutMs });
+    const tr = Array.isArray(out.translations) ? out.translations.map((x) => clean(x, 2000)) : [];
+    if (tr.length !== sentences.length) return { saved: 0, failed: sentences, meta: { ...meta, got: tr.length } };
+    let saved = 0;
+    const failed = [];
+    for (let i = 0; i < sentences.length; i++) {
+      if (!tr[i]) { failed.push(sentences[i]); continue; }
+      await rawQuery(
+        `INSERT INTO content.sentence_translation (sentence_translation_tenant_code, sentence_translation_organization_id, sentence_translation_hash, sentence_translation_source_text,
+                sentence_translation_text, sentence_translation_model, sentence_translation_created_by, sentence_translation_updated_by)
+         VALUES ($1,$2,$3,$4,$5,$6,NULL,NULL) ON CONFLICT (sentence_translation_tenant_code, sentence_translation_hash) DO NOTHING`,
+        [p.tenantCode, p.organizationId, sentenceHash(sentences[i]), sentences[i], tr[i], used]);
+      saved++;
+    }
+    return { saved, failed, meta };
+  };
+
+  return Object.freeze({ word, ensureItem, sentence, prefillWords, prefillSentences });
 };

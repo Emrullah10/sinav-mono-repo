@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import { parseMarkdownBlocks as parse, markdownRuns as runsOf } from '@sinav/domain';
 import TapText from '@features/lexicon/TapText';
 import styles from './Markdown.module.scss';
 
@@ -27,59 +28,6 @@ const inline = (text, keyPrefix = 'i') => {
   }
   if (last < text.length) out.push(text.slice(last));
   return out.map((x, i) => (typeof x === 'string' ? <Fragment key={`${keyPrefix}s${i}`}>{x}</Fragment> : x));
-};
-
-const parse = (src) => {
-  const lines = String(src || '').replace(/\r\n?/g, '\n').split('\n');
-  const blocks = [];
-  let i = 0;
-  while (i < lines.length) {
-    const line = lines[i];
-    if (!line.trim()) { i++; continue; }
-    let m;
-    if ((m = /^(#{1,4})\s+(.*)$/.exec(line))) { blocks.push({ type: 'h', level: m[1].length, text: m[2] }); i++; continue; }
-    if (/^(-{3,}|\*{3,})\s*$/.test(line)) { blocks.push({ type: 'hr' }); i++; continue; }
-    if (/^>\s?/.test(line)) {
-      const buf = [];
-      while (i < lines.length && /^>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/, ''));
-      blocks.push({ type: 'quote', text: buf.join(' ') });
-      continue;
-    }
-    if (/^\s*([-*])\s+/.test(line) || /^\s*\d+[.)]\s+/.test(line)) {
-      const ordered = /^\s*\d+[.)]\s+/.test(line);
-      const re = ordered ? /^\s*\d+[.)]\s+(.*)$/ : /^\s*[-*]\s+(.*)$/;
-      const items = [];
-      while (i < lines.length && re.test(lines[i])) items.push(re.exec(lines[i++])[1]);
-      blocks.push({ type: ordered ? 'ol' : 'ul', items });
-      continue;
-    }
-    const buf = [];
-    while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|>\s?|\s*[-*]\s+|\s*\d+[.)]\s+|-{3,}\s*$)/.test(lines[i])) buf.push(lines[i++]);
-    if (!buf.length) { buf.push(lines[i++]); }
-    blocks.push({ type: 'p', text: buf.join(' ') });
-  }
-  return blocks;
-};
-
-// Dokun-çevir için satırı düz parçalara ayırır (iç içe biçim tek düzeye iner): { text, bold?, italic?, code?, href? }.
-const runsOf = (text) => {
-  const out = [];
-  const re = /(\*\*[^*]+\*\*|\*[^*\s][^*]*\*|`[^`]+`|\[[^\]]+\]\([^)\s]+\))/g;
-  let last = 0;
-  let m;
-  while ((m = re.exec(text))) {
-    if (m.index > last) out.push({ text: text.slice(last, m.index) });
-    const tok = m[0];
-    if (tok.startsWith('**')) out.push({ text: tok.slice(2, -2).replace(/\*/g, ''), bold: true });
-    else if (tok.startsWith('`')) out.push({ text: tok.slice(1, -1), code: true });
-    else if (tok.startsWith('[')) {
-      const mm = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(tok);
-      out.push(mm ? { text: mm[1], href: mm[2] } : { text: tok });
-    } else out.push({ text: tok.slice(1, -1), italic: true });
-    last = m.index + tok.length;
-  }
-  if (last < text.length) out.push({ text: text.slice(last) });
-  return out;
 };
 
 /**

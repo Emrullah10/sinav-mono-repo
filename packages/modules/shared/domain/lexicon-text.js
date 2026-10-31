@@ -130,3 +130,64 @@ export const looksEnglish = (sentence) => {
 
 /** Cümle çevirisi isteğinde gönderilen sınırlar (sunucu da aynı sınırı uygular). */
 export const LEXICON_LIMITS = Object.freeze({ wordMax: 40, sentenceMax: 600, sentencesMax: 40, blockMax: 8000 });
+
+// ── Markdown (web Markdown bileşeninin ayrıştırıcısı) ──
+// Web ekranı bu blokları çizer; sunucu (dokun-çevir ön-çevirisi) aynı fonksiyonlarla TapText'in göreceği düz satırları üretir.
+// Cümle önbelleğinin anahtarı cümle metni olduğu için ikisi birebir aynı bölmeli — bu yüzden tek yerde durur.
+/** Blok listesi: { type: 'h'|'hr'|'quote'|'ul'|'ol'|'p', text?, items?, level? } */
+export const parseMarkdownBlocks = (src) => {
+  const lines = String(src || '').replace(/\r\n?/g, '\n').split('\n');
+  const blocks = [];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (!line.trim()) { i++; continue; }
+    let m;
+    if ((m = /^(#{1,4})\s+(.*)$/.exec(line))) { blocks.push({ type: 'h', level: m[1].length, text: m[2] }); i++; continue; }
+    if (/^(-{3,}|\*{3,})\s*$/.test(line)) { blocks.push({ type: 'hr' }); i++; continue; }
+    if (/^>\s?/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/, ''));
+      blocks.push({ type: 'quote', text: buf.join(' ') });
+      continue;
+    }
+    if (/^\s*([-*])\s+/.test(line) || /^\s*\d+[.)]\s+/.test(line)) {
+      const ordered = /^\s*\d+[.)]\s+/.test(line);
+      const re = ordered ? /^\s*\d+[.)]\s+(.*)$/ : /^\s*[-*]\s+(.*)$/;
+      const items = [];
+      while (i < lines.length && re.test(lines[i])) items.push(re.exec(lines[i++])[1]);
+      blocks.push({ type: ordered ? 'ol' : 'ul', items });
+      continue;
+    }
+    const buf = [];
+    while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|>\s?|\s*[-*]\s+|\s*\d+[.)]\s+|-{3,}\s*$)/.test(lines[i])) buf.push(lines[i++]);
+    if (!buf.length) { buf.push(lines[i++]); }
+    blocks.push({ type: 'p', text: buf.join(' ') });
+  }
+  return blocks;
+};
+
+// Dokun-çevir için satırı düz parçalara ayırır (iç içe biçim tek düzeye iner): { text, bold?, italic?, code?, href? }.
+export const markdownRuns = (text) => {
+  const out = [];
+  const re = /(\*\*[^*]+\*\*|\*[^*\s][^*]*\*|`[^`]+`|\[[^\]]+\]\([^)\s]+\))/g;
+  let last = 0;
+  let m;
+  while ((m = re.exec(text))) {
+    if (m.index > last) out.push({ text: text.slice(last, m.index) });
+    const tok = m[0];
+    if (tok.startsWith('**')) out.push({ text: tok.slice(2, -2).replace(/\*/g, ''), bold: true });
+    else if (tok.startsWith('`')) out.push({ text: tok.slice(1, -1), code: true });
+    else if (tok.startsWith('[')) {
+      const mm = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(tok);
+      out.push(mm ? { text: mm[1], href: mm[2] } : { text: tok });
+    } else out.push({ text: tok.slice(1, -1), italic: true });
+    last = m.index + tok.length;
+  }
+  if (last < text.length) out.push({ text: text.slice(last) });
+  return out;
+};
+
+/** Markdown kaynağının dokunulabilir düz satırları (TapText'e giden metin; biçim işaretleri atılmış). */
+export const markdownTapLines = (src) => parseMarkdownBlocks(src).flatMap((b) => (b.type === 'hr' ? [] : b.items || [b.text]))
+  .map((t) => markdownRuns(t).map((r) => r.text).join(''));

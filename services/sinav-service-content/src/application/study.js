@@ -10,7 +10,8 @@ const vocabDto = (it) => ({
   accessTier: it.accessTier, language: it.language,
 });
 
-const candidates = (w) => {
+/** Çekimli biçimden olası sözlük kökleri (vocabLookup sırayla dener; dokun-çevir ön-çevirisi de aynı kuralla süzer). */
+export const headwordCandidates = (w) => {
   const out = [w];
   const add = (x) => { if (x && x.length >= 2 && !out.includes(x)) out.push(x); };
   if (w.endsWith('ies')) add(`${w.slice(0, -3)}y`);
@@ -28,7 +29,7 @@ export const makeStudy = ({ rawQuery }) => {
   const vocabLookup = async ({ word, lang = 'en' }) => {
     const norm = normalizeHeadword(word);
     if (!norm || norm.length > 80) throw new DomainError('CONTENT_WORD_REQUIRED', 'word is required (max 80 characters)');
-    for (const cand of candidates(norm)) {
+    for (const cand of headwordCandidates(norm)) {
       const key = vocabKey(lang, cand);
       let hit = await cacheGetJson(key);
       if (hit === undefined) {
