@@ -12,6 +12,9 @@ export default [
   // Dokun-çevir ön-çevirisi: yayındaki içeriğin kelime/cümlelerini YALNIZ ücretsiz modelle (LEXICON_PREFILL_MODELS, ':free') önceden çevirir.
   // Env boşsa hiçbir şey yapmaz; günlük ücretsiz sınır dolunca ertesi güne kadar bekler (lexicon-prefill.js).
   { name: 'lexicon-prefill', schedule: '* * * * *', lockSeconds: 300, run: (c) => c.useCases.lexiconPrefill.tick() },
+  // Ön-çevirinin kontrolü: ücretsiz modelin kayıtlarını ucuz model (openrouter/auto, cost_tier low, düşünme kapalı) denetler;
+  // günlük tavan LEXICON_REVIEW_DAILY_USD (varsayılan 0.5).
+  { name: 'lexicon-review', schedule: '* * * * *', lockSeconds: 300, run: (c) => c.useCases.lexiconPrefill.reviewTick() },
   // Gece: learning.attempt → content.item_stat (CMS-01 / CMS-09).
   { name: 'item-stats', schedule: '30 3 * * *', lockSeconds: 900, run: (c) => c.useCases.misc.refreshItemStats() },
 ];

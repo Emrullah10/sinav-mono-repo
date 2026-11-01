@@ -7,16 +7,22 @@ import { headwordCandidates } from './study.js';
 // cümlelerini arka planda, gruplar halinde çevirip dokun-çevirin önbelleğine yazar → öğrenci dokununca AI beklemeden açılır.
 // Yeni yayın katalog sürümünü artırır; iş bunu görüp yeniden tarar (yeni içerik kendiliğinden çevrilir).
 //
-// YALNIZ ÜCRETSİZ MODEL: LEXICON_PREFILL_MODELS (virgülle; ör. google/gemma-4-31b-it:free). Boşsa iş kapalı. ':free' ile bitmeyen
+// YALNIZ ÜCRETSİZ MODEL: LEXICON_PREFILL_MODELS (virgülle; ör. nvidia/nemotron-3.5-super-vl:free). Boşsa iş kapalı. ':free' ile bitmeyen
 // bir ad varsa iş hiç çalışmaz; bir cevap ücretli gelirse (costMicros > 0) iş süreç boyunca kendini kapatır.
-// Ücretsiz modellerin günlük istek sınırı var (OpenRouter, 00:00 UTC'de sıfırlanır): 429 üst üste gelirse iş ertesi güne kadar bekler.
+// Ücretsiz modeller sık doluyor (429): önce listedeki diğer model denenir; hepsi doluysa 15 dk, tur tur doluysa ertesi gün 00:05 UTC.
+//
+// KONTROL (iş 'lexicon-review'): ücretsiz modelin her kaydı ucuz bir modelle (LEXICON_REVIEW_MODEL, varsayılan openrouter/auto →
+// tutor'da cost_tier low; düşünme kapalı) denetlenir, yalnız hatalılar düzeltilir. Günlük harcama tavanı LEXICON_REVIEW_DAILY_USD
+// (varsayılan 0.5; 0 = kontrol kapalı), bugünkü harcama her turda tutor.ai_usage'dan okunur (yeniden başlatma tavanı sıfırlamaz).
 //
 // Eşleşme kuralı: önbellek anahtarı cümle metni (sentenceHash) ve kelime biçimi (lexiconForm). Metin, web'in TapText'e verdiği
 // biçimde üretilir: Markdown ile çizilen alanlar markdownTapLines (web Markdown bileşeniyle aynı ayrıştırıcı), şıklar düz metin.
 
-const WORDS_PER_BATCH = 15;
-const SENTENCE_BATCH_CHARS = 2500;
-const SENTENCE_BATCH_MAX = 30;
+const WORDS_PER_BATCH = 25;
+const SENTENCE_BATCH_CHARS = 4000;
+const SENTENCE_BATCH_MAX = 40;
+const REVIEW_WORDS_PER_BATCH = 25;
+const REVIEW_SENTENCES_PER_BATCH = 40;
 const TICK_BUDGET_MS = 45000; // bu süreden sonra yeni grup başlatılmaz (iş kilidi 300 sn)
 const RESCAN_MS = 6 * 3600 * 1000;
 const AI_TIMEOUT_MS = 100000;
@@ -31,7 +37,14 @@ const nextUtcMidnight = (ms) => {
 
 export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon }) => {
   const st = { ver: null, scannedAt: 0, words: [], sentences: [], tries: new Map(), pausedUntil: 0, rate429: 0, errors: 0, modelIdx: 0, disabled: null, warned: null };
+  const rv = { pausedUntil: 0, errors: 0, reviewed: 0, fixed: 0, spentToday: 0 };
   const models = () => splitList(process.env.LEXICON_PREFILL_MODELS);
+  const reviewModel = () => process.env.LEXICON_REVIEW_MODEL || 'openrouter/auto';
+  const reviewCapMicros = () => {
+    const v = process.env.LEXICON_REVIEW_DAILY_USD;
+    const n = v === undefined || v === '' ? 0.5 : Number(v);
+    return Number.isFinite(n) && n > 0 ? Math.round(n * 1e6) : 0;
+  };
 
   // Yayındaki İngilizce metinler; sıra: madde, sonra paragraf → kök → şıklar (cümle grupları bağlamı korusun).
   const loadTexts = async () => (await rawQuery(
@@ -103,14 +116,17 @@ export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon
     st[key].push(...back);
   };
 
-  const onError = (e, model, now) => {
-    const upstream = e?.details?.upstream;
+  const isRateLimit = (e) => e?.details?.upstream === 'LLM_RATE_LIMITED' || e?.details?.upstream === 429;
+
+  // true: bu turu bitir; false: hemen diğer modelle devam.
+  const onError = (e, model, now, modelCount) => {
     st.modelIdx++; // sonraki denemede listedeki diğer model
-    if (upstream === 'LLM_RATE_LIMITED' || upstream === 429) {
+    if (isRateLimit(e)) {
       st.rate429++;
-      st.pausedUntil = st.rate429 >= 2 ? nextUtcMidnight(now) : now + 15 * 60 * 1000;
-      console.warn(`[lexicon-prefill] ${model}: istek sınırı (429), ${new Date(st.pausedUntil).toISOString()} tarihine kadar bekliyor`);
-      return;
+      if (st.rate429 < modelCount) return false; // başka model boş olabilir
+      st.pausedUntil = st.rate429 >= 2 * modelCount ? nextUtcMidnight(now) : now + 15 * 60 * 1000;
+      console.warn(`[lexicon-prefill] tüm ücretsiz modeller dolu (429), ${new Date(st.pausedUntil).toISOString()} tarihine kadar bekliyor`);
+      return true;
     }
     st.errors++;
     console.warn(`[lexicon-prefill] ${model}: ${e?.code || ''} ${String(e?.message || e).slice(0, 200)}`);
@@ -118,6 +134,7 @@ export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon
       st.pausedUntil = now + 30 * 60 * 1000;
       st.errors = 0;
     }
+    return true;
   };
 
   /** Bir iş turu: süre bütçesi bitene, kuyruk boşalana ya da hata/sınıra kadar gruplar halinde çevirir. */
@@ -156,10 +173,14 @@ export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon
           ? await lexicon.prefillWords(batch, { model, timeoutMs: AI_TIMEOUT_MS })
           : await lexicon.prefillSentences(batch.map((s) => s.text), { model, timeoutMs: AI_TIMEOUT_MS });
       } catch (e) {
-        if (isWords) requeue('words', batch, (f) => f);
+        if (isRateLimit(e)) {
+          // Sınır grubun suçu değil: sayaç artmadan başa geri (sonraki model/tur aynı grubu dener).
+          if (isWords) st.words.unshift(...batch);
+          else st.sentences.unshift(...batch);
+        } else if (isWords) requeue('words', batch, (f) => f);
         else requeue('sentences', batch, (s) => s.hash);
-        onError(e, model, nowFn().getTime());
-        break;
+        if (onError(e, model, nowFn().getTime(), list.length)) break;
+        continue;
       }
       if (r.meta?.costMicros > 0) {
         st.disabled = 'paid-response';
@@ -183,8 +204,62 @@ export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon
     return { changed: words + sentences };
   };
 
-  /** Durum (izleme için): kuyrukta kalanlar ve bekleme. */
-  const status = () => ({ models: models(), remainingWords: st.words.length, remainingSentences: st.sentences.length, pausedUntil: st.pausedUntil ? new Date(st.pausedUntil).toISOString() : null, disabled: st.disabled });
+  // Bugün (UTC) kontrol için harcanan (mikro-$); tavan bunun üstünden işler.
+  const spentToday = async () => Number((await rawQuery(
+    `SELECT COALESCE(SUM(ai_usage_cost_micros), 0) AS s FROM tutor.ai_usage
+      WHERE ai_usage_feature = 'lexicon_review' AND ai_usage_created_at >= (date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC')`)).rows[0]?.s) || 0;
 
-  return Object.freeze({ tick, status });
+  /** Kontrol turu: ücretsiz modelin denetlenmemiş kayıtlarını ucuz modelle gruplar halinde denetler. */
+  const reviewTick = async () => {
+    const cap = reviewCapMicros();
+    if (!models().length || !cap) return { skipped: 'off' };
+    const now = nowFn().getTime();
+    if (now < rv.pausedUntil) return { skipped: 'paused' };
+    const model = reviewModel();
+    const started = Date.now();
+    let reviewed = 0;
+    let fixed = 0;
+    let kind = 'words';
+    while (Date.now() - started < TICK_BUDGET_MS) {
+      rv.spentToday = await spentToday();
+      if (rv.spentToday >= cap) {
+        rv.pausedUntil = nextUtcMidnight(nowFn().getTime());
+        console.log(`[lexicon-review] günlük kontrol tavanı doldu ($${(rv.spentToday / 1e6).toFixed(4)} / $${(cap / 1e6).toFixed(2)}); ertesi gün devam`);
+        break;
+      }
+      let r;
+      try {
+        r = kind === 'words'
+          ? await lexicon.reviewWords({ limit: REVIEW_WORDS_PER_BATCH, model, timeoutMs: AI_TIMEOUT_MS })
+          : await lexicon.reviewSentences({ limit: REVIEW_SENTENCES_PER_BATCH, model, timeoutMs: AI_TIMEOUT_MS });
+      } catch (e) {
+        rv.errors++;
+        console.warn(`[lexicon-review] ${model}: ${e?.code || ''} ${String(e?.message || e).slice(0, 200)}`);
+        if (isRateLimit(e) || rv.errors >= 3) {
+          rv.pausedUntil = nowFn().getTime() + (isRateLimit(e) ? 15 : 30) * 60 * 1000;
+          rv.errors = 0;
+        }
+        break;
+      }
+      rv.errors = 0;
+      if (!r.reviewed) {
+        if (kind === 'words') { kind = 'sentences'; continue; }
+        break; // denetlenecek kayıt kalmadı
+      }
+      reviewed += r.reviewed;
+      fixed += r.fixed;
+    }
+    rv.reviewed += reviewed;
+    rv.fixed += fixed;
+    if (reviewed) console.log(`[lexicon-review] ${reviewed} kayıt denetlendi, ${fixed} düzeltildi (${model}); bugün $${(rv.spentToday / 1e6).toFixed(4)}`);
+    return { changed: fixed };
+  };
+
+  /** Durum (izleme için): kuyrukta kalanlar ve bekleme. */
+  const status = () => ({
+    models: models(), remainingWords: st.words.length, remainingSentences: st.sentences.length, pausedUntil: st.pausedUntil ? new Date(st.pausedUntil).toISOString() : null, disabled: st.disabled,
+    review: { model: reviewModel(), capUsd: reviewCapMicros() / 1e6, spentTodayUsd: rv.spentToday / 1e6, reviewed: rv.reviewed, fixed: rv.fixed, pausedUntil: rv.pausedUntil ? new Date(rv.pausedUntil).toISOString() : null },
+  });
+
+  return Object.freeze({ tick, reviewTick, status });
 };

@@ -236,6 +236,7 @@ const fakeQuestion = (extra = {}) => {
 };
 // Dokun-çevir (`[gen:lex:word]` / `[gen:lex:words]` / `[gen:lex:sentence]`): kelime için sözlük kaydı, cümleler için sırayla çeviri.
 const fakeLexicon = (kind, userMsg) => {
+  if (kind.startsWith('review')) return { fixes: [] };
   if (kind === 'words') {
     const list = [...userMsg.matchAll(/^\[\d+\] (.+)$/gm)].map((m) => m[1].trim());
     return { entries: list.map((w) => ({ word: w, ...fakeLexicon('word', `<kelime>${w}</kelime>`) })) };

@@ -1565,7 +1565,9 @@ INSERT INTO enums.ai_feature (ai_feature_value, ai_feature_label, ai_feature_sor
     ('translation_eval', 'Translation eval', 2),
     ('content_draft', 'Content draft', 3),
     ('word_gloss', 'Word gloss', 4),
-    ('sentence_translation', 'Sentence translation', 5);
+    ('sentence_translation', 'Sentence translation', 5),
+    ('lexicon_prefill', 'Lexicon prefill', 6),
+    ('lexicon_review', 'Lexicon review', 7);
 
 -- -----------------------------------------------------
 -- Table: enums.ai_job_status

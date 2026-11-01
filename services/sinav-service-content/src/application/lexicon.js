@@ -34,6 +34,17 @@ Each entry is this object plus a "word" field holding the word exactly as given:
 ${WORD_SHAPE}
 ${WORD_RULES}`;
 
+// Kontrol (lexicon-review): ücretsiz modelin kayıtlarını ucuz model denetler; YALNIZ düzeltilmesi gerekenleri döndürür (çıktı az → ucuz).
+const WORDS_REVIEW_SYSTEM = `[gen:lex:review-words] You are a strict reviewer of an English→Turkish learner's dictionary for Turkish students preparing for YDS/YÖKDİL (B1–C1).
+You get numbered JSON entries written by another model. Check each one: lemma, partOfSpeech, the Turkish meanings (correct, natural, most common sense first, real and correctly spelled Turkish words — no invented words), formNote and the example with its Turkish translation.
+Return ONLY JSON: {"fixes":[...]} containing ONLY the entries that need any change; if every entry is correct return {"fixes":[]}.
+A fix is the full corrected entry plus "n" (its number): {"n":1, ...this object}:
+${WORD_SHAPE}
+${WORD_RULES}`;
+const SENTENCES_REVIEW_SYSTEM = `[gen:lex:review-sentences] You review Turkish translations of English sentences from exam-preparation texts, made by another model for Turkish learners.
+For each numbered pair check that the Turkish is accurate (same meaning, nothing missing or added), natural and correctly spelled. Blank and placeholder markers (----, ______, {{1}}, [[II]], (A)…) must stay exactly as written; never fill a blank.
+Return ONLY JSON: {"fixes":[{"n":1,"tr":"corrected Turkish"}]} containing ONLY the pairs that need a change; if all are fine return {"fixes":[]}.`;
+
 const SENTENCE_SYSTEM = `[gen:lex:sentence] You translate English sentences from exam-preparation texts into natural, accurate Turkish for Turkish learners.
 Translate every numbered sentence separately, in order; use the neighbouring sentences only as context. Keep blank and placeholder markers exactly as written (----, ______, {{1}}, [[II]], (A)…) and NEVER guess or fill in a missing word. No explanations.
 Return ONLY JSON: {"translations":["Turkish of [1]","Turkish of [2]", ...]} with exactly one string per numbered sentence.`;
@@ -156,16 +167,16 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
   };
 
   /** AI açıklamasını önbelleğe yazar (çakışmada ilk kayıt kalır). lookups: dokunuştan 1, ön-çeviriden 0. */
+  // Kök küratörlü sözlükte varsa (went → go) kayıt ona bağlanır; sonraki dokunuşlar doğrudan küratörlü kaydı açar.
+  const curatedItemId = async (form, g) => {
+    if (!g.isWord || !g.lemma || g.lemma === form) return null;
+    const hit = await study.vocabLookup({ word: g.lemma, lang: 'en' });
+    if (!hit.found) return null;
+    return (await rawQuery(`SELECT item_id AS id FROM content.item WHERE item_code = $1`, [hit.primary.itemCode])).rows[0]?.id || null;
+  };
+
   const saveGloss = async (p, form, g, model, userId, lookups = 1) => {
-    // Kök küratörlü sözlükte varsa (went → go) kayıt ona bağlanır; sonraki dokunuşlar doğrudan küratörlü kaydı açar.
-    let curated = null;
-    if (g.isWord && g.lemma && g.lemma !== form) {
-      const hit = await study.vocabLookup({ word: g.lemma, lang: 'en' });
-      if (hit.found) curated = hit.primary;
-    }
-    const vocabItemId = curated
-      ? (await rawQuery(`SELECT item_id AS id FROM content.item WHERE item_code = $1`, [curated.itemCode])).rows[0]?.id || null
-      : null;
+    const vocabItemId = await curatedItemId(form, g);
     await rawQuery(
       `INSERT INTO content.word_gloss (word_gloss_tenant_code, word_gloss_organization_id, word_gloss_language, word_gloss_form, word_gloss_lemma, word_gloss_part_of_speech,
               word_gloss_pronunciation_ipa, word_gloss_form_note, word_gloss_meanings, word_gloss_examples, word_gloss_is_word, word_gloss_vocab_item_id, word_gloss_model,
@@ -328,7 +339,7 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
   const prefillWords = async (forms, { model, timeoutMs } = {}) => {
     const p = await platform();
     const user = forms.map((f, i) => `[${i + 1}] ${f}`).join('\n');
-    const { out, model: used, meta } = await askAi(null, 'word_gloss', [{ role: 'system', content: WORDS_SYSTEM }, { role: 'user', content: user }],
+    const { out, model: used, meta } = await askAi(null, 'lexicon_prefill', [{ role: 'system', content: WORDS_SYSTEM }, { role: 'user', content: user }],
       Math.min(8000, forms.length * 220 + 400), { model, timeoutMs });
     const entries = Array.isArray(out.entries) ? out.entries : [];
     const byWord = new Map(entries.map((e) => [lexiconForm(String(e?.word || '')), e]));
@@ -350,7 +361,7 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
   const prefillSentences = async (sentences, { model, timeoutMs } = {}) => {
     const p = await platform();
     const user = sentences.map((t, i) => `[${i + 1}] ${t}`).join('\n');
-    const { out, model: used, meta } = await askAi(null, 'sentence_translation', [{ role: 'system', content: SENTENCE_SYSTEM }, { role: 'user', content: user }],
+    const { out, model: used, meta } = await askAi(null, 'lexicon_prefill', [{ role: 'system', content: SENTENCE_SYSTEM }, { role: 'user', content: user }],
       sentenceMaxTokens(user.length), { model, timeoutMs });
     const tr = Array.isArray(out.translations) ? out.translations.map((x) => clean(x, 2000)) : [];
     if (tr.length !== sentences.length) return { saved: 0, failed: sentences, meta: { ...meta, got: tr.length } };
@@ -368,5 +379,77 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     return { saved, failed, meta };
   };
 
-  return Object.freeze({ word, ensureItem, sentence, prefillWords, prefillSentences });
+  // ── kontrol (lexicon-review işi) ──
+  // Yalnız ücretsiz modelden gelmiş ve henüz denetlenmemiş kayıtlar (model ':free' ile biter, reviewed_at boş). Cevap bozuksa hiçbiri
+  // işaretlenmez (sonraki turda yeniden denenir); geçerli cevapta düzeltmeler uygulanır, gruptaki tüm kayıtlar denetlendi sayılır.
+  const fixesOf = (out, n) => {
+    if (!Array.isArray(out?.fixes)) return null;
+    return out.fixes.filter((f) => Number.isInteger(Number(f?.n)) && Number(f.n) >= 1 && Number(f.n) <= n);
+  };
+
+  /** → { reviewed, fixed, meta } (reviewed 0: denetlenecek kayıt yok) */
+  const reviewWords = async ({ limit = 25, model, timeoutMs } = {}) => {
+    const p = await platform();
+    const { rows } = await rawQuery(
+      `SELECT ${GLOSS_SEL} FROM content.word_gloss g LEFT JOIN content.item i ON i.item_id = g.word_gloss_vocab_item_id
+        WHERE g.word_gloss_tenant_code = $1 AND g.word_gloss_language = 'en' AND g.word_gloss_model LIKE '%:free' AND g.word_gloss_reviewed_at IS NULL
+        ORDER BY g.word_gloss_id LIMIT $2`, [p.tenantCode, limit]);
+    if (!rows.length) return { reviewed: 0, fixed: 0, meta: null };
+    const user = rows.map((r, i) => `[${i + 1}] ${JSON.stringify({ word: r.form, isWord: r.isWord, lemma: r.lemma, partOfSpeech: r.pos, ipa: r.ipa, formNote: r.formNote, meanings: r.meanings, examples: r.examples })}`).join('\n');
+    const { out, model: used, meta } = await askAi(null, 'lexicon_review', [{ role: 'system', content: WORDS_REVIEW_SYSTEM }, { role: 'user', content: user }],
+      Math.min(8000, rows.length * 220 + 400), { model, timeoutMs });
+    const fixes = fixesOf(out, rows.length);
+    if (!fixes) throw lexFail('lexicon_review', 'Review returned no fixes array', meta);
+    const now = nowFn();
+    let fixed = 0;
+    for (const f of fixes) {
+      const row = rows[Number(f.n) - 1];
+      const g = parseGloss(f);
+      if (!g) continue;
+      await rawQuery(
+        `UPDATE content.word_gloss SET word_gloss_lemma = $2, word_gloss_part_of_speech = $3, word_gloss_pronunciation_ipa = $4, word_gloss_form_note = $5,
+                word_gloss_meanings = $6, word_gloss_examples = $7, word_gloss_is_word = $8, word_gloss_vocab_item_id = COALESCE($9, word_gloss_vocab_item_id)
+          WHERE word_gloss_id = $1`,
+        [row.id, g.lemma || row.form, g.pos, g.ipa, g.formNote, JSON.stringify(g.meanings), JSON.stringify(g.examples), g.isWord, await curatedItemId(row.form, g)]);
+      fixed++;
+    }
+    await rawQuery(`UPDATE content.word_gloss SET word_gloss_reviewed_at = $2, word_gloss_review_model = $3 WHERE word_gloss_id = ANY($1::bigint[])`,
+      [rows.map((r) => r.id), now, used]);
+    return { reviewed: rows.length, fixed, meta };
+  };
+
+  /** → { reviewed, fixed, meta } */
+  const reviewSentences = async ({ limit = 40, maxChars = 6000, model, timeoutMs } = {}) => {
+    const p = await platform();
+    const { rows: all } = await rawQuery(
+      `SELECT sentence_translation_id AS id, sentence_translation_source_text AS en, sentence_translation_text AS tr FROM content.sentence_translation
+        WHERE sentence_translation_tenant_code = $1 AND sentence_translation_model LIKE '%:free' AND sentence_translation_reviewed_at IS NULL
+        ORDER BY sentence_translation_id LIMIT $2`, [p.tenantCode, limit]);
+    const rows = [];
+    let chars = 0;
+    for (const r of all) {
+      if (rows.length && chars + r.en.length + r.tr.length > maxChars) break;
+      rows.push(r);
+      chars += r.en.length + r.tr.length;
+    }
+    if (!rows.length) return { reviewed: 0, fixed: 0, meta: null };
+    const user = rows.map((r, i) => `[${i + 1}] EN: ${r.en}\n    TR: ${r.tr}`).join('\n');
+    const { out, model: used, meta } = await askAi(null, 'lexicon_review', [{ role: 'system', content: SENTENCES_REVIEW_SYSTEM }, { role: 'user', content: user }],
+      sentenceMaxTokens(chars), { model, timeoutMs });
+    const fixes = fixesOf(out, rows.length);
+    if (!fixes) throw lexFail('lexicon_review', 'Review returned no fixes array', meta);
+    const now = nowFn();
+    let fixed = 0;
+    for (const f of fixes) {
+      const text = clean(f.tr, 2000);
+      if (!text) continue;
+      await rawQuery(`UPDATE content.sentence_translation SET sentence_translation_text = $2 WHERE sentence_translation_id = $1`, [rows[Number(f.n) - 1].id, text]);
+      fixed++;
+    }
+    await rawQuery(`UPDATE content.sentence_translation SET sentence_translation_reviewed_at = $2, sentence_translation_review_model = $3 WHERE sentence_translation_id = ANY($1::bigint[])`,
+      [rows.map((r) => r.id), now, used]);
+    return { reviewed: rows.length, fixed, meta };
+  };
+
+  return Object.freeze({ word, ensureItem, sentence, prefillWords, prefillSentences, reviewWords, reviewSentences });
 };
