@@ -14,7 +14,6 @@ import ErrorState from '@components/ErrorState/ErrorState';
 import Skeleton from '@components/Skeleton/Skeleton';
 import MasteryBadge from '../components/MasteryBadge';
 import usePracticeStart from '../hooks/usePracticeStart';
-import ContinueCard from '@features/reading/components/ContinueCard';
 import styles from './Hub.module.scss';
 
 // STUDY-01: GET /study/overview (+ yarım kalan oturumlar).
@@ -37,7 +36,6 @@ export default function Hub() {
       {open.length > 0 && (
         <Banner tone="accent" title={t('study.hub.openSessions')} action={<Button size="sm" onClick={() => nav(path(Routes.session, { code: open[0].code }))}>{t('study.hub.continue')}</Button>}>{t('study.hub.openSessionsBody')}</Banner>
       )}
-      <ContinueCard />
       <section className="stack-sm" aria-labelledby="due-h">
         <h2 id="due-h" className="t-heading-2">{t('study.hub.due')}</h2>
         <div className={styles.due}>
