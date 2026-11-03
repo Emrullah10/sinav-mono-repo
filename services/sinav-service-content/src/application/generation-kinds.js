@@ -13,7 +13,8 @@ export const QUESTIONS_PER_PASSAGE = { reading: 4, cloze: 5, paragraph: 1 };
 export const MAX_COUNT = { question: 60, note: 10, passage: 10 };
 /** İstek başına üretilen birim sayısı (paragraf: 3 kısa metin; diğerleri tek). */
 export const unitsPerRequest = (p) => (p.kind === 'question' ? 5 : p.kind === 'passage' && p.passageKind === 'paragraph' ? 3 : 1);
-export const maxTokensFor = (p) => (p.kind === 'note' ? 8000 : p.kind === 'passage' ? 12000 : 6000);
+// Soru: YDS uzunluğundaki 5 soru (açıklama + 4 ipucu, Türkçe) 6000'e sığmıyordu.
+export const maxTokensFor = (p) => (p.kind === 'note' ? 8000 : p.kind === 'passage' ? 12000 : 9000);
 
 const nz = (s) => typeof s === 'string' && s.trim().length > 0;
 const words = (s) => String(s || '').trim().split(/\s+/).filter(Boolean).length;
@@ -81,6 +82,84 @@ You solve English multiple-choice questions. Return ONLY a JSON object {"answers
 
 // ── doğrulama ────────────────────────────────────────────────────────────
 const optionList = (q) => (Array.isArray(q.options) ? q.options : Object.entries(q.options || {}).map(([label, text]) => ({ label, text })));
+
+// ── YDS stil şartnamesi (tek cümlelik soru tipleri) ─────────────────────────────
+// Bantlar ÖSYM'nin herkese açık YDS İngilizce kağıtlarından (2023–2026, %10 yayımlanan kısım) ÖLÇÜLEN uzunluklardan
+// türetildi; soru metni saklanmadı, yalnız sayılar ve genel kurallar. Kök: boşluk işareti hariç kelime; şık: ortalama kelime.
+// Ölçülen medyanlar (YDS / eski bankamız): kelime 27/15, dil bilgisi 32/13, cümle tamamlama 20/10 (şık 17/6.6),
+// çeviri 28/14 (şık 37/9.8), yakın anlam 31/10 (şık 33/9.6), diyalog 90/13 (şık 21/9.6).
+// Bandın dışındaki üretim taslak olarak kaydedilmez (styleIssues). Metne bağlı tipler (okuma, cloze, paragraf) ayrıca ele alınacak.
+export const YDS_STYLE = {
+  vocabulary: {
+    stem: [18, 50], blanks: [1, 1], options: [1, 3],
+    guide: 'One long academic sentence (often with a relative or participle clause) about science, health, history, economics or society, with exactly one blank. '
+      + 'All five options are single words (or one phrasal verb) of the SAME part of speech, form and register; at least three of them must fit the blank grammatically, '
+      + 'so only the meaning in context decides. No giveaway cues (article/number mismatch, a word that only collocates with one option).',
+  },
+  grammar: {
+    // Şık bandı geniş: iki boşluklu modal perfect şıkları ("could not have been used / may have been used") ~9 kelime; kağıtta ölçülen n=3.
+    stem: [20, 50], blanks: [1, 2], options: [1, 10],
+    guide: 'One long, complex academic sentence (subordinate clauses, real-world facts). Test tense/aspect sequence, modal perfects, passive, conjunctions, prepositions, '
+      + 'relative pronouns, quantifiers, comparatives or inversion. In about half of the questions use TWO blanks and write every option as "x / y" (one word or short phrase per blank). '
+      + 'Every option must be a grammatical candidate for the slot; the answer must depend on the whole sentence (time reference, logic, agreement across clauses), '
+      + 'never on a single adjacent cue such as "by" or "next year".',
+  },
+  sentence_completion: {
+    stem: [12, 40], blanks: [1, 1], options: [10, 28],
+    guide: 'The stem is one clause or sentence with ______ at its start or end. Each option is a full clause of 10-28 words that starts with or contains a connector or relative structure. '
+      + 'All five options must be grammatically possible continuations on the same topic; only one is logically coherent with the stem (correct connector meaning and content).',
+  },
+  translation: {
+    stem: [18, 45], blanks: [0, 0], options: [18, 50],
+    guide: 'Alternate direction across the batch: an English academic sentence with five Turkish translations, or a Turkish sentence with five English translations. '
+      + 'All options use the same vocabulary and are fluent; distractors change the logical relation (cause, contrast, condition, purpose), tense, subject or scope. '
+      + 'The stem language must differ from the options language.',
+  },
+  restatement: {
+    stem: [20, 45], blanks: [0, 0], options: [20, 45],
+    guide: 'The stem is one long academic sentence. Exactly one option keeps its full meaning with different structure and vocabulary; the others reuse its words but change cause-effect, '
+      + 'time order, degree, certainty, negation or who did what.',
+  },
+  dialogue: {
+    stem: [55, 130], blanks: [1, 1], options: [12, 30],
+    guide: 'A dialogue of 4-6 turns between two people with first names, each turn on its own line as "Name: text"; exactly one turn is ______. '
+      + 'Options are 12-30 word replies; all are on topic and natural, but only one fits both the previous and the following turn.',
+  },
+};
+export const DIFFICULTY_SCALE = 'Difficulty scale (YDS-calibrated): 1 = below exam level, 2 = easier exam item, 3 = typical YDS item, 4 = harder YDS item (less frequent vocabulary, subtler logic, denser sentence), 5 = among the hardest YDS items.';
+
+const BLANK_RE = /_{3,}|-{4,}/g;
+const stemWords = (s) => words(String(s || '').replace(BLANK_RE, ' '));
+const blanksIn = (s) => (String(s || '').match(BLANK_RE) || []).length;
+
+/** İstemde tipin şartname bölümü (tip şartnamede yoksa boş). */
+export const styleSpecText = (typeKey) => {
+  const sp = YDS_STYLE[typeKey];
+  if (!sp) return '';
+  const blanks = sp.blanks[1] === 0 ? 'no blank' : sp.blanks[0] === sp.blanks[1] ? `exactly ${sp.blanks[0]} blank written as ______` : `${sp.blanks[0]}-${sp.blanks[1]} blanks, each written as ______`;
+  return `YDS style for this question type (measured from real exam papers; drafts outside these bands are rejected automatically):
+- Stem: ${sp.stem[0]}-${sp.stem[1]} words (not counting the blank), ${blanks}.
+- Options: on average ${sp.options[0]}-${sp.options[1]} words each.
+- ${sp.guide}`;
+};
+
+/** Şartname denetimi: bandın dışındaki ölçüler (boş dizi = uygun). */
+export const styleIssues = (q, typeKey) => {
+  const sp = YDS_STYLE[typeKey];
+  if (!sp || !q) return [];
+  const e = [];
+  const sw = stemWords(q.stem);
+  if (sw < sp.stem[0] || sw > sp.stem[1]) e.push(`kök ${sw} kelime (YDS bandı ${sp.stem[0]}-${sp.stem[1]})`);
+  const b = blanksIn(q.stem);
+  if (b < sp.blanks[0] || b > sp.blanks[1]) e.push(`boşluk ${b} (beklenen ${sp.blanks[0]}-${sp.blanks[1]})`);
+  const opts = optionList(q);
+  const ow = opts.length ? opts.reduce((n, o) => n + words(String(o.text || '').replace(/\s\/\s/g, ' ')), 0) / opts.length : 0; // "x / y" ayıracı kelime sayılmaz
+  if (ow < sp.options[0] || ow > sp.options[1]) e.push(`şık ort. ${ow.toFixed(1)} kelime (YDS bandı ${sp.options[0]}-${sp.options[1]})`);
+  if (typeKey === 'grammar' && b === 2 && !opts.every((o) => /\s\/\s/.test(String(o.text)))) e.push('iki boşluklu soruda her şık "x / y" olmalı');
+  if (typeKey === 'dialogue' && (String(q.stem || '').match(/^[^\n:]{1,30}:/gm) || []).length < 4) e.push('diyalog en az 4 konuşma olmalı');
+  return e;
+};
+
 
 export const checkQuestion = (q, { labels = LABELS, reading = false, cloze = false } = {}) => {
   const e = [];

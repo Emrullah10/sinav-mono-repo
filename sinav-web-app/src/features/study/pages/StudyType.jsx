@@ -31,7 +31,7 @@ export default function StudyType() {
       <PageHeader
         back={<IconButton label={t('common.back')} onClick={() => nav(Routes.study)}><ArrowLeft size={20} /></IconButton>}
         eyebrow={t('study.type.title')} title={d.type.name} subtitle={d.type.description}
-        actions={<Button loading={start.isPending} onClick={() => start.mutate({ questionTypeKeys: [type], count: 10 })}>{t('study.type.practice')}</Button>}
+        actions={<Button variant={d.topicPractice ? 'secondary' : 'primary'} loading={start.isPending && !start.variables?.skillKeys} onClick={() => start.mutate({ questionTypeKeys: [type], count: 10 })}>{t(d.topicPractice ? 'study.type.mixed' : 'study.type.practice')}</Button>}
       />
       <Card>
         <div className="stack-sm">
@@ -55,6 +55,33 @@ export default function StudyType() {
           </div>
         </Card>
       )}
+      {d.topicPractice ? (
+        <section className="stack-sm" aria-labelledby="topics-h">
+          <h2 id="topics-h" className="t-heading-2">{t('study.type.topics')}</h2>
+          <p className="t-body-s muted">{t('study.type.topicsHint')}</p>
+          {d.skills.map((s) => (
+            <Card key={s.key}>
+              <div className="stack-sm">
+                <div className="row" style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                  <h3 className="t-title">{s.name}</h3>
+                  <span className="t-caption muted">{s.availableQuestions ? t('study.type.topicQuestions', { n: s.availableQuestions }) : t('study.type.topicEmpty')}</span>
+                </div>
+                <MasteryBadge level={s.level} mastery={s.mastery} change7d={s.change7d} label={s.name} />
+                <div className="row" style={{ flexWrap: 'wrap' }}>
+                  <Button size="sm" disabled={!s.availableQuestions} loading={start.isPending && start.variables?.skillKeys?.[0] === s.key}
+                    onClick={() => start.mutate({ questionTypeKeys: [type], skillKeys: [s.key], count: 10 })}>{t('study.type.solveTopic')}</Button>
+                  {s.note && (
+                    <Button size="sm" variant="tertiary" onClick={() => nav(path(Routes.note, { id: s.note.itemCode }))}>
+                      {s.note.locked ? t('study.type.topicNoteLocked') : t('study.type.topicNote')}
+                    </Button>
+                  )}
+                  {s.note?.progress && <Chip tone="success" size="sm">{t(`study.type.${s.note.progress === 'understood' ? 'noteUnderstood' : 'noteRead'}`)}</Chip>}
+                </div>
+              </div>
+            </Card>
+          ))}
+        </section>
+      ) : (
       <section className="stack-sm">
         <h2 className="t-heading-2">{t('study.type.skills')}</h2>
         {d.skills.length === 0 ? <p className="muted">{t('study.type.noSkills')}</p> : d.skills.map((s) => (
@@ -65,6 +92,7 @@ export default function StudyType() {
           </Card>
         ))}
       </section>
+      )}
     </div>
   );
 }

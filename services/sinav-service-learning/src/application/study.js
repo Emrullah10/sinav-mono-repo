@@ -13,6 +13,10 @@ import {
 import { loadSession } from './lib/attempts.js';
 import { codeParam, intParam, round2, clientRefParam } from './lib/util.js';
 
+// Konudan çalışılan tipler: tek cümlelik, birden çok konuyu bir arada ölçen tipler. Çalış kartında önce konu seçilir
+// (karışık çözüm ikinci düğme). Metne bağlı tipler (cloze, okuma) ve tek konulu tipler karışık kalır.
+export const TOPIC_PRACTICE_TYPES = new Set(['grammar', 'sentence_completion', 'vocabulary']);
+
 const masteryRow = (m, change) => ({
   mastery: m ? Math.round(m.mastery * 10) / 10 : 0, evidence: m?.evidence || 0, confidence: m?.confidence || 0, level: levelOf(m?.mastery || 0, m?.evidence || 0),
   change7d: change === undefined ? null : change,
@@ -35,16 +39,17 @@ export default (deps) => {
     const types = catalog.sections.map((s) => {
       const t = catalog.questionTypes.find((x) => x.id === s.questionTypeId);
       return {
-        key: t.key, name: t.name, shortName: t.shortName, iconKey: t.iconKey, format: t.format, questionCountInExam: s.questionCount,
+        key: t.key, name: t.name, shortName: t.shortName, iconKey: t.iconKey, format: t.format, questionCountInExam: s.questionCount, topicPractice: TOPIC_PRACTICE_TYPES.has(t.key),
         ...masteryRow(tm.get(t.id), ch.get(t.id)),
       };
     });
+    const usage = await peekUsage({ userId: ctx.userId, feature: 'questions_per_day', tz: ctx.tz, now: ctx.now });
     const { rows: m } = await q("SELECT count(*) FILTER (WHERE mistake_status='open')::int AS open FROM learning.mistake WHERE mistake_user_account_id=$1", [ctx.userId]);
     const { rows: c } = await q("SELECT count(*) FILTER (WHERE card_due_at <= $2 AND card_suspended_at IS NULL)::int AS due, count(*)::int AS total FROM learning.card WHERE card_user_account_id=$1", [ctx.userId, ctx.now]);
     const weakest = [...types].filter((t) => t.evidence >= 3).sort((a, b) => a.mastery - b.mastery)[0] || null;
     return {
       types, vocab: { dueCards: c[0].due, totalCards: c[0].total }, mistakes: { open: m[0].open, due: await countDueMistakes(q, ctx.userId, ctx.now) },
-      recommendedTypeKey: weakest?.key || null,
+      recommendedTypeKey: weakest?.key || null, usage: { used: usage.used ?? null, limit: usage.limit ?? null, remaining: usage.remaining ?? null },
     };
   });
 
@@ -59,8 +64,35 @@ export default (deps) => {
     const skillIds = catalog.questionTypeSkills.filter((x) => x.questionTypeId === t.id).map((x) => x.skillId);
     const sm = await loadMasteryMap(q, ctx.userId, 'skill', skillIds.length ? skillIds : [0]);
     const sch = await loadChange7d(q, ctx.userId, 'skill', ctx.today, sm);
+    const tiers = tiersFor(await tierOf(ctx.userId));
+    const examIds = catalog.poolExamIds?.length ? catalog.poolExamIds : null;
+    // Konu başına soru: bu tipte, ana konusu o konu (ya da alt konusu) olan, öğrencinin erişebildiği yayımlanmış sorular — alıştırma havuzuyla aynı süzgeç.
+    const { rows: perSkill } = await q(
+      `SELECT sk.item_skill_skill_id AS sid, count(*)::int AS n FROM content.item i
+         JOIN content.question qn ON qn.question_item_revision_id=i.item_published_revision_id
+         JOIN content.item_skill sk ON sk.item_skill_item_id=i.item_id AND sk.item_skill_is_primary
+        WHERE i.item_kind='question' AND i.item_status='published' AND qn.question_question_type_id=$1 AND i.item_access_tier = ANY($2) AND i.item_language=$3
+          AND ($4::bigint[] IS NULL OR EXISTS (SELECT 1 FROM content.item_exam ie WHERE ie.item_exam_item_id=i.item_id AND ie.item_exam_exam_id = ANY($4)))
+        GROUP BY 1`, [t.id, tiers, catalog.track.contentLanguage, examIds]);
+    const countBySkill = new Map(perSkill.map((r) => [Number(r.sid), r.n]));
+    // Konu anlatımı: yalnız 'skill' notları (strateji notları tip düzeyinde ayrıca gösterilir).
+    const { rows: skillNotes } = await q(
+      `SELECT sk.item_skill_skill_id AS sid, i.item_id AS id, i.item_code AS code, n.note_title AS title, n.note_reading_seconds AS seconds, i.item_access_tier AS tier
+         FROM content.item_skill sk JOIN content.item i ON i.item_id=sk.item_skill_item_id JOIN content.note n ON n.note_item_revision_id=i.item_published_revision_id
+        WHERE sk.item_skill_skill_id = ANY($1) AND i.item_kind='note' AND i.item_status='published' AND n.note_note_kind='skill'
+        ORDER BY sk.item_skill_is_primary DESC, n.note_title`, [skillIds.length ? skillIds : [0]]);
+    const noteBySkill = new Map();
+    for (const r of skillNotes) if (!noteBySkill.has(Number(r.sid))) noteBySkill.set(Number(r.sid), r);
+    const snp = await noteProgressMap(ctx.userId, [...noteBySkill.values()].map((r) => Number(r.id)));
     const skills = skillIds.map((id) => catalog.skills.find((s) => s.id === id)).filter(Boolean)
-      .map((s) => ({ key: s.key, name: s.name, ...masteryRow(sm.get(s.id), sch.get(s.id)) }));
+      .map((s) => {
+        const n = noteBySkill.get(s.id);
+        return {
+          key: s.key, name: s.name, ...masteryRow(sm.get(s.id), sch.get(s.id)),
+          availableQuestions: expandSkillIds(catalog, [s.id]).reduce((sum, id) => sum + (countBySkill.get(id) || 0), 0),
+          note: n ? { itemCode: Number(n.code), title: n.title, readingSeconds: n.seconds, locked: n.tier === 'premium' && !tiers.includes('premium'), progress: snp.get(Number(n.id))?.status || null } : null,
+        };
+      });
     const { rows: mi } = await q("SELECT count(*) FILTER (WHERE mistake_status='open')::int AS open FROM learning.mistake WHERE mistake_user_account_id=$1 AND mistake_question_type_id=$2", [ctx.userId, t.id]);
     let strategyNote = null;
     if (t.strategyNoteItemId) {
@@ -70,13 +102,12 @@ export default (deps) => {
         strategyNote = { itemCode: Number(rows[0].code), title: rows[0].title, summary: rows[0].summary, readingSeconds: rows[0].seconds, accessTier: rows[0].tier, progress: np.get(t.strategyNoteItemId)?.status || null };
       }
     }
-    const tiers = tiersFor(await tierOf(ctx.userId));
     const { rows: avail } = await q(
       `SELECT count(*)::int AS n FROM content.item i JOIN content.question qn ON qn.question_item_revision_id=i.item_published_revision_id
         WHERE i.item_kind='question' AND i.item_status='published' AND qn.question_question_type_id=$1 AND i.item_access_tier = ANY($2) AND i.item_language=$3`, [t.id, tiers, catalog.track.contentLanguage]);
     return {
       type: { key: t.key, name: t.name, shortName: t.shortName, iconKey: t.iconKey, format: t.format, description: t.description, questionCountInExam: sec?.questionCount || 0, targetSecondsPerQuestion: sec?.targetSecondsPerQuestion || t.defaultTargetSeconds },
-      ...masteryRow(tm.get(t.id), tch.get(t.id)), skills, openMistakes: mi[0].open, strategyNote, availableQuestions: avail[0].n,
+      ...masteryRow(tm.get(t.id), tch.get(t.id)), skills, topicPractice: TOPIC_PRACTICE_TYPES.has(t.key), openMistakes: mi[0].open, strategyNote, availableQuestions: avail[0].n,
     };
   });
 
@@ -96,7 +127,7 @@ export default (deps) => {
     const np = await noteProgressMap(ctx.userId, notes.map((n) => Number(n.id)));
     const { rows: qc } = await q(
       `SELECT count(DISTINCT i.item_id)::int AS n FROM content.item_skill sk JOIN content.item i ON i.item_id=sk.item_skill_item_id
-        WHERE sk.item_skill_skill_id = ANY($1) AND i.item_kind='question' AND i.item_status='published' AND i.item_access_tier = ANY($2)`, [ids, tiers]);
+        WHERE sk.item_skill_skill_id = ANY($1) AND sk.item_skill_is_primary AND i.item_kind='question' AND i.item_status='published' AND i.item_access_tier = ANY($2)`, [ids, tiers]);
     const parent = s.parentId ? catalog.skills.find((x) => x.id === s.parentId) : null;
     const children = catalog.skills.filter((x) => x.parentId === s.id).map((c) => ({ key: c.key, name: c.name, ...masteryRow(sm.get(c.id), sch.get(c.id)) }));
     const typeKeys = catalog.questionTypeSkills.filter((x) => ids.includes(x.skillId)).map((x) => catalog.questionTypes.find((t) => t.id === x.questionTypeId)?.key).filter(Boolean);

@@ -4,11 +4,14 @@ import { findItem, findRevisionRow } from '../shared/item-read.js';
 import { loadBody } from '../shared/bodies.js';
 import {
   AREAS, PASSAGE_KINDS, NOTE_KINDS, PARAGRAPH_TYPES, MAX_COUNT, unitsPerRequest, maxTokensFor, notePrompts, passagePrompts, checkPrompts,
-  checkQuestion, checkNote, checkPassage, questionBody, passageBody, noteBody, checkTypeFromSkills,
+  checkQuestion, checkNote, checkPassage, questionBody, passageBody, noteBody, checkTypeFromSkills, styleSpecText, styleIssues, DIFFICULTY_SCALE,
 } from './generation-kinds.js';
 
 const tutorUrl = () => `${(process.env.SERVICE_TUTOR_REST_URL || process.env.TUTOR_REST_URL || 'http://127.0.0.1:2005').replace(/\/$/, '')}/api/sinav-service-tutor/v1`;
 const aiTimeout = () => Number(process.env.CONTENT_AI_TIMEOUT_MS) || 120000;
+
+// YDS şartnamesi yalnız YDS işlerinde uygulanır (YÖKDİL ayrıca ölçülecek).
+const isYds = (p) => !p.examKey || String(p.examKey).toLowerCase() === 'yds';
 
 const systemPrompt = (p) => `[gen:question]
 You write original, exam-grade English multiple-choice questions for Turkish students preparing for ${p.examKey || 'YDS'}-style exams.
@@ -18,7 +21,8 @@ Return ONLY a JSON object: {"questions":[{...}]}. Each question object has:
 "correctLabel" ("A".."E"), "shortReason" (Turkish, one short sentence starting with "Doğru."), "explanation" (Turkish, 2-4 sentences),
 "hints" (array of exactly 4 objects in this order: {"kind":"focus","body"}, {"kind":"rule","body"}, {"kind":"eliminate","body","eliminatesLabels":[two WRONG labels]}, {"kind":"solution","body"}; Turkish text),
 "difficulty" (1-5), "estimatedSeconds" (integer).
-Content must be original (never copy real exam questions), academic register, distractors plausible, correct answers varied across A-E. Turkish text must be calm, second person ("sen"), no exclamation marks or emoji.`;
+Content must be original (never copy or paraphrase real exam questions), academic register, distractors plausible, correct answers varied across A-E. Turkish text must be calm, second person ("sen"), no exclamation marks or emoji.
+${DIFFICULTY_SCALE}${isYds(p) && styleSpecText(p.questionTypeKey) ? `\n${styleSpecText(p.questionTypeKey)}` : ''}`;
 
 const userPrompt = (p, n) => `Write ${n} question(s).
 Question type: ${p.questionTypeKey}${p.questionTypeName ? ` (${p.questionTypeName})` : ''}
@@ -202,6 +206,8 @@ export const makeGeneration = ({ rawQuery, nowFn, fetchFn, items }) => {
     for (const q of list.slice(0, n)) {
       const errs = checkQuestion(q);
       if (errs.length) { st.failed += 1; st.issue(`soru: ${errs.join(', ')}`); continue; }
+      const style = isYds(p) ? styleIssues(q, p.questionTypeKey) : [];
+      if (style.length) { st.failed += 1; st.issue(`YDS şartnamesi dışı: ${style.join(', ')}`); continue; }
       const body = questionBody(q, { questionTypeKey: p.questionTypeKey, difficulty: p.difficulty });
       try {
         const r = await withTransaction((tx) => items.createInTx(tx, ctx, caller, { ...common(job, p), kind: 'question', body }));

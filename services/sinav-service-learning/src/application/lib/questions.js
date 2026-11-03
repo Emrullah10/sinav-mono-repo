@@ -16,7 +16,8 @@ export const loadPublishedQuestions = async (q, userId, f) => {
        AND ($3::varchar IS NULL OR i.item_language=$3)
        AND ($2::bigint[] IS NULL OR EXISTS (SELECT 1 FROM content.item_exam ie WHERE ie.item_exam_item_id=i.item_id AND ie.item_exam_exam_id = ANY($2)))`;
   if (f.typeIds?.length) { params.push(f.typeIds); sql += ` AND qn.question_question_type_id = ANY($${params.length})`; }
-  if (f.skillIds?.length) { params.push(f.skillIds); sql += ` AND EXISTS (SELECT 1 FROM content.item_skill s WHERE s.item_skill_item_id=i.item_id AND s.item_skill_skill_id = ANY($${params.length}))`; }
+  // Konu filtresi yalnız sorunun ANA konusuna bakar: ikincil etiket (ör. bağlaç sorusunda 'zamanlar') başka konunun oturumuna soru sızdırmasın.
+  if (f.skillIds?.length) { params.push(f.skillIds); sql += ` AND EXISTS (SELECT 1 FROM content.item_skill s WHERE s.item_skill_item_id=i.item_id AND s.item_skill_is_primary AND s.item_skill_skill_id = ANY($${params.length}))`; }
   if (f.tiers?.length) { params.push(f.tiers); sql += ` AND i.item_access_tier = ANY($${params.length})`; }
   if (f.excludeItemIds?.length) { params.push(f.excludeItemIds); sql += ` AND NOT (i.item_id = ANY($${params.length}))`; }
   if (f.itemIds?.length) { params.push(f.itemIds); sql += ` AND i.item_id = ANY($${params.length})`; }
