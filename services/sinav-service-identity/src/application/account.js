@@ -193,7 +193,7 @@ export const makeAccount = ({ rawQuery, nowFn, mailer, auth }) => {
         const u = await findUserById(r.userId, rawQuery);
         const { rows: tbls } = await rawQuery(
           `SELECT table_schema AS s, table_name AS t, column_name AS c FROM information_schema.columns
-            WHERE table_schema IN ('identity','notify','learning','tutor','billing') AND column_name LIKE '%\\_user\\_account\\_id' ESCAPE '\\'
+            WHERE table_schema IN ('identity','notify','learning','tutor','billing','content') AND column_name LIKE '%\\_user\\_account\\_id' ESCAPE '\\'
               AND column_name = table_name || '_user_account_id' ORDER BY 1,2`);
         const data = { exportedAt: nowFn().toISOString(), account: { email: u.email, displayName: u.displayName, createdAt: u.createdAt } };
         for (const t of tbls) {

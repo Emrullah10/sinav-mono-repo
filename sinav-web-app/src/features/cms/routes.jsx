@@ -9,6 +9,7 @@ const Reports = lazy(() => import('./pages/Reports'));
 const AiJobs = lazy(() => import('./pages/AiJobs'));
 const ExamBuilder = lazy(() => import('./pages/ExamBuilder'));
 const CalendarImports = lazy(() => import('./pages/CalendarImports'));
+const Books = lazy(() => import('./pages/Books'));
 
 const cms = (p, element, permission) => ({ path: p, element, layout: 'cms', access: 'permission', permission });
 
@@ -22,4 +23,5 @@ export default [
   cms(Routes.cmsReports, <Reports />, 'content:report:manage'),
   cms(Routes.cmsAi, <AiJobs />, 'content:generate'),
   cms(Routes.cmsCalendar, <CalendarImports />, 'content:read'),
+  cms(Routes.cmsBooks, <Books />, 'content:read'),
 ];

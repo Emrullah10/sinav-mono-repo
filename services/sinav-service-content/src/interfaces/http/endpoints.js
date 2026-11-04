@@ -17,6 +17,8 @@ export default defineEndpoints([
       res.status(200).set({ 'Content-Type': 'text/calendar; charset=utf-8', 'Content-Disposition': `attachment; filename="${filename}"`, 'Cache-Control': 'public, max-age=3600' }).send(text);
     },
   },
+  // Orijinal PDF: süreli imzalı bağlantı (bkz. POST /reading/books/{code}/file-url); Range destekli.
+  { method: 'get', path: '/v1/public/book-files/{token}', isPublic: true, handler: (req, _c, res) => uc().books.streamFile({ token: req.params.token, req, res }) },
   { method: 'get', path: '/v1/public/featured/{placement}', isPublic: true, handler: (req) => uc().catalog.featured({ placement: req.params.placement }) },
   { method: 'get', path: '/v1/public/articles', isPublic: true, handler: (req) => uc().catalog.listArticles({ query: q(req) }) },
   { method: 'get', path: '/v1/public/articles/search', isPublic: true, handler: (req) => uc().catalog.searchArticles({ query: q(req) }) },
@@ -28,7 +30,19 @@ export default defineEndpoints([
   // Dokun-çevir: kelime (küratörlü → önbellek → AI), kartlara eklenebilir kayıt, cümle çevirisi
   { method: 'post', path: '/v1/lexicon/word', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().lexicon.word({ caller, word: b(req).word }) },
   { method: 'post', path: '/v1/lexicon/word/item', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().lexicon.ensureItem({ caller, word: b(req).word }) },
-  { method: 'post', path: '/v1/lexicon/sentence', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().lexicon.sentence({ caller, sentences: b(req).sentences, index: b(req).index }) },
+  { method: 'post', path: '/v1/lexicon/sentence', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().lexicon.sentence({ caller, sentences: b(req).sentences, index: b(req).index, bookCode: b(req).bookCode }) },
+
+  // Kitap okuma: hazır kitaplar + kullanıcının yüklediği PDF'ler
+  { method: 'get', path: '/v1/reading/library', permission: P.studyContentRead, handler: (req, caller) => uc().books.library({ caller }) },
+  { method: 'get', path: '/v1/reading/catalog', permission: P.studyContentRead, handler: (req, caller) => uc().books.catalog({ caller, query: q(req) }) },
+  { method: 'post', path: '/v1/reading/books', permission: P.studyContentRead, status: 202, handler: (req, caller, res) => uc().books.upload({ caller, req, res }) },
+  { method: 'get', path: '/v1/reading/books/{code}', permission: P.studyContentRead, handler: (req, caller) => uc().books.getBook({ caller, code: req.params.code }) },
+  { method: 'patch', path: '/v1/reading/books/{code}', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().books.rename({ caller, code: req.params.code, title: b(req).title, author: b(req).author }) },
+  { method: 'delete', path: '/v1/reading/books/{code}', permission: P.studyContentRead, handler: (req, caller) => uc().books.remove({ caller, code: req.params.code }) },
+  { method: 'get', path: '/v1/reading/books/{code}/sections/{position}', permission: P.studyContentRead, handler: (req, caller) => uc().books.getSection({ caller, code: req.params.code, position: req.params.position }) },
+  { method: 'put', path: '/v1/reading/books/{code}/progress', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().books.saveProgress({ caller, code: req.params.code, sectionPosition: b(req).sectionPosition, blockIndex: b(req).blockIndex, pageNo: b(req).pageNo, percent: b(req).percent }) },
+  { method: 'post', path: '/v1/reading/books/{code}/file-url', permission: P.studyContentRead, handler: (req, caller) => uc().books.fileUrl({ caller, code: req.params.code }) },
+  { method: 'post', path: '/v1/reading/books/{code}/ocr', permission: P.studyContentRead, handler: (req, caller) => uc().bookOcr.start({ caller, code: req.params.code }) },
   { method: 'get', path: '/v1/vocab/{itemCode}', permission: P.studyContentRead, handler: (req) => uc().study.vocabDetail({ itemCode: req.params.itemCode }) },
   { method: 'get', path: '/v1/notes/{itemCode}', permission: P.studyContentRead, handler: (req, caller) => uc().study.getNote({ caller, itemCode: req.params.itemCode }) },
   { method: 'post', path: '/v1/content-reports', permission: P.contentReportCreate, body: true, handler: (req, caller) => uc().study.createReport({ caller, ...b(req) }) },
@@ -72,6 +86,10 @@ export default defineEndpoints([
   // ── CMS: ÖSYM sınav takvimi içe aktarma ──
   { method: 'get', path: '/v1/cms/calendar-imports', permission: P.contentRead, handler: (req) => uc().calendar.list({ query: q(req) }) },
   { method: 'post', path: '/v1/cms/calendar-imports/scan', permission: P.contentWrite, body: true, handler: (req, caller) => uc().calendar.scan({ caller }) },
+  { method: 'get', path: '/v1/cms/books', permission: P.contentRead, handler: (req) => uc().books.cmsList({ query: q(req) }) },
+  { method: 'post', path: '/v1/cms/books', permission: P.contentWrite, status: 202, handler: (req, caller, res) => uc().books.cmsUpload({ caller, req, res }) },
+  { method: 'put', path: '/v1/cms/books/{code}', permission: P.contentWrite, body: true, handler: (req) => uc().books.cmsUpdate({ code: req.params.code, body: b(req) }) },
+  { method: 'post', path: '/v1/cms/books/{code}/publish', permission: P.contentReview, body: true, handler: (req) => uc().books.cmsPublish({ code: req.params.code, published: b(req).published !== false }) },
   { method: 'post', path: '/v1/cms/calendar-imports/upload', permission: P.contentWrite, body: true, handler: (req, caller) => uc().calendar.upload({ caller, pdfBase64: b(req).pdfBase64, sourceUrl: b(req).sourceUrl }) },
   { method: 'get', path: '/v1/cms/calendar-imports/{code}', permission: P.contentRead, handler: (req) => uc().calendar.get({ code: req.params.code }) },
   { method: 'post', path: '/v1/cms/calendar-imports/{code}/apply', permission: P.contentReview, body: true, handler: (req, caller) => uc().calendar.apply({ caller, code: req.params.code, keys: b(req).keys }) },

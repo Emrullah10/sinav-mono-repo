@@ -84,6 +84,15 @@ const feedbackLimiter = make('feedback', 60 * 60 * 1000, num('RATE_LIMIT_FEEDBAC
   const t = sessionKey(req);
   return t ? `t:${hash(t)}` : anonKey(req);
 });
+// PDF yükleme: kullanıcı başına saatlik (yalnız POST; okuma ve dosya istekleri sayılmaz).
+const bookUploadRateLimit = make('bookupload', 60 * 60 * 1000, num('RATE_LIMIT_BOOK_UPLOAD_MAX', 20), (req) => {
+  const t = sessionKey(req);
+  return t ? `t:${hash(t)}` : anonKey(req);
+});
+const bookUploadLimiter = () => {
+  const limit = bookUploadRateLimit();
+  return (req, res, next) => (req.method === 'POST' && (req.path === '/' || req.path === '') ? limit(req, res, next) : next());
+};
 const tutorLimiter = make('tutor', 60 * 1000, num('RATE_LIMIT_TUTOR_MAX', 30), (req) => {
   const t = sessionKey(req);
   return t ? `t:${hash(t)}` : anonKey(req);
@@ -98,6 +107,7 @@ export {
   waitlistLimiter,
   contactLimiter,
   feedbackLimiter,
+  bookUploadLimiter,
   paymentCallbackLimiter,
   paymentWebhookLimiter,
   tutorLimiter,

@@ -28,8 +28,9 @@ const parseRuns = (parts, lang) => {
  * Dokunulabilir metin (web): kelimeye tıkla → sözlük, basılı tut → cümle çevirisi.
  * text | runs (Markdown satırı parçaları). lang: 'en' (içerik) | 'auto' (karışık metinde yalnız İngilizce cümleler).
  * words / sentences: açık mı. sentences kapalıyken basılı tutunca `sentenceLock` (i18n anahtarı) gösterilir.
+ * bookCode: kitap okuyucudan; kişisel kitabın cümle çevirileri kitaba bağlı saklanır.
  */
-export default function TapText({ text, runs, lang = 'en', words = true, sentences = true, sentenceLock, onAsk }) {
+export default function TapText({ text, runs, lang = 'en', words = true, sentences = true, sentenceLock, onAsk, bookCode }) {
   const lex = useLexicon();
   const owner = useId();
   const { t } = useTranslation();
@@ -44,7 +45,7 @@ export default function TapText({ text, runs, lang = 'en', words = true, sentenc
     return w ? { sentences: w.sentences, index: w.index } : { sentences: null, index: -1 };
   };
   const openWord = (key, tok, el) =>
-    lex.open({ kind: 'word', word: tok.text, owner, token: key, sentence: tok.sentence, ...payload(tok.sentence), allowSentence: sentences, onAsk, anchor: el.getBoundingClientRect() });
+    lex.open({ kind: 'word', word: tok.text, owner, token: key, sentence: tok.sentence, ...payload(tok.sentence), allowSentence: sentences, onAsk, bookCode, anchor: el.getBoundingClientRect() });
   const openSentence = (tok, el) => {
     if (!sentences) {
       if (sentenceLock) notify(t(sentenceLock), 'info');
@@ -55,7 +56,7 @@ export default function TapText({ text, runs, lang = 'en', words = true, sentenc
       notify(t('lex.sentence.tooLong'), 'info');
       return;
     }
-    lex.open({ kind: 'sentence', owner, sentence: tok.sentence, ...p, onAsk, anchor: el.getBoundingClientRect() });
+    lex.open({ kind: 'sentence', owner, sentence: tok.sentence, ...p, onAsk, bookCode, anchor: el.getBoundingClientRect() });
   };
 
   // Basılı tutma: fare ve dokunmada aynı (450 ms, 8 px'ten fazla kayarsa iptal); ardından gelen tıklama yutulur.

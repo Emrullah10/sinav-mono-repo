@@ -27,4 +27,10 @@ export default {
   'enums.part_of_speech.determiner': { tr: 'Belirleyici', en: 'Determiner' },
   'enums.part_of_speech.interjection': { tr: 'Ünlem', en: 'Interjection' },
   'enums.part_of_speech.numeral': { tr: 'Sayı', en: 'Numeral' },
+  'enums.book_topic.story': { tr: 'Hikâye', en: 'Story' },
+  'enums.book_topic.classic': { tr: 'Klasik', en: 'Classic' },
+  'enums.book_topic.academic': { tr: 'Akademik', en: 'Academic' },
+  'enums.book_topic.health': { tr: 'Sağlık', en: 'Health' },
+  'enums.book_topic.science': { tr: 'Bilim', en: 'Science' },
+  'enums.book_topic.social': { tr: 'Sosyal', en: 'Social' },
 };

@@ -21,6 +21,7 @@ import useStartTask from '../hooks/useStartTask';
 import TaskCard from '../components/TaskCard';
 import AdjustModal from '../components/AdjustModal';
 import ScoreBandCard from '../components/ScoreBandCard';
+import ContinueCard from '@features/reading/components/ContinueCard';
 import styles from './Today.module.scss';
 
 const WEEKDAYS = { tr: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'], en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] };
@@ -103,6 +104,7 @@ export default function Today() {
               )}
             </div>
           </Card>
+          <ContinueCard compact />
           <div className={styles.pair}>
             <Card>
               <ListRow icon={<BookX size={20} />} title={t('home.due.mistakes')} subtitle={d.due?.mistakes ? t('home.due.mistakesBody', { n: d.due.mistakes }) : t('home.due.mistakesNone')} onClick={() => nav(Routes.mistakes)} />

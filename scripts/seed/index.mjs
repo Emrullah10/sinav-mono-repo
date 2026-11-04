@@ -1,14 +1,15 @@
 #!/usr/bin/env node
-// npm run seed [-- --dry] [-- --only=taxonomy,catalog,staff,legal,tutor,questions,passages,notes,vocab,translation,articles,forms]
+// npm run seed [-- --dry] [-- --only=taxonomy,catalog,staff,legal,tutor,questions,passages,notes,vocab,translation,articles,forms,books]
 import { connect, makeCtx, printRep, SEED_DIR } from './db.mjs';
 import { seedTaxonomy, seedCatalog, seedStaff, seedLegal, seedTutor, loadMaps } from './core.mjs';
 import { seedQuestions, seedPassages, seedNotes, seedVocab, seedTranslation, seedArticles } from './content.mjs';
 import { seedForms } from './forms.mjs';
+import { seedBooks } from './books.mjs';
 
 const STEPS = [
   ['taxonomy', seedTaxonomy], ['catalog', seedCatalog], ['staff', seedStaff], ['legal', seedLegal],
   ['questions', seedQuestions], ['passages', seedPassages], ['notes', seedNotes], ['vocab', seedVocab],
-  ['translation', seedTranslation], ['articles', seedArticles], ['forms', seedForms], ['tutor', seedTutor],
+  ['translation', seedTranslation], ['articles', seedArticles], ['forms', seedForms], ['tutor', seedTutor], ['books', seedBooks],
 ];
 const onlyArg = process.argv.find((a) => a.startsWith('--only='));
 const only = onlyArg ? onlyArg.slice(7).split(',').map((s) => s.trim()).filter(Boolean) : null;

@@ -13,6 +13,7 @@ import {
   waitlistLimiter,
   contactLimiter,
   feedbackLimiter,
+  bookUploadLimiter,
   paymentCallbackLimiter,
   paymentWebhookLimiter,
   tutorLimiter,
@@ -111,6 +112,7 @@ export default async (serviceDiscovery, app) => {
   app.use(`${ID}/public/waitlist`, waitlistLimiter());
   app.use(`${ID}/public/contact-messages`, contactLimiter());
   app.use(`${ID}/feedback`, feedbackLimiter());
+  app.use('/api/sinav-service-content/v1/reading/books', bookUploadLimiter());
   app.use('/api/sinav-service-tutor/v1/conversations', tutorLimiter());
   app.use('/api/sinav-service-billing/v1/public/payments', paymentCallbackLimiter());
   app.use('/api/sinav-service-billing/v1/webhooks', paymentWebhookLimiter());

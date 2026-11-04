@@ -46,13 +46,17 @@ export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon
     return Number.isFinite(n) && n > 0 ? Math.round(n * 1e6) : 0;
   };
 
-  // Yayındaki İngilizce metinler; sıra: madde, sonra paragraf → kök → şıklar (cümle grupları bağlamı korusun).
+  // Yayındaki İngilizce metinler; sıra: madde, sonra paragraf → kök → şıklar (cümle grupları bağlamı korusun). En sonda hazır kitaplar: kısa özgün kitaplar
+  // tamamen, klasiklerin yalnız ilk bölümü (uzun romanlar ücretsiz kotayı sınav içeriğinin önüne geçirmesin). Kişisel kitaplar asla girmez.
   const loadTexts = async () => (await rawQuery(
     `WITH pub AS (SELECT i.item_id, i.item_published_revision_id AS rid FROM content.item i WHERE i.item_status = 'published' AND i.item_language = 'en')
      SELECT 'md' AS f, ps.passage_body AS t, pub.item_id AS ord, 0 AS pos, '' AS lbl FROM content.passage ps JOIN pub ON pub.rid = ps.passage_item_revision_id
      UNION ALL SELECT 'md', q.question_stem, pub.item_id, 1, '' FROM content.question q JOIN pub ON pub.rid = q.question_item_revision_id WHERE q.question_stem IS NOT NULL
      UNION ALL SELECT 'plain', o.question_option_text, pub.item_id, 2, o.question_option_label FROM content.question_option o
        JOIN content.question q ON q.question_id = o.question_option_question_id JOIN pub ON pub.rid = q.question_item_revision_id
+     UNION ALL SELECT 'plain', blk.b->>'x', 1000000000000 + bk.book_id, sc.book_section_position * 100000 + blk.n::int, '' FROM content.book bk
+       JOIN content.book_section sc ON sc.book_section_book_id = bk.book_id CROSS JOIN LATERAL jsonb_array_elements(sc.book_section_blocks) WITH ORDINALITY AS blk(b, n)
+      WHERE bk.book_kind = 'catalog' AND bk.book_status = 'ready' AND bk.book_published_at IS NOT NULL AND bk.book_language = 'en' AND (bk.book_key LIKE 'odak-%' OR sc.book_section_position = 0)
      ORDER BY 3, 4, 5`)).rows;
 
   const rescan = async () => {

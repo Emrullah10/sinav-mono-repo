@@ -15,4 +15,8 @@ export const deepLinks = {
   tutor: (chat) => `/ogretmen/${chat}`,
   premium: '/premium',
   diagnostic: '/seviye-tespiti',
+  library: '/calis/kitaplik',
+  book: (code) => `/calis/kitaplik/${code}`,
+  reader: (code) => `/oku/${code}`,
+  readerPdf: (code) => `/oku/${code}/pdf`,
 };

@@ -7,6 +7,7 @@ import { DomainError } from 'app-shared';
 //   llm.complete({ messages, model, json, maxTokens, task, signal, reasoning })
 //        -> { text, json?, model, usage, finishReason }
 //        reasoning: istek başına düşünme ayarı (ör. 'none'); verilmezse env OPENROUTER_REASONING_EFFORT
+//   llm.ocrPdfPage({ pdfBase64, model, engine })  -> { text, model, usage }  (tek sayfalık PDF; metin yanıttaki file annotation'dan okunur)
 //   llm.stream({ messages, model, onToken, signal, maxTokens, task })
 //        -> { text, model, usage, finishReason }
 //   usage = { inputTokens, outputTokens, cacheReadTokens, reasoningTokens, costMicros }
@@ -191,7 +192,28 @@ export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThi
     } catch (e) { throw wrapNetwork(e); }
   };
 
-  return Object.freeze({ provider: 'openrouter', configured: true, models, complete, stream });
+  // PDF sayfası: OpenRouter file-parser eklentisi (mistral-ocr: $2/1000 sayfa). OCR metni yanıttaki file annotation'dadır; modelin kendi cevabı gereksizdir, en aza indirilir.
+  const ocrPdfPage = async ({ pdfBase64, model, engine = 'mistral-ocr', signal } = {}) => {
+    const m = model || models.content;
+    const route = routing(m, { autoAllowed, autoCostTier, maxPrice, reasoningEffort: null, providerSort }, null, 'none');
+    const body = {
+      model: m, max_tokens: 16, usage: { include: true }, ...route,
+      plugins: [...(route.plugins || []), { id: 'file-parser', pdf: { engine } }],
+      messages: [{ role: 'user', content: [{ type: 'text', text: 'Reply with the single word OK.' }, { type: 'file', file: { filename: 'page.pdf', file_data: `data:application/pdf;base64,${pdfBase64}` } }] }],
+    };
+    try {
+      const res = await fetchFn(url, { method: 'POST', headers, body: JSON.stringify(body), signal: withTimeout(signal, Math.max(timeoutMs, 120000)) });
+      const raw = await res.text();
+      let data; try { data = JSON.parse(raw); } catch { data = null; }
+      if (!res.ok) throw upstreamError(res.status, data?.error?.message || raw);
+      if (data?.error) throw upstreamError(data.error.code || 502, data.error.message);
+      const notes = data?.choices?.[0]?.message?.annotations || [];
+      const text = notes.filter((a) => a?.type === 'file').flatMap((a) => a.file?.content || []).filter((c) => c?.type === 'text' && c.text).map((c) => c.text).join('\n\n').trim();
+      return { text, model: data?.model || m, usage: usageFrom(data?.usage) };
+    } catch (e) { throw wrapNetwork(e); }
+  };
+
+  return Object.freeze({ provider: 'openrouter', configured: true, models, complete, stream, ocrPdfPage });
 };
 
 // ── Yalnız yerel doğrulama için sahte adaptör (FAKE_LLM=1; üretimde reddedilir) ──────────────
@@ -346,13 +368,17 @@ export const makeFakeLlm = ({ models }) => {
     const text = json || task === 'translation_eval' ? JSON.stringify(out) : `Sahte yanıt: ${lastUser(messages).slice(0, 80)}`;
     return { text, json: json || task === 'translation_eval' ? out : undefined, model: model || `fake/${models.eval}`, finishReason: 'stop', usage: { inputTokens: approxTokens(all), outputTokens: approxTokens(text), cacheReadTokens: 0, costMicros: 0 } };
   };
-  return Object.freeze({ provider: 'fake', configured: true, models, complete, stream });
+  const ocrPdfPage = async ({ model } = {}) => ({
+    text: '# Scanned Chapter\n\nThis is a sample paragraph read from a scanned page. It has two sentences.\n\nA second paragraph follows here.',
+    model: `fake/${model || models.content}`, usage: { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, costMicros: 0 },
+  });
+  return Object.freeze({ provider: 'fake', configured: true, models, complete, stream, ocrPdfPage });
 };
 
 // ── Yapılandırılmamış: her çağrı 503 ───────────────────────────────────────
 export const makeUnconfiguredLlm = ({ models }) => {
   const fail = async () => { throw new DomainError('LLM_NOT_CONFIGURED', 'LLM provider is not configured', undefined, 503); };
-  return Object.freeze({ provider: 'not_configured', configured: false, models, complete: fail, stream: fail });
+  return Object.freeze({ provider: 'not_configured', configured: false, models, complete: fail, stream: fail, ocrPdfPage: fail });
 };
 
 export const createLlm = ({ env = process.env, fetchFn } = {}) => {

@@ -264,11 +264,27 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
   };
 
   // ── cümle ──
+  /** bookCode verildiyse: kişisel kitap → { id, tenantCode, organizationId }, hazır kitap → null. Başkasının kitabı 404. */
+  const personalBook = async (caller, bookCode) => {
+    if (bookCode === null || bookCode === undefined || bookCode === '') return null;
+    const code = Number(bookCode);
+    const notFound = () => new DomainError('READING_BOOK_NOT_FOUND', 'Book not found', undefined, 404);
+    if (!Number.isSafeInteger(code) || code <= 0) throw notFound();
+    const { rows } = await rawQuery(
+      `SELECT book_id AS id, book_kind AS kind, book_user_account_id AS "ownerId", book_tenant_code AS "tenantCode", book_organization_id AS "organizationId" FROM content.book WHERE book_code = $1`, [code]);
+    const b = rows[0];
+    if (!b) throw notFound();
+    if (b.kind !== 'personal') return null;
+    if (Number(b.ownerId) !== userIdOf(caller)) throw notFound();
+    return b;
+  };
+
   /**
    * sentences: aynı metin bloğunun cümleleri (sırayla), index: basılı tutulan cümle.
    * Dönüş: { index, translation, translations: [{ index, text }] } — bloğun bilinen tüm çevirileri (istemci önbelleğe alır).
+   * bookCode: kişisel kitapsa çeviriler paylaşılan önbelleğe YAZILMAZ (belge özel olabilir): kitaba bağlı tabloya gider, kitapla silinir. Okuma her ikisinden.
    */
-  const sentence = async ({ caller, sentences, index = 0 }) => {
+  const sentence = async ({ caller, sentences, index = 0, bookCode = null }) => {
     const L = LEXICON_LIMITS;
     if (!Array.isArray(sentences) || !sentences.length || sentences.length > L.sentencesMax) throw new DomainError('CONTENT_LEXICON_SENTENCE_INVALID', `sentences must be 1-${L.sentencesMax} items`, { field: 'sentences' });
     const list = sentences.map((s) => normalizeSentence(s));
@@ -286,10 +302,16 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     const block = [];
     for (let i = from; i < to; i++) if (list[i] && list[i].length <= L.sentenceMax) block.push({ index: i, text: list[i], hash: sentenceHash(list[i]) });
     const p = await platform();
+    const hashes = [...new Set(block.map((b) => b.hash))];
     const { rows } = await rawQuery(
       `SELECT sentence_translation_hash AS hash, sentence_translation_text AS text FROM content.sentence_translation WHERE sentence_translation_tenant_code = $1 AND sentence_translation_hash = ANY($2::text[])`,
-      [p.tenantCode, [...new Set(block.map((b) => b.hash))]]);
+      [p.tenantCode, hashes]);
     const known = new Map(rows.map((r) => [r.hash.trim(), r.text]));
+    const privateBook = await personalBook(caller, bookCode);
+    if (privateBook) {
+      const own = await rawQuery(`SELECT book_sentence_translation_hash AS hash, book_sentence_translation_text AS text FROM content.book_sentence_translation WHERE book_sentence_translation_book_id = $1 AND book_sentence_translation_hash = ANY($2::text[])`, [privateBook.id, hashes]);
+      for (const r of own.rows) known.set(r.hash.trim(), r.text);
+    }
     const target = block.find((b) => b.index === at);
     if (!known.has(target.hash)) {
       const missing = [];
@@ -312,6 +334,13 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
       for (const [m, text] of usable) {
         if (!text) continue;
         known.set(m.hash, text);
+        if (privateBook) {
+          await rawQuery(
+            `INSERT INTO content.book_sentence_translation (book_sentence_translation_tenant_code, book_sentence_translation_organization_id, book_sentence_translation_book_id, book_sentence_translation_hash, book_sentence_translation_text, book_sentence_translation_model)
+             VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT (book_sentence_translation_book_id, book_sentence_translation_hash) DO NOTHING`,
+            [privateBook.tenantCode, privateBook.organizationId, privateBook.id, m.hash, text, model]);
+          continue;
+        }
         await rawQuery(
           `INSERT INTO content.sentence_translation (sentence_translation_tenant_code, sentence_translation_organization_id, sentence_translation_hash, sentence_translation_source_text,
                   sentence_translation_text, sentence_translation_model, sentence_translation_created_by, sentence_translation_updated_by)

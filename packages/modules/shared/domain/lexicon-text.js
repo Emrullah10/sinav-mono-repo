@@ -107,6 +107,29 @@ export const sentenceWindow = (list, index, limits = LEXICON_LIMITS) => {
   return { sentences: texts.slice(from, to), index: index - from };
 };
 
+/**
+ * Paragrafın tüm cümlelerini çevirir: ask(sentences, index) → { translations:[{ index, text }] } pencere pencere çağrılır (istek sayısı en aza iner).
+ * lang 'auto' ise İngilizce olmayan cümleler olduğu gibi kalır. Dönüş: cümle sırasıyla [{ text, translation|null }]; çok uzun cümle çevrilmez.
+ */
+export const translateParagraph = async (paragraph, ask, { lang = 'en' } = {}) => {
+  const items = splitSentences(paragraph).map((s) => ({ text: normalizeSentence(s.text), translation: null }));
+  const en = items.map((it, i) => ({ it, i })).filter(({ it }) => lang === 'en' || looksEnglish(it.text));
+  const list = en.map(({ it }) => it.text);
+  for (let i = 0; i < list.length; i++) {
+    if (en[i].it.translation !== null) continue;
+    const w = sentenceWindow(list, i);
+    if (!w) continue;
+    const offset = i - w.index;
+    const r = await ask(w.sentences, w.index);
+    for (const t of r?.translations || []) {
+      const at = en[offset + t.index];
+      if (at && t.text) at.it.translation = t.text;
+    }
+    if (en[i].it.translation === null) en[i].it.translation = r?.translation || null;
+  }
+  return items;
+};
+
 const TR_CHARS = /[çğışöüÇĞİŞÖÜ]/;
 const EN_STOP = new Set(
   'the a an of to in is are was were and or but that this these those it its for on with as by at from be been being has have had not no can will would should could may might must do does did which who whom whose what when where why how than then there their they we you he she i my our your his her them us if so such into about more most also only very just'.split(' '),

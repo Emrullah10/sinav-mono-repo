@@ -1567,7 +1567,8 @@ INSERT INTO enums.ai_feature (ai_feature_value, ai_feature_label, ai_feature_sor
     ('word_gloss', 'Word gloss', 4),
     ('sentence_translation', 'Sentence translation', 5),
     ('lexicon_prefill', 'Lexicon prefill', 6),
-    ('lexicon_review', 'Lexicon review', 7);
+    ('lexicon_review', 'Lexicon review', 7),
+    ('book_ocr', 'Book OCR', 8);
 
 -- -----------------------------------------------------
 -- Table: enums.ai_job_status
@@ -1584,3 +1585,84 @@ INSERT INTO enums.ai_job_status (ai_job_status_value, ai_job_status_label, ai_jo
     ('completed', 'Completed', 2),
     ('failed', 'Failed', 3);
 
+-- -----------------------------------------------------
+-- Table: enums.book_kind
+-- Purpose: Allowed values of book_kind
+-- -----------------------------------------------------
+CREATE TABLE enums.book_kind (
+    book_kind_id BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE NOT NULL,
+    book_kind_value VARCHAR(100) PRIMARY KEY,
+    book_kind_label VARCHAR(255) NOT NULL,
+    book_kind_sort_order INT NOT NULL DEFAULT 0
+);
+INSERT INTO enums.book_kind (book_kind_value, book_kind_label, book_kind_sort_order) VALUES
+    ('catalog', 'Catalog book', 1),
+    ('personal', 'Personal upload', 2);
+
+-- -----------------------------------------------------
+-- Table: enums.book_status
+-- Purpose: Allowed values of book_status
+-- -----------------------------------------------------
+CREATE TABLE enums.book_status (
+    book_status_id BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE NOT NULL,
+    book_status_value VARCHAR(100) PRIMARY KEY,
+    book_status_label VARCHAR(255) NOT NULL,
+    book_status_sort_order INT NOT NULL DEFAULT 0
+);
+INSERT INTO enums.book_status (book_status_value, book_status_label, book_status_sort_order) VALUES
+    ('processing', 'Processing', 1),
+    ('scanned', 'Scanned, no text', 2),
+    ('ocr_queued', 'OCR queued', 3),
+    ('ocr_running', 'OCR running', 4),
+    ('ready', 'Ready', 5),
+    ('failed', 'Failed', 6),
+    ('retired', 'Retired', 7);
+
+-- -----------------------------------------------------
+-- Table: enums.book_level
+-- Purpose: Allowed values of book_level (CEFR)
+-- -----------------------------------------------------
+CREATE TABLE enums.book_level (
+    book_level_id BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE NOT NULL,
+    book_level_value VARCHAR(100) PRIMARY KEY,
+    book_level_label VARCHAR(255) NOT NULL,
+    book_level_sort_order INT NOT NULL DEFAULT 0
+);
+INSERT INTO enums.book_level (book_level_value, book_level_label, book_level_sort_order) VALUES
+    ('A2', 'A2', 1),
+    ('B1', 'B1', 2),
+    ('B2', 'B2', 3),
+    ('C1', 'C1', 4);
+
+-- -----------------------------------------------------
+-- Table: enums.book_topic
+-- Purpose: Allowed values of book_topic
+-- -----------------------------------------------------
+CREATE TABLE enums.book_topic (
+    book_topic_id BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE NOT NULL,
+    book_topic_value VARCHAR(100) PRIMARY KEY,
+    book_topic_label VARCHAR(255) NOT NULL,
+    book_topic_sort_order INT NOT NULL DEFAULT 0
+);
+INSERT INTO enums.book_topic (book_topic_value, book_topic_label, book_topic_sort_order) VALUES
+    ('story', 'Story', 1),
+    ('classic', 'Classic', 2),
+    ('academic', 'Academic', 3),
+    ('health', 'Health', 4),
+    ('science', 'Science', 5),
+    ('social', 'Social', 6);
+
+-- -----------------------------------------------------
+-- Table: enums.book_ocr_page_status
+-- Purpose: Allowed values of book_ocr_page_status
+-- -----------------------------------------------------
+CREATE TABLE enums.book_ocr_page_status (
+    book_ocr_page_status_id BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE NOT NULL,
+    book_ocr_page_status_value VARCHAR(100) PRIMARY KEY,
+    book_ocr_page_status_label VARCHAR(255) NOT NULL,
+    book_ocr_page_status_sort_order INT NOT NULL DEFAULT 0
+);
+INSERT INTO enums.book_ocr_page_status (book_ocr_page_status_value, book_ocr_page_status_label, book_ocr_page_status_sort_order) VALUES
+    ('pending', 'Pending', 1),
+    ('done', 'Done', 2),
+    ('failed', 'Failed', 3);

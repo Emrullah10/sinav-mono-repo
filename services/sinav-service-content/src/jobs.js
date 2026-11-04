@@ -15,6 +15,12 @@ export default [
   // Ön-çevirinin kontrolü: ücretsiz modelin kayıtlarını ucuz model (openrouter/auto, cost_tier low, düşünme kapalı) denetler;
   // günlük tavan LEXICON_REVIEW_DAILY_USD (varsayılan 0.5).
   { name: 'lexicon-review', schedule: '* * * * *', lockSeconds: 300, run: (c) => c.useCases.lexiconPrefill.reviewTick() },
+  // Kitap okuma: yüklenen PDF'lerin metni (asıl tetik yüklemenin kendisi; bu iş yeniden başlatmada kalanları toplar).
+  { name: 'book-process', schedule: '* * * * *', lockSeconds: 300, run: (c) => c.useCases.books.processQueued() },
+  // Taranmış PDF: sayfa sayfa OCR (dakikada en çok 20 sayfa, günlük tavan BOOK_OCR_DAILY_USD).
+  { name: 'book-ocr', schedule: '* * * * *', lockSeconds: 300, run: (c) => c.useCases.bookOcr.tick() },
+  // Gece: kitabı silinmiş PDF dosyaları diskten silinir (hesap silme CASCADE'i dahil).
+  { name: 'book-files-gc', schedule: '45 3 * * *', lockSeconds: 600, run: (c) => c.useCases.books.gcFiles() },
   // Gece: learning.attempt → content.item_stat (CMS-01 / CMS-09).
   { name: 'item-stats', schedule: '30 3 * * *', lockSeconds: 900, run: (c) => c.useCases.misc.refreshItemStats() },
 ];

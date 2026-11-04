@@ -23,6 +23,7 @@ export default {
   'nav.saveProgress': { tr: 'İlerlemeni kaydet', en: 'Save your progress' },
   'cms.title': { tr: 'İçerik', en: 'Content' },
   'cms.nav.items': { tr: 'İçerikler', en: 'Items' },
+  'cms.nav.books': { tr: 'Kitaplar', en: 'Books' },
   'cms.nav.new': { tr: 'Yeni içerik', en: 'New item' },
   'cms.nav.ai': { tr: 'Yapay zekâ taslakları', en: 'AI drafts' },
   'cms.nav.calendar': { tr: 'Sınav takvimi', en: 'Exam calendar' },

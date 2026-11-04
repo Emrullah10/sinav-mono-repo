@@ -20,9 +20,29 @@ export const createContentApi = (http, { api = '/api' } = {}) => {
     contentLexiconWord: (word) => http.post(`${B}/lexicon/word`, { word }),
     /** Kelimeyi kartlara eklenebilir sözlük kaydına çevirir → { itemCode }; ardından learningVocabCardAdd(itemCode). */
     contentLexiconWordItem: (word) => http.post(`${B}/lexicon/word/item`, { word }),
-    /** Cümle çevirisi: sentences = aynı metnin cümleleri (sırayla), index = basılı tutulan → { translation, translations[] } */
-    contentLexiconSentence: (sentences, index) => http.post(`${B}/lexicon/sentence`, { sentences, index }),
+    /** Cümle çevirisi: sentences = aynı metnin cümleleri (sırayla), index = basılı tutulan → { translation, translations[] }. bookCode: kitap okuyucudan (kişisel kitap çevirisi kitapla silinir). */
+    contentLexiconSentence: (sentences, index, bookCode) => http.post(`${B}/lexicon/sentence`, { sentences, index, ...(bookCode ? { bookCode } : {}) }),
+    // ── Kitap okuma ──
+    contentReadingLibrary: () => http.get(`${B}/reading/library`),
+    contentReadingCatalog: (params) => http.get(`${B}/reading/catalog`, { params }),
+    contentReadingBookGet: (code) => http.get(`${B}/reading/books/${code}`),
+    contentReadingSectionGet: (code, position) => http.get(`${B}/reading/books/${code}/sections/${position}`),
+    contentReadingProgressSave: (code, body) => http.put(`${B}/reading/books/${code}/progress`, body),
+    /** form: FormData { file, rightsConfirmed:'true' }. opts: { onUploadProgress, signal } → 202 kitap (status: processing) */
+    contentReadingUpload: (form, opts = {}) => http.post(`${B}/reading/books`, form, { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 15 * 60 * 1000, ...opts }),
+    contentReadingBookUpdate: (code, body) => http.patch(`${B}/reading/books/${code}`, body),
+    contentReadingBookDelete: (code) => http.delete(`${B}/reading/books/${code}`),
+    /** Orijinal PDF için süreli bağlantı → { url (gateway köküne göre), expiresAt } */
+    contentReadingFileUrl: (code) => http.post(`${B}/reading/books/${code}/file-url`),
+    /** Taranmış PDF: OCR'ı başlatır (Premium + aylık sayfa hakkı) */
+    contentReadingOcrStart: (code) => http.post(`${B}/reading/books/${code}/ocr`),
     contentReportCreate: (body) => http.post(`${B}/content-reports`, body),
+    // ── CMS: kitaplar ──
+    contentCmsBooksList: (params) => http.get(`${B}/cms/books`, { params }),
+    /** form: FormData { file, title, author, description, level, topic, license, attribution, sourceUrl, accessTier } */
+    contentCmsBookCreate: (form, opts = {}) => http.post(`${B}/cms/books`, form, { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 15 * 60 * 1000, ...opts }),
+    contentCmsBookUpdate: (code, body) => http.put(`${B}/cms/books/${code}`, body),
+    contentCmsBookPublish: (code, published = true) => http.post(`${B}/cms/books/${code}/publish`, { published }),
     // ── CMS: maddeler ──
     contentCmsItemsList: (params) => http.get(`${B}/cms/items`, { params }),
     contentCmsItemCreate: (body) => http.post(`${B}/cms/items`, body),

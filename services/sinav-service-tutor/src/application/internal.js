@@ -2,6 +2,7 @@ import { DomainError } from 'app-shared';
 import { insertAiUsage } from '../shared/helpers.js';
 
 const FEATURES = ['tutor_chat', 'translation_eval', 'content_draft', 'word_gloss', 'sentence_translation', 'lexicon_prefill', 'lexicon_review'];
+const OCR_MAX_BASE64 = 9.5 * 1024 * 1024;
 const ROLES = new Set(['system', 'user', 'assistant']);
 const EFFORTS = ['none', 'minimal', 'low', 'medium', 'high'];
 
@@ -33,5 +34,20 @@ export const makeInternal = ({ rawQuery, llm }) => {
       throw e;
     }
   };
-  return Object.freeze({ aiComplete });
+  /** Taranmış PDF'in tek sayfası → metin (içerik servisi kitap OCR'ı). Ücret sayfa başınadır; ai_usage'a yazılır (günlük tavan buradan okunur). */
+  const ocrPage = async ({ caller, pdfBase64, pageNo }) => {
+    if (typeof pdfBase64 !== 'string' || !pdfBase64 || pdfBase64.length > OCR_MAX_BASE64) throw new DomainError('TUTOR_AI_MESSAGES_INVALID', 'pdfBase64 is missing or too large');
+    const userId = Number(caller?.callerUserId) || null;
+    const started = Date.now();
+    const model = process.env.BOOK_OCR_MODEL || llm.models.content;
+    try {
+      const r = await llm.ocrPdfPage({ pdfBase64, model, engine: process.env.BOOK_OCR_ENGINE || 'mistral-ocr' });
+      await insertAiUsage(rawQuery, { caller, userId, feature: 'book_ocr', model: r.model || model, usage: r.usage, latencyMs: Date.now() - started, succeeded: true, metadata: { internal: true, pageNo: Number(pageNo) || null, chars: r.text.length } });
+      return { text: r.text, model: r.model || model, usage: r.usage };
+    } catch (e) {
+      if (llm.configured) await insertAiUsage(rawQuery, { caller, userId, feature: 'book_ocr', model, latencyMs: Date.now() - started, succeeded: false, metadata: { internal: true, errorCode: e.code || null } });
+      throw e;
+    }
+  };
+  return Object.freeze({ aiComplete, ocrPage });
 };

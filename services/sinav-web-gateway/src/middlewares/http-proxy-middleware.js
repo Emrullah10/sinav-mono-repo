@@ -83,14 +83,19 @@ function injectAuthHeaders(proxyReq, req) {
 // SSE (text/event-stream) yanıtları tamponlanmaz: `responseInterceptor` gövdeyi sonuna kadar
 // biriktirdiği için akış tek parça gelirdi. Akış doğrudan istemciye aktarılır; istemci
 // bağlantıyı keserse yukarı akış da kapatılır (tutor servisi bunu "yarım kaldı" sayar).
+// PDF de tamponlanmaz: onlarca MB'lık dosya bellekte biriktirilmez, pdf.js'in Range istekleri için
+// content-length ve content-range başlıkları korunur.
 function passSseThrough(interceptor) {
   return (proxyRes, req, res) => {
-    if (!String(proxyRes.headers['content-type'] || '').includes('text/event-stream')) {
+    const contentType = String(proxyRes.headers['content-type'] || '');
+    const isSse = contentType.includes('text/event-stream');
+    if (!isSse && !contentType.includes('application/pdf')) {
       return interceptor(proxyRes, req, res);
     }
     res.statusCode = proxyRes.statusCode || 200;
+    const dropped = isSse ? ['transfer-encoding', 'content-length', 'connection'] : ['transfer-encoding', 'connection'];
     for (const [key, value] of Object.entries(proxyRes.headers)) {
-      if (value === undefined || ['transfer-encoding', 'content-length', 'connection'].includes(key)) continue;
+      if (value === undefined || dropped.includes(key)) continue;
       res.setHeader(key, value);
     }
     res.flushHeaders?.();

@@ -12,6 +12,7 @@ const NAV = [
   { key: 'reports', to: Routes.cmsReports },
   { key: 'examBuilder', to: Routes.cmsExamBuilder },
   { key: 'calendar', to: Routes.cmsCalendar },
+  { key: 'books', to: Routes.cmsBooks },
 ];
 
 // İç araç (masaüstü). Yoğun düzen; "siz" hitabı.
