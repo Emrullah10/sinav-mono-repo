@@ -35,6 +35,7 @@ function Section({ title, children }) {
 export default function Settings() {
   const { t } = useTranslation();
   const nav = useNavigate();
+  const themeMode = useThemeStore((s) => s.mode);
   const setTheme = useThemeStore((s) => s.setMode);
   const account = useApiQuery(['me', 'account'], () => api.identityAccountGet());
   const prefs = useApiQuery(['me', 'prefs'], () => api.identityPreferencesGet());
@@ -106,7 +107,7 @@ export default function Settings() {
 
       <Section title={t('me.set.appearance')}>
         <div className="stack-sm"><span className="t-title">{t('me.set.theme')}</span>
-          <Segmented label={t('me.set.theme')} value={p.theme} onChange={(v) => { setTheme(v); P({ theme: v }); }} options={['system', 'light', 'dark'].map((v) => ({ value: v, label: t(`me.set.themes.${v}`) }))} /></div>
+          <Segmented label={t('me.set.theme')} value={themeMode} onChange={(v) => { setTheme(v); P({ theme: v }); }} options={['system', 'light', 'dark'].map((v) => ({ value: v, label: t(`me.set.themes.${v}`) }))} /></div>
         <div className="stack-sm"><span className="t-title">{t('me.set.uiScale')}</span><Segmented label={t('me.set.uiScale')} value={p.uiTextScale} onChange={(v) => P({ uiTextScale: v })} options={scaleOpts} /></div>
         <Select label={t('me.set.readingFont')} value={p.readingFont} onChange={(e) => P({ readingFont: e.target.value })} options={['literata', 'figtree', 'atkinson_hyperlegible'].map((v) => ({ value: v, label: t(`me.set.fonts.${v}`) }))} />
         <div className="stack-sm"><span className="t-title">{t('me.set.readingScale')}</span><Segmented label={t('me.set.readingScale')} value={p.readingTextScale} onChange={(v) => P({ readingTextScale: v })} options={scaleOpts} /></div>

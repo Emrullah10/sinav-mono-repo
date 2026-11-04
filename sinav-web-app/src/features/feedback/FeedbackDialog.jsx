@@ -27,7 +27,8 @@ const deviceContext = () => ({
   pixelRatio: window.devicePixelRatio || 1,
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   online: navigator.onLine,
-  colorScheme: window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+  // Uygulanan tema (kullanıcı seçimi sistemden farklı olabilir)
+  colorScheme: document.documentElement.getAttribute('data-theme') || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
 });
 
 function Body({ onSent }) {

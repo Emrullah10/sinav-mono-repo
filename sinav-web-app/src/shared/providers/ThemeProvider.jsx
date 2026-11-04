@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ThemeProvider as MuiThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { useColorScheme } from '@mui/material/styles';
 import { colorSchemes, shape, fontFamily } from '@sinav/design-tokens/mui';
 import '@sinav/design-tokens/web.css';
 import '@fontsource-variable/figtree';
@@ -29,6 +30,15 @@ export const useResolvedTheme = () => {
   return mode === 'system' ? sys : mode;
 };
 
+// MUI defaultMode yalnız ilk açılışta okunur; sonraki değişiklikleri MUI'ye bildirir (yoksa zemin/kağıt rengi yenilemeye kadar eski kalır).
+function MuiModeSync({ mode }) {
+  const { setMode } = useColorScheme();
+  useEffect(() => {
+    setMode(mode);
+  }, [mode, setMode]);
+  return null;
+}
+
 export default function ThemeProvider({ children }) {
   const resolved = useResolvedTheme();
   const reduceMotion = useUiStore((s) => s.reduceMotion);
@@ -41,7 +51,9 @@ export default function ThemeProvider({ children }) {
   }, [resolved, reduceMotion]);
   const theme = useMemo(() => muiTheme, []);
   return (
-    <MuiThemeProvider theme={theme} defaultMode={resolved}>
+    // storageManager={null}: tek kaynak themeStore; MUI kendi 'mui-mode' kaydını tutmaz.
+    <MuiThemeProvider theme={theme} defaultMode={resolved} storageManager={null}>
+      <MuiModeSync mode={resolved} />
       <CssBaseline enableColorScheme />
       {children}
     </MuiThemeProvider>
