@@ -13,8 +13,9 @@ export const QUESTIONS_PER_PASSAGE = { reading: 4, cloze: 5, paragraph: 1 };
 export const MAX_COUNT = { question: 60, note: 10, passage: 10 };
 /** İstek başına üretilen birim sayısı (paragraf: 3 kısa metin; diğerleri tek). */
 export const unitsPerRequest = (p) => (p.kind === 'question' ? 5 : p.kind === 'passage' && p.passageKind === 'paragraph' ? 3 : 1);
-// Soru: YDS uzunluğundaki 5 soru (açıklama + 4 ipucu, Türkçe) 6000'e sığmıyordu.
-export const maxTokensFor = (p) => (p.kind === 'note' ? 8000 : p.kind === 'passage' ? 12000 : 9000);
+// Soru: YDS uzunluğundaki 5 soru (açıklama + 4 ipucu, Türkçe) 6000'e sığmıyordu; pilotta (2026-11-04) model ~3000 token düşünüp
+// 9000'de de kesildi (phrasal verb işi) → 12000.
+export const maxTokensFor = (p) => (p.kind === 'note' ? 8000 : p.kind === 'passage' ? 12000 : 12000);
 
 const nz = (s) => typeof s === 'string' && s.trim().length > 0;
 const words = (s) => String(s || '').trim().split(/\s+/).filter(Boolean).length;

@@ -15,6 +15,11 @@ import { headwordCandidates } from './study.js';
 // tutor'da cost_tier low; düşünme kapalı) denetlenir, yalnız hatalılar düzeltilir. Günlük harcama tavanı LEXICON_REVIEW_DAILY_USD
 // (varsayılan 0.5; 0 = kontrol kapalı), bugünkü harcama her turda tutor.ai_usage'dan okunur (yeniden başlatma tavanı sıfırlamaz).
 //
+// ÖNCELİK: şu an okunan bölümler (son 14 günde okunan kitapta o bölüm + sonraki 2) ve yeni yüklenen kişisel kitabın ilk 3 bölümü
+// kuyruğun önüne geçer. Okuyucu yeni bölüme geçince ya da bir kitap hazır olunca 6 saat beklemeden yeniden taranır (readingSig).
+// Kişisel kitap: YALNIZ kelimeler (küçük harfle geçenler; özel isimler ortak sözlüğe gitmesin). Cümleleri ücretsiz modele gitmez:
+// belge özel olabilir, çevirisi kitaba bağlı tabloya istek anında yazılır (lexicon.sentence).
+//
 // Eşleşme kuralı: önbellek anahtarı cümle metni (sentenceHash) ve kelime biçimi (lexiconForm). Metin, web'in TapText'e verdiği
 // biçimde üretilir: Markdown ile çizilen alanlar markdownTapLines (web Markdown bileşeniyle aynı ayrıştırıcı), şıklar düz metin.
 
@@ -48,36 +53,58 @@ export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon
 
   // Yayındaki İngilizce metinler; sıra: madde, sonra paragraf → kök → şıklar (cümle grupları bağlamı korusun). En sonda hazır kitaplar: kısa özgün kitaplar
   // tamamen, klasiklerin yalnız ilk bölümü (uzun romanlar ücretsiz kotayı sınav içeriğinin önüne geçirmesin). Kişisel kitaplar asla girmez.
+  // pri = 1: okunan bölüm (önce çevrilir); own: kişisel kitap (yalnız kelime).
   const loadTexts = async () => (await rawQuery(
-    `WITH pub AS (SELECT i.item_id, i.item_published_revision_id AS rid FROM content.item i WHERE i.item_status = 'published' AND i.item_language = 'en')
-     SELECT 'md' AS f, ps.passage_body AS t, pub.item_id AS ord, 0 AS pos, '' AS lbl FROM content.passage ps JOIN pub ON pub.rid = ps.passage_item_revision_id
-     UNION ALL SELECT 'md', q.question_stem, pub.item_id, 1, '' FROM content.question q JOIN pub ON pub.rid = q.question_item_revision_id WHERE q.question_stem IS NOT NULL
-     UNION ALL SELECT 'plain', o.question_option_text, pub.item_id, 2, o.question_option_label FROM content.question_option o
+    `WITH pub AS (SELECT i.item_id, i.item_published_revision_id AS rid FROM content.item i WHERE i.item_status = 'published' AND i.item_language = 'en'),
+          reading AS (SELECT DISTINCT p.book_progress_book_id AS bid, g.pos FROM content.book_progress p
+            CROSS JOIN LATERAL generate_series(p.book_progress_section_position, p.book_progress_section_position + 2) AS g(pos)
+            WHERE p.book_progress_last_read_at > now() - interval '14 days')
+     SELECT 'md' AS f, ps.passage_body AS t, pub.item_id AS ord, 0 AS pos, '' AS lbl, 0 AS pri, false AS own FROM content.passage ps JOIN pub ON pub.rid = ps.passage_item_revision_id
+     UNION ALL SELECT 'md', q.question_stem, pub.item_id, 1, '', 0, false FROM content.question q JOIN pub ON pub.rid = q.question_item_revision_id WHERE q.question_stem IS NOT NULL
+     UNION ALL SELECT 'plain', o.question_option_text, pub.item_id, 2, o.question_option_label, 0, false FROM content.question_option o
        JOIN content.question q ON q.question_id = o.question_option_question_id JOIN pub ON pub.rid = q.question_item_revision_id
-     UNION ALL SELECT 'plain', blk.b->>'x', 1000000000000 + bk.book_id, sc.book_section_position * 100000 + blk.n::int, '' FROM content.book bk
-       JOIN content.book_section sc ON sc.book_section_book_id = bk.book_id CROSS JOIN LATERAL jsonb_array_elements(sc.book_section_blocks) WITH ORDINALITY AS blk(b, n)
-      WHERE bk.book_kind = 'catalog' AND bk.book_status = 'ready' AND bk.book_published_at IS NOT NULL AND bk.book_language = 'en' AND (bk.book_key LIKE 'odak-%' OR sc.book_section_position = 0)
-     ORDER BY 3, 4, 5`)).rows;
+     UNION ALL SELECT 'plain', blk.b->>'x', 1000000000000 + bk.book_id, sc.book_section_position * 100000 + blk.n::int, '',
+            CASE WHEN rd.bid IS NOT NULL OR (bk.book_kind = 'personal' AND bk.book_processed_at > now() - interval '14 days' AND sc.book_section_position <= 2) THEN 1 ELSE 0 END,
+            bk.book_kind = 'personal'
+       FROM content.book bk JOIN content.book_section sc ON sc.book_section_book_id = bk.book_id
+       LEFT JOIN reading rd ON rd.bid = bk.book_id AND rd.pos = sc.book_section_position
+       CROSS JOIN LATERAL jsonb_array_elements(sc.book_section_blocks) WITH ORDINALITY AS blk(b, n)
+      WHERE bk.book_status = 'ready' AND bk.book_language = 'en' AND (
+            (bk.book_kind = 'catalog' AND bk.book_published_at IS NOT NULL AND (bk.book_key LIKE 'odak-%' OR sc.book_section_position = 0 OR rd.bid IS NOT NULL))
+         OR (bk.book_kind = 'personal' AND (rd.bid IS NOT NULL OR (bk.book_processed_at > now() - interval '14 days' AND sc.book_section_position <= 2))))
+     ORDER BY 6 DESC, 3, 4, 5`)).rows;
+
+  // Okuma imzası: okunan bölümler + hazır kitapların son değişimi. Değişince (yeni bölüm, yeni kitap) yeniden taranır.
+  const readingSig = async () => (await rawQuery(
+    `SELECT (SELECT COALESCE(string_agg(k, ',' ORDER BY k), '') FROM (SELECT DISTINCT book_progress_book_id || ':' || book_progress_section_position AS k
+               FROM content.book_progress WHERE book_progress_last_read_at > now() - interval '14 days') a)
+         || '|' || COALESCE((SELECT max(book_updated_at)::text FROM content.book WHERE book_status = 'ready'), '') AS s`)).rows[0]?.s || '';
 
   const rescan = async () => {
     const freq = new Map();
+    const hot = new Set(); // okunan bölümlerdeki kelimeler
     const sentences = [];
     const seen = new Set();
     for (const r of await loadTexts()) {
       const lines = r.f === 'md' ? markdownTapLines(r.t) : [String(r.t ?? '')];
+      const pri = Number(r.pri) === 1;
       for (const line of lines) {
         for (const tok of tokenize(line).tokens) {
           if (!tok.word) continue;
+          if (r.own && tok.text[0] !== tok.text[0].toLowerCase()) continue; // kişisel kitapta büyük harfli (özel isim olabilir) atlanır
           const f = lexiconForm(tok.text);
-          if (isLexiconForm(f)) freq.set(f, (freq.get(f) || 0) + 1);
+          if (!isLexiconForm(f) || (f.length === 1 && f !== 'a' && f !== 'i')) continue; // tek harf (c, x…) boş kayıt üretiyordu
+          freq.set(f, (freq.get(f) || 0) + 1);
+          if (pri) hot.add(f);
         }
+        if (r.own) continue;
         for (const s of splitSentences(line)) {
           const text = normalizeSentence(s.text);
           if (!text || text.length > LEXICON_LIMITS.sentenceMax || !HAS_LETTER.test(text)) continue;
           const hash = sentenceHash(text);
           if (seen.has(hash)) continue;
           seen.add(hash);
-          sentences.push({ text, hash });
+          sentences.push({ text, hash, hot: pri }); // satırlar pri DESC sıralı: okunan bölüm cümleleri önde
         }
       }
     }
@@ -92,9 +119,11 @@ export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon
       `SELECT sentence_translation_hash AS h FROM content.sentence_translation WHERE sentence_translation_tenant_code = $1`, [p.tenantCode])).rows.map((x) => String(x.h).trim()));
     st.words = [...freq.entries()]
       .filter(([f]) => !glossed.has(f) && !headwordCandidates(normalizeHeadword(f)).some((c) => curated.has(c)))
-      .sort((a, b) => b[1] - a[1]) // sık geçen kelime önce
+      .sort((a, b) => (hot.has(b[0]) - hot.has(a[0])) || b[1] - a[1]) // okunan bölüm önce, sonra sık geçen
       .map(([f]) => f);
     st.sentences = sentences.filter((s) => !done.has(s.hash));
+    st.hotWords = st.words.filter((f) => hot.has(f)).length;
+    st.hotSentences = st.sentences.filter((s) => s.hot).length;
     st.tries.clear();
   };
 
@@ -154,12 +183,12 @@ export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon
     }
     const now = nowFn().getTime();
     if (now < st.pausedUntil) return { skipped: 'paused' };
-    const ver = await catalogVersion();
+    const ver = `${await catalogVersion()}|${await readingSig()}`;
     if (st.ver !== ver || now - st.scannedAt > RESCAN_MS) {
       await rescan();
       st.ver = ver;
       st.scannedAt = now;
-      console.log(`[lexicon-prefill] tarama: çevrilecek kelime ${st.words.length}, cümle ${st.sentences.length}`);
+      console.log(`[lexicon-prefill] tarama: çevrilecek kelime ${st.words.length} (okunan bölümlerden ${st.hotWords}), cümle ${st.sentences.length} (okunan bölümlerden ${st.hotSentences})`);
     }
     const started = Date.now();
     let words = 0;
@@ -261,7 +290,7 @@ export const makeLexiconPrefill = ({ rawQuery, nowFn = () => new Date(), lexicon
 
   /** Durum (izleme için): kuyrukta kalanlar ve bekleme. */
   const status = () => ({
-    models: models(), remainingWords: st.words.length, remainingSentences: st.sentences.length, pausedUntil: st.pausedUntil ? new Date(st.pausedUntil).toISOString() : null, disabled: st.disabled,
+    models: models(), remainingWords: st.words.length, remainingSentences: st.sentences.length, hotWords: st.hotWords || 0, hotSentences: st.hotSentences || 0, pausedUntil: st.pausedUntil ? new Date(st.pausedUntil).toISOString() : null, disabled: st.disabled,
     review: { model: reviewModel(), capUsd: reviewCapMicros() / 1e6, spentTodayUsd: rv.spentToday / 1e6, reviewed: rv.reviewed, fixed: rv.fixed, pausedUntil: rv.pausedUntil ? new Date(rv.pausedUntil).toISOString() : null },
   });
 

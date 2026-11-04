@@ -55,12 +55,13 @@ export const internalHeaders = (caller) => {
 /**
  * @param {string} url
  * @param {{method?:string, headers?:object, body?:unknown, timeoutMs:number,
- *          fetchFn?:Function}} opts  `body` nesne ise JSON'a çevrilir.
+ *          fetchFn?:Function, signal?:AbortSignal}} opts  `body` nesne ise JSON'a çevrilir.
+ *          `signal`: çağıranın iptali (ör. yarışı kaybeden yedek istek); zaman aşımıyla birlikte geçerlidir.
  * @returns {Promise<Response>}
  */
 export const fetchInternal = async (
   url,
-  { method = 'GET', headers, body, timeoutMs, fetchFn = globalThis.fetch } = {},
+  { method = 'GET', headers, body, timeoutMs, fetchFn = globalThis.fetch, signal = null } = {},
 ) => {
   if (!(timeoutMs > 0)) throw new Error('fetchInternal: timeoutMs required');
   try {
@@ -70,7 +71,7 @@ export const fetchInternal = async (
       ...(body === undefined
         ? {}
         : { body: typeof body === 'string' ? body : JSON.stringify(body) }),
-      signal: AbortSignal.timeout(timeoutMs),
+      signal: signal ? AbortSignal.any([AbortSignal.timeout(timeoutMs), signal]) : AbortSignal.timeout(timeoutMs),
     });
   } catch (error) {
     const timedOut = error?.name === 'TimeoutError' || error?.name === 'AbortError';

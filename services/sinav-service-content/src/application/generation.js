@@ -180,7 +180,7 @@ export const makeGeneration = ({ rawQuery, nowFn, fetchFn, items }) => {
     if (process.env.CONTENT_AI_CHECK === '0' || !questions.length) return null;
     try {
       const { system, user } = checkPrompts({ passageBody, questions });
-      const data = await callTutor(job, [{ role: 'system', content: system }, { role: 'user', content: user }], caller, { model: process.env.EVAL_MODEL || undefined, maxTokens: 800 });
+      const data = await callTutor(job, [{ role: 'system', content: system }, { role: 'user', content: user }], caller, { model: process.env.EVAL_MODEL || undefined, maxTokens: 3000 }); // 800'ü düşünme yiyordu (pilot: finishReason length, cevap yok)
       st.cost += costOf(data);
       const answers = extractJson(data)?.answers;
       if (!Array.isArray(answers)) return { status: 'error', model: data?.model || null, mismatches: [] };

@@ -16,6 +16,13 @@ const tutorUrl = () => `${(process.env.SERVICE_TUTOR_REST_URL || process.env.TUT
 const aiTimeout = () => Number(process.env.LEXICON_AI_TIMEOUT_MS) || 35000;
 const WORD_MAX_TOKENS = 1500;
 const sentenceMaxTokens = (chars) => Math.min(6000, Math.ceil(chars / 2) + 1000);
+// Yavaş cevap sigortası eşiği (ms; LEXICON_HEDGE_MS, 0 = kapalı). Cümlede çıktı uzunluğa göre uzar: karakter başına 4 ms pay.
+const hedgeBase = () => {
+  const v = process.env.LEXICON_HEDGE_MS;
+  const n = v === undefined || v === '' ? 6000 : Number(v);
+  return Number.isFinite(n) && n >= 0 ? n : 6000;
+};
+const sentenceHedgeMs = (chars) => (hedgeBase() ? hedgeBase() + Math.min(20000, chars * 4) : 0);
 const LIMITS = { word: { free: 60, premium: 300 }, sentence: { free: 20, premium: 100 } };
 const POS = ['noun', 'verb', 'adjective', 'adverb', 'phrasal_verb', 'conjunction', 'preposition', 'pronoun', 'determiner', 'interjection', 'numeral', 'idiom', 'collocation'];
 const POS_ALIAS = { auxiliary: 'verb', modal: 'verb', 'modal verb': 'verb', 'auxiliary verb': 'verb', article: 'determiner', phrase: 'idiom', 'proper noun': 'noun', number: 'numeral', 'phrasal verb': 'phrasal_verb' };
@@ -63,6 +70,49 @@ const lexFail = (feature, message, ctx = {}, details = undefined) => {
   return new DomainError('CONTENT_LEXICON_UNAVAILABLE', message, details, 503);
 };
 
+/**
+ * Yedekli istek: run(0, signal) `hedgeAfterMs` içinde bitmezse ya da hata verirse run(1, signal) başlar (en fazla iki);
+ * önce biten BAŞARILI sonuç kazanır, öteki iptal edilir. İkisi de başarısızsa son hata. → { value, backup, winner: 'first'|'backup' }
+ */
+export const withBackup = (run, hedgeAfterMs, label = 'ai') => new Promise((resolve, reject) => {
+  const started = Date.now();
+  const ctrls = [new AbortController(), new AbortController()];
+  let settled = false;
+  let backup = false;
+  let running = 0;
+  let timer = null;
+  const finish = (fn, v) => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timer);
+    for (const c of ctrls) c.abort();
+    fn(v);
+  };
+  const launch = (i) => {
+    running += 1;
+    Promise.resolve().then(() => run(i, ctrls[i].signal))
+      .then((value) => {
+        if (backup) console.log(`[lexicon] ${label}: ${i ? 'yedek' : 'ilk'} istek kazandı (${Date.now() - started} ms)`);
+        finish(resolve, { value, backup, winner: i ? 'backup' : 'first' });
+      })
+      .catch((e) => {
+        running -= 1;
+        if (settled) return;
+        if (!backup) startBackup(true);
+        else if (running === 0) finish(reject, e);
+      });
+  };
+  const startBackup = (failed) => {
+    if (backup || settled) return;
+    backup = true;
+    clearTimeout(timer);
+    console.log(`[lexicon] ${label}: ilk istek ${failed ? 'başarısız' : `${hedgeAfterMs} ms içinde dönmedi`}, yedek istek (latency)`);
+    launch(1);
+  };
+  launch(0);
+  if (!settled && !backup) timer = setTimeout(() => startBackup(false), hedgeAfterMs);
+});
+
 export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
   const inflight = new Map();
 
@@ -88,18 +138,20 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     try { if (uid) await redis()?.decr(`lexicon:${uid}:${kind}:${localDate(nowFn(), 'Europe/Istanbul')}`); } catch { /* best-effort */ }
   };
 
-  const askAi = async (caller, feature, messages, maxTokens, { model, timeoutMs } = {}) => {
+  const askOnce = async (caller, feature, messages, maxTokens, { model, timeoutMs, signal = null, providerSort = null } = {}) => {
     let res;
     try {
       res = await fetchInternal(`${tutorUrl()}/internal/ai/complete`, {
-        method: 'POST', headers: internalHeaders(caller), timeoutMs: timeoutMs || aiTimeout(), fetchFn,
-        body: { feature, model: model || process.env.CONTENT_MODEL || undefined, messages, json: true, maxTokens, reasoning: 'none', userAccountId: userIdOf(caller) },
+        method: 'POST', headers: internalHeaders(caller), timeoutMs: timeoutMs || aiTimeout(), fetchFn, signal,
+        body: { feature, model: model || process.env.CONTENT_MODEL || undefined, messages, json: true, maxTokens, reasoning: 'none', userAccountId: userIdOf(caller), ...(providerSort ? { providerSort } : {}) },
       });
     } catch (e) {
+      if (signal?.aborted) throw e; // yarışı kaybeden istek: loglamadan bırak
       throw lexFail(feature, `Translation service unreachable: ${e.message}`);
     }
     let body = null;
     try { body = await res.json(); } catch { body = null; }
+    if (signal?.aborted) throw new Error('aborted');
     if (!res.ok || body?.success === false) {
       throw lexFail(feature, body?.error?.message || `Translation failed (${res.status})`, { status: res.status, upstream: body?.error?.code || null }, { upstream: body?.error?.code || res.status });
     }
@@ -111,6 +163,24 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     }
     if (!out || typeof out !== 'object') throw lexFail(feature, meta.finishReason === 'length' ? 'Translation was cut off' : 'Translation returned no JSON', meta);
     return { out, model: meta.model, meta };
+  };
+
+  /**
+   * Yavaş cevap sigortası (yalnız kullanıcının beklediği dokun-çevir): ilk istek `hedgeAfterMs` içinde geçerli cevap vermezse ya da hata
+   * verirse aynı istek bir kez daha, en düşük gecikmeli sağlayıcıya (providerSort 'latency') gider; önce gelen geçerli cevap kullanılır,
+   * öteki bırakılır. Canlı ölçüm (2026-11-04): p50 ~2-3 sn, ara sıra 16-21 sn; düşünme kapalı, 70-130 token: gecikme sağlayıcı kuyruğunda.
+   * Bırakılan istek tutor'da biter ve tutor.ai_usage'a yazılır: yalnız yavaş/hatalı isteklerde maliyet en fazla iki katı.
+   * `accept(out)` cevabı doğrular; geçersiz cevap da hata sayılır ve yedeği tetikler. En fazla iki istek.
+   */
+  const askAi = (caller, feature, messages, maxTokens, { model, timeoutMs, hedgeAfterMs = 0, accept = null } = {}) => {
+    const once = async (opts) => {
+      const r = await askOnce(caller, feature, messages, maxTokens, { model, timeoutMs, ...opts });
+      if (accept && !accept(r.out)) throw lexFail(feature, 'Translation was incomplete', r.meta);
+      return r;
+    };
+    if (!(hedgeAfterMs > 0)) return once({});
+    return withBackup((i, signal) => once({ signal, providerSort: i ? 'latency' : null }), hedgeAfterMs, feature)
+      .then(({ value, backup, winner }) => ({ ...value, meta: { ...value.meta, hedged: backup, winner } }));
   };
 
   // ── kelime ──
@@ -191,7 +261,8 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     let g;
     let model;
     try {
-      const r = await askAi(caller, 'word_gloss', [{ role: 'system', content: WORD_SYSTEM }, { role: 'user', content: `<kelime>${form}</kelime>` }], WORD_MAX_TOKENS);
+      const r = await askAi(caller, 'word_gloss', [{ role: 'system', content: WORD_SYSTEM }, { role: 'user', content: `<kelime>${form}</kelime>` }], WORD_MAX_TOKENS,
+        { hedgeAfterMs: hedgeBase(), accept: (out) => Boolean(parseGloss(out)) });
       g = parseGloss(r.out);
       model = r.model;
       if (!g) throw lexFail('word_gloss', 'Translation was incomplete', { form, ...r.meta });
@@ -323,7 +394,11 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
       let meta;
       try {
         const user = missing.map((m, i) => `[${i + 1}] ${m.text}`).join('\n');
-        ({ out, model, meta } = await askAi(caller, 'sentence_translation', [{ role: 'system', content: SENTENCE_SYSTEM }, { role: 'user', content: user }], sentenceMaxTokens(user.length)));
+        // accept: hizalama bozuksa (aşağıdaki usable kuralı) yedek bir kez dener.
+        ({ out, model, meta } = await askAi(caller, 'sentence_translation', [{ role: 'system', content: SENTENCE_SYSTEM }, { role: 'user', content: user }], sentenceMaxTokens(user.length), {
+          hedgeAfterMs: sentenceHedgeMs(user.length),
+          accept: (o) => { const t = Array.isArray(o?.translations) ? o.translations : []; return t.length === missing.length || (missing.length === 1 && Boolean(t[0])); },
+        }));
       } catch (e) {
         await refund(caller, 'sentence');
         throw e;

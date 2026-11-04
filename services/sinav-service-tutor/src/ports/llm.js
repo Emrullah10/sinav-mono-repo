@@ -114,9 +114,10 @@ export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThi
     'X-Title': 'Odak',
   };
 
-  const completeOnce = async ({ messages, model, json = false, maxTokens = 1500, signal, webSearch = null, reasoning = null } = {}) => {
+  // İstek başına `providerSort` (ör. dokun-çevirin yedek isteği 'latency') ortamdaki OPENROUTER_PROVIDER_SORT'u ezer.
+  const completeOnce = async ({ messages, model, json = false, maxTokens = 1500, signal, webSearch = null, reasoning = null, providerSort: sortOverride = null } = {}) => {
     const m = model || models.tutor;
-    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, usage: { include: true }, ...(json ? { response_format: { type: 'json_object' } } : {}), ...routing(m, { autoAllowed, autoCostTier, maxPrice, reasoningEffort, providerSort }, webSearch, reasoning) };
+    const body = { model: m, messages: toApiMessages(messages, m), max_tokens: maxTokens, usage: { include: true }, ...(json ? { response_format: { type: 'json_object' } } : {}), ...routing(m, { autoAllowed, autoCostTier, maxPrice, reasoningEffort, providerSort: sortOverride || providerSort }, webSearch, reasoning) };
     try {
       const res = await fetchFn(url, { method: 'POST', headers, body: JSON.stringify(body), signal: withTimeout(signal, timeoutMs) });
       const raw = await res.text();
