@@ -179,7 +179,7 @@ for (const f of files) {
       if (!LEGAL.has(d.type)) err(f, w, `type ${d.type}`);
       if (seen.has(d.type)) err(f, w, 'yinelenen type'); seen.add(d.type);
       for (const k of ['locale', 'version', 'title', 'summaryMd', 'bodyMd']) if (!str(d[k])) err(f, w, `${k} boş`);
-      if (!/TASLAK — hukuk onayı bekliyor/.test(d.bodyMd || '')) err(f, w, 'TASLAK notu yok');
+      if (!d.published && !/TASLAK — hukuk onayı bekliyor/.test(d.bodyMd || '')) err(f, w, 'TASLAK notu yok');
     });
     for (const t of LEGAL) if (!seen.has(t)) err(f, 'coverage', `yasal tür yok: ${t}`);
   }

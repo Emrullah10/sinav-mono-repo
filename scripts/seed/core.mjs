@@ -238,7 +238,7 @@ export const seedLegal = async (ctx) => {
           const e = await ctx.db.query(`SELECT 1 FROM identity.legal_document WHERE legal_document_doc_type=$1 AND legal_document_locale=$2 AND legal_document_version=$3`, [x.type, loc, x.version]);
           if (e.rows[0]) return bump(rep, x.fallback ? 'fallback taslak' : 'belge', false);
           await ctx.db.query(`UPDATE identity.legal_document SET legal_document_is_current=false WHERE legal_document_doc_type=$1 AND legal_document_locale=$2 AND legal_document_is_current`, [x.type, loc]);
-          const body = /TASLAK/.test(x.bodyMd) ? x.bodyMd : `> ${TASLAK}\n\n${x.bodyMd}`;
+          const body = x.published || /TASLAK/.test(x.bodyMd) ? x.bodyMd : `> ${TASLAK}\n\n${x.bodyMd}`;
           await insert(ctx, 'identity', 'legal_document', { doc_type: x.type, version: x.version, locale: loc, title: x.title, summary_md: x.summaryMd ?? null, body_md: body, published_at: new Date(), is_current: true });
           bump(rep, x.fallback ? 'fallback taslak' : 'belge', true);
         });
