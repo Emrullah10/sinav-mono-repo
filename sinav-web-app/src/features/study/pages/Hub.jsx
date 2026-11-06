@@ -1,6 +1,7 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layers, BookX, Shuffle } from 'lucide-react';
+import { FEATURE_HUE, typeHue } from '@sinav/domain';
 import api from '@api';
 import useApiQuery from '@hooks/useApiQuery';
 import Routes, { path } from '@shared/constant/route-paths';
@@ -12,6 +13,8 @@ import Banner from '@components/Banner/Banner';
 import EmptyState from '@components/EmptyState/EmptyState';
 import ErrorState from '@components/ErrorState/ErrorState';
 import Skeleton from '@components/Skeleton/Skeleton';
+import IconTile from '@components/IconTile/IconTile';
+import { typeIcon } from '@shared/utils/studyIcons';
 import MasteryBadge from '../components/MasteryBadge';
 import usePracticeStart from '../hooks/usePracticeStart';
 import ContinueCard from '@features/reading/components/ContinueCard';
@@ -43,14 +46,14 @@ export default function Hub() {
         <div className={styles.due}>
           <Card>
             <div className="stack-sm">
-              <h3 className="t-title row"><Layers size={18} aria-hidden /> {t('study.hub.vocabCard')}</h3>
+              <h3 className={`t-title ${styles.cardHead}`}><IconTile icon={Layers} hue={FEATURE_HUE.vocab} size={36} /> {t('study.hub.vocabCard')}</h3>
               <p className="muted t-body-s">{vocab.dueCards ? t('study.hub.vocabBody', { n: vocab.dueCards }) : t('study.hub.vocabNone')}</p>
               <div className="row"><Button size="sm" onClick={() => nav(vocab.dueCards ? Routes.vocabReview : Routes.vocab)}>{vocab.dueCards ? t('study.vocab.start') : t('study.vocab.title')}</Button></div>
             </div>
           </Card>
           <Card>
             <div className="stack-sm">
-              <h3 className="t-title row"><BookX size={18} aria-hidden /> {t('study.hub.mistakeCard')}</h3>
+              <h3 className={`t-title ${styles.cardHead}`}><IconTile icon={BookX} hue={FEATURE_HUE.mistakes} size={36} /> {t('study.hub.mistakeCard')}</h3>
               <p className="muted t-body-s">{mistakes.due ? t('study.hub.mistakeBody', { n: mistakes.due, open: mistakes.open }) : t('study.hub.mistakeNone')}</p>
               <div className="row">
                 <Button size="sm" onClick={() => nav(mistakes.due ? Routes.mistakeReview : Routes.mistakes)}>{mistakes.due ? t('study.mistakes.reviewDue') : t('study.mistakes.title')}</Button>
@@ -68,7 +71,7 @@ export default function Hub() {
               <Card key={ty.key} tone={ty.key === recommendedTypeKey ? 'accent' : 'default'}>
                 <div className="stack-sm">
                   <div className="row" style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
-                    <h3 className="t-title"><Link to={path(Routes.studyType, { type: ty.key })}>{ty.name}</Link></h3>
+                    <h3 className={`t-title ${styles.cardHead}`}><IconTile icon={typeIcon(ty.key)} hue={typeHue(ty.key)} size={36} /><Link to={path(Routes.studyType, { type: ty.key })}>{ty.name}</Link></h3>
                     {ty.key === recommendedTypeKey && <Chip tone="accent" size="sm">{t('study.hub.recommended')}</Chip>}
                   </div>
                   <p className="t-caption muted">{t('study.hub.questionsInExam', { n: ty.questionCountInExam })}</p>

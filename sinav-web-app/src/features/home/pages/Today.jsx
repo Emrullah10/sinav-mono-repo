@@ -94,8 +94,8 @@ export default function Today() {
                     <Banner tone="success" title={t('home.dayComplete')} action={<Button size="sm" variant="secondary" onClick={() => nav(Routes.dayDone)}>{t('home.daySummary')}</Button>}>{t('home.dayCompleteBody')}</Banner>
                   )}
                   <div className="stack-sm">
-                    {tasks.map((task, i) => (
-                      <TaskCard key={task.code} task={task} index={i} isNext={nextTask?.code === task.code} busy={busy === task.code && (start.isPending || postpone.isPending || skip.isPending)}
+                    {tasks.map((task) => (
+                      <TaskCard key={task.code} task={task} isNext={nextTask?.code === task.code} busy={busy === task.code && (start.isPending || postpone.isPending || skip.isPending)}
                         onStart={startTask} onPostpone={act(postpone)} onSkip={act(skip)} />
                     ))}
                   </div>

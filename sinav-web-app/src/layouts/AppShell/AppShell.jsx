@@ -140,7 +140,8 @@ export default function AppShell() {
       <nav className={styles.tabs} aria-label={t('nav.main')}>
         {NAV.map(({ key, to, icon: Icon }) => (
           <NavLink key={key} to={to} className={({ isActive }) => classNames(styles.tab, (isActive || childOn(key)) && styles.active)}>
-            <Icon size={22} aria-hidden /> <span>{t(`nav.${key}`)}</span>
+            <span className={styles.tabIcon} aria-hidden><Icon size={22} /></span>
+            <span>{t(`nav.${key}`)}</span>
           </NavLink>
         ))}
       </nav>

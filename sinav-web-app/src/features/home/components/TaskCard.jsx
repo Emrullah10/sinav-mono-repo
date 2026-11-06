@@ -4,6 +4,9 @@ import classNames from 'classnames';
 import Button from '@components/Button/Button';
 import Chip from '@components/Chip/Chip';
 import ProgressBar from '@components/ProgressBar/ProgressBar';
+import IconTile from '@components/IconTile/IconTile';
+import { taskHue } from '@sinav/domain';
+import { taskIcon } from '@shared/utils/studyIcons';
 import styles from './TaskCard.module.scss';
 
 export const taskTitle = (t, task) => {
@@ -14,12 +17,14 @@ export const taskTitle = (t, task) => {
 export const taskReason = (t, task) => {
   const p = task.reasonParams || {};
   if (task.reason === 'weak_skill' && p.typeName == null) return t('home.reason.weak_skill_plain');
+  // İleri günler için üretilen planda sayı yok (count=null): "0 hatan var" yerine sayısız cümle.
+  if ((task.reason === 'due_mistakes' || task.reason === 'due_review') && p.count == null) return t(`home.reason.${task.reason}_plain`);
   const key = `home.reason.${task.reason}`;
   return t(key, { count: p.count ?? 0, typeName: p.typeName ?? p.skillName ?? '', mastery: Math.round(p.mastery ?? 0) });
 };
 
 // Tek plan görevi: durum, neden, süre; sıradaki göreve vurgu.
-export default function TaskCard({ task, index, isNext, busy, onStart, onPostpone, onSkip }) {
+export default function TaskCard({ task, isNext, busy, onStart, onPostpone, onSkip }) {
   const { t } = useTranslation();
   const done = task.status === 'completed';
   const closed = done || task.status === 'skipped' || task.status === 'postponed';
@@ -28,7 +33,7 @@ export default function TaskCard({ task, index, isNext, busy, onStart, onPostpon
     <article className={classNames(styles.card, isNext && styles.next, closed && styles.closed)} aria-label={taskTitle(t, task)}>
       {isNext && <span className={styles.badge}>{t('home.nextBadge')}</span>}
       <div className={styles.head}>
-        <span className={classNames(styles.num, done && styles.numDone)} aria-hidden>{done ? <Check size={16} /> : index + 1}</span>
+        <IconTile icon={done ? Check : taskIcon(task)} hue={taskHue(task)} done={done} className={closed && !done ? styles.muted : undefined} />
         <div className="grow stack-sm" style={{ gap: 'var(--space-2)' }}>
           <h3 className={classNames('t-title', task.status === 'skipped' && styles.strike)}>{taskTitle(t, task)}</h3>
           <p className="t-body-s muted"><strong>{t('home.reasonLabel')}</strong> {taskReason(t, task)}</p>

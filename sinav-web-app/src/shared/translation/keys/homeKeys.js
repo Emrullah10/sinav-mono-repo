@@ -37,6 +37,8 @@ export default {
   'home.reason.diagnostic_pending': { tr: 'Planın kişiselleşmesi için önce seviye tespitini tamamla.', en: 'Finish the level check so your plan can be personalised.' },
   'home.reason.due_mistakes': { tr: 'Tekrar zamanı gelen {{count}} hatan var.', en: 'You have {{count}} mistakes due for review.' },
   'home.reason.due_review': { tr: 'Tekrar zamanı gelen {{count}} kartın var.', en: 'You have {{count}} cards due for review.' },
+  'home.reason.due_mistakes_plain': { tr: 'Tekrar zamanı gelen hataların var.', en: 'You have mistakes due for review.' },
+  'home.reason.due_review_plain': { tr: 'Tekrar zamanı gelen kartların var.', en: 'You have cards due for review.' },
   'home.reason.weak_skill': { tr: 'Zayıf alanın: {{typeName}} (ustalık %{{mastery}}).', en: 'Weak area: {{typeName}} (mastery {{mastery}}%).' },
   'home.reason.weak_skill_plain': { tr: 'Zayıf bir alanını güçlendiriyoruz.', en: 'We are strengthening a weak area.' },
   'home.reason.new_content': { tr: 'Yeni içerikle kapsamı genişletiyoruz.', en: 'New content widens your coverage.' },

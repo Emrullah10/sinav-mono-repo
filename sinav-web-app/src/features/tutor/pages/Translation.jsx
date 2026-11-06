@@ -19,15 +19,18 @@ import styles from './Home.module.scss';
 
 const DIRECTIONS = ['en_tr', 'tr_en'];
 // Seviye → sunucudaki zorluk bandı (translation.js DIFFICULTY_LABELS: kolay 1–2, orta 3, zor 4–5). Son seçim hatırlanır.
-const LEVELS = ['easy', 'medium', 'hard'];
+// CEFR seviyeleri (kitaplıkla aynı); sunucu: A2=1, B1=2, B2=3, C1=4–5.
+const LEVELS = ['a2', 'b1', 'b2', 'c1'];
 const LEVEL_KEY = 'tutor.tr.level';
-const levelOfDifficulty = (d) => (d <= 2 ? 'easy' : d === 3 ? 'medium' : 'hard');
+const OLD_LEVELS = { easy: 'b1', medium: 'b2', hard: 'c1' };
+const levelOfDifficulty = (d) => (d <= 1 ? 'a2' : d === 2 ? 'b1' : d === 3 ? 'b2' : 'c1');
+const storedLevel = () => { const v = localStorage.getItem(LEVEL_KEY); const l = OLD_LEVELS[v] || v; return LEVELS.includes(l) ? l : 'b2'; };
 
 // Çeviri koçu: bir cümle gelir, çevirini yazarsın, ölçütlerle değerlendirilirsin (mobildeki ekranın karşılığı).
 export default function Translation() {
   const { t } = useTranslation();
   const [direction, setDirection] = useState('en_tr');
-  const [level, setLevel] = useState(() => { const v = localStorage.getItem(LEVEL_KEY); return LEVELS.includes(v) ? v : 'medium'; });
+  const [level, setLevel] = useState(storedLevel);
   const [answer, setAnswer] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -54,9 +57,9 @@ export default function Translation() {
       <div className={styles.chips} role="group" aria-label={t('tutor.tr.direction')}>
         {DIRECTIONS.map((d) => <Chip key={d} selected={direction === d} onClick={() => pick(d)}>{t(`tutor.tr.direction.${d}`)}</Chip>)}
       </div>
-      <div className={styles.chips} role="group" aria-label={t('tutor.tr.levelLabel')}>
+      <div className={styles.chips} role="group" aria-label={t('tutor.tr.levelLabel')} title={t('tutor.tr.levelHint')}>
         <span className="t-label muted">{t('tutor.tr.levelLabel')}</span>
-        {LEVELS.map((l) => <Chip key={l} selected={level === l} onClick={() => pickLevel(l)}>{t(`tutor.tr.levels.${l}`)}</Chip>)}
+        {LEVELS.map((l) => <Chip key={l} selected={level === l} onClick={() => pickLevel(l)}>{l.toUpperCase()}</Chip>)}
       </div>
       {error && <Banner tone="danger" onClose={() => setError(null)}>{error}</Banner>}
       {prompt.isLoading && <SkeletonList rows={2} />}
@@ -65,7 +68,7 @@ export default function Translation() {
       {prompt.data && (
         <div className="stack">
           <p className="muted t-caption">
-            {t('tutor.tr.sentenceLevel', { level: t(`tutor.tr.levels.${levelOfDifficulty(prompt.data.difficulty)}`) })}
+            {t('tutor.tr.sentenceLevel', { level: levelOfDifficulty(prompt.data.difficulty).toUpperCase() })}
             {prompt.data.usage?.limit != null && ` · ${t('tutor.tr.usage', { n: prompt.data.usage.remaining })}`}
           </p>
           <Card><p className="reading t-reading-l" lang={direction === 'en_tr' ? 'en' : 'tr'}><TapText text={prompt.data.sourceText} lang="auto" sentences={Boolean(result)} sentenceLock="lex.lock.translateFirst" /></p></Card>

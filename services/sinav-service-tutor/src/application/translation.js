@@ -3,7 +3,8 @@ import { buildEvalSystem, isEn } from '../shared/prompts.js';
 import { UUID_RE, requireCode, tenantOf, userIdOf, orgIdOf, getUserTimezone, insertAiUsage, wordDiff, clip } from '../shared/helpers.js';
 
 const DIRECTIONS = { en_tr: ['en', 'tr'], tr_en: ['tr', 'en'] };
-const DIFFICULTY_LABELS = { easy: [1, 2], medium: [3, 3], hard: [4, 5] };
+// CEFR seviyeleri (kitaplıkla aynı): A2=1, B1=2, B2=3, C1=4–5. easy|medium|hard eski istemciler (mobil v3) için.
+const DIFFICULTY_LABELS = { a2: [1, 1], b1: [2, 2], b2: [3, 3], c1: [4, 5], easy: [2, 2], medium: [3, 3], hard: [4, 5] };
 const learningBase = () => (process.env.SERVICE_LEARNING_REST_URL || 'http://127.0.0.1:2003').replace(/\/+$/, '');
 
 const directionOf = (src) => (src === 'tr' ? 'tr_en' : 'en_tr');
@@ -33,7 +34,7 @@ export const makeTranslation = ({ rawQuery, nowFn, llm }) => {
     let range = [null, null];
     if (difficulty !== undefined && difficulty !== '') {
       if (DIFFICULTY_LABELS[difficulty]) range = DIFFICULTY_LABELS[difficulty];
-      else { const n = Number(difficulty); if (!Number.isInteger(n) || n < 1 || n > 5) throw new DomainError('TUTOR_TRANSLATION_DIFFICULTY_INVALID', 'difficulty 1-5 or easy|medium|hard'); range = [n, n]; }
+      else { const n = Number(difficulty); if (!Number.isInteger(n) || n < 1 || n > 5) throw new DomainError('TUTOR_TRANSLATION_DIFFICULTY_INVALID', 'difficulty 1-5 or a2|b1|b2|c1'); range = [n, n]; }
     }
     const userId = userIdOf(caller);
     const ent = await getEntitlements(userId);
