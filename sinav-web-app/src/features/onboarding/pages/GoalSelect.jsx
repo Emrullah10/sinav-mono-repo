@@ -14,6 +14,7 @@ import Routes from '@shared/constant/route-paths';
 import { useOnboardingStore } from '@store/onboardingStore';
 import OnbShell from '../components/OnbShell';
 import o from '../components/Onb.module.scss';
+import { formatNumber } from '@shared/utils/locale';
 
 const round2 = (n) => Math.round(n * 100) / 100;
 
@@ -42,7 +43,7 @@ export default function GoalSelect() {
     if (Number.isFinite(n) && n >= (bp?.scoreMin ?? 0) && n <= (bp?.scoreMax ?? 100) && n > 0) patch({ targetScore: round2(required(n) * per) });
   };
   const toggleReason = (k) => patch({ reasonKeys: reasonKeys.includes(k) ? reasonKeys.filter((x) => x !== k) : [...reasonKeys, k] });
-  const num = (v) => v.toLocaleString('tr-TR');
+  const num = (v) => formatNumber(v);
 
   return (
     <OnbShell

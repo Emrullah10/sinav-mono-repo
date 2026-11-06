@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import api from '@api';
 import { useAuthStore } from '@store/authStore';
 import { useThemeStore } from '@store/themeStore';
+import { useBackgroundStore } from '@store/backgroundStore';
 import { queryClient } from '@shared/providers/QueryProvider';
 
 const HYDRATION_TIMEOUT_MS = 8000;
@@ -23,6 +24,7 @@ export default function AuthBootstrap({ children }) {
       })
       .then((p) => {
         if (THEMES.includes(p?.theme)) useThemeStore.getState().setMode(p.theme);
+        useBackgroundStore.getState().apply(p);
       })
       .catch(() => {});
   }, [status]);

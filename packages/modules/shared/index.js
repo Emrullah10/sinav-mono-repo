@@ -5,4 +5,5 @@ export * from './persistence/index.js';
 export * from './ports/index.js';
 export * from './permissions.js';
 export * from './http/internal-fetch.js';
+export * from './i18n/index.js';
 export * from './domain/index.js';

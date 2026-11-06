@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Target, CreditCard, Receipt, Settings as Cog, LogOut, Flame, MessageSquareWarning } from 'lucide-react';
+import { Target, CreditCard, Receipt, Settings as Cog, LogOut, Flame, MessageSquareWarning, LifeBuoy } from 'lucide-react';
 import { useFeedbackStore } from '@features/feedback/feedbackStore';
 import api from '@api';
 import useApiQuery from '@hooks/useApiQuery';
@@ -17,6 +17,7 @@ import Button from '@components/Button/Button';
 import ErrorState from '@components/ErrorState/ErrorState';
 import Skeleton from '@components/Skeleton/Skeleton';
 import styles from '../components/page.module.scss';
+import { formatNumber } from '@shared/utils/locale';
 
 // ME-01: profil ve ilerleme. GET /account + GET /progress/overview?range=
 export default function Me() {
@@ -68,10 +69,10 @@ export default function Me() {
             </Card>
             <Card className="stack-sm" style={{ gridColumn: '1 / -1' }}>
               <dl className={styles.stats}>
-                <div><dt>{t('me.progress.minutes')}</dt><dd className="tnum">{p.totals.activeMinutes.toLocaleString('tr-TR')}</dd></div>
-                <div><dt>{t('me.progress.questions')}</dt><dd className="tnum">{p.totals.questionsAnswered.toLocaleString('tr-TR')}</dd></div>
+                <div><dt>{t('me.progress.minutes')}</dt><dd className="tnum">{formatNumber(p.totals.activeMinutes)}</dd></div>
+                <div><dt>{t('me.progress.questions')}</dt><dd className="tnum">{formatNumber(p.totals.questionsAnswered)}</dd></div>
                 <div><dt>{t('me.progress.accuracy')}</dt><dd className="tnum">{p.totals.accuracy == null ? '-' : `%${Math.round(p.totals.accuracy)}`}</dd></div>
-                <div><dt>{t('me.progress.cards')}</dt><dd className="tnum">{p.totals.cardsReviewed.toLocaleString('tr-TR')}</dd></div>
+                <div><dt>{t('me.progress.cards')}</dt><dd className="tnum">{formatNumber(p.totals.cardsReviewed)}</dd></div>
                 <div><dt>{t('me.progress.activeDays')}</dt><dd className="tnum">{p.totals.activeDays}</dd></div>
               </dl>
             </Card>
@@ -98,6 +99,7 @@ export default function Me() {
         <ListRow icon={<Receipt size={20} />} title={t('me.nav.payment')} onClick={() => nav(Routes.mePayment)} />
         <ListRow icon={<Cog size={20} />} title={t('me.nav.settings')} onClick={() => nav(Routes.meSettings)} />
         <ListRow icon={<MessageSquareWarning size={20} />} title={t('feedback.title')} subtitle={t('feedback.open')} onClick={showFeedback} />
+        <ListRow icon={<LifeBuoy size={20} />} title={t('help.title')} onClick={() => nav(Routes.help)} />
       </Card>
       <div><Button variant="tertiary" startIcon={<LogOut size={18} />} onClick={() => signOut().then(() => nav(Routes.welcome, { replace: true }))}>{t('me.signOut')}</Button></div>
     </div>

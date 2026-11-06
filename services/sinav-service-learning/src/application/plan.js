@@ -68,7 +68,7 @@ export default (deps) => {
       q(`SELECT ${STREAK_COLS} FROM learning.streak WHERE streak_user_account_id=$1`, [ctx.userId]),
       q('SELECT activity_day_active_seconds AS "activeSeconds", activity_day_questions_answered AS answered, activity_day_correct_answers AS correct, activity_day_cards_reviewed AS cards, activity_day_goal_minutes AS "goalMinutes", activity_day_goal_met AS "goalMet" FROM learning.activity_day WHERE activity_day_user_account_id=$1 AND activity_day_activity_date=$2', [ctx.userId, ctx.today]),
     ]);
-    const { rows: cards } = await q("SELECT count(*)::int AS n FROM learning.card WHERE card_user_account_id=$1 AND card_suspended_at IS NULL AND card_due_at <= $2", [ctx.userId, ctx.now]);
+    const { rows: cards } = await q("SELECT count(*)::int AS n FROM learning.card WHERE card_user_account_id=$1 AND card_state <> 'new' AND card_suspended_at IS NULL AND card_due_at <= $2", [ctx.userId, ctx.now]);
     const act = actRows.rows[0] || { activeSeconds: 0, answered: 0, correct: 0, cards: 0, goalMinutes: null, goalMet: false };
     const goalMinutes = act.goalMinutes ?? (await goalMinutesFor(q, ctx, ctx.today));
     const tasks = day ? day.tasks : [];

@@ -49,6 +49,7 @@ export const internalHeaders = (caller) => {
     userAccountOrganizationId: String(caller.callerOrganizationId || ''),
     userAccountRole: caller.callerUserRole || '',
     userAccountOrganizationType: caller.callerOrganizationType || '',
+    'Accept-Language': caller.callerLocale || 'tr',
   };
 };
 

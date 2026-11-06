@@ -42,7 +42,7 @@ export const makeNotify = ({ rawQuery, nowFn, mailer }) => {
     const { rows } = await rawQuery(
       `SELECT d.delivery_id AS id, d.delivery_channel AS channel, d.delivery_attempt_count AS attempts,
               n.notification_kind AS kind, n.notification_title AS title, n.notification_body AS body, n.notification_deep_link AS link, n.notification_payload AS payload,
-              u.user_account_email AS email
+              u.user_account_email AS email, u.user_account_locale AS locale
          FROM notify.delivery d JOIN notify.notification n ON n.notification_id = d.delivery_notification_id
          JOIN identity.user_account u ON u.user_account_id = n.notification_user_account_id
         WHERE d.delivery_status='queued' AND n.notification_scheduled_for <= now() AND (d.delivery_next_attempt_at IS NULL OR d.delivery_next_attempt_at <= now())
@@ -52,7 +52,7 @@ export const makeNotify = ({ rawQuery, nowFn, mailer }) => {
       try {
         if (r.channel === 'email') {
           const data = { ...(r.payload || {}), title: r.title, body: r.body, link: r.link, appUrl: appUrl() };
-          await mailer.send({ to: r.email, ...render(r.kind, data) });
+          await mailer.send({ to: r.email, ...render(r.kind, data, r.locale) });
           await rawQuery(`UPDATE notify.delivery SET delivery_status='sent', delivery_sent_at=now(), delivery_attempt_count=delivery_attempt_count+1 WHERE delivery_id=$1`, [r.id]);
         } else {
           await rawQuery(`UPDATE notify.delivery SET delivery_status='skipped_not_configured' WHERE delivery_id=$1`, [r.id]);

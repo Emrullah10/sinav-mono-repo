@@ -1,5 +1,5 @@
 import { withTransaction, writeAudit, invalidateEntitlements } from 'app-shared';
-import { iso, toNum, findUser, systemCaller, notifyUser, fmtDateTr, addDays, GRACE_DAYS, MAX_RENEWAL_ATTEMPTS, todayIstanbul } from '../shared/helpers.js';
+import { iso, toNum, findUser, systemCaller, notifyUser, fmtDate, normLocale, addDays, GRACE_DAYS, MAX_RENEWAL_ATTEMPTS, todayIstanbul } from '../shared/helpers.js';
 import { loadPriceById, computePeriod, reconcileCampaignSold, splitVat } from '../shared/pricing.js';
 import { insertGrant, insertInvoice, currentLegalDocs } from '../shared/ledger.js';
 import { loadProfile, snapshotOf } from './profile.js';
@@ -64,8 +64,9 @@ export const makeLifecycle = ({ rawQuery, nowFn, provider, subscription, checkou
       });
       await invalidateEntitlements(user.id);
       await writeAudit({ caller: systemCaller(user), action: 'billing.renewal.succeeded', schema: 'billing', table: 'payment', entityCode: Number(pay.code), after: { amount } });
-      await notifyUser({ userId: user.id, kind: 'payment_receipt', title: 'Ödemen alındı', body: `${price.productName} · ${amount} TL`, deepLink: '/ben/abonelik',
-        payload: { planName: price.productName, amount, validUntil: fmtDateTr(period.end), paymentCode: String(pay.code) }, dedupeKey: `payment_receipt:${pay.code}` });
+      const loc = normLocale(user.locale);
+      await notifyUser({ userId: user.id, kind: 'payment_receipt', title: loc === 'en' ? 'Payment received' : 'Ödemen alındı', body: `${price.productName} · ${amount} ${loc === 'en' ? 'TRY' : 'TL'}`, deepLink: '/me/subscription',
+        payload: { planName: price.productName, amount, validUntil: fmtDate(period.end, loc), paymentCode: String(pay.code) }, dedupeKey: `payment_receipt:${pay.code}` });
       return { ok: true };
     }
 
@@ -84,8 +85,9 @@ export const makeLifecycle = ({ rawQuery, nowFn, provider, subscription, checkou
     await invalidateEntitlements(user.id);
     await writeAudit({ caller: systemCaller(user), action: 'billing.renewal.failed', schema: 'billing', table: 'payment', entityCode: Number(pay.code), after: { failureCode: out.failureCode, attempt } });
     if (attempt === 1) {
-      await notifyUser({ userId: user.id, kind: 'payment_failed', title: 'Ödemen alınamadı', body: 'Kartını güncellersen devam edebilirsin; 3 günlük ek süren var.', deepLink: '/ben/abonelik',
-        payload: { planName: price.productName, amount, failureReasonKey: out.failureReasonKey, graceEndsAt: fmtDateTr(addDays(sub.periodEnd, GRACE_DAYS)) }, dedupeKey: `payment_failed:renew:${sub.code}:${new Date(sub.periodEnd).getTime()}` });
+      const loc = normLocale(user.locale);
+      await notifyUser({ userId: user.id, kind: 'payment_failed', title: loc === 'en' ? "We couldn't process your payment" : 'Ödemen alınamadı', body: loc === 'en' ? 'Update your card to keep going; you have a 3-day grace period.' : 'Kartını güncellersen devam edebilirsin; 3 günlük ek süren var.', deepLink: '/me/subscription',
+        payload: { planName: price.productName, amount, failureReasonKey: out.failureReasonKey, graceEndsAt: fmtDate(addDays(sub.periodEnd, GRACE_DAYS), loc) }, dedupeKey: `payment_failed:renew:${sub.code}:${new Date(sub.periodEnd).getTime()}` });
     }
     return { ok: false };
   };
@@ -151,17 +153,20 @@ export const makeLifecycle = ({ rawQuery, nowFn, provider, subscription, checkou
   const trialEnding = async () => {
     const { rows } = await rawQuery(
       `SELECT s.subscription_code AS code, s.subscription_user_account_id AS "userId", s.subscription_trial_ends_at AS "trialEndsAt", s.subscription_payment_method_id IS NOT NULL AS "hasMethod",
-              s.subscription_price_id AS "priceId"
+              s.subscription_price_id AS "priceId", (SELECT u.user_account_locale FROM identity.user_account u WHERE u.user_account_id = s.subscription_user_account_id) AS locale
          FROM billing.subscription s WHERE s.subscription_status='trialing' AND NOT s.subscription_cancel_at_period_end AND s.subscription_channel = 'web'
           AND s.subscription_trial_ends_at > now() AND s.subscription_trial_ends_at <= now() + interval '2 days'`);
     let changed = 0;
     for (const s of rows) {
       const price = await loadPriceById(s.priceId, rawQuery);
-      const date = fmtDateTr(s.trialEndsAt);
+      const loc = normLocale(s.locale);
+      const date = fmtDate(s.trialEndsAt, loc);
       const ok = await notifyUser({
-        userId: s.userId, kind: 'trial_ending', title: `Ücretsiz deneme ${date} tarihinde bitiyor`,
-        body: s.hasMethod ? `Sonra ${price.amount} TL/ay. Devam etmek istemiyorsan şimdi iptal edebilirsin.` : 'Devam etmek için bir ödeme yöntemi eklemen gerekiyor.',
-        deepLink: '/ben/abonelik', payload: { date, planName: price.productName, amount: price.amount, hasPaymentMethod: s.hasMethod }, dedupeKey: `trial_ending:${s.code}`,
+        userId: s.userId, kind: 'trial_ending', title: loc === 'en' ? `Your free trial ends on ${date}` : `Ücretsiz deneme ${date} tarihinde bitiyor`,
+        body: loc === 'en'
+          ? (s.hasMethod ? `Then ${price.amount} TRY/month. If you don't want to continue, you can cancel now.` : 'You need to add a payment method to continue.')
+          : (s.hasMethod ? `Sonra ${price.amount} TL/ay. Devam etmek istemiyorsan şimdi iptal edebilirsin.` : 'Devam etmek için bir ödeme yöntemi eklemen gerekiyor.'),
+        deepLink: '/me/subscription', payload: { date, planName: price.productName, amount: price.amount, hasPaymentMethod: s.hasMethod }, dedupeKey: `trial_ending:${s.code}`,
       });
       if (ok) changed += 1;
     }

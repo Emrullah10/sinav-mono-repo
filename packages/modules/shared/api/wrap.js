@@ -1,6 +1,15 @@
 import { ok, err } from './envelope.js';
 import { ApiError } from './errors.js';
 import { getCaller } from '../utils/general.js';
+import { localizeData } from '../i18n/localize.js';
+
+// Veri adları (konu, soru tipi, sınav…) istemci diline çevrilir. CMS'te çevrilmez: düzenlenen Türkçe ad
+// İngilizcesiyle ezilmesin. İç uçlar wrapInternal'dan geçer.
+const NO_LOCALIZE = /\/v1\/(cms|internal)(\/|\?|$)/;
+const localizeFor = (req, caller) =>
+  caller?.callerLocale && caller.callerLocale !== 'tr' && !NO_LOCALIZE.test(req.originalUrl || req.url || '')
+    ? (data) => localizeData(data, caller.callerLocale)
+    : (data) => data;
 
 // Wrap a (req, caller) => data handler into an Express (req,res,next) route.
 // Handlers may return either a plain payload (wrapped into `ok`) or a full
@@ -32,9 +41,10 @@ export const wrap =
         const status = result.__statusCode || successStatus;
         const payload = { ...result };
         delete payload.__statusCode;
+        if (payload.success && payload.data !== undefined) payload.data = localizeFor(req, caller)(payload.data);
         return res.status(status).json(payload);
       }
-      return res.status(successStatus).json(ok(result));
+      return res.status(successStatus).json(ok(localizeFor(req, caller)(result)));
     } catch (error) {
       if (error instanceof ApiError) {
         return res

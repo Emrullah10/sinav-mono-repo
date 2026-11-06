@@ -22,6 +22,7 @@ import Skeleton from '@components/Skeleton/Skeleton';
 import BookCover from '../components/BookCover';
 import { durationLabel, isBusy, readingKeys, sectionTitle } from '../hooks/readingKeys';
 import styles from '../components/Reading.module.scss';
+import { formatNumber } from '@shared/utils/locale';
 
 function OcrPanel({ book, quota, onChange }) {
   const { t } = useTranslation();
@@ -94,7 +95,7 @@ export default function BookDetail() {
             {b.level && <Chip size="sm" tone="accent">{b.level}</Chip>}
             {b.topic && <Chip size="sm">{t(`enums.book_topic.${b.topic}`)}</Chip>}
             {b.wordCount > 0 && <Chip size="sm">{durationLabel(t, b.readingMinutes)}</Chip>}
-            {b.wordCount > 0 && <Chip size="sm">{t('read.meta.words', { n: b.wordCount.toLocaleString('tr-TR') })}</Chip>}
+            {b.wordCount > 0 && <Chip size="sm">{t('read.meta.words', { n: formatNumber(b.wordCount) })}</Chip>}
             {b.pageCount > 0 && <Chip size="sm">{t('read.meta.pages', { n: b.pageCount })}</Chip>}
           </div>
           {b.description && <p className="t-body-m">{b.description}</p>}

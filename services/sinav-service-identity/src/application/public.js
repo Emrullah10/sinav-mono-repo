@@ -19,7 +19,7 @@ export const makePublic = ({ rawQuery, mailer }) => {
     `SELECT DISTINCT ON (legal_document_doc_type) legal_document_doc_type AS type, legal_document_title AS title, legal_document_version AS version, legal_document_published_at AS "publishedAt"
        FROM identity.legal_document WHERE legal_document_is_current ORDER BY legal_document_doc_type, (legal_document_locale = $1) DESC`, [locale])).rows;
 
-  const joinWaitlist = async ({ email, examKey = null, source = null, utm = {}, marketingConsent = false }) => {
+  const joinWaitlist = async ({ locale = 'tr', email, examKey = null, source = null, utm = {}, marketingConsent = false }) => {
     const emailN = normalizeEmail(email);
     if (!isEmail(emailN)) throw new DomainError('AUTH_EMAIL_INVALID', 'Invalid email');
     const tenantCode = await getTenantCode(rawQuery);
@@ -42,7 +42,7 @@ export const makePublic = ({ rawQuery, mailer }) => {
        ON CONFLICT (waitlist_entry_tenant_code, waitlist_entry_email_normalized) DO UPDATE SET waitlist_entry_confirm_token_hash = EXCLUDED.waitlist_entry_confirm_token_hash,
               waitlist_entry_unsubscribed_at = NULL
        RETURNING waitlist_entry_code AS code`, [tenantCode, orgId, emailN, examId, source ? String(source).slice(0, 60) : null, JSON.stringify(utm || {}), consentId, sha256(token)]);
-    mailer.send({ to: emailN, ...render('waitlist_confirm', { url: `${gatewayUrl()}/api/sinav-service-identity/v1/public/waitlist/confirm?token=${token}` }) }).catch(() => {});
+    mailer.send({ to: emailN, ...render('waitlist_confirm', { url: `${gatewayUrl()}/api/sinav-service-identity/v1/public/waitlist/confirm?token=${token}` }, locale) }).catch(() => {});
     return { joined: true, code: Number(r.rows[0].code) };
   };
   const confirmWaitlist = async ({ token }) => {
@@ -51,7 +51,7 @@ export const makePublic = ({ rawQuery, mailer }) => {
     return { confirmed: true };
   };
 
-  const submitContact = async ({ caller = null, email, name, topic = 'other', subject, body, platform = 'web', appVersion }) => {
+  const submitContact = async ({ caller = null, locale = caller?.callerLocale, email, name, topic = 'other', subject, body, platform = 'web', appVersion }) => {
     const emailN = normalizeEmail(email);
     if (!isEmail(emailN)) throw new DomainError('AUTH_EMAIL_INVALID', 'Invalid email');
     if (!body || String(body).trim().length < 5 || String(body).length > 5000) throw new DomainError('CONTACT_BODY_INVALID', 'Message must be 5-5000 characters');
@@ -64,7 +64,7 @@ export const makePublic = ({ rawQuery, mailer }) => {
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING contact_message_code AS code`,
       [tenantCode, orgId, caller?.callerOrganizationId ? Number(caller.callerOrganizationId) : null, caller?.callerUserId ? Number(caller.callerUserId) : null, emailN,
         name ? String(name).slice(0, 120) : null, t, subject ? String(subject).slice(0, 200) : null, String(body), ['web', 'ios', 'android'].includes(platform) ? platform : 'web', appVersion || null]);
-    mailer.send({ to: emailN, ...render('contact_received', { subject }) }).catch(() => {});
+    mailer.send({ to: emailN, ...render('contact_received', { subject }, locale) }).catch(() => {});
     if (process.env.SUPPORT_EMAIL) mailer.send({ to: process.env.SUPPORT_EMAIL, subject: `[ODAK destek] ${t}: ${subject || ''}`, text: `${emailN}\n\n${body}` }).catch(() => {});
     return { received: true, code: Number(r.rows[0].code) };
   };

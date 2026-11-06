@@ -13,8 +13,9 @@ import ProgressBar from '@components/ProgressBar/ProgressBar';
 import ErrorState from '@components/ErrorState/ErrorState';
 import Skeleton from '@components/Skeleton/Skeleton';
 import styles from './Result.module.scss';
+import { formatNumber } from '@shared/utils/locale';
 
-const fmt = (n) => (n == null ? '-' : Number(n).toLocaleString('tr-TR', { maximumFractionDigits: 2 }));
+const fmt = (n) => (n == null ? '-' : formatNumber(n, { maximumFractionDigits: 2 }));
 
 // EXAM-10: sonuç özeti. GET /exam-sittings/{code}/result
 export default function Result() {

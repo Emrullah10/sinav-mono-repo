@@ -10,7 +10,9 @@
       // Tema titremesini önlemek için ilk boyamadan önce kayıtlı temayı uygula.
       try {
         var t = JSON.parse(localStorage.getItem('theme-storage') || '{}').state;
-        if (t && (t.mode === 'light' || t.mode === 'dark')) document.documentElement.setAttribute('data-theme', t.mode);
+        // Kayıt yoksa varsayılan açık tema (themeStore ile aynı); 'system' ise CSS medya sorgusu karar verir.
+        var m = t && t.mode ? t.mode : 'light';
+        if (m === 'light' || m === 'dark') document.documentElement.setAttribute('data-theme', m);
       } catch (e) {}
     </script>
   </head>

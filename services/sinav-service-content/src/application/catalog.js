@@ -128,28 +128,33 @@ export const makeCatalog = ({ rawQuery, nowFn }) => {
   const icsEscape = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
   const ymd = (d) => dateOnly(d).replace(/-/g, '');
   const nextDay = (d) => { const x = new Date(`${dateOnly(d)}T00:00:00Z`); x.setUTCDate(x.getUTCDate() + 1); return x.toISOString().slice(0, 10).replace(/-/g, ''); };
-  const buildIcs = (s) => {
+  const ICS_TEXT = {
+    tr: { est: ' (tahmini)', examDay: 'sınav günü', appStart: 'başvuru başlıyor', appStartD: 'Başvuru dönemi başlangıcı', appEnd: 'son başvuru günü', appEndD: 'Başvuru dönemi bitişi', late: 'geç başvuru son gün', lateD: 'Geç başvuru bitişi', result: 'sonuçlar', resultD: 'Sonuç açıklama tarihi' },
+    en: { est: ' (estimated)', examDay: 'exam day', appStart: 'applications open', appStartD: 'Application period starts', appEnd: 'application deadline', appEndD: 'Application period ends', late: 'late application deadline', lateD: 'Late application period ends', result: 'results', resultD: 'Results announcement date' },
+  };
+  const buildIcs = (s, locale) => {
+    const T = ICS_TEXT[locale] || ICS_TEXT.tr;
     const stamp = nowFn().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
     const uidBase = String(s.key).replace(/[^A-Za-z0-9]+/g, '-').toLowerCase();
     const events = [];
     const allDay = (suffix, date, summary, desc) => date && events.push(['BEGIN:VEVENT', `UID:${uidBase}-${suffix}@sinav`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${ymd(date)}`, `DTEND;VALUE=DATE:${nextDay(date)}`, `SUMMARY:${icsEscape(summary)}`, `DESCRIPTION:${icsEscape(desc)}`, ...(s.sourceUrl ? [`URL:${s.sourceUrl}`] : []), 'END:VEVENT'].join('\r\n'));
-    const est = s.isEstimated ? ' (tahmini)' : '';
+    const est = s.isEstimated ? T.est : '';
     if (s.examTime) {
       const t = timeOnly(s.examTime).replace(':', '');
       const end = `${String(Math.min(23, Number(t.slice(0, 2)) + 3)).padStart(2, '0')}${t.slice(2)}00`;
-      events.push(['BEGIN:VEVENT', `UID:${uidBase}-exam@sinav`, `DTSTAMP:${stamp}`, `DTSTART;TZID=Europe/Istanbul:${ymd(s.examDate)}T${t}00`, `DTEND;TZID=Europe/Istanbul:${ymd(s.examDate)}T${end}`, `SUMMARY:${icsEscape(`${s.name}${est}`)}`, `DESCRIPTION:${icsEscape(`${s.examName} sınav günü`)}`, ...(s.sourceUrl ? [`URL:${s.sourceUrl}`] : []), 'END:VEVENT'].join('\r\n'));
-    } else allDay('exam', s.examDate, `${s.name}${est}`, `${s.examName} sınav günü`);
-    allDay('application-start', s.applicationStart, `${s.name}: başvuru başlıyor`, 'Başvuru dönemi başlangıcı');
-    allDay('application-end', s.applicationEnd, `${s.name}: son başvuru günü`, 'Başvuru dönemi bitişi');
-    allDay('late-application-end', s.lateApplicationEnd, `${s.name}: geç başvuru son gün`, 'Geç başvuru bitişi');
-    allDay('result', s.resultDate, `${s.name}: sonuçlar`, 'Sonuç açıklama tarihi');
+      events.push(['BEGIN:VEVENT', `UID:${uidBase}-exam@sinav`, `DTSTAMP:${stamp}`, `DTSTART;TZID=Europe/Istanbul:${ymd(s.examDate)}T${t}00`, `DTEND;TZID=Europe/Istanbul:${ymd(s.examDate)}T${end}`, `SUMMARY:${icsEscape(`${s.name}${est}`)}`, `DESCRIPTION:${icsEscape(`${s.examName} ${T.examDay}`)}`, ...(s.sourceUrl ? [`URL:${s.sourceUrl}`] : []), 'END:VEVENT'].join('\r\n'));
+    } else allDay('exam', s.examDate, `${s.name}${est}`, `${s.examName} ${T.examDay}`);
+    allDay('application-start', s.applicationStart, `${s.name}: ${T.appStart}`, T.appStartD);
+    allDay('application-end', s.applicationEnd, `${s.name}: ${T.appEnd}`, T.appEndD);
+    allDay('late-application-end', s.lateApplicationEnd, `${s.name}: ${T.late}`, T.lateD);
+    allDay('result', s.resultDate, `${s.name}: ${T.result}`, T.resultD);
     return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Sinav//Takvim//TR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', `X-WR-CALNAME:${icsEscape(s.name)}`, ...events, 'END:VCALENDAR'].join('\r\n') + '\r\n';
   };
-  const sessionIcs = async ({ key }) => {
+  const sessionIcs = async ({ key, locale }) => {
     const norm = String(key).toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const { rows } = await rawQuery(`${SESSION_SELECT} WHERE regexp_replace(lower(s.exam_session_key), '[^a-z0-9]+', '-', 'g') = $1 AND s.exam_session_status <> 'cancelled'`, [norm]);
     if (!rows.length) throw new DomainError('CONTENT_SESSION_NOT_FOUND', 'Exam session not found');
-    return { filename: `${norm}.ics`, text: buildIcs(rows[0]) };
+    return { filename: `${norm}.ics`, text: buildIcs(rows[0], locale) };
   };
 
   // ── MKT-01: öne çıkanlar ──
@@ -180,15 +185,21 @@ export const makeCatalog = ({ rawQuery, nowFn }) => {
     JOIN content.article a ON a.article_item_revision_id = r.item_revision_id JOIN content.article_category c ON c.article_category_id = a.article_category_id
     LEFT JOIN content.article_author au ON au.article_author_id = a.article_author_id
     WHERE i.item_kind = 'article' AND i.item_status = 'published'`;
-  const ART_COLS = `i.item_code AS code, i.item_slug AS slug, a.article_article_type AS type, a.article_title AS title, a.article_excerpt AS excerpt, c.article_category_key AS "categoryKey", c.article_category_name AS "categoryName",
+  // Makalenin İngilizcesi (yardım makaleleri) article_metadata.i18n.en'de: { title, excerpt, seoTitle, seoDescription, bodyMd, toc }.
+  // İstek dili 'en' ise o alanlar, yoksa Türkçe sütun döner. Dil yalnız 'tr' | 'en' (getCaller beyaz listesi) → SQL'e metin olarak girer.
+  const isEn = (locale) => locale === 'en';
+  const artText = (locale, field, col) => (isEn(locale) ? `COALESCE(NULLIF(a.article_metadata #>> '{i18n,en,${field}}', ''), ${col})` : col);
+  const artCols = (locale) => `i.item_code AS code, i.item_slug AS slug, a.article_article_type AS type, ${artText(locale, 'title', 'a.article_title')} AS title,
+    ${artText(locale, 'excerpt', 'a.article_excerpt')} AS excerpt, c.article_category_key AS "categoryKey", c.article_category_name AS "categoryName",
     au.article_author_display_name AS "authorName", au.article_author_title AS "authorTitle", a.article_reading_minutes AS "readingMinutes", i.item_published_at AS "publishedAt", a.article_cover_blob_id AS "coverBlobId",
-    a.article_seo_title AS "seoTitle", a.article_seo_description AS "seoDescription", i.item_language AS language`;
+    ${artText(locale, 'seoTitle', 'a.article_seo_title')} AS "seoTitle", ${artText(locale, 'seoDescription', 'a.article_seo_description')} AS "seoDescription",
+    ${isEn(locale) ? `CASE WHEN a.article_metadata #> '{i18n,en}' IS NOT NULL THEN 'en' ELSE i.item_language END` : 'i.item_language'} AS language`;
   const articleListItem = (r) => ({
     code: Number(r.code), slug: r.slug, type: r.type, title: r.title, excerpt: r.excerpt, category: { key: r.categoryKey, name: r.categoryName },
     author: r.authorName ? { displayName: r.authorName, title: r.authorTitle } : null, readingMinutes: r.readingMinutes, publishedAt: iso(r.publishedAt), coverBlobId: num(r.coverBlobId),
     seoTitle: r.seoTitle, seoDescription: r.seoDescription, language: r.language,
   });
-  const listArticles = async ({ query = {} }) => {
+  const listArticles = async ({ query = {}, locale }) => {
     const { page, pageSize, offset } = pageOf(query, { defSize: 20, maxSize: 200 });
     const params = [];
     const where = [];
@@ -196,32 +207,37 @@ export const makeCatalog = ({ rawQuery, nowFn }) => {
     if (query.category) { params.push(String(query.category)); where.push(`c.article_category_key = $${params.length}`); }
     const w = where.length ? ` AND ${where.join(' AND ')}` : '';
     const [rows, total] = await Promise.all([
-      rawQuery(`SELECT ${ART_COLS} ${ART_FROM}${w} ORDER BY i.item_published_at DESC, i.item_id DESC LIMIT ${pageSize} OFFSET ${offset}`, params),
+      rawQuery(`SELECT ${artCols(locale)} ${ART_FROM}${w} ORDER BY i.item_published_at DESC, i.item_id DESC LIMIT ${pageSize} OFFSET ${offset}`, params),
       rawQuery(`SELECT count(*)::int AS n ${ART_FROM}${w}`, params),
     ]);
     return { items: rows.rows.map(articleListItem), page, pageSize, total: total.rows[0].n };
   };
-  const getArticle = async ({ type, slug }) => {
+  const getArticle = async ({ type, slug, locale }) => {
     const { rows } = await rawQuery(
-      `SELECT ${ART_COLS}, a.article_body_md AS "bodyMd", a.article_toc AS toc, a.article_cta_key AS "ctaKey", au.article_author_bio AS "authorBio", i.item_updated_at AS "updatedAt"
+      `SELECT ${artCols(locale)}, ${artText(locale, 'bodyMd', 'a.article_body_md')} AS "bodyMd",
+              ${isEn(locale) ? `COALESCE(a.article_metadata #> '{i18n,en,toc}', a.article_toc)` : 'a.article_toc'} AS toc, a.article_cta_key AS "ctaKey", au.article_author_bio AS "authorBio", i.item_updated_at AS "updatedAt"
        ${ART_FROM} AND a.article_article_type = $1 AND i.item_slug = $2`, [String(type), String(slug)]);
     if (!rows.length) throw new DomainError('CONTENT_ARTICLE_NOT_FOUND', 'Article not found');
     const r = rows[0];
     const rel = await rawQuery(
-      `SELECT ${ART_COLS} ${ART_FROM} AND a.article_article_type = $1 AND c.article_category_key = $2 AND i.item_code <> $3 ORDER BY i.item_published_at DESC LIMIT 3`, [r.type, r.categoryKey, r.code]);
+      `SELECT ${artCols(locale)} ${ART_FROM} AND a.article_article_type = $1 AND c.article_category_key = $2 AND i.item_code <> $3 ORDER BY i.item_published_at DESC LIMIT 3`, [r.type, r.categoryKey, r.code]);
     return { ...articleListItem(r), bodyMd: r.bodyMd, toc: r.toc, ctaKey: r.ctaKey, author: r.authorName ? { displayName: r.authorName, title: r.authorTitle, bio: r.authorBio } : null, updatedAt: iso(r.updatedAt), related: rel.rows.map(articleListItem) };
   };
-  const searchArticles = async ({ query = {} }) => {
+  const searchArticles = async ({ query = {}, locale }) => {
     const text = String(query.q || '').trim();
     if (text.length < 2) return { items: [], total: 0, q: text };
     const params = [text];
     let w = '';
     if (query.type) { params.push(String(query.type)); w = ` AND a.article_article_type = $${params.length}`; }
     const limit = Math.min(Number(query.limit) || 10, 30);
+    // İngilizcede arama İngilizce metin (yoksa Türkçesi) üzerinde, 'english' sözlüğüyle.
+    const cfg = isEn(locale) ? 'english' : 'turkish';
+    const body = artText(locale, 'bodyMd', 'a.article_body_md');
+    const doc = `${artText(locale, 'title', 'a.article_title')} || ' ' || ${body}`;
     const { rows } = await rawQuery(
-      `SELECT ${ART_COLS}, ts_rank(to_tsvector('turkish', a.article_title || ' ' || a.article_body_md), websearch_to_tsquery('turkish', $1)) AS rank,
-              ts_headline('turkish', a.article_body_md, websearch_to_tsquery('turkish', $1), 'MaxWords=28, MinWords=12, StartSel=<mark>, StopSel=</mark>') AS snippet
-       ${ART_FROM}${w} AND to_tsvector('turkish', a.article_title || ' ' || a.article_body_md) @@ websearch_to_tsquery('turkish', $1) ORDER BY rank DESC, i.item_published_at DESC LIMIT ${limit}`, params);
+      `SELECT ${artCols(locale)}, ts_rank(to_tsvector('${cfg}', ${doc}), websearch_to_tsquery('${cfg}', $1)) AS rank,
+              ts_headline('${cfg}', ${body}, websearch_to_tsquery('${cfg}', $1), 'MaxWords=28, MinWords=12, StartSel=<mark>, StopSel=</mark>') AS snippet
+       ${ART_FROM}${w} AND to_tsvector('${cfg}', ${doc}) @@ websearch_to_tsquery('${cfg}', $1) ORDER BY rank DESC, i.item_published_at DESC LIMIT ${limit}`, params);
     return { q: text, total: rows.length, items: rows.map((r) => ({ ...articleListItem(r), snippet: trunc(r.snippet, 400), rank: Number(r.rank) })) };
   };
   const listArticleCategories = async ({ query = {} }) => {

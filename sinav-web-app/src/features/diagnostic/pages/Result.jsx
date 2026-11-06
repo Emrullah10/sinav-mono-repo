@@ -14,8 +14,9 @@ import Routes from '@shared/constant/route-paths';
 import OnbShell from '@features/onboarding/components/OnbShell';
 import useEnrollment from '@features/onboarding/hooks/useEnrollment';
 import styles from './Result.module.scss';
+import { formatNumber } from '@shared/utils/locale';
 
-const num = (v) => Number(v).toLocaleString('tr-TR', { maximumFractionDigits: 2 });
+const num = (v) => formatNumber(v, { maximumFractionDigits: 2 });
 
 // DIAG-03: sonuç. Veri: GET /diagnostics/{code}/result. Puan her zaman aralık olarak gösterilir.
 export default function Result() {

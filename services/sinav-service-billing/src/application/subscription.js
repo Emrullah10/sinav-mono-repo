@@ -1,5 +1,5 @@
 import { DomainError, withTransaction, writeAudit, invalidateEntitlements, getEntitlements } from 'app-shared';
-import { toNum, iso, fmtDateTr, notifyUser, findUser, LIVE_STATUSES, addDays, GRACE_DAYS, dateOnly, systemCaller } from '../shared/helpers.js';
+import { toNum, iso, fmtDate, normLocale, notifyUser, findUser, LIVE_STATUSES, addDays, GRACE_DAYS, dateOnly, systemCaller } from '../shared/helpers.js';
 import { monthlyEquivalent, nextExamSession, redis, loadPriceById } from '../shared/pricing.js';
 import { insertGrant } from '../shared/ledger.js';
 
@@ -100,8 +100,9 @@ export const makeSubscription = ({ rawQuery, nowFn, checkoutFn }) => {
     }
     await invalidateEntitlements(uid);
     await writeAudit({ caller, action: 'billing.subscription.cancel', schema: 'billing', table: 'subscription', entityCode: Number(s.code), after: { reason, until: iso(until) } });
-    const date = fmtDateTr(until);
-    await notifyUser({ userId: uid, kind: 'subscription_canceled', title: 'Aboneliğin iptal edildi', body: `Premium ${date} tarihine kadar sürer.`, deepLink: '/ben/abonelik',
+    const loc = normLocale(caller.callerLocale);
+    const date = fmtDate(until, loc);
+    await notifyUser({ userId: uid, kind: 'subscription_canceled', title: loc === 'en' ? 'Your subscription was canceled' : 'Aboneliğin iptal edildi', body: loc === 'en' ? `Premium stays active until ${date}.` : `Premium ${date} tarihine kadar sürer.`, deepLink: '/me/subscription',
       payload: { until: date, planName: s.planName }, dedupeKey: `subscription_canceled:${s.code}:${now.getTime()}` });
     return { canceled: true, until: iso(until), subscription: (await getSubscription({ caller })).subscription };
   };

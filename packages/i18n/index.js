@@ -5,15 +5,17 @@ import apiErrorsContentKeys from './keys/apiErrorsContentKeys.js';
 import apiErrorsIdentityKeys from './keys/apiErrorsIdentityKeys.js';
 import apiErrorsLearningKeys from './keys/apiErrorsLearningKeys.js';
 import apiErrorsTutorKeys from './keys/apiErrorsTutorKeys.js';
+import backgroundKeys from './keys/backgroundKeys.js';
 import enumsBillingKeys from './keys/enumsBillingKeys.js';
 import enumsContentKeys from './keys/enumsContentKeys.js';
 import enumsLearningKeys from './keys/enumsLearningKeys.js';
 import enumsTutorKeys from './keys/enumsTutorKeys.js';
 import feedbackKeys from './keys/feedbackKeys.js';
+import helpKeys from './keys/helpKeys.js';
 import lexiconKeys from './keys/lexiconKeys.js';
 import readingKeys from './keys/readingKeys.js';
 
-export const keys = { ...apiErrorsBillingKeys, ...apiErrorsCommonKeys, ...apiErrorsContentKeys, ...apiErrorsIdentityKeys, ...apiErrorsLearningKeys, ...apiErrorsTutorKeys, ...enumsBillingKeys, ...enumsContentKeys, ...enumsLearningKeys, ...enumsTutorKeys, ...feedbackKeys, ...lexiconKeys, ...readingKeys };
+export const keys = { ...apiErrorsBillingKeys, ...apiErrorsCommonKeys, ...apiErrorsContentKeys, ...apiErrorsIdentityKeys, ...apiErrorsLearningKeys, ...apiErrorsTutorKeys, ...backgroundKeys, ...enumsBillingKeys, ...enumsContentKeys, ...enumsLearningKeys, ...enumsTutorKeys, ...feedbackKeys, ...helpKeys, ...lexiconKeys, ...readingKeys };
 const pick = (lang) => Object.fromEntries(Object.entries(keys).map(([k, v]) => [k, v[lang] ?? v.tr]));
 export const resources = { tr: { translation: pick('tr') }, en: { translation: pick('en') } };
 export default resources;

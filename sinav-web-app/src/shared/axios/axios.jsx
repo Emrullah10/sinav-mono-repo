@@ -1,4 +1,5 @@
 import axios from 'axios';
+import i18n from 'i18next';
 import { SESSION_ENDED_CODES } from '@sinav/client-sdk';
 import { useAuthStore } from '@store/authStore';
 
@@ -8,6 +9,12 @@ const instance = axios.create({
   xsrfCookieName: 'sinav_xsrf',
   xsrfHeaderName: 'X-XSRF-TOKEN',
   headers: { 'Cache-Control': 'no-cache', 'Content-Type': 'application/json', 'X-Client': 'sinav-web' },
+});
+
+// Arayüz dili: sunucu veri adlarını (konu, soru tipi…) ve e-posta/AI dilini buna göre seçer.
+instance.interceptors.request.use((config) => {
+  config.headers['Accept-Language'] = (i18n.language || 'tr').slice(0, 2);
+  return config;
 });
 
 // Tek uçuşlu yenileme: aynı anda düşen isteklerin hepsi tek refresh'i bekler.

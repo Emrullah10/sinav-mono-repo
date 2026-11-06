@@ -1,13 +1,29 @@
 @use '@styles/globals' as *;
 .shell { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; @include up(md) { grid-template-columns: 72px minmax(0, 1fr); grid-template-rows: 1fr; } @include up(lg) { grid-template-columns: 248px minmax(0, 1fr); } }
-.side { display: none; flex-direction: column; background: var(--color-bg-surface); border-right: 1px solid var(--color-border-default); position: sticky; top: 0; height: 100vh; padding: var(--space-5) var(--space-3); gap: var(--space-5); @include up(md) { display: flex; align-items: center; @include up(lg) { align-items: stretch; padding: var(--space-5) var(--space-4); } } nav { display: flex; flex-direction: column; gap: var(--space-2); } }
-.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-brand); font-weight: 700; font-size: 20px; padding: 0 var(--space-3); min-height: 40px; }
+.side { display: none; flex-direction: column; background: var(--color-bg-surface); border-right: 1px solid var(--color-border-default); position: sticky; top: 0; z-index: 1; height: 100vh; overflow-y: auto; overscroll-behavior: contain; padding: var(--space-5) var(--space-3); gap: var(--space-5); @include up(md) { display: flex; align-items: center; @include up(lg) { align-items: stretch; padding: var(--space-5) var(--space-4); } } nav { display: flex; flex-direction: column; gap: var(--space-2); } }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-brand); font-weight: 700; font-size: 20px; padding: 0 var(--space-3); min-height: 40px; svg { flex: none; } }
 .brandText { display: none; @include up(lg) { display: inline; } }
-.logo { width: 26px; height: 26px; border-radius: 50%; background: var(--color-accent-default); position: relative; flex: none; &::after { content: ''; position: absolute; inset: 8px; border-radius: 50%; background: var(--color-bg-surface); } }
-.item { display: flex; align-items: center; gap: var(--space-4); min-height: 44px; padding: 0 var(--space-4); border-radius: var(--radius-md); color: var(--color-text-secondary); text-decoration: none; font-weight: 600; span { display: none; @include up(lg) { display: inline; } } &:hover { background: var(--color-bg-hover); } &.active { background: var(--color-bg-selected); color: var(--color-accent-default); } @include up(md) { justify-content: center; @include up(lg) { justify-content: flex-start; } } }
-.sideFoot { margin-top: auto; display: none; @include up(lg) { display: block; } }
+.item { display: flex; align-items: center; gap: var(--space-4); min-height: 44px; padding: 0 var(--space-4); border-radius: var(--radius-md); color: var(--color-text-secondary); text-decoration: none; font-weight: 600; span { display: none; @include up(lg) { display: inline; } } &:hover { background: var(--color-bg-hover); } &.active, &.parent { background: var(--color-bg-selected); color: var(--color-accent-default); } &.parent { @include up(lg) { background: none; color: var(--color-text-primary); &:hover { background: var(--color-bg-hover); } } } @include up(md) { justify-content: center; @include up(lg) { justify-content: flex-start; } } }
+.group { display: flex; flex-direction: column; }
+// Alt sayfalar: ana bölüm ikonunun ortasından inen ince çizgi; metin ana bölüm metniyle aynı hizada (46px).
+.sub { display: none; @include up(lg) { display: flex; flex-direction: column; gap: 2px; margin: 2px 0 var(--space-2) 23px; border-left: 1px solid var(--color-border-default); } }
+.subItem { display: flex; align-items: center; gap: var(--space-3); min-height: 36px; margin-left: -1px; padding: 0 var(--space-4) 0 21px; border-left: 2px solid transparent; border-radius: 0 var(--radius-md) var(--radius-md) 0; color: var(--color-text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; &:hover { background: var(--color-bg-hover); color: var(--color-text-primary); } &.active { background: var(--color-bg-selected); color: var(--color-accent-default); border-left-color: var(--color-accent-default); font-weight: 600; .count { background: var(--color-accent-subtle-bg); color: var(--color-accent-subtle-fg); } } }
+.subLabel { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.count { flex: none; min-width: 24px; height: 20px; padding: 0 7px; border-radius: var(--radius-full); background: var(--color-bg-hover); color: var(--color-text-secondary); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; display: inline-grid; place-items: center; }
+.sideFoot { margin-top: auto; display: none; @include up(lg) { display: flex; flex-direction: column; gap: var(--space-4); } }
+.plan { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); }
+.planLabel { font-size: 13px; font-weight: 700; }
+.planRow { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); font-size: 13px; color: var(--color-text-secondary); }
+.planNum { font-weight: 700; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.planBar { height: 6px; border-radius: var(--radius-full); background: var(--color-bg-hover); overflow: hidden; span { display: block; height: 100%; border-radius: inherit; background: var(--color-accent-default); } }
+.planCta { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; font-size: 14px; font-weight: 600; color: var(--color-text-link); text-decoration: none; svg { color: var(--color-reward-icon); flex: none; } &:hover { text-decoration: underline; } }
+.footLinks { display: flex; flex-direction: column; gap: 2px; }
+.footItem { min-height: 40px; font-size: 14px; font-weight: 500; }
 .guestCta { width: 100%; min-height: 44px; border-radius: var(--radius-md); border: 1px dashed var(--color-accent-default); background: var(--color-accent-subtle-bg); color: var(--color-accent-subtle-fg); font-weight: 600; cursor: pointer; }
-.main { min-width: 0; display: flex; flex-direction: column; }
+.main { position: relative; z-index: 1; min-width: 0; display: flex; flex-direction: column; }
+// Arka plan deseni (AppBackground): tüm görünümün arkasında sabit; kenar çubuğu/üst çubuk kendi zeminleriyle üstünde.
+.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; animation: bgIn 0.45s ease-out both; }
+@keyframes bgIn { from { opacity: 0; } }
 .top { display: none; align-items: center; gap: var(--space-3); height: 64px; padding: 0 var(--space-8); border-bottom: 1px solid var(--color-border-default); background: var(--color-bg-surface); @include up(md) { display: flex; } }
 .profile { display: flex; align-items: center; gap: var(--space-3); background: none; border: 0; cursor: pointer; min-height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-full); &:hover { background: var(--color-bg-hover); } }
 .profileName { font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

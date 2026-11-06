@@ -1,5 +1,5 @@
 import { DomainError, consumeQuota, refundQuota, peekUsage, getEntitlements, fetchInternal, internalHeaders, INTERNAL_TIMEOUTS, registerUsageSeed } from 'app-shared';
-import { EVAL_SYSTEM } from '../shared/prompts.js';
+import { buildEvalSystem, isEn } from '../shared/prompts.js';
 import { UUID_RE, requireCode, tenantOf, userIdOf, orgIdOf, getUserTimezone, insertAiUsage, wordDiff, clip } from '../shared/helpers.js';
 
 const DIRECTIONS = { en_tr: ['en', 'tr'], tr_en: ['tr', 'en'] };
@@ -85,7 +85,8 @@ export const makeTranslation = ({ rawQuery, nowFn, llm }) => {
     return { ...evalDto(e, await criteriaOf(e.rubricId)), usage: await usageOf(caller) };
   };
 
-  const buildEvalMessages = ({ dir, prompt, criteria, userText }) => {
+  const buildEvalMessages = ({ dir, prompt, criteria, userText, locale }) => {
+    const en = isEn(locale);
     const L = [];
     L.push(`Yön: ${dir === 'en_tr' ? 'İngilizceden Türkçeye' : 'Türkçeden İngilizceye'}`);
     L.push(`<kaynak>\n${prompt.sourceText}\n</kaynak>`);
@@ -95,9 +96,9 @@ export const makeTranslation = ({ rawQuery, nowFn, llm }) => {
     for (const c of criteria) L.push(`- CRITERION:${c.key} (${c.name}, 0-${c.maxPoints}): ${c.description || ''}`);
     L.push(`<ogrenci_cevabi>\n${userText}\n</ogrenci_cevabi>`);
     L.push(`Şu JSON şemasıyla yanıtla:
-{"scores":{${criteria.map((c) => `"${c.key}":0`).join(',')}},"criteriaComments":{${criteria.map((c) => `"${c.key}":"1 cümle Türkçe"`).join(',')}},"suggestedTranslation":"öğrencinin cevabını minimum değişiklikle düzelten çeviri (hedef dilde)","summary":"1-2 cümle Türkçe genel değerlendirme","changes":[{"from":"öğrencinin ifadesi","to":"düzeltme","explanation":"neden, Türkçe, tek cümle"}]}
+{"scores":{${criteria.map((c) => `"${c.key}":0`).join(',')}},"criteriaComments":{${criteria.map((c) => `"${c.key}":"${en ? '1 sentence, English' : '1 cümle Türkçe'}"`).join(',')}},"suggestedTranslation":"öğrencinin cevabını minimum değişiklikle düzelten çeviri (hedef dilde)","summary":"${en ? '1-2 sentence overall assessment, English' : '1-2 cümle Türkçe genel değerlendirme'}","changes":[{"from":"öğrencinin ifadesi","to":"düzeltme","explanation":"${en ? 'why, English, one sentence' : 'neden, Türkçe, tek cümle'}"}]}
 suggestedTranslation, öğrencinin cümlesini mümkün olduğunca koruyarak yalnız gerekli yerleri düzeltmeli. En çok 6 değişiklik yaz.`);
-    return [{ role: 'system', content: EVAL_SYSTEM, cache: true }, { role: 'user', content: L.join('\n') }];
+    return [{ role: 'system', content: buildEvalSystem(locale), cache: true }, { role: 'user', content: L.join('\n') }];
   };
 
   const attachExplanations = (parts, changes) => {
@@ -181,7 +182,7 @@ suggestedTranslation, öğrencinin cümlesini mümkün olduğunca koruyarak yaln
     const started = Date.now();
     let res; let errorCode = null;
     try {
-      res = await llm.complete({ messages: buildEvalMessages({ dir, prompt, criteria, userText: text }), model: llm.models.eval, json: true, maxTokens: 1200, task: 'translation_eval' });
+      res = await llm.complete({ messages: buildEvalMessages({ dir, prompt, criteria, userText: text, locale: caller.callerLocale }), model: llm.models.eval, json: true, maxTokens: 1200, task: 'translation_eval' });
       if (!res.json || typeof res.json !== 'object' || typeof res.json.scores !== 'object') throw new DomainError('LLM_BAD_OUTPUT', 'Model did not return the expected JSON', undefined, 502);
     } catch (e) { errorCode = e.code || 'LLM_UPSTREAM_ERROR'; }
     const latencyMs = Date.now() - started;

@@ -8,6 +8,7 @@ import useApiQuery from '@hooks/useApiQuery';
 import useApiMutation from '@hooks/useApiMutation';
 import { queryClient } from '@shared/providers/QueryProvider';
 import { useThemeStore } from '@store/themeStore';
+import { switchTheme } from '@shared/utils/themeTransition';
 import { useAuthStore } from '@store/authStore';
 import { signOut } from '@shared/auth/session';
 import Routes from '@shared/constant/route-paths';
@@ -22,6 +23,7 @@ import Modal from '@components/Modal/Modal';
 import Banner from '@components/Banner/Banner';
 import ErrorState from '@components/ErrorState/ErrorState';
 import { SkeletonList } from '@components/Skeleton/Skeleton';
+import BackgroundPicker from '../components/BackgroundPicker';
 import styles from '../components/page.module.scss';
 
 const SCALES = [-1, 0, 1, 2];
@@ -95,7 +97,7 @@ export default function Settings() {
           <TextInput className="grow" label={t('me.set.displayName')} maxLength={80} value={name ?? a.displayName ?? ''} onChange={(e) => setName(e.target.value)} />
           <Button disabled={!dirtyName} loading={saveAccount.isPending && saveAccount.variables?.displayName != null} onClick={() => saveAccount.mutate({ displayName: name.trim() })}>{t('common.save')}</Button>
         </div>
-        <Segmented label={t('me.set.language')} value={a.locale} onChange={(v) => saveAccount.mutate({ locale: v })} options={[{ value: 'tr', label: 'Türkçe' }, { value: 'en', label: 'English' }]} />
+        <div style={{ margin: 'var(--space-5) 0 var(--space-3)' }}><Segmented label={t('me.set.language')} value={a.locale} onChange={(v) => saveAccount.mutate({ locale: v })} options={[{ value: 'tr', label: 'Türkçe' }, { value: 'en', label: 'English' }]} /></div>
         <p className="t-body-s muted">{t('me.set.email', { email: a.email })}</p>
       </Section>
 
@@ -107,7 +109,8 @@ export default function Settings() {
 
       <Section title={t('me.set.appearance')}>
         <div className="stack-sm"><span className="t-title">{t('me.set.theme')}</span>
-          <Segmented label={t('me.set.theme')} value={themeMode} onChange={(v) => { setTheme(v); P({ theme: v }); }} options={['system', 'light', 'dark'].map((v) => ({ value: v, label: t(`me.set.themes.${v}`) }))} /></div>
+          <Segmented label={t('me.set.theme')} value={themeMode} onChange={(v) => { switchTheme(setTheme, v); P({ theme: v }); }} options={['system', 'light', 'dark'].map((v) => ({ value: v, label: t(`me.set.themes.${v}`) }))} /></div>
+        <BackgroundPicker />
         <div className="stack-sm"><span className="t-title">{t('me.set.uiScale')}</span><Segmented label={t('me.set.uiScale')} value={p.uiTextScale} onChange={(v) => P({ uiTextScale: v })} options={scaleOpts} /></div>
         <Select label={t('me.set.readingFont')} value={p.readingFont} onChange={(e) => P({ readingFont: e.target.value })} options={['literata', 'figtree', 'atkinson_hyperlegible'].map((v) => ({ value: v, label: t(`me.set.fonts.${v}`) }))} />
         <div className="stack-sm"><span className="t-title">{t('me.set.readingScale')}</span><Segmented label={t('me.set.readingScale')} value={p.readingTextScale} onChange={(v) => P({ readingTextScale: v })} options={scaleOpts} /></div>

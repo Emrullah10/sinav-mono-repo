@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query';
+import i18n from 'i18next';
 import { getApiErrorMessage } from '@shared/utils/apiError';
 import { notify } from '@shared/utils/notify';
 
@@ -18,6 +19,9 @@ export const queryClient = new QueryClient({
     },
   }),
 });
+
+// Veri adları sunucuda dile göre çevrilir: dil değişince önbellekteki yanıtlar eskir.
+i18n.on('languageChanged', () => queryClient.invalidateQueries());
 
 export default function QueryProvider({ children }) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;

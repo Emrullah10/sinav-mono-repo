@@ -11,16 +11,16 @@ export default defineEndpoints([
   // ── Public ──
   { method: 'get', path: '/v1/public/ping', isPublic: true, handler: () => 'pong' },
   { method: 'post', path: '/v1/auth/guest', isPublic: true, body: true, handler: (req) => uc().auth.createGuest({ locale: b(req).locale, timezone: b(req).timezone }) },
-  { method: 'post', path: '/v1/auth/email/code', isPublic: true, body: true, handler: (req) => uc().auth.sendCode({ email: b(req).email, purpose: b(req).purpose || 'login', ...ctx(req) }) },
+  { method: 'post', path: '/v1/auth/email/code', isPublic: true, body: true, handler: (req, caller) => uc().auth.sendCode({ email: b(req).email, purpose: b(req).purpose || 'login', locale: caller?.callerLocale, ...ctx(req) }) },
   { method: 'post', path: '/v1/auth/email/verify', isPublic: true, body: true, handler: (req) => uc().auth.verifyEmailCode({ email: b(req).email, code: b(req).code }) },
   { method: 'post', path: '/v1/auth/password/login', isPublic: true, body: true, handler: (req) => uc().auth.passwordLogin({ email: b(req).email, password: b(req).password }) },
-  { method: 'post', path: '/v1/auth/password/reset/request', isPublic: true, body: true, handler: (req) => uc().auth.sendCode({ email: b(req).email, purpose: 'password_reset', ...ctx(req) }) },
+  { method: 'post', path: '/v1/auth/password/reset/request', isPublic: true, body: true, handler: (req, caller) => uc().auth.sendCode({ email: b(req).email, purpose: 'password_reset', locale: caller?.callerLocale, ...ctx(req) }) },
   { method: 'post', path: '/v1/auth/password/reset/confirm', isPublic: true, body: true, handler: (req) => uc().auth.resetPassword({ email: b(req).email, code: b(req).code, newPassword: b(req).newPassword }) },
   { method: 'get', path: '/v1/public/legal-documents', isPublic: true, handler: (req) => uc().public.listLegalDocuments({ locale: q(req).locale }) },
   { method: 'get', path: '/v1/public/legal-documents/{type}', isPublic: true, handler: (req) => uc().public.getLegalDocument({ type: req.params.type, locale: q(req).locale }) },
-  { method: 'post', path: '/v1/public/waitlist', isPublic: true, body: true, handler: (req) => uc().public.joinWaitlist(b(req)) },
+  { method: 'post', path: '/v1/public/waitlist', isPublic: true, body: true, handler: (req, caller) => uc().public.joinWaitlist({ ...b(req), locale: caller?.callerLocale }) },
   { method: 'get', path: '/v1/public/waitlist/confirm', isPublic: true, handler: async (req, _c, res) => { await uc().public.confirmWaitlist({ token: q(req).token }); res.status(200).type('html').send('<!doctype html><meta charset="utf-8"><body style="font-family:system-ui;padding:40px"><h2>Teşekkürler, adresin onaylandı.</h2></body>'); } },
-  { method: 'post', path: '/v1/public/contact-messages', isPublic: true, body: true, handler: (req) => uc().public.submitContact({ ...b(req), platform: b(req).platform || platformOf(req) }) },
+  { method: 'post', path: '/v1/public/contact-messages', isPublic: true, body: true, handler: (req, caller) => uc().public.submitContact({ ...b(req), locale: caller?.callerLocale, platform: b(req).platform || platformOf(req) }) },
   { method: 'get', path: '/v1/public/data-exports/{token}', isPublic: true, handler: async (req, _c, res) => { const data = await uc().account.downloadDataExport({ token: req.params.token }); res.status(200).set({ 'Content-Type': 'application/json', 'Content-Disposition': 'attachment; filename="odak-verilerim.json"' }).send(data); } },
 
   // ── Oturum / kayıt ──

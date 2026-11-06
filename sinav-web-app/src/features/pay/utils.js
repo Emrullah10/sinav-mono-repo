@@ -1,8 +1,10 @@
-// Para: "1.490 TL" / "314,10 TL" (KDV dahil). Tarih ve sayı biçimleri tr-TR.
+import { formatNumber, numberLocale } from '@shared/utils/locale';
+
+// Para: "1.490 TL" / "314,10 TL" (KDV dahil); İngilizcede "1,490 TRY" (e-posta ve makbuzla aynı).
 export const money = (amount, currency = 'TRY') => {
   const n = Number(amount ?? 0);
   const digits = Number.isInteger(n) ? 0 : 2;
-  return `${n.toLocaleString('tr-TR', { minimumFractionDigits: digits, maximumFractionDigits: 2 })} ${currency === 'TRY' ? 'TL' : currency}`;
+  return `${formatNumber(n, { minimumFractionDigits: digits, maximumFractionDigits: 2 })} ${currency === 'TRY' && numberLocale() === 'tr-TR' ? 'TL' : currency}`;
 };
 
 export const FEATURES = ['questions_per_day', 'tutor_messages_per_day', 'flashcard_reviews_per_day', 'translation_evals_per_day', 'mini_exams_per_month', 'full_exams_per_month', 'detailed_analysis', 'score_estimate'];

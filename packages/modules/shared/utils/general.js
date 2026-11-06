@@ -130,6 +130,13 @@ const clientIpFromHeaders = (headers) => {
   return raw && raw !== 'none' ? raw : null;
 };
 
+// İstemcinin arayüz dili (Accept-Language'in ilk etiketi). Yalnız 'tr' | 'en'; diğerleri 'tr'.
+const SUPPORTED_LOCALES = ['tr', 'en'];
+const pickLocale = (raw) => {
+  const l = String(raw || '').trim().slice(0, 2).toLowerCase();
+  return SUPPORTED_LOCALES.includes(l) ? l : 'tr';
+};
+
 const getCaller = (headers, isPublic = false) => {
   // Gateway proxyReq.setHeader uses `userAccountId/userAccountTenantCode/
   // userAccountOrganizationId/userAccountRole/userAccountOrganizationType/
@@ -161,6 +168,7 @@ const getCaller = (headers, isPublic = false) => {
     callerSessionId,
     callerIp,
     callerPermissionList,
+    callerLocale: pickLocale(headers?.['accept-language']),
   };
 };
 
@@ -181,6 +189,8 @@ export {
   objectFunctionRunner,
   utcNow,
   getCaller,
+  pickLocale,
+  SUPPORTED_LOCALES,
   datasources,
   executeScript,
 };

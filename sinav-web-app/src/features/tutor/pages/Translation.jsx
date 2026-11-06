@@ -28,7 +28,8 @@ export default function Translation() {
   const [error, setError] = useState(null);
   const ref = useRef(uuid());
 
-  const prompt = useApiQuery(['tutor', 'translation-prompt', direction], () => api.tutorTranslationPromptNext({ direction }), { staleTime: 0, gcTime: 0, refetchOnWindowFocus: false });
+  // Hatalar sayfada gösterilir (bilgi kutusu / ErrorState); genel kırmızı uyarı ikinci kez söylemesin.
+  const prompt = useApiQuery(['tutor', 'translation-prompt', direction], () => api.tutorTranslationPromptNext({ direction }), { staleTime: 0, gcTime: 0, refetchOnWindowFocus: false, meta: { suppressGlobalErrorNotification: true } });
   const evaluate = useApiMutation(
     () => api.tutorTranslationEvaluate({ promptCode: prompt.data.promptCode, userText: answer.trim(), clientRef: ref.current }),
     {
@@ -59,7 +60,7 @@ export default function Translation() {
             <div className="stack">
               <Card className="stack-sm">
                 <p className="t-numeric-xl tnum">{t('tutor.tr.score', { score: result.totalScore, max: result.maxScore })}</p>
-                <ProgressBar value={result.maxScore ? result.totalScore / result.maxScore : 0} label={t('tutor.tr.score', { score: result.totalScore, max: result.maxScore })} />
+                <ProgressBar value={result.maxScore ? (result.totalScore / result.maxScore) * 100 : 0} label={t('tutor.tr.score', { score: result.totalScore, max: result.maxScore })} />
               </Card>
               <Card className="stack-sm">
                 <h2 className="t-heading-3">{t('tutor.tr.criteria')}</h2>

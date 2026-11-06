@@ -1,6 +1,6 @@
 import datasources from 'app-datasource';
 import { DomainError, consumeQuota, refundQuota, peekUsage, withTransaction } from 'app-shared';
-import { buildStablePrefix, QUESTION_LADDER, PRESET_INSTRUCTIONS } from '../shared/prompts.js';
+import { buildStablePrefix, isEn, QUESTION_LADDER, PRESET_INSTRUCTIONS } from '../shared/prompts.js';
 import {
   MODES, requireCode, UUID_RE, clip, tenantOf, userIdOf, orgIdOf, getUserTimezone, insertAiUsage, makeFenceFilter, parseModelExtras,
 } from '../shared/helpers.js';
@@ -34,7 +34,7 @@ export const makeChat = ({ rawQuery, nowFn, llm, context, conversations }) => {
     ]);
     const candidates = [...ctx.sources];
     for (const k of kw) if (!candidates.some((c) => c.code === k.code)) candidates.push(k);
-    const stable = buildStablePrefix(mode) + (conv.contextKind === 'question' || conv.contextKind === 'mock_review' ? `\n\n${QUESTION_LADDER}` : '');
+    const stable = buildStablePrefix(mode, caller.callerLocale) + (conv.contextKind === 'question' || conv.contextKind === 'mock_review' ? `\n\n${QUESTION_LADDER}` : '');
     const dyn = [
       'ÖĞRENCİ ÖZETİ', student,
       ctx.text ? `\n${ctx.text}` : '',
@@ -45,7 +45,7 @@ export const makeChat = ({ rawQuery, nowFn, llm, context, conversations }) => {
       { role: 'system', content: stable, cache: true },
       { role: 'system', content: dyn },
       ...historyRows.map((h) => ({ role: h.role, content: h.role === 'user' ? wrapUser(h.content) : h.content })),
-      { role: 'user', content: wrapUser(text) + (preset ? `\n[İstek: ${PRESET_INSTRUCTIONS[preset]}]` : '') },
+      { role: 'user', content: wrapUser(text) + (preset ? `\n[İstek: ${PRESET_INSTRUCTIONS[preset]}]` : '') + (isEn(caller.callerLocale) ? '\n[Respond in English.]' : '') },
     ];
     return { messages, candidates };
   };

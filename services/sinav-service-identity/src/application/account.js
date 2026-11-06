@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'node:crypto';
 import {
   DomainError, withTransaction, writeAudit, revokeAllSessionsForUser, hashOtp, randomToken, storagePut, fetchInternal, internalHeaders, INTERNAL_TIMEOUTS,
+  getEntitlements, normalizeBgSelection, normalizeBgCustomList, bgSelectionTier, BG_DEFAULT_SELECTION,
 } from 'app-shared';
 import {
   normalizeEmail, findUserById, listMemberships, getTenantCode, DELETION_GRACE_DAYS, sha256, subjectHash,
@@ -62,15 +63,54 @@ export const makeAccount = ({ rawQuery, nowFn, mailer, auth }) => {
       `SELECT user_preference_theme AS theme, user_preference_ui_text_scale AS "uiTextScale", user_preference_reading_font AS "readingFont",
               user_preference_reading_text_scale AS "readingTextScale", user_preference_reading_line_spacing AS "readingLineSpacing",
               user_preference_reduce_motion AS "reduceMotion", user_preference_haptics_enabled AS "hapticsEnabled", user_preference_sound_enabled AS "soundEnabled",
-              user_preference_keyboard_shortcuts_enabled AS "keyboardShortcutsEnabled", user_preference_show_exam_timer AS "showExamTimer"
+              user_preference_keyboard_shortcuts_enabled AS "keyboardShortcutsEnabled", user_preference_show_exam_timer AS "showExamTimer",
+              user_preference_background AS background, user_preference_custom_backgrounds AS "customBackgrounds"
          FROM identity.user_preference WHERE user_preference_user_account_id=$1`, [uid(caller)]);
-    return rows[0];
+    const row = rows[0];
+    if (!row) return row;
+    // Arka plan: kayıtlı seçim korunur; Premium gerektiriyorsa ve kullanıcı Premium değilse görünen arka plan sade.
+    const saved = normalizeBgSelection(row.background) || BG_DEFAULT_SELECTION;
+    const locked = bgSelectionTier(saved) === 'premium' && !(await isPremium(caller));
+    return { ...row, background: locked ? BG_DEFAULT_SELECTION : saved, backgroundSaved: saved, backgroundLocked: locked, customBackgrounds: normalizeBgCustomList(row.customBackgrounds) || [] };
+  };
+  const isPremium = async (caller) => (await getEntitlements(uid(caller)).catch(() => null))?.tier === 'premium';
+  const premiumRequired = () => new DomainError('FEATURE_LOCKED', 'Custom backgrounds are part of Premium', { feature: 'custom_backgrounds' }, 402);
+
+  // Arka plan alanları (background, customBackgrounds) ayrı doğrulanır: hazır premium desenler ve
+  // Desen stüdyosu kayıtları Premium ister. Premium bitmiş kullanıcı kayıtlı tasarımlarını silebilir ama yenisini ekleyemez.
+  const updateBackground = async (caller, b) => {
+    if (b.background === undefined && b.customBackgrounds === undefined) return;
+    const { rows } = await rawQuery('SELECT user_preference_background AS bg, user_preference_custom_backgrounds AS list FROM identity.user_preference WHERE user_preference_user_account_id=$1', [uid(caller)]);
+    const stored = normalizeBgCustomList(rows[0]?.list) || [];
+    let list = null;
+    if (b.customBackgrounds !== undefined) {
+      list = normalizeBgCustomList(b.customBackgrounds);
+      if (!list) throw new DomainError('PREFERENCE_INVALID', 'Invalid customBackgrounds');
+      const known = new Set(stored.map((c) => JSON.stringify(c)));
+      if (list.some((c) => !known.has(JSON.stringify(c))) && !(await isPremium(caller))) throw premiumRequired();
+    }
+    const finalList = list ?? stored;
+    let sel = null;
+    if (b.background !== undefined) {
+      sel = normalizeBgSelection(b.background);
+      if (!sel || (sel.key === 'custom' && !finalList.some((c) => c.id === sel.id))) throw new DomainError('PREFERENCE_INVALID', 'Invalid background');
+      if (bgSelectionTier(sel) === 'premium' && !(await isPremium(caller))) throw premiumRequired();
+    } else if (list) {
+      // Etkin özel arka plan listeden silindiyse sadeye dön.
+      const cur = normalizeBgSelection(rows[0]?.bg);
+      if (cur?.key === 'custom' && !list.some((c) => c.id === cur.id)) sel = BG_DEFAULT_SELECTION;
+    }
+    await rawQuery(
+      `UPDATE identity.user_preference SET user_preference_background = COALESCE($2::jsonb, user_preference_background),
+         user_preference_custom_backgrounds = COALESCE($3::jsonb, user_preference_custom_backgrounds) WHERE user_preference_user_account_id=$1`,
+      [uid(caller), sel ? JSON.stringify(sel) : null, list ? JSON.stringify(list) : null]);
   };
   const updatePreferences = async ({ caller, ...b }) => {
     if (b.theme !== undefined && !THEMES.includes(b.theme)) throw new DomainError('PREFERENCE_INVALID', 'Invalid theme');
     if (b.readingFont !== undefined && !FONTS.includes(b.readingFont)) throw new DomainError('PREFERENCE_INVALID', 'Invalid font');
     const clamp = (v, lo, hi) => (v === undefined ? null : Math.max(lo, Math.min(hi, Number(v) | 0)));
     const bool = (v) => (v === undefined ? null : !!v);
+    await updateBackground(caller, b);
     await rawQuery(
       `UPDATE identity.user_preference SET
          user_preference_theme = COALESCE($2, user_preference_theme), user_preference_ui_text_scale = COALESCE($3, user_preference_ui_text_scale),
@@ -142,7 +182,7 @@ export const makeAccount = ({ rawQuery, nowFn, mailer, auth }) => {
   const requestDeletionCode = async ({ caller }) => {
     const u = await findUserById(uid(caller), rawQuery);
     if (!u.email) throw new DomainError('ACCOUNT_GUEST_FORBIDDEN', 'Register first', undefined, 403);
-    return auth.sendCode({ email: u.email, purpose: 'account_deletion', userId: u.id, ip: caller.callerIp });
+    return auth.sendCode({ email: u.email, purpose: 'account_deletion', userId: u.id, ip: caller.callerIp, locale: caller.callerLocale });
   };
   const requestDeletion = async ({ caller, code }) => {
     const u = await findUserById(uid(caller), rawQuery);
@@ -157,7 +197,8 @@ export const makeAccount = ({ rawQuery, nowFn, mailer, auth }) => {
     });
     await revokeAllSessionsForUser({ userId: String(u.id) }).catch(() => {});
     await writeAudit({ caller, action: 'identity.account.deletion_requested', schema: 'identity', table: 'user_account', entityCode: Number(u.code) });
-    mailer.send({ to: u.email, ...render('deletion_requested', { date: new Date(scheduled).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }), appUrl: appUrl() }) }).catch(() => {});
+    const loc = caller.callerLocale || u.locale;
+    mailer.send({ to: u.email, ...render('deletion_requested', { date: new Date(scheduled).toLocaleDateString(loc === 'en' ? 'en-US' : 'tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }), appUrl: appUrl() }, loc) }).catch(() => {});
     return { scheduledFor: scheduled };
   };
 
@@ -208,7 +249,7 @@ export const makeAccount = ({ rawQuery, nowFn, mailer, auth }) => {
           `UPDATE identity.data_export_request SET data_export_request_status='ready', data_export_request_completed_at=now(), data_export_request_expires_at = now() + interval '48 hours',
                   data_export_request_blob_id=$2, data_export_request_download_token_hash=$3 WHERE data_export_request_id=$1`, [r.id, blob.id, sha256(token)]);
         const url = `${gatewayUrl()}/api/sinav-service-identity/v1/public/data-exports/${token}`;
-        if (u.email) await mailer.send({ to: u.email, ...render('data_export_ready', { url }) });
+        if (u.email) await mailer.send({ to: u.email, ...render('data_export_ready', { url }, u.locale) });
         changed += 1;
       } catch (e) {
         console.error('[identity] data export failed', r.code, e.message);

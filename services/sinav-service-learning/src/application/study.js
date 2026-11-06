@@ -45,7 +45,7 @@ export default (deps) => {
     });
     const usage = await peekUsage({ userId: ctx.userId, feature: 'questions_per_day', tz: ctx.tz, now: ctx.now });
     const { rows: m } = await q("SELECT count(*) FILTER (WHERE mistake_status='open')::int AS open FROM learning.mistake WHERE mistake_user_account_id=$1", [ctx.userId]);
-    const { rows: c } = await q("SELECT count(*) FILTER (WHERE card_due_at <= $2 AND card_suspended_at IS NULL)::int AS due, count(*)::int AS total FROM learning.card WHERE card_user_account_id=$1", [ctx.userId, ctx.now]);
+    const { rows: c } = await q("SELECT count(*) FILTER (WHERE card_state <> 'new' AND card_due_at <= $2 AND card_suspended_at IS NULL)::int AS due, count(*)::int AS total FROM learning.card WHERE card_user_account_id=$1", [ctx.userId, ctx.now]);
     const weakest = [...types].filter((t) => t.evidence >= 3).sort((a, b) => a.mastery - b.mastery)[0] || null;
     return {
       types, vocab: { dueCards: c[0].due, totalCards: c[0].total }, mistakes: { open: m[0].open, due: await countDueMistakes(q, ctx.userId, ctx.now) },

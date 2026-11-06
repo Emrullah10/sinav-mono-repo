@@ -45,14 +45,19 @@ export const hashOtp = (phone, code) =>
 // SMTP_HOST tanımsız olmalı. SMTP bağlanınca bu yol kendiliğinden kapanır.
 // Kod sabit olduğu için e-postasını bilen herkes o hesaba girebilir; yalnız
 // canlıya açılmadan önceki test dönemi içindir.
+//
+// Yerel geliştirme: SMTP_HOST orada Mailpit'tir, e-posta makineden çıkmaz. Bunu
+// SMTP_SINK=1 AÇIKÇA söylerse ikinci anahtar o sayılır (kod yine Mailpit'e de
+// gider). NODE_ENV=production'da SMTP_SINK yok sayılır.
 let staticOtpWarned = false;
+const smtpIsSink = () => process.env.SMTP_SINK === '1' && process.env.NODE_ENV !== 'production';
 const staticOtpCode = () => {
   const code = (process.env.OTP_STATIC_CODE || '').trim();
   if (!/^\d{6}$/.test(code)) return null;
-  if ((process.env.SMTP_HOST || '').trim()) return null;
+  if ((process.env.SMTP_HOST || '').trim() && !smtpIsSink()) return null;
   if (!staticOtpWarned) {
     staticOtpWarned = true;
-    console.warn('[otp] ⚠️ OTP_STATIC_CODE aktif: SMTP yok, tüm kodlar sabit. Canlıya açmadan önce kaldır.');
+    console.warn('[otp] ⚠️ OTP_STATIC_CODE aktif: gerçek SMTP yok, tüm kodlar sabit. Canlıya açmadan önce kaldır.');
   }
   return code;
 };

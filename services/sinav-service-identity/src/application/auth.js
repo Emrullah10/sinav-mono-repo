@@ -20,7 +20,7 @@ const passwordOk = (pw) => typeof pw === 'string' && pw.length >= 8 && pw.length
 export const makeAuth = ({ rawQuery, nowFn, mailer }) => {
   const redis = () => datasources.coreAppRedis?.client;
 
-  const sendCode = async ({ email, purpose, userId = null, ip = null, userAgent = null }) => {
+  const sendCode = async ({ email, purpose, userId = null, ip = null, userAgent = null, locale = null }) => {
     const emailN = normalizeEmail(email);
     if (!isEmail(emailN)) throw new DomainError('AUTH_EMAIL_INVALID', 'Invalid email');
     if (!PURPOSES.has(purpose)) throw new DomainError('AUTH_PURPOSE_INVALID', 'Invalid purpose');
@@ -53,7 +53,7 @@ export const makeAuth = ({ rawQuery, nowFn, mailer }) => {
                                          auth_code_code_hash, auth_code_expires_at, auth_code_requested_ip, auth_code_user_agent)
          VALUES ($1,$2,$3,$4,$5, now() + ($6 || ' minutes')::interval, $7, $8)`,
         [tenantCode, emailN, user?.id || null, purpose, hashOtp(emailN, code), String(CODE_TTL_MIN), ip, userAgent?.slice(0, 300) || null]);
-      const mail = render('login_code', { code, purpose });
+      const mail = render('login_code', { code, purpose }, locale || user?.locale);
       await mailer.send({ to: emailN, ...mail });
     }
     return { sent: true, expiresInSeconds: CODE_TTL_MIN * 60, retryAfterSeconds: RESEND_COOLDOWN_S };
@@ -135,8 +135,8 @@ export const makeAuth = ({ rawQuery, nowFn, mailer }) => {
       await tx.query(
         `UPDATE identity.user_account SET user_account_email=$2, user_account_email_normalized=$3, user_account_email_verified_at=now(),
                 user_account_status='active', user_account_display_name=COALESCE($4, user_account_display_name), user_account_guest_expires_at=NULL,
-                user_account_last_login_at=now()
-          WHERE user_account_id=$1`, [userId, emailN, emailN, displayName ? String(displayName).slice(0, 100) : null]);
+                user_account_last_login_at=now(), user_account_locale=COALESCE($5, user_account_locale)
+          WHERE user_account_id=$1`, [userId, emailN, emailN, displayName ? String(displayName).slice(0, 100) : null, ['tr', 'en'].includes(caller.callerLocale) ? caller.callerLocale : null]);
       await tx.query(`UPDATE identity.membership SET membership_role='learner' WHERE membership_user_account_id=$1 AND membership_role='guest'`, [userId]);
       await tx.query(
         `UPDATE identity.organization SET organization_name = COALESCE($2, 'Kişisel') WHERE organization_id = (SELECT user_account_organization_id FROM identity.user_account WHERE user_account_id=$1)`,
@@ -151,7 +151,7 @@ export const makeAuth = ({ rawQuery, nowFn, mailer }) => {
       }
     });
     await writeAudit({ caller, action: 'identity.user.registered', schema: 'identity', table: 'user_account', after: { email: emailN } });
-    mailer.send({ to: emailN, ...render('welcome', { appUrl: appUrl(), name: displayName }) }).catch(() => {});
+    mailer.send({ to: emailN, ...render('welcome', { appUrl: appUrl(), name: displayName }, caller.callerLocale) }).catch(() => {});
     return buildSessionPayload(userId, { run: rawQuery });
   };
 

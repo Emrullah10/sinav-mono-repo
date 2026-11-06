@@ -10,7 +10,7 @@ export const queryKeys = {
   },
   content: {
     exams: () => ['content', 'exams'], track: (key) => ['content', 'track', key], featured: (placement) => ['content', 'featured', placement],
-    articles: (params) => ['content', 'articles', params], article: (type, slug) => ['content', 'article', type, slug], articleCategories: (params) => ['content', 'articleCategories', params],
+    articles: (params) => ['content', 'articles', params], article: (type, slug) => ['content', 'article', type, slug], articleCategories: (params) => ['content', 'articleCategories', params], articleSearch: (params) => ['content', 'articleSearch', params],
     vocabLookup: (word) => ['content', 'vocabLookup', word], lexiconWord: (form) => ['content', 'lexiconWord', form], lexiconSentence: (text) => ['content', 'lexiconSentence', text], vocab: (itemCode) => ['content', 'vocab', itemCode], note: (itemCode) => ['content', 'note', itemCode],
     readingLibrary: () => ['content', 'reading', 'library'], readingCatalog: (params) => ['content', 'reading', 'catalog', params], readingBook: (code) => ['content', 'reading', 'book', String(code)], readingSection: (code, position) => ['content', 'reading', 'book', String(code), 'section', Number(position)],
     cms: {

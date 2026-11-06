@@ -1,5 +1,5 @@
 import { DomainError, withTransaction, writeAudit } from 'app-shared';
-import { toNum, iso, upper, esc, fmtMoney, fmtDateTr, findUser, round2, LIVE_STATUSES } from '../shared/helpers.js';
+import { toNum, iso, upper, esc, fmtMoney, fmtDate, normLocale, findUser, round2, LIVE_STATUSES } from '../shared/helpers.js';
 import { loadPriceByKey, evaluateCoupon, splitVat } from '../shared/pricing.js';
 import { brandForBin } from '../ports/payment-fake.js';
 
@@ -216,21 +216,23 @@ export const makeProfile = ({ rawQuery, nowFn, provider, renew }) => {
 
   /** e-Arşiv entegratörü yokken: basit text/html makbuz (PDF değil). `format=json` ile veri. */
   const getInvoiceDocument = async ({ caller, code, format, res }) => {
+    const loc = normLocale(caller.callerLocale);
+    const en = loc === 'en';
     const uid = Number(caller.callerUserId);
     const r = await loadInvoice(uid, code);
     const doc = {
       code: String(r.code), status: r.status, invoiceNumber: r.invoiceNumber, pending: r.status !== 'issued',
-      note: r.status === 'issued' ? null : 'e-Arşiv fatura entegrasyonu tamamlanana kadar bu belge ödeme makbuzudur; fatura hazır olunca e-postayla gönderilir.',
+      note: r.status === 'issued' ? null : en ? 'Until the e-invoice integration is complete, this document serves as your payment receipt; the invoice will be emailed once it is ready.' : 'e-Arşiv fatura entegrasyonu tamamlanana kadar bu belge ödeme makbuzudur; fatura hazır olunca e-postayla gönderilir.',
       planName: r.planName, subtotal: toNum(r.subtotal), taxAmount: toNum(r.tax), total: toNum(r.total), currency: r.currency, paidAt: iso(r.paidAt), createdAt: iso(r.createdAt),
       paymentCode: String(r.paymentCode), billing: { fullName: r.snap?.fullName, companyTitle: r.snap?.companyTitle, taxOffice: r.snap?.taxOffice, taxNumber: r.snap?.taxNumber, addressLine: r.snap?.addressLine, district: r.snap?.district, city: r.snap?.city },
     };
     if (format === 'json') return doc;
     const row = (k, v) => `<tr><td style="padding:6px 12px 6px 0;color:#5E6B70">${esc(k)}</td><td style="padding:6px 0;text-align:right">${esc(v)}</td></tr>`;
-    const html = `<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>Ödeme makbuzu ${esc(doc.paymentCode)}</title></head>
+    const html = `<!doctype html><html lang="${loc}"><head><meta charset="utf-8"><title>${en ? 'Payment receipt' : 'Ödeme makbuzu'} ${esc(doc.paymentCode)}</title></head>
 <body style="font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#13232A;max-width:560px;margin:32px auto;padding:0 16px">
-<h1 style="font-size:22px;margin:0 0 4px">ODAK · Ödeme makbuzu</h1>
-${doc.pending ? `<p style="background:#FFF4E5;border-radius:8px;padding:10px 12px;font-size:14px">${esc(doc.note)}</p>` : `<p>Fatura no: ${esc(doc.invoiceNumber)}</p>`}
-<table style="width:100%;border-collapse:collapse;margin-top:12px">${row('Plan', doc.planName)}${row('Ödeme tarihi', doc.paidAt ? fmtDateTr(doc.paidAt) : '-')}${row('Ara toplam', fmtMoney(doc.subtotal))}${row('KDV', fmtMoney(doc.taxAmount))}${row('Toplam', fmtMoney(doc.total))}${row('Ödeme no', doc.paymentCode)}</table>
+<h1 style="font-size:22px;margin:0 0 4px">ODAK · ${en ? 'Payment receipt' : 'Ödeme makbuzu'}</h1>
+${doc.pending ? `<p style="background:#FFF4E5;border-radius:8px;padding:10px 12px;font-size:14px">${esc(doc.note)}</p>` : `<p>${en ? 'Invoice no' : 'Fatura no'}: ${esc(doc.invoiceNumber)}</p>`}
+<table style="width:100%;border-collapse:collapse;margin-top:12px">${row('Plan', doc.planName)}${row(en ? 'Payment date' : 'Ödeme tarihi', doc.paidAt ? fmtDate(doc.paidAt, loc) : '-')}${row(en ? 'Subtotal' : 'Ara toplam', fmtMoney(doc.subtotal, loc))}${row(en ? 'VAT' : 'KDV', fmtMoney(doc.taxAmount, loc))}${row(en ? 'Total' : 'Toplam', fmtMoney(doc.total, loc))}${row(en ? 'Payment no' : 'Ödeme no', doc.paymentCode)}</table>
 <p style="margin-top:20px;font-size:14px;color:#5E6B70">${esc(doc.billing.fullName || '')}${doc.billing.companyTitle ? ' · ' + esc(doc.billing.companyTitle) : ''}<br>${esc(doc.billing.addressLine || '')} ${esc(doc.billing.district || '')} ${esc(doc.billing.city || '')}</p></body></html>`;
     res.status(200).type('html').send(html);
     return undefined;

@@ -14,6 +14,7 @@ import EmptyState from '@components/EmptyState/EmptyState';
 import ErrorState from '@components/ErrorState/ErrorState';
 import { SkeletonList } from '@components/Skeleton/Skeleton';
 import styles from './Exams.module.scss';
+import { formatNumber } from '@shared/utils/locale';
 
 const TYPES = ['full', 'mini', 'question_type_drill'];
 
@@ -103,7 +104,7 @@ export default function Exams() {
                     <Link to={path(Routes.examResult, { code: h.code })} className={styles.row}>
                       <span className="grow"><strong className="t-title">{h.title}</strong><span className="t-caption muted" style={{ display: 'block' }}>{dayjs(h.submittedAt).format('D MMMM YYYY HH:mm')}</span></span>
                       {h.isPersonalBest && <Chip size="sm" tone="reward">{t('exam.personalBest')}</Chip>}
-                      <span className="t-numeric-m tnum">{h.score.toLocaleString('tr-TR')}</span>
+                      <span className="t-numeric-m tnum">{formatNumber(h.score)}</span>
                     </Link>
                   </li>
                 ))}

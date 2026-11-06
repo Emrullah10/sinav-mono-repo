@@ -37,7 +37,7 @@ export const makeCms = ({ rawQuery }) => {
           userAccountId: Number(report.reporterId), kind: 'report_resolved',
           title: resolved ? 'Bildirdiğin yanıtı inceledik' : 'Bildirimini inceledik',
           body: clip(note || (resolved ? 'Öğretmen yanıtıyla ilgili bildirimin için teşekkürler; gerekli düzeltmeyi yaptık.' : 'Bildirimini inceledik; bu yanıtta bir değişiklik gerekmedi.'), 190),
-          deepLink: '/ogretmen', payload: { source: 'tutor_message', reportCode: String(report.code), outcome, reason: REPORT_REASON_LABELS_TR[report.reason] || report.reason },
+          deepLink: '/tutor', payload: { source: 'tutor_message', reportCode: String(report.code), outcome, reason: REPORT_REASON_LABELS_TR[report.reason] || report.reason },
           dedupeKey: `report_resolved:tutor:${report.code}`, channels: ['in_app'],
         },
       });

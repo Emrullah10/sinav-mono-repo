@@ -1,3 +1,4 @@
+import i18n from 'i18next';
 import api from '@api';
 import { useAuthStore } from '@store/authStore';
 
@@ -16,7 +17,7 @@ export const ensureSession = async () => {
   if (s.status === 'authenticated') return s.user;
   if (!pendingGuest) {
     pendingGuest = api
-      .identityAuthGuest({ timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+      .identityAuthGuest({ locale: (i18n.language || 'tr').slice(0, 2), timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
       .then(applySession)
       .finally(() => { pendingGuest = null; });
   }

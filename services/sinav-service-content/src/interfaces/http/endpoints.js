@@ -12,17 +12,17 @@ export default defineEndpoints([
   { method: 'get', path: '/v1/public/exam-tracks/{key}', isPublic: true, handler: (req) => uc().catalog.getTrack({ key: req.params.key }) },
   {
     method: 'get', path: '/v1/public/exam-sessions/{key}.ics', isPublic: true,
-    handler: async (req, _c, res) => {
-      const { filename, text } = await uc().catalog.sessionIcs({ key: req.params.key });
-      res.status(200).set({ 'Content-Type': 'text/calendar; charset=utf-8', 'Content-Disposition': `attachment; filename="${filename}"`, 'Cache-Control': 'public, max-age=3600' }).send(text);
+    handler: async (req, caller, res) => {
+      const { filename, text } = await uc().catalog.sessionIcs({ key: req.params.key, locale: caller?.callerLocale });
+      res.status(200).set({ 'Content-Type': 'text/calendar; charset=utf-8', 'Content-Disposition': `attachment; filename="${filename}"`, 'Cache-Control': 'public, max-age=3600', Vary: 'Accept-Language' }).send(text);
     },
   },
   // Orijinal PDF: süreli imzalı bağlantı (bkz. POST /reading/books/{code}/file-url); Range destekli.
   { method: 'get', path: '/v1/public/book-files/{token}', isPublic: true, handler: (req, _c, res) => uc().books.streamFile({ token: req.params.token, req, res }) },
   { method: 'get', path: '/v1/public/featured/{placement}', isPublic: true, handler: (req) => uc().catalog.featured({ placement: req.params.placement }) },
-  { method: 'get', path: '/v1/public/articles', isPublic: true, handler: (req) => uc().catalog.listArticles({ query: q(req) }) },
-  { method: 'get', path: '/v1/public/articles/search', isPublic: true, handler: (req) => uc().catalog.searchArticles({ query: q(req) }) },
-  { method: 'get', path: '/v1/public/articles/{type}/{slug}', isPublic: true, handler: (req) => uc().catalog.getArticle({ type: req.params.type, slug: req.params.slug }) },
+  { method: 'get', path: '/v1/public/articles', isPublic: true, handler: (req, caller) => uc().catalog.listArticles({ query: q(req), locale: caller?.callerLocale }) },
+  { method: 'get', path: '/v1/public/articles/search', isPublic: true, handler: (req, caller) => uc().catalog.searchArticles({ query: q(req), locale: caller?.callerLocale }) },
+  { method: 'get', path: '/v1/public/articles/{type}/{slug}', isPublic: true, handler: (req, caller) => uc().catalog.getArticle({ type: req.params.type, slug: req.params.slug, locale: caller?.callerLocale }) },
   { method: 'get', path: '/v1/public/article-categories', isPublic: true, handler: (req) => uc().catalog.listArticleCategories({ query: q(req) }) },
 
   // ── Öğrenci okumaları ──

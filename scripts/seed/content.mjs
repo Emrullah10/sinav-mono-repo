@@ -370,6 +370,9 @@ export const seedTranslation = async (ctx) => {
       if (t.keyPoints != null && !Array.isArray(t.keyPoints)) e.push('keyPoints dizi olmalı');
       if (t.area != null && !AREAS.includes(t.area)) e.push(`area geçersiz: ${t.area}`);
       if (t.tier != null && !['free', 'premium'].includes(t.tier)) e.push('tier geçersiz');
+      // direction: en_tr (varsayılan; kaynak İngilizce) | tr_en (kaynak Türkçe, referans İngilizce)
+      const dir = t.direction ?? 'en_tr';
+      if (!['en_tr', 'tr_en'].includes(dir)) e.push('direction en_tr|tr_en');
       if (!ctx.m.rubric.translation) e.push('rubrik "translation" yok (önce taxonomy)');
       if (e.length) { err(rep, id, e.join('; ')); continue; }
       if (dupRef(ctx, rep, t.ref)) continue;
@@ -378,10 +381,10 @@ export const seedTranslation = async (ctx) => {
           if (await findItem(ctx, t.ref)) return { skipped: true };
           const it = await newItem(ctx, { kind: 'translation_prompt', ref: t.ref, title: t.source, tier: t.tier ?? 'free', area: t.area ?? null, snapshot: t });
           await insert(ctx, 'content', 'translation_prompt', {
-            item_revision_id: it.revId, source_language: 'en', target_language: 'tr', source_text: t.source, reference_translation: t.reference,
+            item_revision_id: it.revId, source_language: dir === 'tr_en' ? 'tr' : 'en', target_language: dir === 'tr_en' ? 'en' : 'tr', source_text: t.source, reference_translation: t.reference,
             difficulty: t.difficulty ?? 3, rubric_id: ctx.m.rubric.translation, key_points: t.keyPoints ?? [],
           });
-          await publishItem(ctx, it, ['translation.en-tr']);
+          await publishItem(ctx, it, [dir === 'tr_en' ? 'translation.tr-en' : 'translation.en-tr']);
           return { skipped: false };
         });
         bump(rep, 'çeviri istemi', !res.skipped);
@@ -392,6 +395,9 @@ export const seedTranslation = async (ctx) => {
 
 // ------------------------------------------------------------ articles
 const toc = (md) => [...md.matchAll(/^(#{2,3})\s+(.+)$/gm)].map((m) => ({ level: m[1].length, title: m[2].trim(), id: m[2].trim().toLowerCase().replace(/[^a-z0-9ğüşıöç]+/g, '-').replace(/^-|-$/g, '') }));
+
+// Makalenin İngilizcesi ("en": { title, excerpt, seoTitle, seoDescription, bodyMd }) → article_metadata.i18n.en (+ toc). Servis 'en' istekte bunu döndürür.
+const articleEn = (a) => (a.en?.bodyMd ? { ...a.en, toc: toc(a.en.bodyMd) } : null);
 
 export const seedArticles = async (ctx) => {
   await prepCtx(ctx);
@@ -422,12 +428,21 @@ export const seedArticles = async (ctx) => {
       if (dupRef(ctx, rep, a.ref)) continue;
       try {
         const res = await sp(ctx, async () => {
-          if (await findItem(ctx, a.ref)) return { skipped: true };
+          const found = await findItem(ctx, a.ref);
+          if (found) {
+            // Var olan makale yeniden yazılmaz; yalnız çevirisi tazelenir (yayımlanmış revizyonun satırı).
+            const en = articleEn(a);
+            if (en) await ctx.db.query(
+              `UPDATE content.article SET article_metadata = jsonb_set(COALESCE(article_metadata, '{}'), '{i18n}', COALESCE(article_metadata->'i18n', '{}') || jsonb_build_object('en', $2::jsonb))
+                WHERE article_item_revision_id = (SELECT item_published_revision_id FROM content.item WHERE item_id = $1)`, [found.id, JSON.stringify(en)]);
+            return { skipped: true };
+          }
           const it = await newItem(ctx, { kind: 'article', ref: a.ref, title: a.title, slug: a.slug, language: 'tr', tier: 'free', snapshot: a });
           await insert(ctx, 'content', 'article', {
             item_revision_id: it.revId, article_type: a.type, category_id: cats[`${a.type}/${a.category}`], author_id: au ?? null, title: trunc(a.title, 200),
             excerpt: a.excerpt ? trunc(a.excerpt, 400) : null, body_md: a.bodyMd, reading_minutes: a.readingMinutes ?? null,
             seo_title: a.seoTitle ? trunc(a.seoTitle, 70) : null, seo_description: a.seoDescription ? trunc(a.seoDescription, 170) : null, cta_key: a.ctaKey ?? null, toc: toc(a.bodyMd),
+            ...(articleEn(a) ? { metadata: { i18n: { en: articleEn(a) } } } : {}),
           });
           await publishItem(ctx, it, [], false);
           return { skipped: false };

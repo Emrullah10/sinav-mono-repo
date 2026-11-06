@@ -49,7 +49,12 @@ export const dateOnly = (d) => {
 };
 export const todayIstanbul = (now = new Date()) => dateOnly(now);
 export const fmtDateTr = (d) => new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Istanbul' }).format(new Date(d));
-export const fmtMoney = (n) => `${Number(n).toLocaleString('tr-TR', { maximumFractionDigits: 2 })} TL`;
+/** Kullanıcı dili: 'en' → 'en', diğer her şey → 'tr'. */
+export const normLocale = (l) => (l === 'en' ? 'en' : 'tr');
+export const fmtDate = (d, locale = 'tr') => new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : 'tr-TR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Istanbul' }).format(new Date(d));
+export const fmtMoney = (n, locale = 'tr') => locale === 'en'
+  ? `${Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TRY`
+  : `${Number(n).toLocaleString('tr-TR', { maximumFractionDigits: 2 })} TL`;
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export const publicAppUrl = () => (process.env.PUBLIC_APP_BASE_URL || 'http://127.0.0.1:3000').replace(/\/$/, '');

@@ -5,6 +5,7 @@ import { GraduationCap, CalendarCheck, NotebookPen, Languages } from 'lucide-rea
 import Button from '@components/Button/Button';
 import Card from '@components/Card/Card';
 import BrandMark from '@components/BrandMark/BrandMark';
+import LanguageSwitch from '@components/LanguageSwitch/LanguageSwitch';
 import TapDemo from '../components/TapDemo';
 import Routes from '@shared/constant/route-paths';
 import { ensureSession } from '@shared/auth/session';
@@ -37,7 +38,10 @@ export default function Welcome() {
     <div className={styles.page}>
       <header className={styles.top}>
         <span className={styles.brand}><BrandMark size={32} />{t('app.name')}</span>
-        <Button variant="tertiary" onClick={() => nav(Routes.signIn)}>{t('auth.signIn.title')}</Button>
+        <div className={styles.topActions}>
+          <LanguageSwitch />
+          <Button variant="tertiary" onClick={() => nav(Routes.signIn)}>{t('auth.signIn.title')}</Button>
+        </div>
       </header>
       <section className={styles.hero}>
         <h1 className="t-display-l">{t('auth.welcome.title')}</h1>
@@ -65,6 +69,9 @@ export default function Welcome() {
           </Card>
         ))}
       </section>
+      <footer className={styles.footer}>
+        <Button variant="tertiary" onClick={() => nav(Routes.help)}>{t('help.title')}</Button>
+      </footer>
     </div>
   );
 }

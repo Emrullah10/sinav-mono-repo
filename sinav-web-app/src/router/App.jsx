@@ -1,7 +1,9 @@
 import { Suspense, lazy, useMemo } from 'react';
 import { Navigate, Route, Routes as RRoutes } from 'react-router-dom';
 import { RequireSession, RequireLearner, RequirePermission } from './routeUtils/guards';
-import Routes from '@shared/constant/route-paths';
+import Routes, { LEGACY_PATHS } from '@shared/constant/route-paths';
+import { SYS_LEGACY } from '@features/sys/paths';
+import LegacyRedirect from './routeUtils/LegacyRedirect';
 import BubbleLoader from '@components/BubbleLoader/BubbleLoader';
 import AppShell from '@layouts/AppShell/AppShell';
 import FocusLayout from '@layouts/FocusLayout/FocusLayout';
@@ -59,6 +61,9 @@ export default function App() {
           if (!guard) return <Route key={gi}>{inner}</Route>;
           return guard.reduceRight((acc, G, i) => <Route key={`${gi}-${i}`} element={<G />}>{acc}</Route>, inner);
         })}
+        {[...LEGACY_PATHS, ...SYS_LEGACY].map(([from, to]) => (
+          <Route key={from} path={from} element={<LegacyRedirect to={to} />} />
+        ))}
         <Route path="*" element={<NotFound />} />
       </RRoutes>
     </Suspense>

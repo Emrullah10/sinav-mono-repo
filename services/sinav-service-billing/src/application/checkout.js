@@ -1,6 +1,6 @@
 import { DomainError, withTransaction, writeAudit, invalidateEntitlements } from 'app-shared';
 import {
-  toNum, iso, round2, upper, randId, findUser, systemCaller, notifyUser, publicAppUrl, publicApiUrl, fmtDateTr, LIVE_STATUSES, addDays,
+  toNum, iso, round2, upper, randId, findUser, systemCaller, notifyUser, publicAppUrl, publicApiUrl, fmtDate, normLocale, LIVE_STATUSES, addDays,
 } from '../shared/helpers.js';
 import {
   loadPriceByKey, loadPriceById, loadCampaignById, campaignOpen, priceWindowOpen, getCampaignSold, bumpCampaignSold, evaluateCoupon, splitVat,
@@ -86,9 +86,10 @@ export const makeCheckout = ({ rawQuery, nowFn, provider }) => {
     if (payment.campaignId) { const c = await loadCampaignById(payment.campaignId, rawQuery); if (c) await bumpCampaignSold(c, 1); }
     await writeAudit({ caller: systemCaller(user), action: 'billing.payment.succeeded', schema: 'billing', table: 'payment', entityCode: Number(payment.code),
       after: { amount: payment.amount, priceKey: price.priceKey, subscription: String(res.subscriptionCode) } });
+    const loc = normLocale(user.locale);
     await notifyUser({
-      userId: user.id, kind: 'payment_receipt', title: 'Ödemen alındı', body: `${price.productName} · ${payment.amount} TL`, deepLink: '/ben/abonelik',
-      payload: { planName: price.productName, amount: payment.amount, validUntil: fmtDateTr(res.validUntil), paymentCode: String(payment.code) }, dedupeKey: `payment_receipt:${payment.code}`,
+      userId: user.id, kind: 'payment_receipt', title: loc === 'en' ? 'Payment received' : 'Ödemen alındı', body: `${price.productName} · ${payment.amount} ${loc === 'en' ? 'TRY' : 'TL'}`, deepLink: '/me/subscription',
+      payload: { planName: price.productName, amount: payment.amount, validUntil: fmtDate(res.validUntil, loc), paymentCode: String(payment.code) }, dedupeKey: `payment_receipt:${payment.code}`,
     });
     return res;
   };
@@ -101,8 +102,10 @@ export const makeCheckout = ({ rawQuery, nowFn, provider }) => {
     await releaseLock(payment.userId);
     const user = await findUser(payment.userId, rawQuery);
     await writeAudit({ caller: systemCaller(user), action: 'billing.payment.failed', schema: 'billing', table: 'payment', entityCode: Number(payment.code), after: { failureCode } });
+    const en = normLocale(user?.locale) === 'en';
     await notifyUser({
-      userId: payment.userId, kind: 'payment_failed', title: 'Ödemen alınamadı', body: 'Ödeme tamamlanmadı. Tekrar deneyebilir ya da başka kart kullanabilirsin.', deepLink: `/odeme/sonuc?payment=${payment.code}`,
+      userId: payment.userId, kind: 'payment_failed', title: en ? "We couldn't process your payment" : 'Ödemen alınamadı',
+      body: en ? 'The payment was not completed. You can try again or use a different card.' : 'Ödeme tamamlanmadı. Tekrar deneyebilir ya da başka kart kullanabilirsin.', deepLink: `/checkout/result?payment=${payment.code}`,
       payload: { paymentCode: String(payment.code), failureReasonKey }, dedupeKey: `payment_failed:${payment.code}`, channels: ['in_app'],
     });
     return { failed: true };
@@ -230,7 +233,7 @@ export const makeCheckout = ({ rawQuery, nowFn, provider }) => {
       try {
         intent = await provider.createPayment({
           paymentCode: payment.code, amount: total, currency: price.currency, installmentCount: installments, card: body.card,
-          buyer: { id: uid, email: user.email, name: profile.fullName }, returnUrl: `${publicAppUrl()}/odeme/sonuc?payment=${payment.code}`,
+          buyer: { id: uid, email: user.email, name: profile.fullName }, returnUrl: `${publicAppUrl()}/checkout/result?payment=${payment.code}`,
         });
       } catch (e) {
         await rawQuery(`UPDATE billing.payment SET payment_status='failed', payment_failure_code=$2, payment_failure_reason_key='billing.failure.generic' WHERE payment_id=$1`, [payment.id, String(e.code || 'provider_error').slice(0, 60)]);
@@ -270,7 +273,7 @@ export const makeCheckout = ({ rawQuery, nowFn, provider }) => {
     if (!provider.verifyPageToken?.(code, t)) throw new DomainError('BILLING_CALLBACK_SIGNATURE_INVALID', 'Invalid link', null, 403);
     const p = await loadPayment(code);
     if (!p) throw new DomainError('PAYMENT_NOT_FOUND', 'Payment not found');
-    if (p.status !== 'requires_action') return { redirectTo: `${publicAppUrl()}/odeme/sonuc?payment=${p.code}` };
+    if (p.status !== 'requires_action') return { redirectTo: `${publicAppUrl()}/checkout/result?payment=${p.code}` };
     const price = await loadPriceById(p.priceId, rawQuery);
     return { html: renderThreeDsPage({ provider, payment: { code: p.code, amount: p.amount }, planName: price?.productName || '', apiBase: publicApiUrl(), json }) };
   };
@@ -300,7 +303,7 @@ export const makeCheckout = ({ rawQuery, nowFn, provider }) => {
     }
     if (error) throw error;
     const state = await paymentState(await loadPayment(code));
-    return json ? { json: state } : { redirectTo: `${publicAppUrl()}/odeme/sonuc?payment=${p.code}` };
+    return json ? { json: state } : { redirectTo: `${publicAppUrl()}/checkout/result?payment=${p.code}` };
   };
 
   /** Süresi geçen (30 dk) bekleyen ödemeleri kapatır — sweep işi. */
