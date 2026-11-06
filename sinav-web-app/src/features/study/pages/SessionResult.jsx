@@ -70,9 +70,9 @@ export default function SessionResult() {
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} className="stack-sm">
             {r.items.map((i) => (
               <li key={i.position} className="row">
-                <span aria-hidden>{i.isCorrect === true ? <Check size={18} /> : i.isCorrect === false ? <X size={18} /> : <Minus size={18} />}</span>
+                <span aria-hidden>{i.isCorrect === true ? <Check size={18} /> : i.isCorrect === false && i.selectedLabel ? <X size={18} /> : <Minus size={18} />}</span>
                 <span className="grow t-body-m"><strong>{i.position}.</strong> {i.typeName}{i.stemPreview ? ` · ${i.stemPreview}` : ''}</span>
-                <span className="t-caption muted">{i.isCorrect === true ? t('study.session.correct') : i.isCorrect === false ? t('study.session.wrong') : t('study.result.blank')}</span>
+                <span className="t-caption muted">{i.isCorrect === true ? t('study.session.correct') : i.isCorrect === false && i.selectedLabel ? t('study.session.wrong') : t('study.result.blank')}</span>
               </li>
             ))}
           </ul>

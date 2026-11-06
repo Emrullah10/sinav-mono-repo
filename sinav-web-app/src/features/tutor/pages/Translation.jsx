@@ -18,18 +18,23 @@ import { SkeletonList } from '@components/Skeleton/Skeleton';
 import styles from './Home.module.scss';
 
 const DIRECTIONS = ['en_tr', 'tr_en'];
+// Seviye → sunucudaki zorluk bandı (translation.js DIFFICULTY_LABELS: kolay 1–2, orta 3, zor 4–5). Son seçim hatırlanır.
+const LEVELS = ['easy', 'medium', 'hard'];
+const LEVEL_KEY = 'tutor.tr.level';
+const levelOfDifficulty = (d) => (d <= 2 ? 'easy' : d === 3 ? 'medium' : 'hard');
 
 // Çeviri koçu: bir cümle gelir, çevirini yazarsın, ölçütlerle değerlendirilirsin (mobildeki ekranın karşılığı).
 export default function Translation() {
   const { t } = useTranslation();
   const [direction, setDirection] = useState('en_tr');
+  const [level, setLevel] = useState(() => { const v = localStorage.getItem(LEVEL_KEY); return LEVELS.includes(v) ? v : 'medium'; });
   const [answer, setAnswer] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const ref = useRef(uuid());
 
   // Hatalar sayfada gösterilir (bilgi kutusu / ErrorState); genel kırmızı uyarı ikinci kez söylemesin.
-  const prompt = useApiQuery(['tutor', 'translation-prompt', direction], () => api.tutorTranslationPromptNext({ direction }), { staleTime: 0, gcTime: 0, refetchOnWindowFocus: false, meta: { suppressGlobalErrorNotification: true } });
+  const prompt = useApiQuery(['tutor', 'translation-prompt', direction, level], () => api.tutorTranslationPromptNext({ direction, difficulty: level }), { staleTime: 0, gcTime: 0, refetchOnWindowFocus: false, meta: { suppressGlobalErrorNotification: true } });
   const evaluate = useApiMutation(
     () => api.tutorTranslationEvaluate({ promptCode: prompt.data.promptCode, userText: answer.trim(), clientRef: ref.current }),
     {
@@ -40,6 +45,7 @@ export default function Translation() {
   const reset = () => { setResult(null); setAnswer(''); setError(null); };
   const next = () => { reset(); ref.current = uuid(); prompt.refetch(); };
   const pick = (d) => { setDirection(d); reset(); ref.current = uuid(); };
+  const pickLevel = (l) => { setLevel(l); localStorage.setItem(LEVEL_KEY, l); reset(); ref.current = uuid(); };
 
   const noPrompt = prompt.isError && apiErrorCode(prompt.error) === 'TUTOR_TRANSLATION_PROMPT_NOT_FOUND';
   return (
@@ -48,13 +54,20 @@ export default function Translation() {
       <div className={styles.chips} role="group" aria-label={t('tutor.tr.direction')}>
         {DIRECTIONS.map((d) => <Chip key={d} selected={direction === d} onClick={() => pick(d)}>{t(`tutor.tr.direction.${d}`)}</Chip>)}
       </div>
+      <div className={styles.chips} role="group" aria-label={t('tutor.tr.levelLabel')}>
+        <span className="t-label muted">{t('tutor.tr.levelLabel')}</span>
+        {LEVELS.map((l) => <Chip key={l} selected={level === l} onClick={() => pickLevel(l)}>{t(`tutor.tr.levels.${l}`)}</Chip>)}
+      </div>
       {error && <Banner tone="danger" onClose={() => setError(null)}>{error}</Banner>}
       {prompt.isLoading && <SkeletonList rows={2} />}
       {noPrompt && <Banner tone="info">{t('tutor.tr.noPrompt')}</Banner>}
       {prompt.isError && !noPrompt && <ErrorState error={prompt.error} onRetry={prompt.refetch} />}
       {prompt.data && (
         <div className="stack">
-          {prompt.data.usage?.limit != null && <p className="muted t-caption">{t('tutor.tr.usage', { n: prompt.data.usage.remaining })}</p>}
+          <p className="muted t-caption">
+            {t('tutor.tr.sentenceLevel', { level: t(`tutor.tr.levels.${levelOfDifficulty(prompt.data.difficulty)}`) })}
+            {prompt.data.usage?.limit != null && ` · ${t('tutor.tr.usage', { n: prompt.data.usage.remaining })}`}
+          </p>
           <Card><p className="reading t-reading-l" lang={direction === 'en_tr' ? 'en' : 'tr'}><TapText text={prompt.data.sourceText} lang="auto" sentences={Boolean(result)} sentenceLock="lex.lock.translateFirst" /></p></Card>
           {result ? (
             <div className="stack">

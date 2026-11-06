@@ -61,7 +61,7 @@ export default (deps) => {
       list[f] = { enabled: u.enabled, limit: u.limit, period: u.period, used: u.used, remaining: u.remaining };
     }
     const { rows } = await q(
-      `SELECT count(*)::int AS answered, count(*) FILTER (WHERE attempt_is_correct)::int AS correct FROM learning.attempt WHERE attempt_user_account_id=$1 AND attempt_try_no=1 AND attempt_answered_at >= $2`,
+      `SELECT count(*) FILTER (WHERE NOT attempt_is_blank)::int AS answered, count(*) FILTER (WHERE attempt_is_correct)::int AS correct FROM learning.attempt WHERE attempt_user_account_id=$1 AND attempt_try_no=1 AND attempt_answered_at >= $2`,
       [ctx.userId, new Date(`${ctx.today}T00:00:00Z`)]);
     return { date: ctx.today, features: list, today: { answered: rows[0].answered, correct: rows[0].correct } };
   });

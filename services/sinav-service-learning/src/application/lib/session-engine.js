@@ -274,7 +274,8 @@ export const submitAnswer = async (deps, ctx, a) => {
       session = { ...session, ...counters };
       await touchSession(tx, session.id, ctx.now);
       if (final) {
-        const act = await touchActivity(tx, ctx, { questionsAnswered: 1, correctAnswers: newItem.isCorrect ? 1 : 0 });
+        // Boş (Bilmiyorum) çözülen soru sayılmaz; denemelerle aynı kural (doğru + yanlış).
+        const act = await touchActivity(tx, ctx, { questionsAnswered: newItem.selectedLabel ? 1 : 0, correctAnswers: newItem.isCorrect ? 1 : 0 });
         activity = { goalJustMet: act.goalJustMet, milestone: act.milestone, streakCurrent: act.streak.current, freezeGranted: act.freezeGranted };
         if (session.sourcePlanTaskId && session.plannedItemCount) await setTaskProgress(tx, ctx, session.sourcePlanTaskId, (counters.answeredCount / session.plannedItemCount) * 100);
       }
@@ -348,7 +349,8 @@ const revealSolutionTx = async (tx, ctx, { session, policy, item, dto }) => {
               study_session_item_first_seen_at=COALESCE(study_session_item_first_seen_at,$2), study_session_item_metadata = study_session_item_metadata || $3::jsonb WHERE study_session_item_id=$1`,
       [item.id, ctx.now, JSON.stringify({ quota: item.meta?.quota || !!policy.quota })]);
     cur = { ...item, status: 'answered', isCorrect: false, solutionViewed: true };
-    const act = await touchActivity(tx, ctx, { questionsAnswered: 1, correctAnswers: 0 });
+    // Cevap vermeden çözüme bakmak boştur: çözülen soru sayılmaz.
+    const act = await touchActivity(tx, ctx, { questionsAnswered: 0, correctAnswers: 0 });
     void act;
     if (mistake) cur.mistake = pubMistake(mistake);
   } else if (!item.solutionViewed) {

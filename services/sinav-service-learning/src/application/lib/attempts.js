@@ -61,16 +61,20 @@ export const findAttemptByClientRef = async (q, userId, clientRef) => {
   return rows[0] ? { id: Number(rows[0].id), sessionId: Number(rows[0].sessionId), itemId: Number(rows[0].itemId) } : null;
 };
 
-/** Oturum sayaçlarını maddelerden yeniden hesapla (tek doğruluk kaynağı: study_session_item). `finalize` ise bekleyenler boş sayılır. */
+/** Oturum sayaçlarını maddelerden yeniden hesapla (tek doğruluk kaynağı: study_session_item). `finalize` ise bekleyenler boş sayılır.
+ * BOŞ = şık seçilmemiş madde: "Bilmiyorum, geç" (kesin sayılan oturumlarda answered + seçim yok), çözüme cevapsız bakma ve
+ * bitişte bekleyenler. Boş, yanlışa eklenmez (yanlış = seçimli ve doğru değil). answered = bitirilen madde (boşlar dahil;
+ * ilerleme/yarı yol/plan görevi yüzdesi bunu kullanır), bu yüzden answered >= correct + wrong (göç 2026-11-06-4). */
 export const recomputeSessionCounters = async (tx, sessionId, { finalize = false } = {}) => {
   const { rows } = await tx.query(
     `UPDATE learning.study_session s SET
-        study_session_answered_count = a.answered, study_session_correct_count = a.correct, study_session_wrong_count = a.answered - a.correct,
-        study_session_blank_count = CASE WHEN $2 THEN a.total - a.answered ELSE a.skipped END,
+        study_session_answered_count = a.answered, study_session_correct_count = a.correct, study_session_wrong_count = a.answered - a.correct - a.answered_blank,
+        study_session_blank_count = (CASE WHEN $2 THEN a.total - a.answered ELSE a.skipped END) + a.answered_blank,
         study_session_hints_used = a.hints, study_session_planned_item_count = a.total
        FROM (SELECT count(*) FILTER (WHERE study_session_item_status='answered')::int AS answered,
                     count(*) FILTER (WHERE study_session_item_status='answered' AND study_session_item_is_correct)::int AS correct,
                     count(*) FILTER (WHERE study_session_item_status='skipped')::int AS skipped,
+                    count(*) FILTER (WHERE study_session_item_status='answered' AND study_session_item_selected_label IS NULL AND study_session_item_is_correct IS NOT TRUE)::int AS answered_blank,
                     count(*)::int AS total, COALESCE(sum(study_session_item_hints_revealed),0)::int AS hints
                FROM learning.study_session_item WHERE study_session_item_study_session_id=$1) a
       WHERE s.study_session_id=$1
