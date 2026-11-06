@@ -182,11 +182,16 @@ suggestedTranslation, öğrencinin cümlesini mümkün olduğunca koruyarak yaln
     const started = Date.now();
     let res; let errorCode = null;
     try {
-      res = await llm.complete({ messages: buildEvalMessages({ dir, prompt, criteria, userText: text, locale: caller.callerLocale }), model: llm.models.eval, json: true, maxTokens: 1200, task: 'translation_eval' });
-      if (!res.json || typeof res.json !== 'object' || typeof res.json.scores !== 'object') throw new DomainError('LLM_BAD_OUTPUT', 'Model did not return the expected JSON', undefined, 502);
+      // Düşünme kapalı: sunucuda OPENROUTER_REASONING_EFFORT=low iken düşünme token'ları max_tokens'tan yiyip JSON'u yarıda
+      // kesiyordu (2026-11-07: 4/4 değerlendirme 1200 token'da kesildi → LLM_BAD_OUTPUT). Türkçe açıklamalar için pay 2000.
+      res = await llm.complete({ messages: buildEvalMessages({ dir, prompt, criteria, userText: text, locale: caller.callerLocale }), model: llm.models.eval, json: true, maxTokens: 2000, reasoning: 'none', task: 'translation_eval' });
+      if (!res.json || typeof res.json !== 'object' || typeof res.json.scores !== 'object') {
+        const truncated = res.finishReason === 'length';
+        throw new DomainError(truncated ? 'LLM_TRUNCATED' : 'LLM_BAD_OUTPUT', truncated ? 'Model output was cut at max_tokens' : 'Model did not return the expected JSON', undefined, 502);
+      }
     } catch (e) { errorCode = e.code || 'LLM_UPSTREAM_ERROR'; }
     const latencyMs = Date.now() - started;
-    await insertAiUsage(rawQuery, { caller, userId, feature: 'translation_eval', model: res?.model || llm.models.eval, usage: res?.usage, latencyMs, succeeded: !errorCode, requestRef: String(id), metadata: { errorCode } });
+    await insertAiUsage(rawQuery, { caller, userId, feature: 'translation_eval', model: res?.model || llm.models.eval, usage: res?.usage, latencyMs, succeeded: !errorCode, requestRef: String(id), metadata: { errorCode, finishReason: res?.finishReason || null, reasoningTokens: res?.usage?.reasoningTokens || 0 } });
     if (errorCode) {
       await fail(id, errorCode, true);
     } else {
