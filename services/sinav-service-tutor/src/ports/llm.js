@@ -300,7 +300,24 @@ const fakeLexicon = (kind, userMsg) => {
   const n = [...userMsg.matchAll(/^\[(\d+)\] /gm)].length;
   return { translations: Array.from({ length: n }, (_, i) => `Sahte çeviri ${i + 1}: ${/^\[\d+\] (.*)$/m.exec(userMsg.split('\n').filter((l) => /^\[\d+\] /.test(l))[i] || '')?.[1]?.slice(0, 40) || ''}`) };
 };
+// Kitap soruları (yerel doğrulama): kitabın kendi sorularından ilk ikisi (cevap anahtarından) + parçalardan basit yeni sorular + etkinlikler.
+const fakeBookQuiz = (userMsg) => {
+  const own = /QUESTIONS FROM THE BOOK:\n([\s\S]*?)\n\nANSWER KEY:/.exec(userMsg)?.[1] || '';
+  const stems = [...own.matchAll(/(?:^|\s)(\d{1,2})\s+([^?]{5,200}\?)/g)].slice(0, 2).map((m) => m[2].replace(/^.*?\b([A-Z])/, '$1').trim());
+  const bookQuestions = stems.map((stem, i) => ({ stem, options: ['First option', 'Second option', 'Third option'], answer: i % 3, explanation: 'Cevap anahtarına göre.' }));
+  const passages = (/PASSAGES:\n([\s\S]*)$/.exec(userMsg)?.[1] || '').split(/\n\[\d+\]\n|^\[\d+\]\n/).map((p) => p.trim()).filter(Boolean);
+  const newQuestions = Array.from({ length: Math.max(3, 10 - bookQuestions.length) }, (_, i) => {
+    const words = (passages[i % Math.max(1, passages.length)] || 'the story begins here').split(/\s+/).filter((w) => /^[A-Za-z]{4,}$/.test(w));
+    const w = words[(i * 7) % Math.max(1, words.length)] || 'story';
+    return { stem: `Which word appears in passage ${(i % Math.max(1, passages.length)) + 1}? (${i + 1})`, options: [w, `not-${w}`, 'elephant', 'volcano'], answer: 0, explanation: `"${w}" parçada geçiyor.` };
+  });
+  const acts = /ACTIVITIES:\n([\s\S]*?)\n\nPASSAGES:/.exec(userMsg)?.[1] || '';
+  const activities = acts.split('\n').filter((l) => /\b(write|discuss|imagine|tell|explain)\b/i.test(l)).slice(0, 5).map((l) => l.replace(/^\D*?\d{1,2}\s+/, '').trim());
+  return { bookQuestions, newQuestions, activities };
+};
+
 const fakeGenerate = (gen, userMsg) => {
+  if (gen === 'book:quiz') return fakeBookQuiz(userMsg);
   if (gen.startsWith('lex:')) return fakeLexicon(gen.split(':')[1], userMsg);
   const count = Number(/Write (\d+)/.exec(userMsg)?.[1]) || 1;
   if (gen === 'question') return { questions: Array.from({ length: count }, () => fakeQuestion()) };

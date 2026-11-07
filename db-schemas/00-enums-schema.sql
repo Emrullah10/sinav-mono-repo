@@ -1265,7 +1265,8 @@ INSERT INTO enums.feature (feature_value, feature_label, feature_sort_order) VAL
     ('full_exams_per_month', 'Full exams per month', 6),
     ('detailed_analysis', 'Detailed analysis', 7),
     ('score_estimate', 'Score estimate', 8),
-    ('read_aloud', 'Read aloud', 9);
+    ('read_aloud', 'Read aloud', 9),
+    ('book_quiz', 'Book quiz', 10);
 
 -- -----------------------------------------------------
 -- Table: enums.limit_period
@@ -1570,7 +1571,8 @@ INSERT INTO enums.ai_feature (ai_feature_value, ai_feature_label, ai_feature_sor
     ('lexicon_prefill', 'Lexicon prefill', 6),
     ('lexicon_review', 'Lexicon review', 7),
     ('book_ocr', 'Book OCR', 8),
-    ('read_aloud', 'Read aloud', 9);
+    ('read_aloud', 'Read aloud', 9),
+    ('book_quiz', 'Book quiz', 10);
 
 -- -----------------------------------------------------
 -- Table: enums.ai_job_status
@@ -1653,6 +1655,21 @@ INSERT INTO enums.book_topic (book_topic_value, book_topic_label, book_topic_sor
     ('health', 'Health', 4),
     ('science', 'Science', 5),
     ('social', 'Social', 6);
+
+-- -----------------------------------------------------
+-- Table: enums.book_quiz_status
+-- Purpose: Allowed values of book_quiz_status
+-- -----------------------------------------------------
+CREATE TABLE enums.book_quiz_status (
+    book_quiz_status_id BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE NOT NULL,
+    book_quiz_status_value VARCHAR(100) PRIMARY KEY,
+    book_quiz_status_label VARCHAR(255) NOT NULL,
+    book_quiz_status_sort_order INT NOT NULL DEFAULT 0
+);
+INSERT INTO enums.book_quiz_status (book_quiz_status_value, book_quiz_status_label, book_quiz_status_sort_order) VALUES
+    ('generating', 'Generating', 1),
+    ('ready', 'Ready', 2),
+    ('failed', 'Failed', 3);
 
 -- -----------------------------------------------------
 -- Table: enums.book_ocr_page_status

@@ -31,6 +31,7 @@ const TABLE = [
   ['book', '/study/library/:code', '/calis/kitaplik/:code'],
   ['reader', '/read/:code', '/oku/:code'],
   ['readerPdf', '/read/:code/pdf', '/oku/:code/pdf'],
+  ['readerQuiz', '/read/:code/quiz', null],
   ['pdfEmbed', '/pdf-viewer', '/pdf-goruntule'],
   ['note', '/note/:id', '/not/:id'],
   ['practiceSetup', '/practice', '/alistirma'],

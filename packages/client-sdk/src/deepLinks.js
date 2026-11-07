@@ -23,4 +23,5 @@ export const deepLinks = {
   book: (code) => `/study/library/${code}`,
   reader: (code) => `/read/${code}`,
   readerPdf: (code) => `/read/${code}/pdf`,
+  readerQuiz: (code) => `/read/${code}/quiz`,
 };

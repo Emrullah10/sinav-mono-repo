@@ -3,6 +3,7 @@
 // Sıra: satırlar (y'ye göre, iki sütun ayrılır) → üst/alt bilgi temizliği → paragraf (tire birleştirme) → bölüm (outline, başlık, sayfa).
 import { getDocumentProxy } from 'unpdf';
 import { splitSentences } from '../../../../packages/modules/shared/domain/lexicon-text.js';
+import { pullQuizMaterial } from './book-quiz-extract.js';
 
 export const BOOK_LIMITS = Object.freeze({ maxBytes: 50 * 1024 * 1024, maxPages: 1500, maxChars: 6_000_000, sectionWords: 5000, blockChars: 1800, pagesPerChunk: 20, textlessChars: 30, scannedRatio: 0.6 });
 
@@ -22,7 +23,7 @@ const PAGE_NO = /^[\W_]*(?:page\s*|sayfa\s*)?(?:\d{1,4}|[ivxlcdm]{1,7})(?:\s*(?:
 const CHAPTER = /^(?:chapter|part|book|section|unit|lesson|preface|introduction|conclusion|epilogue|prologue|appendix|bölüm|kısım|ünite|giriş|sonuç)\b.{0,90}$/i;
 const BULLET = /^(?:[•·▪◦‣–—-]\s|\(?\d{1,3}[.)]\s|\(?[a-z][.)]\s)/;
 // Okuma moduna girmeyen kitap dışı metin (orijinal PDF görünümünde durur). Sürüm artınca eski kitaplar yeniden işlenebilir (scripts/reprocess-books.mjs).
-export const EXTRACT_VERSION = 2;
+export const EXTRACT_VERSION = 3;
 const LEGAL = /copyright|©|\(c\)\s*(?:19|20)\d\d|all rights reserved|\bisbn\b|first published|published (?:by|in)|printed (?:and bound )?in|no part of this (?:publication|book)|catalogu?ing|library of congress|british library|typeset|reprinted|tüm hakları saklıdır|yayıncının (?:yazılı )?izni|sertifika no|baskı ?:|matbaa|yayınevi/i;
 // Reklam/arka kapak işaretleri sayfa metninin tamamında aranır (iki sütunlu sayfada satır bölünür); kaç farklı işaret tuttuğu sayılır.
 const PROMO = [/www\.|https?:\/\//i, /available (?:now|at|from)/i, /also (?:published|available|by|in this series)/i, /series editors?/i, /teacher'?s (?:guides?|resources?)/i,
@@ -424,7 +425,7 @@ const tocCuts = (blocks, toc) => {
   return cuts.length >= 2 ? cuts : null;
 };
 
-const makeSections = (blocks, starts, pageCount, toc = []) => {
+const makeGroups = (blocks, starts, pageCount, toc = []) => {
   let marks = starts.length >= 2 ? starts : [];
   let byIndex = null;
   const fromToc = !marks.length ? tocCuts(blocks, toc) : null;
@@ -466,7 +467,7 @@ const makeSections = (blocks, starts, pageCount, toc = []) => {
       groups.push({ title: null, blocks: blocks.filter((b) => b.pg >= from && b.pg < to) });
     }
   }
-  return chunkGroups(groups);
+  return groups;
 };
 
 /** Uzun bölüm parçalanır: tek bölüm 5000 kelimeyi geçmez, ekran ve istek küçük kalır. groups: [{ title, blocks }] */
@@ -498,7 +499,7 @@ export const chunkGroups = (groups) => {
 /**
  * @param data PDF baytları (Uint8Array)
  * @param ocrPages { [sayfa]: metin } taranmış sayfaların OCR çıktısı
- * @returns { pageCount, textlessPages, sections, wordCount, info }
+ * @returns { pageCount, textlessPages, skippedPages, sections, wordCount, quiz, author }
  */
 export const extractBook = async (data, { ocrPages = {} } = {}) => {
   const pdf = await getDocumentProxy(data, { verbosity: 0, isEvalSupported: false, disableFontFace: true, useSystemFonts: false }).catch((e) => {
@@ -535,12 +536,15 @@ export const extractBook = async (data, { ocrPages = {} } = {}) => {
     // Adres satırı reklam sayfasını tanımaya yarar; sayfa kararından sonra atılır.
     for (const p of textPages) p.lines = skipped.has(p.pg) ? [] : p.lines.filter((l) => !JUNK_LINE.test(l.text));
     const blocks = buildBlocks(pages);
-    const sections = makeSections(blocks, await outlineStarts(pdf), pdf.numPages, toc);
+    const groups = makeGroups(blocks, await outlineStarts(pdf), pdf.numPages, toc);
+    // Kitabın kendi soruları/etkinlikleri okuma metninden ayrılır (kitap soruları için saklanır).
+    const quiz = pullQuizMaterial(groups);
+    const sections = chunkGroups(groups);
     const wordCount = sections.reduce((n, s) => n + s.wordCount, 0);
     let info = {};
     try { info = (await pdf.getMetadata())?.info || {}; } catch { /* yoksay */ }
     const author = clean(info.Author || '');
-    return { pageCount: pdf.numPages, textlessPages, skippedPages: [...skipped].sort((a, b) => a - b), sections, wordCount, author: author.length >= 3 && author.length <= 120 && !/^(unknown|admin|user|microsoft)/i.test(author) ? author : null };
+    return { pageCount: pdf.numPages, textlessPages, skippedPages: [...skipped].sort((a, b) => a - b), sections, wordCount, quiz, author: author.length >= 3 && author.length <= 120 && !/^(unknown|admin|user|microsoft)/i.test(author) ? author : null };
   } finally {
     // Alt süreç iş bitince kapanır; pdf.js belleği onunla gider.
     await pdf.cleanup?.().catch?.(() => {});

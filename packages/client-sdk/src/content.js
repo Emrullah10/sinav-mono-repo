@@ -34,6 +34,8 @@ export const createContentApi = (http, { api = '/api' } = {}) => {
     contentReadingBookDelete: (code) => http.delete(`${B}/reading/books/${code}`),
     /** Orijinal PDF için süreli bağlantı → { url (gateway köküne göre), expiresAt } */
     contentReadingFileUrl: (code) => http.post(`${B}/reading/books/${code}/file-url`),
+    /** Kitap soruları (ücretli planlar): { status: 'ready'|'generating'|'failed', questions, activities, errorCode }. 'generating' iken birkaç saniyede bir yeniden sorulur */
+    contentReadingQuizGet: (code) => http.get(`${B}/reading/books/${code}/quiz`),
     /** Sesli okuma: bölümün süreli ses tabanı → { url (gateway köküne göre; cümle sesi `${url}/<blok>/<cümle>`), expiresAt }. read_aloud kapalıysa 402 */
     contentReadingSpeechUrl: (code, position) => http.post(`${B}/reading/books/${code}/sections/${position}/speech-url`),
     /** Taranmış PDF: OCR'ı başlatır (Premium + aylık sayfa hakkı) */

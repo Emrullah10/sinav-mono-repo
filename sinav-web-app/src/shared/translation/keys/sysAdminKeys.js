@@ -21,6 +21,7 @@ const rows = [
   ['sysx.plans.feature.mini_exams_per_month', 'Aylık mini deneme', 'Mini exams per month'], ['sysx.plans.feature.full_exams_per_month', 'Aylık tam deneme', 'Full exams per month'],
   ['sysx.plans.feature.detailed_analysis', 'Ayrıntılı analiz', 'Detailed analysis'], ['sysx.plans.feature.score_estimate', 'Puan tahmini', 'Score estimate'],
   ['sysx.plans.feature.read_aloud', 'Sesli okuma', 'Read aloud'],
+  ['sysx.plans.feature.book_quiz', 'Kitap soruları', 'Book quiz'],
   ['sysx.sessions.title', 'Oturum yönetimi', 'Session management'], ['sysx.sessions.subtitle', 'Rol ya da kullanıcı bazında tüm oturumları sonlandırın. Süper yöneticiler korunur.', 'End all sessions by role or user. Superadmins are protected.'],
   ['sysx.sessions.byRole', 'Role göre', 'By role'], ['sysx.sessions.role', 'Rol', 'Role'], ['sysx.sessions.byUser', 'Kullanıcıya göre', 'By user'],
   ['sysx.sessions.userId', 'Kullanıcı kimliği', 'User ID'], ['sysx.sessions.userHelp', 'Sayısal hesap kimliği (userAccountId).', 'Numeric account ID (userAccountId).'],

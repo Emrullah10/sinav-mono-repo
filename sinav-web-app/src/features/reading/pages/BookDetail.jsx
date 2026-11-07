@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, BookOpen, Check, FileText, Pencil, ScanLine, Trash2 } from 'lucide-react';
+import { ArrowLeft, BookOpen, Check, FileText, ListChecks, Pencil, ScanLine, Trash2 } from 'lucide-react';
 import classNames from 'classnames';
 import api from '@api';
 import useApiQuery from '@hooks/useApiQuery';
@@ -117,6 +117,7 @@ export default function BookDetail() {
             <div className="row" style={{ flexWrap: 'wrap' }}>
               <Button startIcon={<BookOpen size={16} />} onClick={() => open(null)}>{b.progress ? t('read.detail.continue') : t('read.detail.start')}</Button>
               {b.hasFile && <Button variant="secondary" startIcon={<FileText size={16} />} onClick={() => nav(path(Routes.readerPdf, { code: b.code }))}>{t('read.detail.original')}</Button>}
+              <Button variant="secondary" startIcon={<ListChecks size={16} />} onClick={() => nav(path(Routes.readerQuiz, { code: b.code }))}>{t('read.quiz.cta')}</Button>
             </div>
           )}
 

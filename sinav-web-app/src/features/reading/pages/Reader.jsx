@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ChevronLeft, ChevronRight, FileText, Headphones, Languages, List, Type } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, FileText, Headphones, Languages, List, ListChecks, Type } from 'lucide-react';
 import classNames from 'classnames';
 import api from '@api';
 import useApiQuery from '@hooks/useApiQuery';
@@ -237,6 +237,15 @@ export default function Reader() {
                 </div>
               </div>
             )}
+          {!next && (
+            <div className={styles.quizCta}>
+              <div className="stack-sm" style={{ flex: '1 1 260px' }}>
+                <p className="t-title">{t('read.quiz.ctaBook')}</p>
+                <p className="t-body-s muted">{t('read.quiz.ctaBody')}</p>
+              </div>
+              <Button variant="secondary" startIcon={<ListChecks size={16} />} onClick={() => nav(path(Routes.readerQuiz, { code }))}>{t('read.quiz.cta')}</Button>
+            </div>
+          )}
           <nav className={styles.pager} aria-label={t('read.reader.toc')}>
             {prev && <Button variant="secondary" startIcon={<ChevronLeft size={16} />} onClick={() => goSection(prev.position)}>{t('read.reader.prev')}</Button>}
             {next

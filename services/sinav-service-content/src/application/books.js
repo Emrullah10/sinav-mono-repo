@@ -196,12 +196,14 @@ export const makeBooks = ({ rawQuery, nowFn, files }) => {
         }
       }
       if (ocr) await tx.query(`DELETE FROM content.book_ocr_page WHERE book_ocr_page_book_id = $1`, [row.id]);
+      // Metin değişti: kitabın soruları (book_quiz) yeni metinden yeniden üretilir.
+      await tx.query(`DELETE FROM content.book_quiz WHERE book_quiz_book_id = $1`, [row.id]);
       await tx.query(
         `UPDATE content.book SET book_status = $2, book_error_code = NULL, book_page_count = $3, book_textless_page_count = $4, book_section_count = $5, book_word_count = $6, book_language = $7,
                 book_author = COALESCE(book_author, $8), book_processed_at = $9, book_processing_started_at = NULL,
                 book_metadata = (book_metadata - 'reprocess') || $10::jsonb WHERE book_id = $1`,
         [row.id, scanned ? 'scanned' : 'ready', result.pageCount, result.textlessPages.length, scanned ? 0 : result.sections.length, scanned ? 0 : words, scanned ? row.language : language, result.author, nowFn(),
-          JSON.stringify(scanned ? { textlessPages: result.textlessPages, extractVersion: EXTRACT_VERSION } : { extractVersion: EXTRACT_VERSION, skippedPages: result.skippedPages || [] })]);
+          JSON.stringify(scanned ? { textlessPages: result.textlessPages, extractVersion: EXTRACT_VERSION } : { extractVersion: EXTRACT_VERSION, skippedPages: result.skippedPages || [], quiz: result.quiz || null })]);
     });
   };
 

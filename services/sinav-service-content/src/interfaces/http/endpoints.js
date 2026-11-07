@@ -44,6 +44,7 @@ export default defineEndpoints([
   { method: 'get', path: '/v1/reading/books/{code}/sections/{position}', permission: P.studyContentRead, handler: (req, caller) => uc().books.getSection({ caller, code: req.params.code, position: req.params.position }) },
   { method: 'put', path: '/v1/reading/books/{code}/progress', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().books.saveProgress({ caller, code: req.params.code, sectionPosition: b(req).sectionPosition, blockIndex: b(req).blockIndex, pageNo: b(req).pageNo, percent: b(req).percent }) },
   { method: 'post', path: '/v1/reading/books/{code}/file-url', permission: P.studyContentRead, handler: (req, caller) => uc().books.fileUrl({ caller, code: req.params.code }) },
+  { method: 'get', path: '/v1/reading/books/{code}/quiz', permission: P.studyContentRead, handler: (req, caller) => uc().bookQuiz.get({ caller, code: req.params.code }) },
   { method: 'post', path: '/v1/reading/books/{code}/sections/{position}/speech-url', permission: P.studyContentRead, handler: (req, caller) => uc().bookSpeech.speechUrl({ caller, code: req.params.code, position: req.params.position }) },
   { method: 'post', path: '/v1/reading/books/{code}/ocr', permission: P.studyContentRead, handler: (req, caller) => uc().bookOcr.start({ caller, code: req.params.code }) },
   { method: 'get', path: '/v1/vocab/{itemCode}', permission: P.studyContentRead, handler: (req) => uc().study.vocabDetail({ itemCode: req.params.itemCode }) },

@@ -3,7 +3,7 @@ import { rawQuery, fetchInternal, internalHeaders, INTERNAL_TIMEOUTS } from 'app
 
 export const FEATURES = Object.freeze([
   'questions_per_day', 'tutor_messages_per_day', 'flashcard_reviews_per_day', 'translation_evals_per_day',
-  'mini_exams_per_month', 'full_exams_per_month', 'detailed_analysis', 'score_estimate', 'read_aloud',
+  'mini_exams_per_month', 'full_exams_per_month', 'detailed_analysis', 'score_estimate', 'read_aloud', 'book_quiz',
 ]);
 export const LIVE_STATUSES = Object.freeze(['trialing', 'active', 'past_due', 'paused']);
 export const GRACE_DAYS = 3;

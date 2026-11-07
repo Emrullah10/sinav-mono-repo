@@ -7,8 +7,8 @@ export const money = (amount, currency = 'TRY') => {
   return `${formatNumber(n, { minimumFractionDigits: digits, maximumFractionDigits: 2 })} ${currency === 'TRY' && numberLocale() === 'tr-TR' ? 'TL' : currency}`;
 };
 
-export const FEATURES = ['questions_per_day', 'tutor_messages_per_day', 'flashcard_reviews_per_day', 'translation_evals_per_day', 'mini_exams_per_month', 'full_exams_per_month', 'detailed_analysis', 'score_estimate', 'read_aloud'];
-export const BOOLEAN_FEATURES = ['detailed_analysis', 'score_estimate', 'read_aloud'];
+export const FEATURES = ['questions_per_day', 'tutor_messages_per_day', 'flashcard_reviews_per_day', 'translation_evals_per_day', 'mini_exams_per_month', 'full_exams_per_month', 'detailed_analysis', 'score_estimate', 'read_aloud', 'book_quiz'];
+export const BOOLEAN_FEATURES = ['detailed_analysis', 'score_estimate', 'read_aloud', 'book_quiz'];
 
 // Özellik değeri: { kind: 'yes'|'no'|'unlimited'|'limit', limit, period }
 export const featureValue = (f) => {

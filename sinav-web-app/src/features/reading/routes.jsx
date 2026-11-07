@@ -5,6 +5,7 @@ const Library = lazy(() => import('./pages/Library'));
 const BookDetail = lazy(() => import('./pages/BookDetail'));
 const Reader = lazy(() => import('./pages/Reader'));
 const PdfPage = lazy(() => import('./pages/PdfPage'));
+const QuizPage = lazy(() => import('./pages/QuizPage'));
 const PdfEmbed = lazy(() => import('./pages/PdfEmbed'));
 
 export default [
@@ -12,6 +13,7 @@ export default [
   { path: Routes.book, element: <BookDetail />, layout: 'app', access: 'learner' },
   { path: Routes.reader, element: <Reader />, layout: 'focus', access: 'learner' },
   { path: Routes.readerPdf, element: <PdfPage />, layout: 'focus', access: 'learner' },
+  { path: Routes.readerQuiz, element: <QuizPage />, layout: 'focus', access: 'learner' },
   // Mobil WebView'ın açtığı sade görüntüleyici; dosya süreli imzalı bağlantıyla gelir, oturum istemez.
   { path: Routes.pdfEmbed, element: <PdfEmbed />, layout: 'bare', access: 'public' },
 ];

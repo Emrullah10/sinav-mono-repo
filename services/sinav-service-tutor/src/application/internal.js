@@ -1,7 +1,7 @@
 import { DomainError } from 'app-shared';
 import { insertAiUsage } from '../shared/helpers.js';
 
-const FEATURES = ['tutor_chat', 'translation_eval', 'content_draft', 'word_gloss', 'sentence_translation', 'lexicon_prefill', 'lexicon_review'];
+const FEATURES = ['tutor_chat', 'translation_eval', 'content_draft', 'word_gloss', 'sentence_translation', 'lexicon_prefill', 'lexicon_review', 'book_quiz'];
 const OCR_MAX_BASE64 = 9.5 * 1024 * 1024;
 const SPEECH_MAX_CHARS = 2000;
 const ROLES = new Set(['system', 'user', 'assistant']);

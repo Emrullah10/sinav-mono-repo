@@ -59,6 +59,8 @@ export default {
   'apiErrors.READING_TITLE_INVALID': { tr: 'Kitap adı 1-300 karakter olmalı.', en: 'The title must be 1-300 characters.' },
   'apiErrors.READING_FILE_NOT_FOUND': { tr: 'Bu kitabın orijinal dosyası yok.', en: 'This book has no original file.' },
   'apiErrors.READING_FILE_UNAVAILABLE': { tr: 'Orijinal dosya şu an açılamıyor. Biraz sonra yeniden dene.', en: 'The original file is not available right now. Try again later.' },
+  'apiErrors.READING_QUIZ_LOCKED': { tr: 'Kitaptan soru çözme ücretli planlarda açılıyor.', en: 'Book questions are available on paid plans.' },
+  'apiErrors.READING_QUIZ_NOT_READY': { tr: 'Kitap henüz hazır değil.', en: 'The book is not ready yet.' },
   'apiErrors.READING_OCR_PREMIUM': { tr: "Taranmış PDF'leri metne çevirmek Premium ile açılıyor.", en: 'Converting scanned PDFs to text is available with Premium.' },
   'apiErrors.READING_OCR_QUOTA': { tr: 'Bu ayki sayfa hakkın bu kitap için yetmiyor.', en: 'Your page allowance for this month is not enough for this book.' },
   'apiErrors.READING_OCR_NOT_APPLICABLE': { tr: 'Bu kitabın metne çevrilmesi gerekmiyor.', en: 'This book does not need text conversion.' },

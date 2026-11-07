@@ -1865,6 +1865,44 @@ CREATE INDEX idx_book_ocr_usage_updated_by ON content.book_ocr_usage (book_ocr_u
 CREATE TRIGGER trg_book_ocr_usage_updated_at BEFORE UPDATE ON content.book_ocr_usage FOR EACH ROW EXECUTE FUNCTION public.fn_set_updated_at('book_ocr_usage_updated_at');
 
 -- -----------------------------------------------------
+-- Table: content.book_quiz
+-- Purpose: Kitabın soruları: kitabın kendi soruları (çıkarmada ayrılan) + yapay zekâyla tamamlananlar. Kitap başına bir kez üretilir, herkes aynısını görür.
+-- -----------------------------------------------------
+CREATE TABLE content.book_quiz (
+    book_quiz_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    book_quiz_code BIGINT UNIQUE NOT NULL DEFAULT nextval('global_code_seq'),
+    book_quiz_tenant_code BIGINT NOT NULL,
+    book_quiz_organization_id BIGINT NOT NULL,
+    book_quiz_book_id BIGINT NOT NULL,
+    book_quiz_status VARCHAR(100) NOT NULL DEFAULT 'generating',
+    book_quiz_questions JSONB NOT NULL DEFAULT '[]',
+    book_quiz_activities JSONB NOT NULL DEFAULT '[]',
+    book_quiz_model VARCHAR(100),
+    book_quiz_cost_micros BIGINT NOT NULL DEFAULT 0,
+    book_quiz_attempts SMALLINT NOT NULL DEFAULT 0,
+    book_quiz_error_code VARCHAR(100),
+    book_quiz_started_at TIMESTAMPTZ,
+    book_quiz_metadata JSONB NOT NULL DEFAULT '{}',
+    book_quiz_created_by BIGINT,
+    book_quiz_created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    book_quiz_updated_by BIGINT,
+    book_quiz_updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT uq_book_quiz_book UNIQUE (book_quiz_book_id),
+    CONSTRAINT fk_book_quiz_book FOREIGN KEY (book_quiz_book_id) REFERENCES content.book(book_id) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT fk_book_quiz_status FOREIGN KEY (book_quiz_status) REFERENCES enums.book_quiz_status(book_quiz_status_value) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_book_quiz_tenant FOREIGN KEY (book_quiz_tenant_code) REFERENCES identity.tenant(tenant_code) ON DELETE RESTRICT ON UPDATE NO ACTION,
+    CONSTRAINT fk_book_quiz_organization FOREIGN KEY (book_quiz_organization_id) REFERENCES identity.organization(organization_id) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT fk_book_quiz_created_by FOREIGN KEY (book_quiz_created_by) REFERENCES identity.user_account(user_account_id) ON DELETE SET NULL ON UPDATE NO ACTION,
+    CONSTRAINT fk_book_quiz_updated_by FOREIGN KEY (book_quiz_updated_by) REFERENCES identity.user_account(user_account_id) ON DELETE SET NULL ON UPDATE NO ACTION
+);
+CREATE INDEX idx_book_quiz_tenant_code ON content.book_quiz (book_quiz_tenant_code);
+CREATE INDEX idx_book_quiz_organization_id ON content.book_quiz (book_quiz_organization_id);
+CREATE INDEX idx_book_quiz_status ON content.book_quiz (book_quiz_status);
+CREATE INDEX idx_book_quiz_created_by ON content.book_quiz (book_quiz_created_by);
+CREATE INDEX idx_book_quiz_updated_by ON content.book_quiz (book_quiz_updated_by);
+CREATE TRIGGER trg_book_quiz_updated_at BEFORE UPDATE ON content.book_quiz FOR EACH ROW EXECUTE FUNCTION public.fn_set_updated_at('book_quiz_updated_at');
+
+-- -----------------------------------------------------
 -- Table: content.book_sentence_translation
 -- Purpose: Kişisel kitabın cümle çevirileri (paylaşılan önbelleğe yazılmaz; kitapla silinir).
 -- -----------------------------------------------------
