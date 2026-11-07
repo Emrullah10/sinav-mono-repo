@@ -1,34 +1,133 @@
 @use '@styles/globals' as *;
-.shell { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; @include up(md) { grid-template-columns: 72px minmax(0, 1fr); grid-template-rows: 1fr; } @include up(lg) { grid-template-columns: 248px minmax(0, 1fr); } }
-.side { display: none; flex-direction: column; background: var(--color-bg-surface); border-right: 1px solid var(--color-border-default); position: sticky; top: 0; z-index: 1; height: 100vh; overflow-y: auto; overscroll-behavior: contain; padding: var(--space-5) var(--space-3); gap: var(--space-5); @include up(md) { display: flex; align-items: center; @include up(lg) { align-items: stretch; padding: var(--space-5) var(--space-4); } } nav { display: flex; flex-direction: column; gap: var(--space-2); } }
-.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-brand); font-weight: 700; font-size: 20px; padding: 0 var(--space-3); min-height: 40px; svg { flex: none; } }
-.brandText { display: none; @include up(lg) { display: inline; } }
-.item { display: flex; align-items: center; gap: var(--space-4); min-height: 44px; padding: 0 var(--space-4); border-radius: var(--radius-md); color: var(--color-text-secondary); text-decoration: none; font-weight: 600; span { display: none; @include up(lg) { display: inline; } } &:hover { background: var(--color-bg-hover); } &.active, &.parent { background: var(--color-bg-selected); color: var(--color-accent-default); } &.parent { @include up(lg) { background: none; color: var(--color-text-primary); &:hover { background: var(--color-bg-hover); } } } @include up(md) { justify-content: center; @include up(lg) { justify-content: flex-start; } } }
+
+// Düzen: telefon (<600) tek sütun + alt sekmeler · dikey tablet (sm) üst çubuk + alt sekmeler + çekmece ·
+// yatay tablet (md) 88px etiketli ray + çekmece · masaüstü (lg) 264px kenar çubuğu.
+.shell { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto;
+  @include up(md) { grid-template-columns: 88px minmax(0, 1fr); grid-template-rows: 1fr; }
+  @include up(lg) { grid-template-columns: 264px minmax(0, 1fr); } }
+
+// ── Bölüm ikon kutusu (renk tonlu) ──
+.tile { flex: none; display: inline-grid; place-items: center; border-radius: 10px; transition: transform var(--motion-fast) ease; }
+.tile_md { width: 32px; height: 32px; }
+.tile_sm { width: 26px; height: 26px; border-radius: 8px; }
+.tint_amber { background: var(--color-tint-amber-bg); color: var(--color-tint-amber); }
+.tint_teal { background: var(--color-tint-teal-bg); color: var(--color-tint-teal); }
+.tint_indigo { background: var(--color-tint-indigo-bg); color: var(--color-tint-indigo); }
+.tint_plum { background: var(--color-tint-plum-bg); color: var(--color-tint-plum); }
+.tint_neutral { background: var(--color-bg-hover); color: var(--color-text-secondary); }
+
+// ── Kenar çubuğu (masaüstü) ve çekmece: ortak içerik ──
+.side, .drawer { flex-direction: column; gap: var(--space-6); background: var(--color-bg-surface); padding: var(--space-5) var(--space-4) var(--space-4); overflow-y: auto; overscroll-behavior: contain; }
+.side { display: none; position: sticky; top: 0; z-index: 2; height: 100vh; border-right: 1px solid var(--color-border-default);
+  @include up(lg) { display: flex; } }
+
+.brandRow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 44px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; padding: 0 var(--space-2); border-radius: var(--radius-md); color: var(--color-text-primary); text-decoration: none; font-family: var(--font-brand); font-weight: 700; font-size: 21px; letter-spacing: 0.01em;
+  svg { flex: none; } &:focus-visible { @include focus-ring; } }
+.brandText { display: inline; }
+
+.nav { display: flex; flex-direction: column; gap: var(--space-1); }
 .group { display: flex; flex-direction: column; }
-// Alt sayfalar: ana bölüm ikonunun ortasından inen ince çizgi; metin ana bölüm metniyle aynı hizada (46px).
-.sub { display: none; @include up(lg) { display: flex; flex-direction: column; gap: 2px; margin: 2px 0 var(--space-2) 23px; border-left: 1px solid var(--color-border-default); } }
-.subItem { display: flex; align-items: center; gap: var(--space-3); min-height: 36px; margin-left: -1px; padding: 0 var(--space-4) 0 21px; border-left: 2px solid transparent; border-radius: 0 var(--radius-md) var(--radius-md) 0; color: var(--color-text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; &:hover { background: var(--color-bg-hover); color: var(--color-text-primary); } &.active { background: var(--color-bg-selected); color: var(--color-accent-default); border-left-color: var(--color-accent-default); font-weight: 600; .count { background: var(--color-accent-subtle-bg); color: var(--color-accent-subtle-fg); } } }
+.item { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 6px var(--space-2); border-radius: 12px; color: var(--color-text-secondary); text-decoration: none; font-weight: 600; font-size: 15px;
+  transition: background var(--motion-fast) ease, color var(--motion-fast) ease;
+  &:hover { background: var(--color-bg-hover); color: var(--color-text-primary); .tile { transform: scale(1.04); } }
+  &:focus-visible { @include focus-ring; }
+  &.active { background: var(--color-bg-selected); color: var(--color-text-primary);
+    .itemLabel { color: var(--color-accent-default); } }
+  &.parent { color: var(--color-text-primary); } }
+.itemLabel { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+// Alt sayfalar: bölüm ikonunun ortasından inen ince çizgi; seçili olan çizgide vurgulanır.
+.sub { display: flex; flex-direction: column; gap: 2px; margin: 2px 0 var(--space-2) 23px; padding-left: var(--space-2); border-left: 1.5px solid var(--color-border-default); }
+.subItem { position: relative; display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 var(--space-3); border-radius: 10px; color: var(--color-text-secondary); text-decoration: none; font-size: 14px; font-weight: 500;
+  transition: background var(--motion-fast) ease, color var(--motion-fast) ease;
+  &::before { content: ''; position: absolute; left: calc(-1 * var(--space-2) - 1.5px); top: 9px; bottom: 9px; width: 2.5px; border-radius: 2px; background: transparent; transition: background var(--motion-fast) ease; }
+  &:hover { background: var(--color-bg-hover); color: var(--color-text-primary); }
+  &:focus-visible { @include focus-ring; }
+  &.active { background: var(--color-bg-selected); color: var(--color-accent-default); font-weight: 600;
+    &::before { background: var(--color-accent-default); }
+    .subIcon { color: var(--color-accent-default); }
+    .count { background: var(--color-accent-default); color: var(--color-text-on-accent); } } }
+.subIcon { flex: none; color: var(--color-text-tertiary); }
 .subLabel { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.count { flex: none; min-width: 24px; height: 20px; padding: 0 7px; border-radius: var(--radius-full); background: var(--color-bg-hover); color: var(--color-text-secondary); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; display: inline-grid; place-items: center; }
-.sideFoot { margin-top: auto; display: none; @include up(lg) { display: flex; flex-direction: column; gap: var(--space-4); } }
-.plan { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); }
+.count { flex: none; min-width: 22px; height: 20px; padding: 0 7px; border-radius: var(--radius-full); background: var(--color-accent-subtle-bg); color: var(--color-accent-subtle-fg); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; display: inline-grid; place-items: center; }
+
+.sideFoot { margin-top: auto; display: flex; flex-direction: column; gap: var(--space-3); }
+.plan { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4); border-radius: 16px; border: 1px solid var(--color-border-default);
+  background: linear-gradient(160deg, var(--color-accent-subtle-bg), var(--color-bg-surface) 70%); }
+.planHead { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
 .planLabel { font-size: 13px; font-weight: 700; }
-.planRow { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); font-size: 13px; color: var(--color-text-secondary); }
-.planNum { font-weight: 700; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.planSub { font-size: 12.5px; color: var(--color-text-secondary); }
+.planNum { font-weight: 700; font-size: 13px; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
 .planBar { height: 6px; border-radius: var(--radius-full); background: var(--color-bg-hover); overflow: hidden; span { display: block; height: 100%; border-radius: inherit; background: var(--color-accent-default); } }
-.planCta { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; font-size: 14px; font-weight: 600; color: var(--color-text-link); text-decoration: none; svg { color: var(--color-reward-icon); flex: none; } &:hover { text-decoration: underline; } }
-.footLinks { display: flex; flex-direction: column; gap: 2px; }
-.footItem { min-height: 40px; font-size: 14px; font-weight: 500; }
-.guestCta { width: 100%; min-height: 44px; border-radius: var(--radius-md); border: 1px dashed var(--color-accent-default); background: var(--color-accent-subtle-bg); color: var(--color-accent-subtle-fg); font-weight: 600; cursor: pointer; }
+.planCta { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin-top: 2px; font-size: 14px; font-weight: 600; color: var(--color-text-link); text-decoration: none; svg { color: var(--color-reward-icon); flex: none; } &:hover { text-decoration: underline; } }
+.premium { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: 16px; text-decoration: none; color: var(--color-text-primary);
+  background: linear-gradient(135deg, var(--color-reward-subtle-bg), var(--color-bg-surface) 80%); border: 1px solid var(--color-border-default);
+  &:hover { border-color: var(--color-border-strong); } &:focus-visible { @include focus-ring; } }
+.premiumIcon { flex: none; display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--color-reward-default); color: var(--color-reward-on); }
+.premiumText { display: flex; flex-direction: column; min-width: 0; }
+.premiumTitle { font-weight: 700; font-size: 14px; }
+.premiumSub { font-size: 12.5px; color: var(--color-text-secondary); }
+.footLinks { display: flex; flex-direction: column; gap: 2px; padding-top: var(--space-2); border-top: 1px solid var(--color-border-subtle); }
+.footItem { display: flex; align-items: center; gap: var(--space-3); min-height: 40px; padding: 0 var(--space-3); border-radius: 10px; color: var(--color-text-secondary); text-decoration: none; font-size: 14px; font-weight: 500;
+  &:hover { background: var(--color-bg-hover); color: var(--color-text-primary); } &:focus-visible { @include focus-ring; }
+  &.active { background: var(--color-bg-selected); color: var(--color-accent-default); font-weight: 600; } }
+.guestCta { width: 100%; min-height: 44px; border-radius: 12px; border: 1px dashed var(--color-accent-default); background: var(--color-accent-subtle-bg); color: var(--color-accent-subtle-fg); font-weight: 600; cursor: pointer; }
+
+// ── Yatay tablet rayı ──
+.rail { display: none; flex-direction: column; align-items: center; gap: var(--space-2); position: sticky; top: 0; z-index: 2; height: 100vh; padding: var(--space-4) var(--space-2); background: var(--color-bg-surface); border-right: 1px solid var(--color-border-default);
+  @include up(md) { display: flex; } @include up(lg) { display: none; } }
+.railMenu { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: var(--space-3); border: 0; border-radius: 14px; background: transparent; color: var(--color-text-primary); cursor: pointer;
+  &:hover { background: var(--color-bg-hover); } &:focus-visible { @include focus-ring; } }
+.railItem { width: 76px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0 6px; color: var(--color-text-secondary); text-decoration: none; font-size: 12px; font-weight: 600; text-align: center; -webkit-tap-highlight-color: transparent;
+  &:hover .railIcon { background: var(--color-bg-hover); }
+  &:focus-visible { outline: none; .railIcon { @include focus-ring; } }
+  &.active { color: var(--color-text-primary); .railIcon { background: var(--color-accent-subtle-bg); color: var(--color-accent-default); } } }
+.railIcon { display: grid; place-items: center; width: 56px; height: 32px; border-radius: 16px; transition: background var(--motion-fast) ease; }
+.railLabel { max-width: 76px; line-height: 1.2; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+
+// ── Çekmece (tabletler) ──
+.drawer { display: flex; position: fixed; z-index: 40; top: 0; left: 0; bottom: 0; width: min(320px, 86vw); border-right: 1px solid var(--color-border-default);
+  box-shadow: 0 24px 64px color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+  transform: translateX(-104%); visibility: hidden; transition: transform var(--motion-base) cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear var(--motion-base);
+  @include up(lg) { display: none; }
+  @media (prefers-reduced-motion: reduce) { transition: none; } }
+.drawerOn { transform: none; visibility: visible; transition: transform var(--motion-base) cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s; }
+.scrim { position: fixed; inset: 0; z-index: 39; background: var(--color-bg-scrim); opacity: 0; pointer-events: none; transition: opacity var(--motion-base) ease;
+  @include up(lg) { display: none; } }
+.scrimOn { opacity: 1; pointer-events: auto; }
+
+// ── İçerik ve üst çubuk ──
 .main { position: relative; z-index: 1; min-width: 0; display: flex; flex-direction: column; }
 // Arka plan deseni (AppBackground): tüm görünümün arkasında sabit; kenar çubuğu/üst çubuk kendi zeminleriyle üstünde.
 .bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; animation: bgIn 0.45s ease-out both; }
 @keyframes bgIn { from { opacity: 0; } }
-.top { display: none; align-items: center; gap: var(--space-3); height: 64px; padding: 0 var(--space-8); border-bottom: 1px solid var(--color-border-default); background: var(--color-bg-surface); @include up(md) { display: flex; } }
-.profile { display: flex; align-items: center; gap: var(--space-3); background: none; border: 0; cursor: pointer; min-height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-full); &:hover { background: var(--color-bg-hover); } }
-.profileName { font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.content { min-width: 0; overflow-wrap: anywhere; width: 100%; max-width: 1200px; margin: 0 auto; padding: var(--space-5) var(--space-5) 96px; @include up(md) { padding: var(--space-8) var(--space-8) var(--space-11); } }
-// Alt sekme çubuğu (md altı): mobil uygulamayla aynı; seçili sekmede ikonun arkasında petrol tonlu hap.
+
+.top { display: none; position: sticky; top: 0; z-index: 20; align-items: center; gap: var(--space-3); height: 64px; padding: 0 var(--space-5);
+  background: color-mix(in srgb, var(--color-bg-surface) 84%, transparent); backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid var(--color-border-subtle);
+  @include up(sm) { display: flex; } @include up(md) { padding: 0 var(--space-8); } }
+.topMenu { @include up(md) { display: none !important; } }
+.crumbs { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.crumb { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 36px; padding: 0 var(--space-2); border-radius: 10px; color: var(--color-text-secondary); text-decoration: none; font-weight: 600; font-size: 15px; white-space: nowrap;
+  span { overflow: hidden; text-overflow: ellipsis; }
+  &:is(a):hover { background: var(--color-bg-hover); color: var(--color-text-primary); }
+  &:focus-visible { @include focus-ring; } }
+.crumbCurrent { color: var(--color-text-primary); font-weight: 700; }
+.crumbSep { flex: none; color: var(--color-text-tertiary); }
+.crumbSubIcon { flex: none; color: var(--color-accent-default); }
+.actions { display: flex; align-items: center; gap: 2px; padding: 2px; border-radius: var(--radius-full); border: 1px solid var(--color-border-subtle); background: var(--color-bg-surface); }
+.profile { display: flex; align-items: center; gap: var(--space-3); background: none; border: 0; cursor: pointer; min-height: 44px; padding: 3px var(--space-3) 3px 3px; border-radius: var(--radius-full); color: var(--color-text-primary); text-align: left;
+  &:hover { background: var(--color-bg-hover); } &:focus-visible { @include focus-ring; } }
+.profileText { display: none; flex-direction: column; line-height: 1.2; min-width: 0; @include up(md) { display: flex; } }
+.profileName { font-weight: 600; font-size: 14px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profilePlan { font-size: 12px; font-weight: 600; color: var(--color-text-tertiary); }
+.profilePremium { color: var(--color-reward-icon); }
+
+.content { min-width: 0; overflow-wrap: anywhere; width: 100%; max-width: 1200px; margin: 0 auto; padding: var(--space-5) var(--space-5) 96px;
+  @include up(md) { padding: var(--space-8) var(--space-8) var(--space-11); } }
+
+// ── Alt sekme çubuğu (telefon + dikey tablet): mobil uygulamayla aynı; seçili sekmede ikonun arkasında petrol tonlu hap ──
 .tabs { position: sticky; bottom: 0; z-index: 10; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px var(--space-1) calc(6px + env(safe-area-inset-bottom)); background: var(--color-bg-surface); border-top: 1px solid var(--color-border-subtle); @include up(md) { display: none; } }
 .tab { min-width: 0; text-align: center; overflow-wrap: anywhere; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 56px; color: var(--color-text-tertiary); text-decoration: none; font-size: 12px; font-weight: 500; -webkit-tap-highlight-color: transparent;
   &:focus-visible { outline: none; .tabIcon { @include focus-ring; } }

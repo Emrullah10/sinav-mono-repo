@@ -1,0 +1,40 @@
+@use '@styles/globals' as *;
+
+.section { display: flex; flex-direction: column; gap: var(--space-4); scroll-margin-top: 88px; }
+
+.head { display: flex; align-items: flex-start; gap: var(--space-3); }
+.headIcon { flex: none; display: inline-grid; place-items: center; width: 36px; height: 36px; margin-top: 2px; border-radius: 12px; background: var(--color-tint-teal-bg); color: var(--color-tint-teal); }
+.headText { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.total { flex: none; align-self: center; padding: 4px 12px; border-radius: var(--radius-full); background: var(--color-bg-surface); border: 1px solid var(--color-border-default); font-size: 13px; font-weight: 600; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+
+.tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.search { flex: 1 1 220px; display: flex; align-items: center; gap: var(--space-2); min-height: 40px; padding: 0 var(--space-3); border-radius: 12px; border: 1px solid var(--color-border-input); background: var(--color-bg-input); color: var(--color-text-tertiary);
+  &:focus-within { border-color: var(--color-border-focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-border-focus) 20%, transparent); }
+  input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--color-text-primary); font: inherit; font-size: 15px; }
+  input::placeholder { color: var(--color-text-tertiary); } }
+
+.grid { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+
+// Kelime kartı: kelime + tür, anlam (en çok iki satır), durum. Tamamı tıklanır (kelimenin ayrıntısı).
+.word { height: 100%; display: flex; flex-direction: column; gap: 6px; padding: var(--space-4); border-radius: 16px; border: 1px solid var(--color-border-default); background: var(--color-bg-surface); color: var(--color-text-primary); text-decoration: none;
+  transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease, transform var(--motion-fast) ease;
+  &:hover { border-color: var(--color-border-strong); box-shadow: 0 6px 20px color-mix(in srgb, var(--color-text-primary) 8%, transparent); transform: translateY(-1px); }
+  &:focus-visible { @include focus-ring; }
+  @media (prefers-reduced-motion: reduce) { transition: none; &:hover { transform: none; } } }
+.wordTop { display: flex; align-items: baseline; gap: var(--space-2); min-width: 0; }
+.headword { font-family: var(--font-reading); font-size: 19px; font-weight: 600; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pos { flex: none; font-size: 12px; font-weight: 600; color: var(--color-text-tertiary); text-transform: lowercase; }
+.meaning { font-size: 14.5px; color: var(--color-text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.status { margin-top: auto; padding-top: 4px; display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--color-text-secondary);
+  i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; } }
+.s_new { color: var(--color-accent-default); }
+.s_due { color: var(--color-warning-fg); }
+.s_learning { color: var(--color-tint-indigo); }
+.s_review { color: var(--color-success-fg); }
+
+.empty { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); padding: var(--space-5); border-radius: 16px; border: 1px dashed var(--color-border-strong); background: var(--color-bg-surface); }
+.emptyIcon { flex: none; display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--color-accent-subtle-bg); color: var(--color-accent-default); }
+.emptyText { flex: 1 1 240px; display: flex; flex-direction: column; gap: 2px; }
+
+.more { display: flex; justify-content: center; }
