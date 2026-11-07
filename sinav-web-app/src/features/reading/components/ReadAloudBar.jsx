@@ -8,12 +8,12 @@ import styles from './Reading.module.scss';
 export default function ReadAloudBar({ aloud }) {
   const { t } = useTranslation();
   const playing = aloud.status === 'playing';
-  const at = Math.max(0, READ_RATES.findIndex((r) => r.value === aloud.rate));
+  const at = READ_RATES[aloud.rate] ? aloud.rate : 1;
   const rate = READ_RATES[at];
-  const nextRate = READ_RATES[(at + 1) % READ_RATES.length];
+  const next = (at + 1) % READ_RATES.length;
   return (
     <div className={styles.aloudBar} role="region" aria-label={t('read.aloud.title')}>
-      <button type="button" className={styles.aloudRate} aria-label={t('read.aloud.speed', { n: rate.label })} title={t('read.aloud.speed', { n: rate.label })} onClick={() => aloud.setRate(nextRate.value)}>
+      <button type="button" className={styles.aloudRate} aria-label={t('read.aloud.speed', { n: rate.label })} title={t('read.aloud.speed', { n: rate.label })} onClick={() => aloud.setRate(next)}>
         {`${rate.label}×`}
       </button>
       <div className={styles.aloudControls}>

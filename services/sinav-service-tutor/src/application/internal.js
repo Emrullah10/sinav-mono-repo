@@ -3,6 +3,7 @@ import { insertAiUsage } from '../shared/helpers.js';
 
 const FEATURES = ['tutor_chat', 'translation_eval', 'content_draft', 'word_gloss', 'sentence_translation', 'lexicon_prefill', 'lexicon_review'];
 const OCR_MAX_BASE64 = 9.5 * 1024 * 1024;
+const SPEECH_MAX_CHARS = 2000;
 const ROLES = new Set(['system', 'user', 'assistant']);
 const EFFORTS = ['none', 'minimal', 'low', 'medium', 'high'];
 const SORTS = ['price', 'throughput', 'latency'];
@@ -51,5 +52,28 @@ export const makeInternal = ({ rawQuery, llm }) => {
       throw e;
     }
   };
-  return Object.freeze({ aiComplete, ocrPage });
+  /**
+   * Sesli okuma: tek cümle → mp3 (içerik servisi önbelleğe yazar; aynı cümle bir daha üretilmez).
+   * Yanıtta maliyet olmadığından ücret karakter başı fiyattan yazılır (READ_ALOUD_PRICE_PER_MCHAR $/1M karakter; Drama 3 = 2).
+   * $/1M karakter × karakter = mikro dolar.
+   */
+  const speech = async ({ caller, text, model, voice }) => {
+    const input = typeof text === 'string' ? text.trim() : '';
+    if (!input || input.length > SPEECH_MAX_CHARS) throw new DomainError('TUTOR_AI_MESSAGES_INVALID', `text must be 1-${SPEECH_MAX_CHARS} characters`);
+    if (!/^[\w.\-/:]{1,80}$/.test(String(model || ''))) throw new DomainError('TUTOR_AI_MESSAGES_INVALID', 'model name invalid');
+    if (voice != null && !/^[\w.-]{1,80}$/.test(String(voice))) throw new DomainError('TUTOR_AI_MESSAGES_INVALID', 'voice invalid');
+    const userId = Number(caller?.callerUserId) || null;
+    const started = Date.now();
+    const price = Number(process.env.READ_ALOUD_PRICE_PER_MCHAR);
+    const costMicros = Math.round(input.length * (Number.isFinite(price) && price >= 0 ? price : 2));
+    try {
+      const r = await llm.speech({ text: input, model, voice: voice || undefined });
+      await insertAiUsage(rawQuery, { caller, userId, feature: 'read_aloud', model: r.model || model, usage: { costMicros }, latencyMs: Date.now() - started, succeeded: true, requestRef: r.generationId, metadata: { internal: true, chars: input.length, voice: voice || null } });
+      return { audioBase64: r.audio.toString('base64'), contentType: r.contentType, model: r.model || model, costMicros };
+    } catch (e) {
+      if (llm.configured) await insertAiUsage(rawQuery, { caller, userId, feature: 'read_aloud', model, latencyMs: Date.now() - started, succeeded: false, metadata: { internal: true, chars: input.length, errorCode: e.code || null } });
+      throw e;
+    }
+  };
+  return Object.freeze({ aiComplete, ocrPage, speech });
 };

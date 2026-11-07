@@ -99,7 +99,7 @@ export default {
   'read.aloud.next': { tr: 'Sonraki cümle', en: 'Next sentence' },
   'read.aloud.speed': { tr: 'Okuma hızı: {{n}}×', en: 'Reading speed: {{n}}×' },
   'read.aloud.close': { tr: 'Sesli okumayı kapat', en: 'Stop reading aloud' },
-  'read.aloud.locked': { tr: 'Sesli okuma aboneliğe dahil. Kitabı cihazının sesiyle cümle cümle dinleyebilirsin.', en: 'Read aloud is part of Premium. Listen to the book sentence by sentence in your device voice.' },
+  'read.aloud.locked': { tr: 'Sesli okuma aboneliğe dahil. Kitabı doğal bir sesle cümle cümle dinleyebilirsin.', en: 'Read aloud is part of Premium. Listen to the book sentence by sentence in a natural voice.' },
   'read.aloud.upgrade': { tr: 'Planları gör', en: 'See plans' },
   'read.aloud.voiceTipIos': { tr: 'Daha doğal ses için: Ayarlar › Erişilebilirlik › Seslendirilen İçerik › Sesler › English bölümünden "Premium" bir ses (ör. Ava) indir.', en: 'For a more natural voice: Settings › Accessibility › Spoken Content › Voices › English, download a "Premium" voice (e.g. Ava).' },
   'read.aloud.voiceTipAndroid': { tr: 'Daha doğal ses için: Ayarlar › Erişilebilirlik › Metin okuma çıkışı bölümünden Google ses verilerini yükle.', en: 'For a more natural voice: Settings › Accessibility › Text-to-speech output, install Google voice data.' },

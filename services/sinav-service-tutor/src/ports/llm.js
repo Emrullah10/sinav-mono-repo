@@ -1,3 +1,8 @@
+import { execFile } from 'node:child_process';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { promisify } from 'node:util';
 import { DomainError } from 'app-shared';
 
 // LLM portu. Arayüz:
@@ -8,6 +13,7 @@ import { DomainError } from 'app-shared';
 //        -> { text, json?, model, usage, finishReason }
 //        reasoning: istek başına düşünme ayarı (ör. 'none'); verilmezse env OPENROUTER_REASONING_EFFORT
 //   llm.ocrPdfPage({ pdfBase64, model, engine })  -> { text, model, usage }  (tek sayfalık PDF; metin yanıttaki file annotation'dan okunur)
+//   llm.speech({ text, model, voice })            -> { audio: Buffer, contentType, model, generationId }  (OpenRouter /audio/speech, mp3)
 //   llm.stream({ messages, model, onToken, signal, maxTokens, task })
 //        -> { text, model, usage, finishReason }
 //   usage = { inputTokens, outputTokens, cacheReadTokens, reasoningTokens, costMicros }
@@ -108,6 +114,7 @@ const priceCap = (v) => {
 
 export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThis.fetch, timeoutMs = 90000, autoAllowed = [], autoCostTier = null, maxPrice = null, reasoningEffort = null, providerSort = null, streamEnabled = true }) => {
   const url = `${String(baseUrl || 'https://openrouter.ai/api/v1').replace(/\/+$/, '')}/chat/completions`;
+  const speechUrl = `${String(baseUrl || 'https://openrouter.ai/api/v1').replace(/\/+$/, '')}/audio/speech`;
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${apiKey}`,
@@ -214,7 +221,24 @@ export const makeOpenRouterLlm = ({ apiKey, baseUrl, models, fetchFn = globalThi
     } catch (e) { throw wrapNetwork(e); }
   };
 
-  return Object.freeze({ provider: 'openrouter', configured: true, models, complete, stream, ocrPdfPage });
+  // Metin → ses (sesli okuma). Ses uçlarında sağlayıcı seçimi uygulanmaz (OpenRouter belgesi): tek sağlayıcılı model seçilmeli ki fiyat sabit kalsın.
+  // Yanıtta maliyet yok; çağıran karakter başı fiyattan hesaplar.
+  const speech = async ({ text, model, voice, signal } = {}) => {
+    const body = { model, input: text, ...(voice ? { voice } : {}), response_format: 'mp3' };
+    try {
+      const res = await fetchFn(speechUrl, { method: 'POST', headers, body: JSON.stringify(body), signal: withTimeout(signal, Math.max(timeoutMs, 60000)) });
+      if (!res.ok) {
+        const raw = await res.text();
+        let data; try { data = JSON.parse(raw); } catch { data = null; }
+        throw upstreamError(res.status, data?.error?.message || raw);
+      }
+      const audio = Buffer.from(await res.arrayBuffer());
+      if (!audio.length) throw upstreamError(502, 'empty audio');
+      return { audio, contentType: res.headers.get('content-type') || 'audio/mpeg', model, generationId: res.headers.get('x-generation-id') || null };
+    } catch (e) { throw wrapNetwork(e); }
+  };
+
+  return Object.freeze({ provider: 'openrouter', configured: true, models, complete, stream, ocrPdfPage, speech });
 };
 
 // ── Yalnız yerel doğrulama için sahte adaptör (FAKE_LLM=1; üretimde reddedilir) ──────────────
@@ -310,6 +334,33 @@ const fakeGenerate = (gen, userMsg) => {
   return { passages: Array.from({ length: count }, mk) };
 };
 
+const macSpeechWav = async (text) => {
+  if (process.platform !== 'darwin' || !text.trim()) return null;
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'fake-tts-'));
+  try {
+    const run = promisify(execFile);
+    await writeFile(path.join(dir, 'in.txt'), text);
+    await run('say', ['-v', 'Samantha', '-f', path.join(dir, 'in.txt'), '-o', path.join(dir, 'out.aiff')], { timeout: 30000 });
+    await run('afconvert', ['-f', 'WAVE', '-d', 'LEI16@22050', path.join(dir, 'out.aiff'), path.join(dir, 'out.wav')], { timeout: 30000 });
+    return await readFile(path.join(dir, 'out.wav'));
+  } catch {
+    return null;
+  } finally {
+    rm(dir, { recursive: true, force: true }).catch(() => {});
+  }
+};
+
+const fakeToneWav = (chars) => {
+  const rate = 16000;
+  const n = Math.round(rate * Math.min(20, Math.max(0.6, chars * 0.06)));
+  const buf = Buffer.alloc(44 + n * 2);
+  buf.write('RIFF', 0); buf.writeUInt32LE(36 + n * 2, 4); buf.write('WAVE', 8); buf.write('fmt ', 12);
+  buf.writeUInt32LE(16, 16); buf.writeUInt16LE(1, 20); buf.writeUInt16LE(1, 22); buf.writeUInt32LE(rate, 24); buf.writeUInt32LE(rate * 2, 28);
+  buf.writeUInt16LE(2, 32); buf.writeUInt16LE(16, 34); buf.write('data', 36); buf.writeUInt32LE(n * 2, 40);
+  for (let i = 0; i < n; i += 1) buf.writeInt16LE(Math.round(Math.sin((2 * Math.PI * 220 * i) / rate) * 1200 * Math.min(1, i / 800, (n - i) / 800)), 44 + i * 2);
+  return buf;
+};
+
 export const makeFakeLlm = ({ models }) => {
   const stream = async ({ messages, model, onToken, signal } = {}) => {
     const user = lastUser(messages);
@@ -373,13 +424,15 @@ export const makeFakeLlm = ({ models }) => {
     text: '# Scanned Chapter\n\nThis is a sample paragraph read from a scanned page. It has two sentences.\n\nA second paragraph follows here.',
     model: `fake/${model || models.content}`, usage: { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, costMicros: 0 },
   });
-  return Object.freeze({ provider: 'fake', configured: true, models, complete, stream, ocrPdfPage });
+  // Yerel doğrulama: ücretli ses isteği atılmaz. macOS'ta sistemin konuşma sesi (say), başka yerde metin uzunluğunca bir ton (WAV).
+  const speech = async ({ text = '', model } = {}) => ({ audio: (await macSpeechWav(String(text))) || fakeToneWav(String(text).length), contentType: 'audio/wav', model: `fake/${model}`, generationId: null });
+  return Object.freeze({ provider: 'fake', configured: true, models, complete, stream, ocrPdfPage, speech });
 };
 
 // ── Yapılandırılmamış: her çağrı 503 ───────────────────────────────────────
 export const makeUnconfiguredLlm = ({ models }) => {
   const fail = async () => { throw new DomainError('LLM_NOT_CONFIGURED', 'LLM provider is not configured', undefined, 503); };
-  return Object.freeze({ provider: 'not_configured', configured: false, models, complete: fail, stream: fail, ocrPdfPage: fail });
+  return Object.freeze({ provider: 'not_configured', configured: false, models, complete: fail, stream: fail, ocrPdfPage: fail, speech: fail });
 };
 
 export const createLlm = ({ env = process.env, fetchFn } = {}) => {

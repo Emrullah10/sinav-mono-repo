@@ -154,7 +154,7 @@ export default function Reader() {
     setVisible(0);
     setSp({ bolum: String(n.position) }, { replace: false });
   }, [book, position, save, setSp]);
-  const aloud = useReadAloud({ blocks: section?.blocks, lang, onEnd: onAloudEnd });
+  const aloud = useReadAloud({ blocks: section?.blocks, lang, onEnd: onAloudEnd, code: book?.code, position: section?.position });
   const lex = useLexicon();
   // Sözlük/çeviri açılınca okuma duraklar.
   useEffect(() => {

@@ -1569,7 +1569,8 @@ INSERT INTO enums.ai_feature (ai_feature_value, ai_feature_label, ai_feature_sor
     ('sentence_translation', 'Sentence translation', 5),
     ('lexicon_prefill', 'Lexicon prefill', 6),
     ('lexicon_review', 'Lexicon review', 7),
-    ('book_ocr', 'Book OCR', 8);
+    ('book_ocr', 'Book OCR', 8),
+    ('read_aloud', 'Read aloud', 9);
 
 -- -----------------------------------------------------
 -- Table: enums.ai_job_status

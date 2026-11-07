@@ -19,6 +19,8 @@ export default defineEndpoints([
   },
   // Orijinal PDF: süreli imzalı bağlantı (bkz. POST /reading/books/{code}/file-url); Range destekli.
   { method: 'get', path: '/v1/public/book-files/{token}', isPublic: true, handler: (req, _c, res) => uc().books.streamFile({ token: req.params.token, req, res }) },
+  // Sesli okuma: tek cümlenin sesi (bkz. POST /reading/books/{code}/sections/{position}/speech-url).
+  { method: 'get', path: '/v1/public/book-speech/{token}/{block}/{sentence}', isPublic: true, handler: (req, _c, res) => uc().bookSpeech.streamSpeech({ token: req.params.token, block: req.params.block, sentence: req.params.sentence, req, res }) },
   { method: 'get', path: '/v1/public/featured/{placement}', isPublic: true, handler: (req) => uc().catalog.featured({ placement: req.params.placement }) },
   { method: 'get', path: '/v1/public/articles', isPublic: true, handler: (req, caller) => uc().catalog.listArticles({ query: q(req), locale: caller?.callerLocale }) },
   { method: 'get', path: '/v1/public/articles/search', isPublic: true, handler: (req, caller) => uc().catalog.searchArticles({ query: q(req), locale: caller?.callerLocale }) },
@@ -42,6 +44,7 @@ export default defineEndpoints([
   { method: 'get', path: '/v1/reading/books/{code}/sections/{position}', permission: P.studyContentRead, handler: (req, caller) => uc().books.getSection({ caller, code: req.params.code, position: req.params.position }) },
   { method: 'put', path: '/v1/reading/books/{code}/progress', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().books.saveProgress({ caller, code: req.params.code, sectionPosition: b(req).sectionPosition, blockIndex: b(req).blockIndex, pageNo: b(req).pageNo, percent: b(req).percent }) },
   { method: 'post', path: '/v1/reading/books/{code}/file-url', permission: P.studyContentRead, handler: (req, caller) => uc().books.fileUrl({ caller, code: req.params.code }) },
+  { method: 'post', path: '/v1/reading/books/{code}/sections/{position}/speech-url', permission: P.studyContentRead, handler: (req, caller) => uc().bookSpeech.speechUrl({ caller, code: req.params.code, position: req.params.position }) },
   { method: 'post', path: '/v1/reading/books/{code}/ocr', permission: P.studyContentRead, handler: (req, caller) => uc().bookOcr.start({ caller, code: req.params.code }) },
   { method: 'get', path: '/v1/vocab/{itemCode}', permission: P.studyContentRead, handler: (req) => uc().study.vocabDetail({ itemCode: req.params.itemCode }) },
   { method: 'get', path: '/v1/notes/{itemCode}', permission: P.studyContentRead, handler: (req, caller) => uc().study.getNote({ caller, itemCode: req.params.itemCode }) },
