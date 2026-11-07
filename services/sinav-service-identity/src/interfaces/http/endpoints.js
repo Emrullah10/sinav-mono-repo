@@ -10,6 +10,8 @@ const ctx = (req) => ({ ip: req.headers.useraccountip && req.headers.useraccount
 export default defineEndpoints([
   // ── Public ──
   { method: 'get', path: '/v1/public/ping', isPublic: true, handler: () => 'pong' },
+  // Mobil yeni sürüm uyarısı: en son mağaza derleme numarası ve mağaza adresi (ortamdan).
+  { method: 'get', path: '/v1/public/app-version', isPublic: true, handler: () => uc().public.appVersion() },
   { method: 'post', path: '/v1/auth/guest', isPublic: true, body: true, handler: (req) => uc().auth.createGuest({ locale: b(req).locale, timezone: b(req).timezone }) },
   { method: 'post', path: '/v1/auth/email/code', isPublic: true, body: true, handler: (req, caller) => uc().auth.sendCode({ email: b(req).email, purpose: b(req).purpose || 'login', locale: caller?.callerLocale, ...ctx(req) }) },
   { method: 'post', path: '/v1/auth/email/verify', isPublic: true, body: true, handler: (req) => uc().auth.verifyEmailCode({ email: b(req).email, code: b(req).code }) },

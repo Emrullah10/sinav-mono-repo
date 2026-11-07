@@ -126,6 +126,7 @@ export const makeAccount = ({ rawQuery, nowFn, mailer, auth }) => {
 
   const NP_SELECT = `SELECT preference_daily_reminder_enabled AS "dailyReminderEnabled", to_char(preference_daily_reminder_time,'HH24:MI') AS "dailyReminderTime",
          preference_review_reminders_enabled AS "reviewRemindersEnabled", preference_mock_suggestions_enabled AS "mockSuggestionsEnabled",
+         preference_word_of_day_enabled AS "wordOfDayEnabled",
          preference_weekly_report_email_enabled AS "weeklyReportEmailEnabled", to_char(preference_quiet_hours_start,'HH24:MI') AS "quietHoursStart",
          to_char(preference_quiet_hours_end,'HH24:MI') AS "quietHoursEnd" FROM notify.preference WHERE preference_user_account_id=$1`;
   const getNotificationPrefs = async ({ caller }) => (await rawQuery(NP_SELECT, [uid(caller)])).rows[0];
@@ -137,10 +138,11 @@ export const makeAccount = ({ rawQuery, nowFn, mailer, auth }) => {
       `UPDATE notify.preference SET preference_daily_reminder_enabled = COALESCE($2, preference_daily_reminder_enabled),
          preference_daily_reminder_time = COALESCE($3::time, preference_daily_reminder_time), preference_review_reminders_enabled = COALESCE($4, preference_review_reminders_enabled),
          preference_mock_suggestions_enabled = COALESCE($5, preference_mock_suggestions_enabled), preference_weekly_report_email_enabled = COALESCE($6, preference_weekly_report_email_enabled),
-         preference_quiet_hours_start = COALESCE($7::time, preference_quiet_hours_start), preference_quiet_hours_end = COALESCE($8::time, preference_quiet_hours_end)
+         preference_quiet_hours_start = COALESCE($7::time, preference_quiet_hours_start), preference_quiet_hours_end = COALESCE($8::time, preference_quiet_hours_end),
+         preference_word_of_day_enabled = COALESCE($9, preference_word_of_day_enabled)
        WHERE preference_user_account_id=$1`,
       [uid(caller), bool(b.dailyReminderEnabled), b.dailyReminderTime ?? null, bool(b.reviewRemindersEnabled), bool(b.mockSuggestionsEnabled),
-        bool(b.weeklyReportEmailEnabled), b.quietHoursStart ?? null, b.quietHoursEnd ?? null]);
+        bool(b.weeklyReportEmailEnabled), b.quietHoursStart ?? null, b.quietHoursEnd ?? null, bool(b.wordOfDayEnabled)]);
     return getNotificationPrefs({ caller });
   };
 

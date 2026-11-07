@@ -14,6 +14,7 @@ import { makeBookOcr } from './application/book-ocr.js';
 import { makeBookFiles } from './ports/book-files.js';
 import { makeBookSpeech } from './application/book-speech.js';
 import { makeBookQuiz } from './application/book-quiz.js';
+import { makeWordOfDay } from './application/word-of-day.js';
 import { makeBookAudio } from './ports/book-audio.js';
 
 // Composition root. Use-case'ler `make<Eylem>(deps)` fabrikalarıdır; hepsi dondurulmuş haritadadır.
@@ -35,8 +36,9 @@ export const buildContainer = ({ rawQueryFn = rawQuery, translateHttpErrors = tr
   const bookOcr = makeBookOcr({ ...deps, files: bookFiles, books });
   const bookSpeech = makeBookSpeech({ ...deps, books, audio: makeBookAudio() });
   const bookQuiz = makeBookQuiz({ ...deps, books });
+  const wordOfDay = makeWordOfDay(deps);
   const wrapAll = (obj) => Object.freeze(Object.fromEntries(Object.entries(obj).map(([k, fn]) => [k, wrap(fn)])));
-  const useCases = Object.freeze({ catalog: wrapAll(catalog), study: wrapAll(study), items: wrapAll(items), review: wrapAll(review), misc: wrapAll(misc), generation: wrapAll(generation), calendar: wrapAll(calendar), lexicon: wrapAll(lexicon), lexiconPrefill, books: wrapAll(books), bookOcr: wrapAll(bookOcr), bookSpeech: wrapAll(bookSpeech), bookQuiz: wrapAll(bookQuiz) });
+  const useCases = Object.freeze({ catalog: wrapAll(catalog), study: wrapAll(study), items: wrapAll(items), review: wrapAll(review), misc: wrapAll(misc), generation: wrapAll(generation), calendar: wrapAll(calendar), lexicon: wrapAll(lexicon), lexiconPrefill, books: wrapAll(books), bookOcr: wrapAll(bookOcr), bookSpeech: wrapAll(bookSpeech), bookQuiz: wrapAll(bookQuiz), wordOfDay: wrapAll(wordOfDay) });
   return Object.freeze({ deps, useCases });
 };
 

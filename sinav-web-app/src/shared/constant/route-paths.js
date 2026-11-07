@@ -39,6 +39,7 @@ const TABLE = [
   ['sessionResult', '/session/:code/result', '/oturum/:code/sonuc'],
   ['vocab', '/vocabulary', '/kelimeler'],
   ['vocabReview', '/vocabulary/review', '/kelimeler/tekrar'],
+  ['vocabSaved', '/vocabulary/saved', null],
   ['vocabWord', '/vocabulary/:id', '/kelimeler/:id'],
   ['mistakes', '/mistakes', '/hata-defteri'],
   ['mistakeReview', '/mistakes/review', '/hata-defteri/tekrar'],

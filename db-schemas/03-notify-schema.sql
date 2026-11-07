@@ -18,6 +18,7 @@ CREATE TABLE notify.preference (
     preference_daily_reminder_time TIME,
     preference_review_reminders_enabled BOOLEAN NOT NULL DEFAULT true,
     preference_mock_suggestions_enabled BOOLEAN NOT NULL DEFAULT true,
+    preference_word_of_day_enabled BOOLEAN NOT NULL DEFAULT true,
     preference_weekly_report_email_enabled BOOLEAN NOT NULL DEFAULT true,
     preference_quiet_hours_start TIME NOT NULL DEFAULT '22:00',
     preference_quiet_hours_end TIME NOT NULL DEFAULT '08:00',

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuid } from 'uuid';
 import { Undo2 } from 'lucide-react';
@@ -32,7 +32,11 @@ export default function VocabReview() {
   const shownAt = useRef(Date.now());
   const completing = useRef(false);
 
-  const start = useApiMutation(() => api.learningVocabReviewStart({ limit: 20 }), {
+  // ?source=saved: yalnız kaydedilen kelimeler (vadesi gelmemişler de sıraya girer); dönüş kaydedilenler sayfasına.
+  const [sp] = useSearchParams();
+  const saved = sp.get('source') === 'saved';
+  const home = saved ? Routes.vocabSaved : Routes.vocab;
+  const start = useApiMutation(() => api.learningVocabReviewStart(saved ? { limit: 20, source: 'dictionary', ahead: true } : { limit: 20 }), {
     onSuccess: (r) => { if (r.empty || !r.session) setEmpty(true); else setCode(r.session.code); },
     onError: () => {},
   });
@@ -57,7 +61,7 @@ export default function VocabReview() {
     { onSuccess: () => queryClient.invalidateQueries({ queryKey: nextKey }) }
   );
   const undo = useApiMutation(() => api.learningVocabReviewUndo(code), { onSuccess: () => queryClient.invalidateQueries({ queryKey: nextKey }) });
-  const exit = () => { if (code && !summary && !completing.current) { completing.current = true; complete.mutate(undefined, { onSettled: () => nav(Routes.vocab) }); } else nav(Routes.vocab); };
+  const exit = () => { if (code && !summary && !completing.current) { completing.current = true; complete.mutate(undefined, { onSettled: () => nav(home) }); } else nav(home); };
 
   const onKey = useCallback((e) => {
     if (e.target.closest?.('input, textarea, select') || e.metaKey || e.ctrlKey || e.altKey || !card) return;
@@ -66,8 +70,8 @@ export default function VocabReview() {
   }, [card, shown, rate]);
   useEffect(() => { window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey); }, [onKey]);
 
-  if (start.isError) return <div className={styles.center}><ErrorState error={start.error} onRetry={() => start.mutate()} /><Button variant="tertiary" onClick={() => nav(Routes.vocab)}>{t('common.back')}</Button></div>;
-  if (empty) return <div className={styles.center}><EmptyState title={t('study.vocab.review.empty')} body={t('study.vocab.review.emptyBody')} action={<Button onClick={() => nav(Routes.vocab)}>{t('study.vocab.review.back')}</Button>} /></div>;
+  if (start.isError) return <div className={styles.center}><ErrorState error={start.error} onRetry={() => start.mutate()} /><Button variant="tertiary" onClick={() => nav(home)}>{t('common.back')}</Button></div>;
+  if (empty) return <div className={styles.center}><EmptyState title={t('study.vocab.review.empty')} body={t('study.vocab.review.emptyBody')} action={<Button onClick={() => nav(home)}>{t('study.vocab.review.back')}</Button>} /></div>;
   if (summary) {
     return (
       <div className={styles.center}>
@@ -75,7 +79,7 @@ export default function VocabReview() {
         <p className="t-body-m">{t('study.vocab.review.summary', { n: summary.reviewed, new: summary.newLearned })}</p>
         <p className="muted">{t('study.vocab.review.accuracy', { n: Math.round(summary.accuracy <= 1 ? summary.accuracy * 100 : summary.accuracy) })} · {t('study.vocab.review.dueNow', { n: summary.dueNow })}</p>
         <p className="muted t-body-s">{t('study.vocab.review.ratings', summary.ratings)}</p>
-        <Button size="lg" onClick={() => nav(Routes.vocab)}>{t('study.vocab.review.back')}</Button>
+        <Button size="lg" onClick={() => nav(home)}>{t('study.vocab.review.back')}</Button>
       </div>
     );
   }

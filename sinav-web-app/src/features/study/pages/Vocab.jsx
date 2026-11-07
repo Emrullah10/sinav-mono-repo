@@ -13,7 +13,7 @@ import Chip from '@components/Chip/Chip';
 import ProgressBar from '@components/ProgressBar/ProgressBar';
 import ErrorState from '@components/ErrorState/ErrorState';
 import Skeleton from '@components/Skeleton/Skeleton';
-import SavedWords from '../components/SavedWords';
+import SavedWordsCard from '../components/SavedWordsCard';
 
 const KEY = ['learning', 'vocab', 'overview'];
 
@@ -39,10 +39,10 @@ export default function Vocab() {
           <div className="row"><Button disabled={!canStart} onClick={() => nav(Routes.vocabReview)}>{t('study.vocab.start')}</Button></div>
         </div>
       </Card>
-      <SavedWords />
       <section className="stack-sm">
         <h2 className="t-heading-2">{t('study.vocab.decks')}</h2>
         <div style={{ display: 'grid', gap: 'var(--space-4)', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+          <SavedWordsCard />
           {decks.map((d) => (
             <Card key={d.key} tone={d.locked ? 'locked' : 'default'}>
               <div className="stack-sm">

@@ -126,6 +126,7 @@ export default {
   'me.set.dailyTime': { tr: 'Hatırlatma saati', en: 'Reminder time' },
   'me.set.review': { tr: 'Tekrar hatırlatmaları', en: 'Review reminders' },
   'me.set.mockSuggest': { tr: 'Deneme önerileri', en: 'Mock exam suggestions' },
+  'me.set.wordOfDay': { tr: 'Günün kelimesi (mobil bildirim): her gün öğlen bir kelime, bağlaç ya da phrasal verb', en: 'Word of the day (mobile notification): a word, connector or phrasal verb every noon' },
   'me.set.weekly': { tr: 'Haftalık rapor e-postası', en: 'Weekly report email' },
   'me.set.quietStart': { tr: 'Sessiz saat başlangıcı', en: 'Quiet hours start' },
   'me.set.quietEnd': { tr: 'Sessiz saat bitişi', en: 'Quiet hours end' },

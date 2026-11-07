@@ -126,6 +126,7 @@ export default function Settings() {
         {n.dailyReminderEnabled && <TextInput label={t('me.set.dailyTime')} type="time" value={n.dailyReminderTime || ''} onChange={(e) => e.target.value && N({ dailyReminderTime: e.target.value })} />}
         <Switch label={t('me.set.review')} checked={n.reviewRemindersEnabled} onChange={(v) => N({ reviewRemindersEnabled: v })} />
         <Switch label={t('me.set.mockSuggest')} checked={n.mockSuggestionsEnabled} onChange={(v) => N({ mockSuggestionsEnabled: v })} />
+        <Switch label={t('me.set.wordOfDay')} checked={n.wordOfDayEnabled !== false} onChange={(v) => N({ wordOfDayEnabled: v })} />
         <Switch label={t('me.set.weekly')} checked={n.weeklyReportEmailEnabled} onChange={(v) => N({ weeklyReportEmailEnabled: v })} />
         <div className={styles.two}>
           <TextInput label={t('me.set.quietStart')} type="time" value={n.quietHoursStart || ''} onChange={(e) => e.target.value && N({ quietHoursStart: e.target.value })} />

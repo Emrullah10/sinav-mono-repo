@@ -113,13 +113,16 @@ export default (deps) => {
   });
 
   // ── Oturum ──
-  const buildQueue = async (tx, ctx, { deckKey, limit }) => {
+  // source 'dictionary': yalnız dokun-çeviriden kaydedilen kartlar (desteden yeni kart açılmaz).
+  // ahead: sıra dolmazsa vadesi gelmemiş kartlar da (en yakın vade önce) eklenir — "kaydettiklerimle şimdi çalış".
+  const buildQueue = async (tx, ctx, { deckKey, limit, source = null, ahead = false }) => {
     const L = clamp(Number(limit) || 20, 5, MAX_QUEUE);
     const { rows: due } = await tx.query(
       `SELECT c.card_id AS id, c.card_code AS code, c.card_state AS state FROM learning.card c
         WHERE c.card_user_account_id=$1 AND c.card_suspended_at IS NULL AND c.card_state <> 'suspended' AND c.card_due_at <= $2 AND c.card_state <> 'new'
           AND ($4::varchar IS NULL OR c.card_source_deck_id = (SELECT deck_id FROM content.deck WHERE deck_key=$4))
-        ORDER BY c.card_due_at LIMIT $3`, [ctx.userId, ctx.now, L, deckKey || null]);
+          AND ($5::varchar IS NULL OR c.card_source = $5)
+        ORDER BY c.card_due_at LIMIT $3`, [ctx.userId, ctx.now, L, deckKey || null, source]);
     const queue = due.map((r) => Number(r.code));
     let room = L - queue.length;
     let created = 0;
@@ -127,11 +130,21 @@ export default (deps) => {
       // Daha önce eklenmiş ama hiç çalışılmamış yeni kartlar
       const { rows: fresh } = await tx.query(
         `SELECT c.card_code AS code FROM learning.card c WHERE c.card_user_account_id=$1 AND c.card_state='new' AND c.card_suspended_at IS NULL
-            AND ($3::varchar IS NULL OR c.card_source_deck_id = (SELECT deck_id FROM content.deck WHERE deck_key=$3)) ORDER BY c.card_id LIMIT $2`, [ctx.userId, room, deckKey || null]);
+            AND ($3::varchar IS NULL OR c.card_source_deck_id = (SELECT deck_id FROM content.deck WHERE deck_key=$3))
+            AND ($4::varchar IS NULL OR c.card_source = $4) ORDER BY c.card_id LIMIT $2`, [ctx.userId, room, deckKey || null, source]);
       for (const r of fresh) queue.push(Number(r.code));
       room -= fresh.length;
     }
-    if (room > 0) {
+    if (room > 0 && ahead) {
+      const { rows: early } = await tx.query(
+        `SELECT c.card_code AS code FROM learning.card c
+          WHERE c.card_user_account_id=$1 AND c.card_suspended_at IS NULL AND c.card_state NOT IN ('new','suspended') AND c.card_due_at > $2
+            AND ($4::varchar IS NULL OR c.card_source = $4) AND NOT (c.card_code = ANY($5::bigint[]))
+          ORDER BY c.card_due_at LIMIT $3`, [ctx.userId, ctx.now, room, source, queue]);
+      for (const r of early) queue.push(Number(r.code));
+      room -= early.length;
+    }
+    if (room > 0 && !source) {
       const tier = await tierOf(ctx.userId);
       const intro = await introducedToday(ctx);
       const { rows: subs } = await tx.query(
@@ -154,18 +167,23 @@ export default (deps) => {
     return { queue, created };
   };
 
-  const startSession = async (ctx, { deckKey, limit, taskId = null }) => {
-    const { rows: open } = await q("SELECT study_session_code AS code FROM learning.study_session WHERE study_session_user_account_id=$1 AND study_session_kind='vocab_review' AND study_session_status='in_progress' ORDER BY study_session_id DESC LIMIT 1", [ctx.userId]);
-    if (open[0]) return { code: Number(open[0].code), resumed: true, empty: false };
+  const startSession = async (ctx, { deckKey, limit, taskId = null, source = null, ahead = false }) => {
+    const { rows: open } = await q("SELECT study_session_id AS id, study_session_code AS code, study_session_config AS config FROM learning.study_session WHERE study_session_user_account_id=$1 AND study_session_kind='vocab_review' AND study_session_status='in_progress' ORDER BY study_session_id DESC LIMIT 1", [ctx.userId]);
+    if (open[0]) {
+      const cfg = open[0].config || {};
+      // Aynı türden açık oturum sürdürülür; başka bir kapsam (ör. deste ↔ kaydedilenler) istenirse eskisi bırakılır.
+      if ((cfg.source || null) === source && (cfg.deckKey || null) === (deckKey || null)) return { code: Number(open[0].code), resumed: true, empty: false };
+      await q("UPDATE learning.study_session SET study_session_status='abandoned', study_session_ended_at=$2 WHERE study_session_id=$1 AND study_session_status='in_progress'", [open[0].id, ctx.now]);
+    }
     const enr = await requireEnrollment(q, ctx.userId);
     return withTransaction(async (tx) => {
-      const { queue, created } = await buildQueue(tx, ctx, { deckKey, limit });
+      const { queue, created } = await buildQueue(tx, ctx, { deckKey, limit, source, ahead });
       if (!queue.length) return { code: null, resumed: false, empty: true, created: 0 };
       const { rows } = await tx.query(
         `INSERT INTO learning.study_session (study_session_tenant_code, study_session_organization_id, study_session_user_account_id, study_session_enrollment_id, study_session_kind, study_session_status,
             study_session_mode, study_session_source_plan_task_id, study_session_config, study_session_started_at, study_session_last_activity_at, study_session_planned_item_count)
          VALUES ($1,$2,$3,$4,'vocab_review','in_progress','learning',$5,$6,$7,$7,$8) RETURNING study_session_code AS code`,
-        [ctx.tenantCode, ctx.orgId, ctx.userId, enr.id, taskId, JSON.stringify({ queue, deckKey: deckKey || null, algorithm: FSRS_VERSION }), ctx.now, queue.length]);
+        [ctx.tenantCode, ctx.orgId, ctx.userId, enr.id, taskId, JSON.stringify({ queue, deckKey: deckKey || null, source, algorithm: FSRS_VERSION }), ctx.now, queue.length]);
       return { code: Number(rows[0].code), resumed: false, empty: false, created };
     });
   };
@@ -176,8 +194,8 @@ export default (deps) => {
     return { code: s.code, kind: 'vocab_review', status: s.status, startedAt: iso(s.startedAt), endedAt: iso(s.endedAt), progress: sessionProgress(s, queue.length) };
   };
 
-  const start = ({ caller, deckKey, limit }) => withCtx(deps, caller, async (ctx) => {
-    const r = await startSession(ctx, { deckKey, limit });
+  const start = ({ caller, deckKey, limit, source, ahead }) => withCtx(deps, caller, async (ctx) => {
+    const r = await startSession(ctx, { deckKey, limit, source: source === 'dictionary' ? 'dictionary' : null, ahead: ahead === true });
     if (r.empty) return { empty: true, session: null, resumed: false };
     const s = await loadVocabSession(q, ctx, r.code);
     return { empty: false, resumed: r.resumed, newCards: r.created || 0, session: await sessionBody(ctx, s) };
@@ -340,25 +358,45 @@ export default (deps) => {
 
   /**
    * Dokun-çeviriden kartlara eklenen kelimeler (card_source 'dictionary'), en yeni önce.
-   * query: { limit (≤100, varsayılan 50), before (önceki sayfanın son kart kodu) }
-   * → { total, items: [{ cardCode, itemCode, headword, partOfSpeech, meaning, state, dueAt, createdAt }], nextBefore }
+   * query: { limit (≤100, varsayılan 50), before (önceki sayfanın son kart kodu), status (new|due|learning|review), q (kelime ya da anlamda arama) }
+   * → { total, counts: { new, due, learning, review }, items: [{ cardCode, itemCode, headword, partOfSpeech, meaning, state, dueAt, createdAt }], nextBefore }
    */
   const myWords = ({ caller, query = {} }) => withCtx(deps, caller, async (ctx) => {
     const limit = Math.min(100, Math.max(1, Number(query.limit) || 50));
     const before = Number(query.before) > 0 ? Number(query.before) : null;
+    const status = ['new', 'due', 'learning', 'review'].includes(query.status) ? query.status : null;
+    const text = String(query.q || '').trim().slice(0, 60);
+    const like = text ? `%${text.replace(/[\\%_]/g, (ch) => `\\${ch}`)}%` : null;
     const { rows } = await q(
-      `SELECT ${CARD_SEL}, c.card_created_at AS "createdAt" FROM learning.card c
+      `SELECT ${CARD_SEL}, c.card_created_at AS "createdAt"
+         FROM learning.card c
+         JOIN content.item i ON i.item_id = c.card_vocab_item_id
+         LEFT JOIN content.vocab_entry v ON v.vocab_entry_item_revision_id = i.item_published_revision_id
         WHERE c.card_user_account_id=$1 AND c.card_source='dictionary' AND ($2::bigint IS NULL OR c.card_code < $2)
-        ORDER BY c.card_code DESC LIMIT $3`, [ctx.userId, before, limit + 1]);
+          AND ($4::text IS NULL OR v.vocab_entry_headword ILIKE $4 OR v.vocab_entry_meanings::text ILIKE $4)
+          AND (CASE $5::text WHEN 'new' THEN c.card_state='new'
+                             WHEN 'due' THEN c.card_state<>'new' AND c.card_due_at <= $6
+                             WHEN 'learning' THEN c.card_state IN ('learning','relearning') AND c.card_due_at > $6
+                             WHEN 'review' THEN c.card_state='review' AND c.card_due_at > $6
+                             ELSE true END)
+        ORDER BY c.card_code DESC LIMIT $3`, [ctx.userId, before, limit + 1, like, status, ctx.now]);
     const page = rows.slice(0, limit).map((r) => ({ ...normCard(r), createdAt: r.createdAt }));
     const words = await loadWords(page.map((c) => c.itemId));
-    const { rows: tot } = await q("SELECT count(*)::int AS n FROM learning.card WHERE card_user_account_id=$1 AND card_source='dictionary'", [ctx.userId]);
+    // Durum sayıları tüm kayıtlar üzerinden (kelimeler sayfasındaki deste kartı ve süzgeç için).
+    const { rows: tot } = await q(
+      `SELECT count(*)::int AS n,
+              count(*) FILTER (WHERE card_state='new')::int AS "new",
+              count(*) FILTER (WHERE card_state<>'new' AND card_due_at <= $2)::int AS due,
+              count(*) FILTER (WHERE card_state IN ('learning','relearning') AND card_due_at > $2)::int AS learning,
+              count(*) FILTER (WHERE card_state='review' AND card_due_at > $2)::int AS review
+         FROM learning.card WHERE card_user_account_id=$1 AND card_source='dictionary'`, [ctx.userId, ctx.now]);
     const meaningOf = (ms) => {
       const m = Array.isArray(ms) ? ms[0] : null;
       return (typeof m === 'string' ? m : m?.tr || m?.text || null) || null;
     };
     return {
       total: tot[0].n,
+      counts: { new: tot[0].new, due: tot[0].due, learning: tot[0].learning, review: tot[0].review },
       items: page.map((c) => {
         const w = words.get(c.itemId);
         return w ? { cardCode: c.code, itemCode: w.itemCode, headword: w.headword, partOfSpeech: w.partOfSpeech, meaning: meaningOf(w.meanings), state: c.state, dueAt: iso(c.dueAt), createdAt: iso(c.createdAt) } : null;

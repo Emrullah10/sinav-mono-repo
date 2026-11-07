@@ -22,6 +22,8 @@ export const createIdentityApi = (http, { api = '/api' } = {}) => {
     identityPreferencesGet: () => http.get(`${B}/preferences`),
     identityPreferencesUpdate: (body) => http.patch(`${B}/preferences`, body),
     identityNotificationPrefsGet: () => http.get(`${B}/notification-preferences`),
+    /** Mobil yeni sürüm uyarısı (oturumsuz): { ios: { latestBuild, storeUrl }, android: { latestBuild, storeUrl } } */
+    identityAppVersionGet: () => http.get(`${B}/public/app-version`),
     identityNotificationPrefsUpdate: (body) => http.patch(`${B}/notification-preferences`, body),
     identityDeviceRegister: (body) => http.post(`${B}/devices`, body),
     identityDeviceRemove: (body) => http.post(`${B}/devices/remove`, body),

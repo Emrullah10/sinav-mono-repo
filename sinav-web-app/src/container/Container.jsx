@@ -6,6 +6,7 @@ import NotificationProvider from '@shared/providers/NotificationProvider';
 import QueryProvider from '@shared/providers/QueryProvider';
 import { LexiconProvider } from '@features/lexicon/LexiconProvider';
 import FeedbackDialog from '@features/feedback/FeedbackDialog';
+import UpdateNotice from '@features/update/UpdateNotice';
 import AuthBootstrap from './AuthBootstrap';
 
 // Provider sırası: Theme → Notification → Query → Router → AuthBootstrap → dokun-çevir (şablon §16.3); geri bildirim penceresi kökte
@@ -18,6 +19,7 @@ export default function Container({ children }) {
             <AuthBootstrap>
               <LexiconProvider>{children}</LexiconProvider>
               <FeedbackDialog />
+              <UpdateNotice />
             </AuthBootstrap>
           </BrowserRouter>
         </QueryProvider>

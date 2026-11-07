@@ -11,6 +11,7 @@ const SessionResult = lazy(() => import('./pages/SessionResult'));
 const Vocab = lazy(() => import('./pages/Vocab'));
 const VocabReview = lazy(() => import('./pages/VocabReview'));
 const VocabWord = lazy(() => import('./pages/VocabWord'));
+const SavedWordsPage = lazy(() => import('./pages/SavedWordsPage'));
 const Mistakes = lazy(() => import('./pages/Mistakes'));
 const MistakeReview = lazy(() => import('./pages/MistakeReview'));
 
@@ -24,6 +25,7 @@ export default [
   { path: Routes.sessionResult, element: <SessionResult />, layout: 'app', access: 'learner' },
   { path: Routes.vocab, element: <Vocab />, layout: 'app', access: 'learner' },
   { path: Routes.vocabReview, element: <VocabReview />, layout: 'focus', access: 'learner' },
+  { path: Routes.vocabSaved, element: <SavedWordsPage />, layout: 'app', access: 'learner' },
   { path: Routes.vocabWord, element: <VocabWord />, layout: 'app', access: 'learner' },
   { path: Routes.mistakes, element: <Mistakes />, layout: 'app', access: 'learner' },
   { path: Routes.mistakeReview, element: <MistakeReview />, layout: 'focus', access: 'learner' },

@@ -28,6 +28,8 @@ export default defineEndpoints([
   { method: 'get', path: '/v1/public/article-categories', isPublic: true, handler: (req) => uc().catalog.listArticleCategories({ query: q(req) }) },
 
   // ── Öğrenci okumaları ──
+  // Günün kelimesi (mobil yerel bildirim): from = cihazın yerel günü, days ≤ 14.
+  { method: 'get', path: '/v1/vocab/daily', permission: P.studyContentRead, handler: (req) => uc().wordOfDay.daily({ from: q(req).from, days: q(req).days }) },
   { method: 'get', path: '/v1/vocab/lookup', permission: P.studyContentRead, handler: (req) => uc().study.vocabLookup({ word: q(req).word, lang: q(req).lang || 'en' }) },
   // Dokun-çevir: kelime (küratörlü → önbellek → AI), kartlara eklenebilir kayıt, cümle çevirisi
   { method: 'post', path: '/v1/lexicon/word', permission: P.studyContentRead, body: true, handler: (req, caller) => uc().lexicon.word({ caller, word: b(req).word }) },

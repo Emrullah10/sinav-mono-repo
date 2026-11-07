@@ -69,5 +69,17 @@ export const makePublic = ({ rawQuery, mailer }) => {
     return { received: true, code: Number(r.rows[0].code) };
   };
 
-  return Object.freeze({ getLegalDocument, listLegalDocuments, joinWaitlist, confirmWaitlist, submitContact });
+  /**
+   * Mobil uygulamanın en son mağaza sürümü (yeni sürüm uyarısı). Ortamdan: APP_IOS_LATEST_BUILD / APP_ANDROID_LATEST_BUILD
+   * (derleme numarası; 0 ya da boş = uyarı yok) ve mağaza adresleri APP_IOS_STORE_URL / APP_ANDROID_STORE_URL.
+   */
+  const appVersion = () => {
+    const num = (v) => (Number.isInteger(Number(v)) && Number(v) > 0 ? Number(v) : 0);
+    const url = (v) => (/^https:\/\//.test(String(v || '')) ? String(v) : null);
+    return {
+      ios: { latestBuild: num(process.env.APP_IOS_LATEST_BUILD), storeUrl: url(process.env.APP_IOS_STORE_URL) },
+      android: { latestBuild: num(process.env.APP_ANDROID_LATEST_BUILD), storeUrl: url(process.env.APP_ANDROID_STORE_URL) || 'https://play.google.com/store/apps/details?id=com.sinav.odak' },
+    };
+  };
+  return Object.freeze({ getLegalDocument, listLegalDocuments, joinWaitlist, confirmWaitlist, submitContact, appVersion });
 };

@@ -16,9 +16,18 @@ const appVersion = (() => {
 })();
 const src = (p) => path.resolve(import.meta.dirname, 'src', p);
 
+// Yeni sürüm uyarısı: derleme kimliği dist/version.json'a da yazılır; açık sekmeler bunu okuyup karşılaştırır (UpdateNotice).
+const versionFile = () => ({
+  name: 'version-file',
+  apply: 'build',
+  generateBundle() {
+    this.emitFile({ type: 'asset', fileName: 'version.json', source: JSON.stringify({ version: appVersion }) });
+  },
+});
+
 export default defineConfig({
   base: appBase,
-  plugins: [react()],
+  plugins: [react(), versionFile()],
   define: { __APP_VERSION__: JSON.stringify(appVersion) },
   css: { preprocessorOptions: { scss: { additionalData: '@use "@styles/globals" as *;' } } },
   server: {

@@ -129,7 +129,7 @@ function WordPanel({ req, onSwitch, onClose }) {
             <span className={styles.added}><Check size={16} aria-hidden /> {t('lex.added')}</span>
             <span className={styles.addedLinks}>
               {itemCode && <Link to={path(Routes.vocabWord, { id: itemCode })} onClick={onClose}>{t('lex.details')}</Link>}
-              <Link to={`${Routes.vocab}#my-words`} onClick={onClose}>{t('lex.myWords')}</Link>
+              <Link to={Routes.vocabSaved} onClick={onClose}>{t('lex.myWords')}</Link>
             </span>
           </div>
         ) : (
