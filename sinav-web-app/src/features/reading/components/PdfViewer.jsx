@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Minus, Plus } from 'lucide-react';
-import * as pdfjs from 'pdfjs-dist';
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+// Legacy derleme: pdf.js'in standart derlemesi çok yeni tarayıcı özelliklerine dayanıyor; bazı Android tarayıcılarında/uygulama içi
+// tarayıcılarda çalışma dosyası (worker) başlamıyor ve PDF hiç istenmeden açılış düşüyordu (2026-11-07, canlı kayıt).
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
+import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
 import Button from '@components/Button/Button';
 import IconButton from '@components/IconButton/IconButton';
 import BubbleLoader from '@components/BubbleLoader/BubbleLoader';
@@ -11,6 +13,7 @@ import styles from './Reading.module.scss';
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
 const ZOOMS = [0.75, 1, 1.25, 1.5, 2];
+const LOAD_TIMEOUT_MS = 30000;
 
 /**
  * Orijinal PDF: sayfalar görünür oldukça çizilir, uzaklaşınca bellekten atılır. Dosya parça parça gelir (Range).
@@ -34,7 +37,16 @@ export default function PdfViewer({ url, startPage = 1, onPage, onError, toolbar
     setFailed(false);
     setDoc(null);
     const task = pdfjs.getDocument({ url, rangeChunkSize: 1024 * 1024, disableAutoFetch: true, disableStream: true, isEvalSupported: false });
+    // Açılış takılırsa (çalışma dosyası başlamadı, ağ yok) sonsuz yükleme yerine hata ve "tarayıcıda aç" seçeneği.
+    const stuck = setTimeout(() => {
+      if (cancelled) return;
+      cancelled = true;
+      setFailed(true);
+      onError?.(new Error('PDF load timeout'));
+      task.destroy().catch(() => {});
+    }, LOAD_TIMEOUT_MS);
     task.promise.then(async (d) => {
+      clearTimeout(stuck);
       if (cancelled) return;
       const first = await d.getPage(1);
       const vp = first.getViewport({ scale: 1 });
@@ -42,11 +54,13 @@ export default function PdfViewer({ url, startPage = 1, onPage, onError, toolbar
       setSize({ w: vp.width, h: vp.height });
       setDoc(d);
     }).catch((e) => {
+      clearTimeout(stuck);
       if (cancelled) return;
+      console.warn('[pdf] açılamadı:', e?.message || e);
       setFailed(true);
       onError?.(e);
     });
-    return () => { cancelled = true; task.destroy().catch(() => {}); };
+    return () => { cancelled = true; clearTimeout(stuck); task.destroy().catch(() => {}); };
   }, [url, attempt, onError]);
 
   useEffect(() => {
@@ -120,6 +134,8 @@ export default function PdfViewer({ url, startPage = 1, onPage, onError, toolbar
       <div className={styles.center}>
         <p className="t-body-m">{t('read.pdf.error')}</p>
         <Button variant="secondary" size="sm" onClick={() => setAttempt((a) => a + 1)}>{t('read.pdf.retry')}</Button>
+        {/* Son çare: tarayıcının/telefonun kendi PDF görüntüleyicisi (süreli bağlantı oturum istemez). */}
+        <Button variant="tertiary" size="sm" onClick={() => window.open(url, '_blank', 'noopener')}>{t('read.pdf.openExternal')}</Button>
       </div>
     );
   }

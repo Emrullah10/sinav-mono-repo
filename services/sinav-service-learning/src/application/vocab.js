@@ -338,8 +338,37 @@ export default (deps) => {
     return { created: false, card: { code: Number(ex[0].code), state: ex[0].state, dueAt: iso(ex[0].dueAt), source: ex[0].source } };
   });
 
+  /**
+   * Dokun-çeviriden kartlara eklenen kelimeler (card_source 'dictionary'), en yeni önce.
+   * query: { limit (≤100, varsayılan 50), before (önceki sayfanın son kart kodu) }
+   * → { total, items: [{ cardCode, itemCode, headword, partOfSpeech, meaning, state, dueAt, createdAt }], nextBefore }
+   */
+  const myWords = ({ caller, query = {} }) => withCtx(deps, caller, async (ctx) => {
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 50));
+    const before = Number(query.before) > 0 ? Number(query.before) : null;
+    const { rows } = await q(
+      `SELECT ${CARD_SEL}, c.card_created_at AS "createdAt" FROM learning.card c
+        WHERE c.card_user_account_id=$1 AND c.card_source='dictionary' AND ($2::bigint IS NULL OR c.card_code < $2)
+        ORDER BY c.card_code DESC LIMIT $3`, [ctx.userId, before, limit + 1]);
+    const page = rows.slice(0, limit).map((r) => ({ ...normCard(r), createdAt: r.createdAt }));
+    const words = await loadWords(page.map((c) => c.itemId));
+    const { rows: tot } = await q("SELECT count(*)::int AS n FROM learning.card WHERE card_user_account_id=$1 AND card_source='dictionary'", [ctx.userId]);
+    const meaningOf = (ms) => {
+      const m = Array.isArray(ms) ? ms[0] : null;
+      return (typeof m === 'string' ? m : m?.tr || m?.text || null) || null;
+    };
+    return {
+      total: tot[0].n,
+      items: page.map((c) => {
+        const w = words.get(c.itemId);
+        return w ? { cardCode: c.code, itemCode: w.itemCode, headword: w.headword, partOfSpeech: w.partOfSpeech, meaning: meaningOf(w.meanings), state: c.state, dueAt: iso(c.dueAt), createdAt: iso(c.createdAt) } : null;
+      }).filter(Boolean),
+      nextBefore: rows.length > limit ? page[page.length - 1].code : null,
+    };
+  });
+
   void completeTask;
-  return Object.freeze({ overview, subscribe, start, next, review, undo, complete, byItem, addCard, startSession });
+  return Object.freeze({ overview, subscribe, start, next, review, undo, complete, byItem, addCard, startSession, myWords });
 };
 
 registerTaskStarter('vocab_review', async (deps, ctx, task) => {

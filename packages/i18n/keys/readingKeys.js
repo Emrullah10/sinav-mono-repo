@@ -150,6 +150,7 @@ export default {
   'read.pdf.hint': { tr: 'Dokunarak çeviri için okuma moduna geç', en: 'Switch to reading mode for tap-to-translate' },
   'read.pdf.error': { tr: 'PDF açılamadı.', en: 'The PDF could not be opened.' },
   'read.pdf.retry': { tr: 'Tekrar dene', en: 'Try again' },
+  'read.pdf.openExternal': { tr: 'Tarayıcıda aç', en: 'Open in browser' },
   'read.pdf.loading': { tr: 'PDF yükleniyor…', en: 'Loading PDF…' },
   'read.pdf.zoomIn': { tr: 'Yakınlaştır', en: 'Zoom in' },
   'read.pdf.zoomOut': { tr: 'Uzaklaştır', en: 'Zoom out' },

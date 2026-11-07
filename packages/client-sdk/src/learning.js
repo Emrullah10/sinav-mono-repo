@@ -69,6 +69,8 @@ export const createLearningApi = (http, { api = '/api' } = {}) => {
     learningVocabReviewComplete: (code) => http.post(`${B}/vocab/review-sessions/${code}/complete`, {}),
     learningVocabCardByItemGet: (itemCode) => http.get(`${B}/vocab/cards/by-item/${itemCode}`),
     learningVocabCardAdd: (itemCode) => http.post(`${B}/vocab/cards`, { itemCode }),
+    /** Dokun-çeviriden kaydedilen kelimeler (en yeni önce). params: { limit, before } → { total, items, nextBefore } */
+    learningVocabMyWords: (params) => http.get(`${B}/vocab/my-words`, { params }),
     // ── Hata defteri ──
     learningMistakesList: (params) => http.get(`${B}/mistakes`, { params }),
     learningMistakeUpdate: (code, body) => http.patch(`${B}/mistakes/${code}`, body),

@@ -67,6 +67,7 @@ function WordPanel({ req, onSwitch, onClose }) {
       queryClient.setQueryData(wordKey(form), (old) => (old ? { ...old, itemCode } : old));
       queryClient.invalidateQueries({ queryKey: cardKey(itemCode) });
       queryClient.invalidateQueries({ queryKey: ['learning', 'vocab'] });
+      queryClient.invalidateQueries({ queryKey: ['learning', 'vocabMyWords'] });
     },
   });
   const ask = useAskTutor(onClose);
@@ -124,7 +125,13 @@ function WordPanel({ req, onSwitch, onClose }) {
       {add.isError && <p className={`t-body-s ${styles.error}`}>{getApiErrorMessage(add.error)}</p>}
       <div className={styles.actions}>
         {entry.isWord !== false && (inCards ? (
-          <span className={styles.added}><Check size={16} aria-hidden /> {t('lex.added')}{itemCode && <> · <Link to={path(Routes.vocabWord, { id: itemCode })} onClick={onClose}>{t('lex.details')}</Link></>}</span>
+          <div className={styles.addedRow}>
+            <span className={styles.added}><Check size={16} aria-hidden /> {t('lex.added')}</span>
+            <span className={styles.addedLinks}>
+              {itemCode && <Link to={path(Routes.vocabWord, { id: itemCode })} onClick={onClose}>{t('lex.details')}</Link>}
+              <Link to={`${Routes.vocab}#my-words`} onClick={onClose}>{t('lex.myWords')}</Link>
+            </span>
+          </div>
         ) : (
           <Button block startIcon={<Plus size={16} />} loading={add.isPending || card.isFetching} onClick={() => add.mutate()}>{t('lex.add')}</Button>
         ))}

@@ -12,6 +12,7 @@ export default {
   'lex.added': { tr: 'Kartlarında', en: 'In your cards' },
   'lex.addedToast': { tr: 'Kelime kartlarına eklendi. Tekrarlarda karşına çıkacak.', en: 'Added to your cards. It will come up in your reviews.' },
   'lex.details': { tr: 'Ayrıntı', en: 'Details' },
+  'lex.myWords': { tr: 'Kaydettiklerim', en: 'My saved words' },
   'lex.translateSentence': { tr: 'Cümleyi çevir', en: 'Translate the sentence' },
   'lex.askTutor': { tr: 'Öğretmene sor', en: 'Ask the tutor' },
   'lex.askTutor.word': { tr: '"{{word}}" kelimesini bu cümlede açıklar mısın?\n"{{sentence}}"', en: 'Can you explain "{{word}}" in this sentence?\n"{{sentence}}"' },

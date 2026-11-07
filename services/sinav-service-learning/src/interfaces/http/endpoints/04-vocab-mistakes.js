@@ -15,6 +15,7 @@ export default [
   { method: 'post', path: '/v1/vocab/review-sessions/{code}/undo', permission: S, body: true, handler: (req, caller) => uc().vocab.undo({ caller, code: req.params.code }) },
   { method: 'post', path: '/v1/vocab/review-sessions/{code}/complete', permission: S, body: true, handler: (req, caller) => uc().vocab.complete({ caller, code: req.params.code }) },
   { method: 'get', path: '/v1/vocab/cards/by-item/{itemCode}', permission: S, handler: (req, caller) => uc().vocab.byItem({ caller, itemCode: req.params.itemCode }) },
+  { method: 'get', path: '/v1/vocab/my-words', permission: S, handler: (req, caller) => uc().vocab.myWords({ caller, query: req.query || {} }) },
   { method: 'post', path: '/v1/vocab/cards', permission: S, body: true, handler: (req, caller) => uc().vocab.addCard({ caller, itemCode: b(req).itemCode }) },
 
   // ── Hata defteri ve tekrarı ──

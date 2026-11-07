@@ -28,7 +28,7 @@ export const queryKeys = {
     studyOverview: () => ['learning', 'studyOverview'], questionType: (key) => ['learning', 'questionType', key], skill: (key) => ['learning', 'skill', key], practiceOptions: () => ['learning', 'practiceOptions'],
     session: (code) => ['learning', 'session', code], sessionItem: (code, n) => ['learning', 'sessionItem', code, n], sessionResult: (code) => ['learning', 'sessionResult', code], sessionsCurrent: () => ['learning', 'sessionsCurrent'],
     bookmarks: (params) => ['learning', 'bookmarks', params],
-    vocabOverview: () => ['learning', 'vocabOverview'], vocabNext: (code) => ['learning', 'vocabNext', code], vocabCardByItem: (itemCode) => ['learning', 'vocabCardByItem', itemCode],
+    vocabOverview: () => ['learning', 'vocabOverview'], vocabNext: (code) => ['learning', 'vocabNext', code], vocabCardByItem: (itemCode) => ['learning', 'vocabCardByItem', itemCode], vocabMyWords: () => ['learning', 'vocabMyWords'],
     mistakes: (params) => ['learning', 'mistakes', params],
     exams: () => ['learning', 'exams'], examForm: (code) => ['learning', 'examForm', code], examSitting: (code) => ['learning', 'examSitting', code], examQuestions: (code, from, to) => ['learning', 'examQuestions', code, from, to],
     examResult: (code) => ['learning', 'examResult', code], examAnalysis: (code) => ['learning', 'examAnalysis', code], examReview: (code, filter) => ['learning', 'examReview', code, filter], examReviewItem: (code, n) => ['learning', 'examReviewItem', code, n],
