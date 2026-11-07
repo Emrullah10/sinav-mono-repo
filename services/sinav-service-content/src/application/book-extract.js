@@ -14,11 +14,24 @@ const median = (list) => {
 };
 // eslint-disable-next-line no-control-regex -- PDF metninden kontrol karakterleri atılır
 const clean = (s) => String(s).normalize('NFKC').replace(/­/g, '').replace(/[\u0000-\u0008\u000B-\u001F]/g, ' ').replace(/\s+/g, ' ').trim();
+// Cümle içinde harf aralıklı kelime ("left, h o p i n g to", "w h a t ?"): 3+ tek harf art arda → tek kelime.
+const unspace = (s) => s.replace(/(?<!\p{L})\p{L}(?: \p{L}){2,}(?!\p{L})(?: (?=[?!.,;:]))?/gu, (m) => m.replace(/ /g, ''));
 const wordsOf = (s) => (String(s).match(/[\p{L}\p{N}]+(?:['’-][\p{L}\p{N}]+)*/gu) || []).length;
 const ENDS = /[.!?…]["'”’)\]]*$/;
 const PAGE_NO = /^[\W_]*(?:page\s*|sayfa\s*)?(?:\d{1,4}|[ivxlcdm]{1,7})(?:\s*(?:of|\/)\s*\d{1,4})?[\W_]*$/i;
 const CHAPTER = /^(?:chapter|part|book|section|unit|lesson|preface|introduction|conclusion|epilogue|prologue|appendix|bölüm|kısım|ünite|giriş|sonuç)\b.{0,90}$/i;
 const BULLET = /^(?:[•·▪◦‣–—-]\s|\(?\d{1,3}[.)]\s|\(?[a-z][.)]\s)/;
+// Okuma moduna girmeyen kitap dışı metin (orijinal PDF görünümünde durur). Sürüm artınca eski kitaplar yeniden işlenebilir (scripts/reprocess-books.mjs).
+export const EXTRACT_VERSION = 2;
+const LEGAL = /copyright|©|\(c\)\s*(?:19|20)\d\d|all rights reserved|\bisbn\b|first published|published (?:by|in)|printed (?:and bound )?in|no part of this (?:publication|book)|catalogu?ing|library of congress|british library|typeset|reprinted|tüm hakları saklıdır|yayıncının (?:yazılı )?izni|sertifika no|baskı ?:|matbaa|yayınevi/i;
+// Reklam/arka kapak işaretleri sayfa metninin tamamında aranır (iki sütunlu sayfada satır bölünür); kaç farklı işaret tuttuğu sayılır.
+const PROMO = [/www\.|https?:\/\//i, /available (?:now|at|from)/i, /also (?:published|available|by|in this series)/i, /series editors?/i, /teacher'?s (?:guides?|resources?)/i,
+  /published and distributed/i, /courtesy of/i, /for (?:more|other) (?:information|titles)|other titles|visit (?:our|us)/i, /\bisbn\b/i];
+const TOC_HEAD = /^(?:table of )?contents$|^içindekiler$/i;
+const INDEX_HEAD = /^(?:index|dizin)$/i;
+const TOC_ENTRY = /^(.*\p{L}.*?)[\s.·…_-]*\s(\d{1,4}|[ivxlcdm]{1,7})$/iu;
+// Sayfanın her yerinde atılan tek satırlık gürültü: yalnız adres, e-posta, boş sayfa notu, indirme filigranı.
+const JUNK_LINE = /^(?:(?:https?:\/\/|www\.)\S+|\S+@\S+\.\p{L}{2,}|this page (?:is )?intentionally left blank|(?:downloaded|free ebooks?) (?:from|at|==>).*)$/iu;
 
 // ── sayfa → satırlar ──
 const rawItems = (items) => {
@@ -27,7 +40,10 @@ const rawItems = (items) => {
     if (!it.str || !it.str.trim()) continue;
     const [a, b, c, d, x, y] = it.transform;
     if (Math.abs(b) > Math.abs(a) || Math.abs(c) > Math.abs(d)) continue; // döndürülmüş yazı: filigran, kenar notu
-    out.push({ s: it.str, x, y, w: Number(it.width) || 0, h: Math.abs(d) || Number(it.height) || 10 });
+    // Harf aralıklı başlık tek parçada gelebilir ('" W o m e n'): harfler birleşir, kelime arası parçalar arası boşluktan gelir.
+    const core = it.str.trim();
+    const s = /^\p{P}?\s?(?:\p{L}\s){2,}\p{L}(?:\s?\p{P})*$/u.test(core) ? core.replace(/(\S) (?=\S)/g, '$1') : it.str;
+    out.push({ s, x, y, w: Number(it.width) || 0, h: Math.abs(d) || Number(it.height) || 10 });
   }
   return out;
 };
@@ -78,16 +94,24 @@ const toLines = (items) => {
   return lines
     .map((l) => {
       const parts = l.parts.sort((p, q) => p.x - q.x);
+      // Harf aralıklı yazı ("W o m e n"): parçalar tek harf; harf arası boşluk kelime arası sayılmasın, eşik olağan harf aralığına göre.
+      const singles = parts.filter((p) => p.s.trim().length === 1).length;
+      let spaceAt = l.h * 0.18;
+      if (parts.length >= 4 && singles / parts.length >= 0.7) {
+        const gaps = [];
+        for (let i = 1; i < parts.length; i++) gaps.push(parts[i].x - (parts[i - 1].x + parts[i - 1].w));
+        spaceAt = Math.max(spaceAt, median(gaps.filter((g) => g > 0)) * 1.6);
+      }
       let text = '';
       let end = null;
       for (const p of parts) {
         const gap = end === null ? 0 : p.x - end;
-        if (end !== null && gap > l.h * 0.18 && !text.endsWith(' ') && !p.s.startsWith(' ')) text += ' ';
+        if (end !== null && gap > spaceAt && !text.endsWith(' ') && !p.s.startsWith(' ')) text += ' ';
         text += p.s;
         end = p.x + p.w;
       }
       const sizes = parts.map((p) => ({ h: p.h, n: p.s.length })).sort((p, q) => q.n - p.n);
-      return { text: clean(text), y: l.y, x: parts[0].x, right: end, size: Math.round((sizes[0]?.h || l.h) * 2) / 2 };
+      return { text: unspace(clean(text)), y: l.y, x: parts[0].x, right: end, size: Math.round((sizes[0]?.h || l.h) * 2) / 2 };
     })
     .filter((l) => l.text);
 };
@@ -107,15 +131,16 @@ const pageLines = async (page, hint = null) => {
   const { items: raw } = await page.getTextContent();
   const W = page.getViewport({ scale: 1 }).width;
   const items = rawItems(raw);
+  const H = page.getViewport({ scale: 1 }).height;
   const gap = columnGap(items, W) || hintedGap(items, hint);
-  if (!gap) return { lines: toLines(items).map((l) => ({ ...l, col: 0 })), gap: null };
+  if (!gap) return { H, lines: toLines(items).map((l) => ({ ...l, col: 0 })), gap: null };
   const left = items.filter((it) => it.x + it.w <= gap.gapAt);
   const right = items.filter((it) => it.x >= gap.gapAt);
   const wide = items.filter((it) => it.x + it.w > gap.gapAt && it.x < gap.gapAt);
   const topOfColumns = Math.max(...[...left, ...right].map((it) => it.y));
   // Sütunları kesen satırlar: başlık (üstte) ya da dipnot (altta). col: satırın sütunu; paragraf kuralları sütun başına uygulanır.
   const tag = (list, col) => list.map((l) => ({ ...l, col }));
-  return { gap, lines: [...tag(toLines(wide.filter((it) => it.y > topOfColumns)), 0), ...tag(toLines(left), 1), ...tag(toLines(right), 2), ...tag(toLines(wide.filter((it) => it.y <= topOfColumns)), 3)] };
+  return { H, gap, lines: [...tag(toLines(wide.filter((it) => it.y > topOfColumns)), 0), ...tag(toLines(left), 1), ...tag(toLines(right), 2), ...tag(toLines(wide.filter((it) => it.y <= topOfColumns)), 3)] };
 };
 
 // ── paragraf ──
@@ -132,13 +157,24 @@ const bodySizeOf = (pages) => {
 const stripRunningLines = (pages) => {
   const keyOf = (t) => t.toLowerCase().replace(/\d+/g, '#').replace(/\s+/g, ' ');
   const count = new Map();
+  // Bölüm adı üst bilgisi yalnız o bölümün sayfalarında tekrar eder (kitabın %25'ine ulaşmaz): anahtar → sayfa listesi, yakın sayfalar ayrıca sayılır.
+  const seenOn = new Map();
   for (const p of pages) {
     const edge = [...p.lines.slice(0, 2), ...p.lines.slice(-2)];
-    for (const k of new Set(edge.map((l) => keyOf(l.text)))) count.set(k, (count.get(k) || 0) + 1);
+    for (const k of new Set(edge.map((l) => keyOf(l.text)))) {
+      count.set(k, (count.get(k) || 0) + 1);
+      if (!seenOn.has(k)) seenOn.set(k, []);
+      seenOn.get(k).push(p.pg);
+    }
   }
+  const nearby = (k, pg) => (seenOn.get(k) || []).filter((x) => Math.abs(x - pg) <= 12).length;
   const limit = Math.max(3, Math.ceil(pages.length * 0.25));
   const body = bodySizeOf(pages);
   for (const p of pages) {
+    // Sayfanın üst/alt %8'lik şeridi: boşluk ölçüsü tutmasa da (sıkı dizilmiş sayfa) buradaki tekrar eden satır üst/alt bilgidir.
+    const inBand = (l) => p.H > 0 && (l.y > p.H * 0.92 || l.y < p.H * 0.08);
+    // Sayfa numarası her zaman; tekrar eden satır ise gövdeden en az biraz ayrık olmalı (gövde satırı olağan aralıkla dizilir).
+    const banded = (l, gap) => inBand(l) && l.text.length <= 120 && (PAGE_NO.test(l.text) || (gap > usual * 1.2 && nearby(keyOf(l.text), p.pg) >= 3));
     const gaps = [];
     for (let i = 1; i < p.lines.length; i++) {
       const d = Math.abs(p.lines[i - 1].y - p.lines[i].y);
@@ -148,6 +184,7 @@ const stripRunningLines = (pages) => {
     // Yalnız en dıştaki satır aday olur (en çok iki kez: başlık + bölüm adı gibi iki satırlı üst bilgi). Gövdeden belirgin boşlukla
     // ayrılmalı (paragraf arası boşluk yetmez); aynı satır birçok sayfanın kenarında tekrarlanmalı. Sayfa numarası tekrar şartı aramaz.
     const running = (l, gap) => {
+      if (banded(l, gap)) return true;
       // Gövdeden küçük yazıda (çoğu üst/alt bilgi) daha az boşluk yeter.
       if (!(gap > usual * (l.size < body * 0.85 ? 1.25 : 1.8))) return false;
       if (PAGE_NO.test(l.text)) return true;
@@ -160,6 +197,64 @@ const stripRunningLines = (pages) => {
     }
     if (p.lines.length === 1 && PAGE_NO.test(p.lines[0].text)) p.lines = [];
   }
+};
+
+// ── kitap dışı sayfalar ──
+const pageFacts = (p) => {
+  const texts = p.lines.map((l) => l.text);
+  const words = texts.reduce((n, t) => n + wordsOf(t), 0);
+  const legal = texts.filter((t) => LEGAL.test(t)).length;
+  const all = texts.join(' ');
+  const promo = PROMO.filter((re) => re.test(all)).length;
+  const head = texts.slice(0, 2).map((t) => t.trim());
+  const entries = texts.filter((t) => TOC_ENTRY.test(t) && !ENDS.test(t)).length;
+  const toc = head.some((t) => TOC_HEAD.test(t)) || (texts.length >= 4 && entries / texts.length >= 0.6 && words < 400);
+  return { words, legal, promo, toc, index: head.some((t) => INDEX_HEAD.test(t)), lines: texts.length };
+};
+
+/** İçindekiler sayfasından { title, page } (yazılı sayfa numarası; PDF sayfasıyla eşleşmeyebilir, bölüm sınırı başlıkla bulunur). */
+const tocEntries = (p) => {
+  const out = [];
+  for (const l of p.lines) {
+    const m = TOC_ENTRY.exec(l.text);
+    if (!m || TOC_HEAD.test(l.text.trim())) continue;
+    const title = m[1].replace(/[\s.·…_-]+$/, '').trim();
+    if (title.length >= 2 && title.length <= 160) out.push({ title });
+  }
+  return out;
+};
+
+/**
+ * Okuma moduna girmeyecek sayfalar: baştaki telif, başlık/ithaf, içindekiler; sondaki yayınevi reklamı, arka kapak, dizin.
+ * Yalnız kitabın başında ve sonunda art arda gelen sayfalara bakılır; gövde başladıktan sonra tek bir telif/içindekiler sayfası da atlanır.
+ * → { skipped: Set<pg>, toc: [{ title }] }
+ */
+const frontBackMatter = (pages) => {
+  const skipped = new Set();
+  const toc = [];
+  if (pages.length < 4) return { skipped, toc };
+  const facts = new Map(pages.map((p) => [p.pg, pageFacts(p)]));
+  const legalPage = (f) => f.legal >= 2 && (f.legal / Math.max(1, f.lines) >= 0.25 || f.words < 200);
+  const FRONT = Math.min(25, Math.ceil(pages.length * 0.3));
+  let bodyStarted = false;
+  for (const p of pages.slice(0, FRONT)) {
+    const f = facts.get(p.pg);
+    if (f.toc) { toc.push(...tocEntries(p)); skipped.add(p.pg); continue; }
+    if (legalPage(f)) { skipped.add(p.pg); continue; }
+    if (!bodyStarted && f.words < 40) { skipped.add(p.pg); continue; }
+    bodyStarted = true;
+  }
+  const BACK = Math.min(12, Math.ceil(pages.length * 0.15));
+  for (const p of pages.slice(-BACK).reverse()) {
+    const f = facts.get(p.pg);
+    // Kısa son sayfa hikâyenin son cümleleri olabilir: cümle bitiren satır varsa kalır ("THE END", boş sayfa atılır).
+    const junk = f.index || legalPage(f) || f.promo >= 2 || (f.legal >= 1 && f.promo >= 1) || (f.words < 25 && !p.lines.some((l) => ENDS.test(l.text)));
+    if (!junk) break;
+    skipped.add(p.pg);
+  }
+  // Hepsi atılacaksa (kısa belge, broşür) hiçbir şey atılmaz.
+  if (skipped.size >= pages.length) return { skipped: new Set(), toc };
+  return { skipped, toc };
 };
 
 const joinLine = (buf, next) => {
@@ -300,21 +395,53 @@ const outlineStarts = async (pdf) => {
   return sorted.filter((s, i) => !i || s.page > sorted[i - 1].page);
 };
 
-const makeSections = (blocks, starts, pageCount) => {
+const norm = (t) => String(t || '').toLocaleLowerCase('en').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+
+/** İçindekiler girdileri gövdedeki başlık bloklarıyla sırayla eşlenir → bölüm başı blok indeksleri (en az 2 eşleşme). */
+const tocCuts = (blocks, toc) => {
+  const cuts = [];
+  let from = 0;
+  // Başlık sayfa/satır sonunda bölünüp alt başlıkla birleşebilir ("The Biggest Ship in" + "The biggest and the best!"): baştan eşit kelime sayısı yeter.
+  const same = (want, got) => {
+    const a = want.split(' ');
+    const b = got.split(' ');
+    let k = 0;
+    while (k < a.length && k < b.length && a[k] === b[k]) k++;
+    return k === a.length || k === b.length || (k >= 3 && k >= a.length * 0.6);
+  };
+  for (const e of toc) {
+    const want = norm(e.title);
+    if (want.length < 3) continue;
+    for (let i = from; i < blocks.length; i++) {
+      const got = norm(blocks[i].x);
+      if (blocks[i].t === 'h' && got.length >= 3 && same(want, got)) {
+        cuts.push({ title: e.title.slice(0, 300), at: i });
+        from = i + 1;
+        break;
+      }
+    }
+  }
+  return cuts.length >= 2 ? cuts : null;
+};
+
+const makeSections = (blocks, starts, pageCount, toc = []) => {
   let marks = starts.length >= 2 ? starts : [];
   let byIndex = null;
-  if (!marks.length) {
+  const fromToc = !marks.length ? tocCuts(blocks, toc) : null;
+  if (!marks.length && !fromToc) {
     const heads = [];
     blocks.forEach((b, i) => { if (b.t === 'h' && CHAPTER.test(b.x)) heads.push(i); });
     if (heads.length >= 2) byIndex = heads;
   }
   const groups = [];
-  if (byIndex) {
+  if (fromToc) {
+    if (fromToc[0].at > 0) groups.push({ title: null, blocks: blocks.slice(0, fromToc[0].at) });
+    fromToc.forEach((c, i) => groups.push({ title: c.title, blocks: blocks.slice(c.at, fromToc[i + 1]?.at ?? blocks.length) }));
+  } else if (byIndex) {
     if (byIndex[0] > 0) groups.push({ title: null, blocks: blocks.slice(0, byIndex[0]) });
     byIndex.forEach((at, i) => groups.push({ title: blocks[at].x.slice(0, 300), blocks: blocks.slice(at, byIndex[i + 1] ?? blocks.length) }));
   } else if (marks.length) {
     // Bölüm sayfanın ortasında başlayabilir: o sayfada içindekiler başlığıyla eşleşen başlık bloğu varsa sınır odur, yoksa sayfa başı.
-    const norm = (t) => String(t || '').toLocaleLowerCase('en').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
     const startOf = (m) => {
       const first = blocks.findIndex((b) => b.pg >= m.page);
       if (first < 0) return blocks.length;
@@ -393,24 +520,27 @@ export const extractBook = async (data, { ocrPages = {} } = {}) => {
       }
       const page = await pdf.getPage(pg);
       const out = await pageLines(page, colHint);
-      const { lines } = out;
+      const { lines, H } = out;
       if (out.gap) colHint = out.gap;
       page.cleanup();
       const n = lines.reduce((sum, l) => sum + l.text.length, 0);
       chars += n;
       if (chars > BOOK_LIMITS.maxChars) throw fail('READING_PDF_TOO_LONG');
       if (n < BOOK_LIMITS.textlessChars) textlessPages.push(pg);
-      pages.push({ pg, lines });
+      pages.push({ pg, lines, H });
     }
     const textPages = pages.filter((p) => !p.ocr);
     stripRunningLines(textPages);
+    const { skipped, toc } = frontBackMatter(textPages);
+    // Adres satırı reklam sayfasını tanımaya yarar; sayfa kararından sonra atılır.
+    for (const p of textPages) p.lines = skipped.has(p.pg) ? [] : p.lines.filter((l) => !JUNK_LINE.test(l.text));
     const blocks = buildBlocks(pages);
-    const sections = makeSections(blocks, await outlineStarts(pdf), pdf.numPages);
+    const sections = makeSections(blocks, await outlineStarts(pdf), pdf.numPages, toc);
     const wordCount = sections.reduce((n, s) => n + s.wordCount, 0);
     let info = {};
     try { info = (await pdf.getMetadata())?.info || {}; } catch { /* yoksay */ }
     const author = clean(info.Author || '');
-    return { pageCount: pdf.numPages, textlessPages, sections, wordCount, author: author.length >= 3 && author.length <= 120 && !/^(unknown|admin|user|microsoft)/i.test(author) ? author : null };
+    return { pageCount: pdf.numPages, textlessPages, skippedPages: [...skipped].sort((a, b) => a - b), sections, wordCount, author: author.length >= 3 && author.length <= 120 && !/^(unknown|admin|user|microsoft)/i.test(author) ? author : null };
   } finally {
     // Alt süreç iş bitince kapanır; pdf.js belleği onunla gider.
     await pdf.cleanup?.().catch?.(() => {});

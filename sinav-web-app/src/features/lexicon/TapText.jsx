@@ -29,8 +29,9 @@ const parseRuns = (parts, lang) => {
  * text | runs (Markdown satırı parçaları). lang: 'en' (içerik) | 'auto' (karışık metinde yalnız İngilizce cümleler).
  * words / sentences: açık mı. sentences kapalıyken basılı tutunca `sentenceLock` (i18n anahtarı) gösterilir.
  * bookCode: kitap okuyucudan; kişisel kitabın cümle çevirileri kitaba bağlı saklanır.
+ * speaking: sesli okunan cümlenin sırası (splitSentences(metin) ile aynı sıra) → vurgulanır.
  */
-export default function TapText({ text, runs, lang = 'en', words = true, sentences = true, sentenceLock, onAsk, bookCode }) {
+export default function TapText({ text, runs, lang = 'en', words = true, sentences = true, sentenceLock, onAsk, bookCode, speaking = null }) {
   const lex = useLexicon();
   const owner = useId();
   const { t } = useTranslation();
@@ -89,7 +90,7 @@ export default function TapText({ text, runs, lang = 'en', words = true, sentenc
     tokens.map((tok, i) => {
       const key = `${prefix}.${i}`;
       const en = tok.sentence >= 0 && parsed.english[tok.sentence];
-      const hl = active?.kind === 'word' && active.token === key ? styles.hlWord : active?.kind === 'sentence' && active.sentence === tok.sentence ? styles.hlSentence : null;
+      const hl = active?.kind === 'word' && active.token === key ? styles.hlWord : active?.kind === 'sentence' && active.sentence === tok.sentence ? styles.hlSentence : speaking != null && tok.sentence === speaking ? styles.hlSpeak : null;
       if (!tok.word || !en) return hl ? <span key={key} className={hl}>{tok.text}</span> : <Fragment key={key}>{tok.text}</Fragment>;
       return (
         <span

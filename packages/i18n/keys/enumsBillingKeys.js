@@ -37,4 +37,5 @@ export default {
   'enums.feature.full_exams_per_month': { tr: 'Aylık tam deneme', en: 'Monthly full exams' },
   'enums.feature.detailed_analysis': { tr: 'Ayrıntılı analiz', en: 'Detailed analysis' },
   'enums.feature.score_estimate': { tr: 'Puan tahmini', en: 'Score estimate' },
+  'enums.feature.read_aloud': { tr: 'Sesli okuma', en: 'Read aloud' },
 };

@@ -35,6 +35,7 @@ export default {
   'pay.feature.name.full_exams_per_month': { tr: 'Tam deneme', en: 'Full mock exams' },
   'pay.feature.name.detailed_analysis': { tr: 'Ayrıntılı deneme analizi', en: 'Detailed exam analysis' },
   'pay.feature.name.score_estimate': { tr: 'Puan tahmini', en: 'Score estimate' },
+  'pay.feature.name.read_aloud': { tr: 'Kitapları sesli okuma', en: 'Read books aloud' },
   'pay.campaign.left': { tr: '{{total}} kontenjandan {{n}} kaldı', en: '{{n}} of {{total}} spots left' },
   'pay.campaign.launch': { tr: 'Açılış tarihi: {{date}}', en: 'Launch date: {{date}}' },
   'pay.campaign.buy': { tr: 'Kurucu üye ol · {{price}}', en: 'Become a founder · {{price}}' },

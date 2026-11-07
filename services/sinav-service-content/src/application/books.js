@@ -4,7 +4,7 @@ import { open, rm } from 'node:fs/promises';
 import multer from 'multer';
 import { DomainError, withTransaction, getEntitlements, looksEnglish, splitSentences } from 'app-shared';
 import { getPlatform, pageOf, reqCode, like, iso, num } from '../shared/helpers.js';
-import { BOOK_LIMITS, isScanned } from './book-extract.js';
+import { BOOK_LIMITS, EXTRACT_VERSION, isScanned } from './book-extract.js';
 import { runBookWorker } from './book-worker.js';
 
 // Kitap okuma. İki tür kitap tek modelde: hazır (catalog) ve kullanıcının yüklediği PDF (personal). Başkasının kişisel kitabı her uçta 404.
@@ -172,6 +172,8 @@ export const makeBooks = ({ rawQuery, nowFn, files }) => {
     const scanned = !ocr && isScanned(result);
     const words = result.wordCount;
     if (!scanned && words === 0) throw Object.assign(new Error('No text'), { code: 'READING_PDF_NO_TEXT' });
+    // Okunan kitap yeniden işlemede taranmışa dönmesin: hata sayılır, failBook eski hâline geri alır.
+    if (row.reprocess && scanned) throw Object.assign(new Error('Reprocess would mark scanned'), { code: 'READING_PDF_NO_TEXT' });
     const sample = result.sections.flatMap((s) => s.blocks).filter((b) => b.t === 'p').slice(0, 60).map((b) => b.x).join('\n');
     const sents = splitSentences(sample).slice(0, 80);
     const english = sents.filter((s) => looksEnglish(s.text)).length;
@@ -184,18 +186,31 @@ export const makeBooks = ({ rawQuery, nowFn, files }) => {
             `INSERT INTO content.book_section (book_section_tenant_code, book_section_organization_id, book_section_book_id, book_section_position, book_section_title, book_section_page_start, book_section_page_end, book_section_word_count, book_section_blocks)
              VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`, [row.tenantCode, row.organizationId, row.id, s.position, s.title ? (s.part > 1 ? `${s.title} (${s.part})`.slice(0, 300) : s.title) : null, s.pageStart, s.pageEnd, s.wordCount, JSON.stringify(s.blocks)]);
         }
+        // Yeniden işlemede bölümler değişir: okuma yeri kayıtlı PDF sayfasına göre yeni bölüm/bloğa taşınır (ilk işlemede kayıt yoktur).
+        const { rows: marks } = await tx.query(`SELECT book_progress_id AS id, book_progress_page_no AS pg FROM content.book_progress WHERE book_progress_book_id = $1 AND book_progress_page_no IS NOT NULL`, [row.id]);
+        for (const m of marks) {
+          const s = [...result.sections].reverse().find((x) => x.pageStart <= m.pg) || result.sections[0];
+          if (!s) continue;
+          const at = s.blocks.findIndex((b) => b.pg >= m.pg);
+          await tx.query(`UPDATE content.book_progress SET book_progress_section_position = $2, book_progress_block_index = $3 WHERE book_progress_id = $1`, [m.id, s.position, Math.max(0, at)]);
+        }
       }
       if (ocr) await tx.query(`DELETE FROM content.book_ocr_page WHERE book_ocr_page_book_id = $1`, [row.id]);
       await tx.query(
         `UPDATE content.book SET book_status = $2, book_error_code = NULL, book_page_count = $3, book_textless_page_count = $4, book_section_count = $5, book_word_count = $6, book_language = $7,
                 book_author = COALESCE(book_author, $8), book_processed_at = $9, book_processing_started_at = NULL,
-                book_metadata = book_metadata || $10::jsonb WHERE book_id = $1`,
+                book_metadata = (book_metadata - 'reprocess') || $10::jsonb WHERE book_id = $1`,
         [row.id, scanned ? 'scanned' : 'ready', result.pageCount, result.textlessPages.length, scanned ? 0 : result.sections.length, scanned ? 0 : words, scanned ? row.language : language, result.author, nowFn(),
-          JSON.stringify(scanned ? { textlessPages: result.textlessPages } : {})]);
+          JSON.stringify(scanned ? { textlessPages: result.textlessPages, extractVersion: EXTRACT_VERSION } : { extractVersion: EXTRACT_VERSION, skippedPages: result.skippedPages || [] })]);
     });
   };
 
   const failBook = async (row, code) => {
+    // Yeniden işleme (çıkarma sürümü yükseldi) başarısız: eski bölümler yerinde, kitap eski hâline döner; dosya silinmez.
+    if (row.reprocess) {
+      await rawQuery(`UPDATE content.book SET book_status = 'ready', book_processing_started_at = NULL, book_metadata = book_metadata - 'reprocess' WHERE book_id = $1`, [row.id]);
+      return;
+    }
     // OCR sonrası kurulumda hata: dosya durur (orijinal okunabilir), kitap taranmış sayılır.
     const keepFile = row.hadOcr;
     await rawQuery(
@@ -209,7 +224,8 @@ export const makeBooks = ({ rawQuery, nowFn, files }) => {
       `UPDATE content.book SET book_processing_started_at = $1, book_processing_attempts = book_processing_attempts + 1
         WHERE book_id = (SELECT book_id FROM content.book WHERE book_status = 'processing' AND (book_processing_started_at IS NULL OR book_processing_started_at < $1::timestamptz - interval '${STUCK_MINUTES} minutes')
                           ORDER BY book_processing_attempts, book_id LIMIT 1 FOR UPDATE SKIP LOCKED)
-        RETURNING book_id AS id, book_code AS code, book_tenant_code AS "tenantCode", book_organization_id AS "organizationId", book_language AS language, book_processing_attempts AS attempts`, [nowFn()]);
+        RETURNING book_id AS id, book_code AS code, book_tenant_code AS "tenantCode", book_organization_id AS "organizationId", book_language AS language, book_processing_attempts AS attempts,
+                  (book_metadata->>'reprocess') = 'true' AS reprocess`, [nowFn()]);
     const row = rows[0];
     if (!row) return false;
     const ocrRows = await rawQuery(`SELECT book_ocr_page_page_no AS pg, book_ocr_page_text AS text FROM content.book_ocr_page WHERE book_ocr_page_book_id = $1 AND book_ocr_page_status = 'done'`, [row.id]);

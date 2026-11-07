@@ -1264,7 +1264,8 @@ INSERT INTO enums.feature (feature_value, feature_label, feature_sort_order) VAL
     ('mini_exams_per_month', 'Mini exams per month', 5),
     ('full_exams_per_month', 'Full exams per month', 6),
     ('detailed_analysis', 'Detailed analysis', 7),
-    ('score_estimate', 'Score estimate', 8);
+    ('score_estimate', 'Score estimate', 8),
+    ('read_aloud', 'Read aloud', 9);
 
 -- -----------------------------------------------------
 -- Table: enums.limit_period

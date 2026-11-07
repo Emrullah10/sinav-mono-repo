@@ -2,10 +2,11 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ChevronLeft, ChevronRight, FileText, Languages, List, Type } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, FileText, Headphones, Languages, List, Type } from 'lucide-react';
 import classNames from 'classnames';
 import api from '@api';
 import useApiQuery from '@hooks/useApiQuery';
+import { useAuthStore, isGuestUser } from '@store/authStore';
 import { queryClient } from '@shared/providers/QueryProvider';
 import { notify } from '@shared/utils/notify';
 import Routes, { path } from '@shared/constant/route-paths';
@@ -16,22 +17,25 @@ import ProgressBar from '@components/ProgressBar/ProgressBar';
 import ErrorState from '@components/ErrorState/ErrorState';
 import Skeleton from '@components/Skeleton/Skeleton';
 import TapText from '@features/lexicon/TapText';
+import { useLexicon } from '@features/lexicon/LexiconProvider';
 import useHeartbeat from '@features/study/hooks/useHeartbeat';
 import ParagraphTranslation from '../components/ParagraphTranslation';
+import ReadAloudBar from '../components/ReadAloudBar';
 import ReaderSettings from '../components/ReaderSettings';
 import useReaderPrefs from '../hooks/useReaderPrefs';
+import useReadAloud, { readAloudSupported } from '../hooks/useReadAloud';
 import { readingKeys, sectionTitle } from '../hooks/readingKeys';
 import styles from '../components/Reading.module.scss';
 
 const SAVE_EVERY_MS = 4000;
 
-const Block = memo(function Block({ block, index, lang, bookCode }) {
+const Block = memo(function Block({ block, index, lang, bookCode, speaking }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  if (block.t === 'h') return <h2 className={styles.heading} data-block={index} lang="en"><TapText text={block.x} lang={lang} bookCode={bookCode} /></h2>;
+  if (block.t === 'h') return <h2 className={styles.heading} data-block={index} lang="en"><TapText text={block.x} lang={lang} bookCode={bookCode} speaking={speaking} /></h2>;
   return (
     <div className={styles.block} data-block={index}>
-      <p className={styles.para} lang={lang === 'en' ? 'en' : undefined}><TapText text={block.x} lang={lang} bookCode={bookCode} /></p>
+      <p className={styles.para} lang={lang === 'en' ? 'en' : undefined}><TapText text={block.x} lang={lang} bookCode={bookCode} speaking={speaking} /></p>
       {open
         ? <ParagraphTranslation text={block.x} lang={lang} bookCode={bookCode} onClose={() => setOpen(false)} />
         : <button type="button" className={styles.trBtn} onClick={() => setOpen(true)}><Languages size={14} aria-hidden />{t('read.reader.translate')}</button>}
@@ -135,9 +139,50 @@ export default function Reader() {
     return () => { clearInterval(id); document.removeEventListener('visibilitychange', onHide); save(false); };
   }, [save]);
 
+  // Sesli okuma (abonelik): tarayıcının konuşma motoru. Bölüm bitince sonraki bölüme geçip sürer.
+  const guest = useAuthStore((s) => isGuestUser(s.user));
+  const entQ = useApiQuery(['pay', 'entitlements'], () => api.billingEntitlementsGet(), { enabled: !guest, meta: { suppressGlobalErrorNotification: true } });
+  const canListen = Boolean(entQ.data?.features?.read_aloud?.enabled);
+  const continueNext = useRef(false);
+  const onAloudEnd = useCallback(() => {
+    const list = book?.sections || [];
+    const at = list.findIndex((s) => s.position === position);
+    const n = at >= 0 ? list[at + 1] : null;
+    if (!n) return;
+    save(false);
+    continueNext.current = true;
+    setVisible(0);
+    setSp({ bolum: String(n.position) }, { replace: false });
+  }, [book, position, save, setSp]);
+  const aloud = useReadAloud({ blocks: section?.blocks, lang, onEnd: onAloudEnd });
+  const lex = useLexicon();
+  // Sözlük/çeviri açılınca okuma duraklar.
+  useEffect(() => {
+    if (lex?.active && aloud.status === 'playing') aloud.pause();
+  }, [lex?.active]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Yeni bölüm yüklendi ve önceki bölüm sesli okunarak bittiyse baştan sürer.
+  useEffect(() => {
+    if (!section || !continueNext.current) return;
+    continueNext.current = false;
+    aloud.playFrom(0);
+  }, [section]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Okunan blok ekranda kalsın.
+  const speakingBlock = aloud.current?.block ?? null;
+  useEffect(() => {
+    if (speakingBlock == null || aloud.status !== 'playing') return;
+    bodyRef.current?.querySelector(`[data-block="${speakingBlock}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, [speakingBlock]); // eslint-disable-line react-hooks/exhaustive-deps
+  const listen = () => {
+    if (!readAloudSupported()) { notify(t('read.aloud.unsupported'), 'warning'); return; }
+    if (!canListen) { notify(t('read.aloud.locked'), 'info'); nav(Routes.premium); return; }
+    if (aloud.status === 'idle') aloud.playFrom(visible);
+    else aloud.toggle();
+  };
+
   const goSection = (n) => {
     save(false);
     setTocOpen(false);
+    aloud.stop();
     setVisible(0);
     setSp({ bolum: String(n) }, { replace: false });
   };
@@ -169,6 +214,7 @@ export default function Reader() {
         </div>
         <div className={styles.topProgress}><ProgressBar value={percent} size="sm" label={t('read.reader.percent', { n: Math.round(percent) })} /></div>
         <span className="t-caption muted tnum">{t('read.meta.percent', { n: Math.round(percent) })}</span>
+        <IconButton tone={aloud.status === 'idle' ? 'plain' : 'tonal'} label={t('read.aloud.listen')} onClick={listen}><Headphones size={20} /></IconButton>
         <span className={styles.tocHint}><IconButton label={t('read.reader.toc')} onClick={() => setTocOpen(true)}><List size={20} /></IconButton></span>
         <IconButton label={t('read.reader.settings')} onClick={() => setSettings(true)}><Type size={20} /></IconButton>
         {book.hasFile && <IconButton label={t('read.reader.original')} onClick={() => { save(false); nav(`${path(Routes.readerPdf, { code })}${section?.blocks?.[visible]?.pg ? `?sayfa=${section.blocks[visible].pg}` : ''}`); }}><FileText size={20} /></IconButton>}
@@ -187,7 +233,7 @@ export default function Reader() {
               <div style={style}>
                 {section.title && section.blocks[0]?.t !== 'h' && <h1 className={styles.sectionTitle}>{section.title}</h1>}
                 <div ref={bodyRef} className={styles.body}>
-                  {section.blocks.map((b, i) => <Block key={`${position}.${i}`} block={b} index={i} lang={lang} bookCode={book.code} />)}
+                  {section.blocks.map((b, i) => <Block key={`${position}.${i}`} block={b} index={i} lang={lang} bookCode={book.code} speaking={speakingBlock === i ? aloud.current.sentence : null} />)}
                 </div>
               </div>
             )}
@@ -199,6 +245,7 @@ export default function Reader() {
           </nav>
         </main>
       </div>
+      {aloud.status !== 'idle' && <ReadAloudBar aloud={aloud} />}
       <Modal open={tocOpen} onClose={() => setTocOpen(false)} title={t('read.reader.toc')}><Toc book={book} position={position} onPick={goSection} /></Modal>
       <ReaderSettings open={settings} onClose={() => setSettings(false)} prefs={prefs} update={update} />
     </div>

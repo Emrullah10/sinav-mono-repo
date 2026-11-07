@@ -9,8 +9,9 @@ const faq = (await getArticles('help')).filter((a) => ['odeme', 'plan'].includes
 const LABEL = {
   questions_per_day: 'Günlük soru', tutor_messages_per_day: 'Öğretmen mesajı (günlük)', flashcard_reviews_per_day: 'Kart tekrarı (günlük)',
   translation_evals_per_day: 'Çeviri değerlendirmesi (günlük)', mini_exams_per_month: 'Mini deneme (aylık)', full_exams_per_month: 'Tam deneme (aylık)',
-  detailed_analysis: 'Ayrıntılı analiz', score_estimate: 'Puan tahmini',
+  detailed_analysis: 'Ayrıntılı analiz', score_estimate: 'Puan tahmini', read_aloud: 'Kitapları sesli okuma',
 };
+const BOOLEAN = ['detailed_analysis', 'score_estimate', 'read_aloud'];
 const feats = Object.keys(LABEL);
 const cell = (p, key) => { const f = p.features.find((x) => x.feature === key); if (!f || !f.enabled) return '—'; return f.limit == null ? 'Sınırsız' : String(f.limit); };
 const interval = { none: '', month: '/ ay', year: '/ yıl', once: 'tek seferlik' };
@@ -38,7 +39,7 @@ const interval = { none: '', month: '/ ay', year: '/ yıl', once: 'tek seferlik'
       <table class="w-full min-w-[560px] text-left text-sm">
         <caption class="sr-only">Planlara göre özellik ve sınırlar</caption>
         <thead><tr class="border-b border-line"><th scope="col" class="p-3">Özellik</th>{products.map((p) => <th scope="col" class="p-3">{p.name}</th>)}</tr></thead>
-        <tbody>{feats.map((k) => <tr class="border-b border-line last:border-0"><th scope="row" class="p-3 font-medium">{LABEL[k]}</th>{products.map((p) => <td class="p-3">{k === 'detailed_analysis' || k === 'score_estimate' ? (cell(p, k) === '—' ? '—' : '✓') : cell(p, k)}</td>)}</tr>)}</tbody>
+        <tbody>{feats.map((k) => <tr class="border-b border-line last:border-0"><th scope="row" class="p-3 font-medium">{LABEL[k]}</th>{products.map((p) => <td class="p-3">{BOOLEAN.includes(k) ? (cell(p, k) === '—' ? '—' : '✓') : cell(p, k)}</td>)}</tr>)}</tbody>
       </table>
     </div>
 
