@@ -23,6 +23,9 @@ const hedgeBase = () => {
   return Number.isFinite(n) && n >= 0 ? n : 6000;
 };
 const sentenceHedgeMs = (chars) => (hedgeBase() ? hedgeBase() + Math.min(20000, chars * 4) : 0);
+// Yedek isteğin sağlayıcı sıralaması (LEXICON_BACKUP_SORT: price | throughput | latency). Varsayılan 'price': kullanıcı kararı (2026-11-05),
+// yedek de en ucuz sağlayıcıya gider; 'latency' ~1,5 sn döner ama istek başı ~4 kat pahalı.
+const backupSort = () => (['price', 'throughput', 'latency'].includes(process.env.LEXICON_BACKUP_SORT) ? process.env.LEXICON_BACKUP_SORT : 'price');
 const LIMITS = { word: { free: 60, premium: 300 }, sentence: { free: 20, premium: 100 } };
 const POS = ['noun', 'verb', 'adjective', 'adverb', 'phrasal_verb', 'conjunction', 'preposition', 'pronoun', 'determiner', 'interjection', 'numeral', 'idiom', 'collocation'];
 const POS_ALIAS = { auxiliary: 'verb', modal: 'verb', 'modal verb': 'verb', 'auxiliary verb': 'verb', article: 'determiner', phrase: 'idiom', 'proper noun': 'noun', number: 'numeral', 'phrasal verb': 'phrasal_verb' };
@@ -42,10 +45,13 @@ ${WORD_SHAPE}
 ${WORD_RULES}`;
 
 // Kontrol (lexicon-review): ücretsiz modelin kayıtlarını ucuz model denetler; YALNIZ düzeltilmesi gerekenleri döndürür (çıktı az → ucuz).
+// Kelimede düzeltme yalnız DEĞİŞEN alanları taşır (kaydın tamamı değil): kayıtların çoğu düzeltildiği için çıktıyı, dolayısıyla maliyeti yarıya yakın düşürür.
 const WORDS_REVIEW_SYSTEM = `[gen:lex:review-words] You are a strict reviewer of an English→Turkish learner's dictionary for Turkish students preparing for YDS/YÖKDİL (B1–C1).
 You get numbered JSON entries written by another model. Check each one: lemma, partOfSpeech, the Turkish meanings (correct, natural, most common sense first, real and correctly spelled Turkish words — no invented words), formNote and the example with its Turkish translation.
 Return ONLY JSON: {"fixes":[...]} containing ONLY the entries that need any change; if every entry is correct return {"fixes":[]}.
-A fix is the full corrected entry plus "n" (its number): {"n":1, ...this object}:
+A fix is "n" (the entry's number) plus ONLY the fields that change, each with its complete corrected value; leave out every field that is already correct.
+"meanings" and "examples" are replaced as a whole: when you change any item, give the complete corrected array. Example: {"n":3,"meanings":[{"tr":"...","pos":"verb","note":null}]}
+Field shapes:
 ${WORD_SHAPE}
 ${WORD_RULES}`;
 const SENTENCES_REVIEW_SYSTEM = `[gen:lex:review-sentences] You review Turkish translations of English sentences from exam-preparation texts, made by another model for Turkish learners.
@@ -106,7 +112,7 @@ export const withBackup = (run, hedgeAfterMs, label = 'ai') => new Promise((reso
     if (backup || settled) return;
     backup = true;
     clearTimeout(timer);
-    console.log(`[lexicon] ${label}: ilk istek ${failed ? 'başarısız' : `${hedgeAfterMs} ms içinde dönmedi`}, yedek istek (latency)`);
+    console.log(`[lexicon] ${label}: ilk istek ${failed ? 'başarısız' : `${hedgeAfterMs} ms içinde dönmedi`}, yedek istek`);
     launch(1);
   };
   launch(0);
@@ -167,7 +173,7 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
 
   /**
    * Yavaş cevap sigortası (yalnız kullanıcının beklediği dokun-çevir): ilk istek `hedgeAfterMs` içinde geçerli cevap vermezse ya da hata
-   * verirse aynı istek bir kez daha, en düşük gecikmeli sağlayıcıya (providerSort 'latency') gider; önce gelen geçerli cevap kullanılır,
+   * verirse aynı istek bir kez daha gider (sağlayıcı sırası LEXICON_BACKUP_SORT, varsayılan en ucuz 'price'); önce gelen geçerli cevap kullanılır,
    * öteki bırakılır. Canlı ölçüm (2026-11-04): p50 ~2-3 sn, ara sıra 16-21 sn; düşünme kapalı, 70-130 token: gecikme sağlayıcı kuyruğunda.
    * Bırakılan istek tutor'da biter ve tutor.ai_usage'a yazılır: yalnız yavaş/hatalı isteklerde maliyet en fazla iki katı.
    * `accept(out)` cevabı doğrular; geçersiz cevap da hata sayılır ve yedeği tetikler. En fazla iki istek.
@@ -179,7 +185,8 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
       return r;
     };
     if (!(hedgeAfterMs > 0)) return once({});
-    return withBackup((i, signal) => once({ signal, providerSort: i ? 'latency' : null }), hedgeAfterMs, feature)
+    const sort = backupSort();
+    return withBackup((i, signal) => once({ signal, providerSort: i ? sort : null }), hedgeAfterMs, `${feature}/${sort}`)
       .then(({ value, backup, winner }) => ({ ...value, meta: { ...value.meta, hedged: backup, winner } }));
   };
 
@@ -499,7 +506,8 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
         WHERE g.word_gloss_tenant_code = $1 AND g.word_gloss_language = 'en' AND g.word_gloss_model LIKE '%:free' AND g.word_gloss_reviewed_at IS NULL
         ORDER BY g.word_gloss_id LIMIT $2`, [p.tenantCode, limit]);
     if (!rows.length) return { reviewed: 0, fixed: 0, meta: null };
-    const user = rows.map((r, i) => `[${i + 1}] ${JSON.stringify({ word: r.form, isWord: r.isWord, lemma: r.lemma, partOfSpeech: r.pos, ipa: r.ipa, formNote: r.formNote, meanings: r.meanings, examples: r.examples })}`).join('\n');
+    const entryOf = (r) => ({ word: r.form, isWord: r.isWord, lemma: r.lemma, partOfSpeech: r.pos, ipa: r.ipa, formNote: r.formNote, meanings: r.meanings, examples: r.examples });
+    const user = rows.map((r, i) => `[${i + 1}] ${JSON.stringify(entryOf(r))}`).join('\n');
     const { out, model: used, meta } = await askAi(null, 'lexicon_review', [{ role: 'system', content: WORDS_REVIEW_SYSTEM }, { role: 'user', content: user }],
       Math.min(8000, rows.length * 220 + 400), { model, timeoutMs });
     const fixes = fixesOf(out, rows.length);
@@ -508,7 +516,10 @@ export const makeLexicon = ({ rawQuery, nowFn, fetchFn, study, items }) => {
     let fixed = 0;
     for (const f of fixes) {
       const row = rows[Number(f.n) - 1];
-      const g = parseGloss(f);
+      // Düzeltme yalnız değişen alanları taşır: eski kaydın üstüne yazılır (tam kayıt dönerse de aynı sonuç).
+      const { n, word, ...patch } = f;
+      if (!Object.keys(patch).length) continue;
+      const g = parseGloss({ ...entryOf(row), ...patch });
       if (!g) continue;
       await rawQuery(
         `UPDATE content.word_gloss SET word_gloss_lemma = $2, word_gloss_part_of_speech = $3, word_gloss_pronunciation_ipa = $4, word_gloss_form_note = $5,
